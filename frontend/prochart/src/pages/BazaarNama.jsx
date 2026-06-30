@@ -307,11 +307,21 @@ export default function BazaarNama() {
     if (!mainRef.current) return;
     const el = mainRef.current;
     const chart = createChart(el, {
-      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'AnjomanMax, Vazirmatn, sans-serif', fontSize: 11 },
+      // #۱۰/#۱۸ فیدلیتیِ TradingView: لوگوی پیش‌فرضِ کتابخانه پنهان (لوگوی خودِ بازارنما پایین‌چپ هست)
+      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'AnjomanMax, Vazirmatn, sans-serif', fontSize: 11, attributionLogo: false },
       grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } },
-      timeScale: { timeVisible: true, borderColor: TH.grid, rightOffset: 6 },
-      rightPriceScale: { borderColor: TH.grid },
+      // مقیاسِ زمان سبکِ TV: قفلِ رِنج روی resize، آخرین کندل ثابت هنگام اسکرول، فاصلهٔ پایهٔ میله، بدونِ tickِ ریز
+      timeScale: {
+        timeVisible: true, secondsVisible: false, borderColor: TH.grid, rightOffset: 6,
+        barSpacing: 8, minBarSpacing: 1.5, lockVisibleTimeRangeOnResize: true,
+        rightBarStaysOnScroll: true, ticksVisible: false,
+      },
+      // مقیاسِ قیمت سبکِ TV: حاشیهٔ بالا/پایین تا کندل به لبه نچسبد، متنِ کامل، بدونِ tick
+      rightPriceScale: { borderColor: TH.grid, scaleMargins: { top: 0.12, bottom: 0.08 }, entireTextOnly: true, ticksVisible: false },
       crosshair: { mode: 0 },
+      // روانیِ تعامل سبکِ TV: کینتیک‌اسکرولِ لمسی + تعقیبِ نرمِ ماوس
+      kineticScroll: { touch: true, mouse: false },
+      handleScale: { axisPressedMouseMove: { time: true, price: true }, mouseWheel: true, pinch: true },
       width: el.clientWidth || 600,
       height: el.clientHeight || 400,
     });
