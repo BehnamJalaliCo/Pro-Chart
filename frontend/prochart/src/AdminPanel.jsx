@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Search, Crown, Check, X, RefreshCw, LogOut, Loader2 } from 'lucide-react';
+import { Shield, Search, Crown, Check, X, RefreshCw, LogOut, Loader2, Users, ListOrdered } from 'lucide-react';
 import { api, adminToken } from './api/client';
 
 // پنلِ ادمینِ بازارنما — تأییدِ پرمیوم/مدیریتِ کاربران. مسیر: /admin
@@ -36,6 +36,7 @@ function Login({ onLogin }) {
 }
 
 function Dash({ onLogout }) {
+  const [tab, setTab] = React.useState('users');
   const [users, setUsers] = React.useState([]); const [q, setQ] = React.useState(''); const [loading, setLoading] = React.useState(false);
   const [msg, setMsg] = React.useState('');
   const load = async (query = '') => {
@@ -66,6 +67,11 @@ function Dash({ onLogout }) {
       </header>
 
       <div className="max-w-6xl mx-auto p-5">
+        <div className="flex items-center gap-2 mb-5">
+          <button onClick={() => setTab('users')} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-bold ${tab === 'users' ? 'bg-indigo-600 text-white' : 'bg-white/5 hover:bg-white/10'}`}><Users size={15} /> کاربران</button>
+          <button onClick={() => setTab('orders')} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-bold ${tab === 'orders' ? 'bg-indigo-600 text-white' : 'bg-white/5 hover:bg-white/10'}`}><ListOrdered size={15} /> سفارش‌های تریدِ واقعی</button>
+        </div>
+        {tab === 'users' && (<>
         <div className="flex items-center gap-2 mb-4">
           <div className="flex items-center gap-2 rounded-lg px-3 flex-1 max-w-md" style={FS}>
             <Search size={15} className="opacity-50" />
@@ -113,6 +119,68 @@ function Dash({ onLogout }) {
             </tbody>
           </table>
         </div>
+        </>)}
+        {tab === 'orders' && <Orders onLogout={onLogout} />}
+      </div>
+    </div>
+  );
+}
+
+const OST = { pending: ['در صف', '#f59e0b'], sent: ['ارسال‌شده', '#3b82f6'], filled: ['اجراشده', '#22c55e'], failed: ['ناموفق', '#ef4444'], canceled: ['لغو', '#64748b'] };
+
+function Orders({ onLogout }) {
+  const [orders, setOrders] = React.useState([]); const [loading, setLoading] = React.useState(false);
+  const [fStatus, setFStatus] = React.useState(''); const [fMarket, setFMarket] = React.useState('');
+  const load = async () => {
+    setLoading(true);
+    try { const r = await api.bnAdminOrders(fStatus, fMarket); setOrders(r?.orders || []); }
+    catch (e) { if (e?.status === 401) { adminToken.clear(); onLogout(); } }
+    finally { setLoading(false); }
+  };
+  React.useEffect(() => { load(); }, [fStatus, fMarket]); // eslint-disable-line
+  const fmt = (s) => s ? new Date(s).toLocaleString('fa-IR') : '—';
+  const sel = 'rounded-lg px-2 py-1.5 text-sm outline-none';
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <select value={fMarket} onChange={(e) => setFMarket(e.target.value)} className={sel} style={FS}>
+          <option value="">همهٔ بازارها</option><option value="crypto">کریپتو</option><option value="forex">فارکس</option>
+        </select>
+        <select value={fStatus} onChange={(e) => setFStatus(e.target.value)} className={sel} style={FS}>
+          <option value="">همهٔ وضعیت‌ها</option>{Object.entries(OST).map(([k, v]) => <option key={k} value={k}>{v[0]}</option>)}
+        </select>
+        <button onClick={load} className="p-2 rounded-lg bg-white/5 hover:bg-white/10" title="تازه‌سازی"><RefreshCw size={15} className={loading ? 'animate-spin' : ''} /></button>
+        <span className="text-sm opacity-60">{orders.length} سفارش</span>
+      </div>
+      <div className="rounded-xl border border-white/10 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-white/5 text-[12px] opacity-70">
+            <tr>
+              <th className="px-3 py-2">#</th><th className="text-right px-3 py-2">کاربر</th><th className="px-3 py-2">بازار</th>
+              <th className="px-3 py-2">نماد</th><th className="px-3 py-2">جهت</th><th className="px-3 py-2">حجم</th>
+              <th className="px-3 py-2">حساب</th><th className="px-3 py-2">وضعیت</th><th className="px-3 py-2">زمان</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((o) => (
+              <tr key={o.id} className="border-t border-white/5 hover:bg-white/5">
+                <td className="px-3 py-2 text-center text-[12px] opacity-60">{o.id}</td>
+                <td className="px-3 py-2" dir="ltr">{o.user || '—'}</td>
+                <td className="px-3 py-2 text-center text-[12px]">{o.market === 'crypto' ? 'کریپتو' : 'فارکس'}<div className="text-[10px] opacity-50">{o.broker}</div></td>
+                <td className="px-3 py-2 text-center font-semibold" dir="ltr">{o.symbol}</td>
+                <td className="px-3 py-2 text-center"><span className={o.side === 'buy' ? 'text-green-400' : 'text-red-400'}>{o.side === 'buy' ? 'خرید' : 'فروش'}</span></td>
+                <td className="px-3 py-2 text-center text-[12px]" dir="ltr">{o.amount}</td>
+                <td className="px-3 py-2 text-center text-[11px] opacity-70" dir="ltr">{o.account_ref || '—'}</td>
+                <td className="px-3 py-2 text-center">
+                  <span className="text-[11px] px-2 py-0.5 rounded-full font-bold" style={{ background: (OST[o.status]?.[1] || '#64748b') + '33', color: OST[o.status]?.[1] || '#64748b' }}>{OST[o.status]?.[0] || o.status}</span>
+                  {o.error && <div className="text-[10px] text-red-400 mt-0.5 max-w-[140px] truncate" title={o.error}>{o.error}</div>}
+                </td>
+                <td className="px-3 py-2 text-center text-[11px] opacity-60">{fmt(o.created_at)}</td>
+              </tr>
+            ))}
+            {!orders.length && !loading && <tr><td colSpan={9} className="text-center py-10 opacity-40">سفارشی نیست.</td></tr>}
+          </tbody>
+        </table>
       </div>
     </div>
   );
