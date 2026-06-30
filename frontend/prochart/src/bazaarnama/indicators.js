@@ -140,6 +140,44 @@ export const avwap = (highs, lows, closes, vols, anchorBars = 100, mult = 1) => 
   return { vwap: out, upper: up, lower: dn };
 };
 
+// ── اندیکاتورهای افزوده (پاریتیِ TradingView) ──
+const _trueRange = (h, l, c) => { const n = c.length, tr = new Array(n).fill(null); for (let i = 0; i < n; i++) { if (i === 0) { tr[i] = h[i] - l[i]; continue; } tr[i] = Math.max(h[i] - l[i], Math.abs(h[i] - c[i - 1]), Math.abs(l[i] - c[i - 1])); } return tr; };
+const _sma = (arr, p) => { const n = arr.length, out = new Array(n).fill(null); let s = 0; for (let i = 0; i < n; i++) { s += arr[i] || 0; if (i >= p) s -= arr[i - p] || 0; if (i >= p - 1) out[i] = s / p; } return out; };
+
+// Choppiness Index (0..100): >61.8 رنج، <38.2 ترند
+export const choppiness = (h, l, c, p = 14) => {
+  const n = c.length, tr = _trueRange(h, l, c), out = new Array(n).fill(null);
+  for (let i = p - 1; i < n; i++) {
+    let atrSum = 0, hh = -Infinity, ll = Infinity;
+    for (let j = i - p + 1; j <= i; j++) { atrSum += tr[j] || 0; hh = Math.max(hh, h[j]); ll = Math.min(ll, l[j]); }
+    const rng = hh - ll;
+    out[i] = rng > 0 ? 100 * Math.log10(atrSum / rng) / Math.log10(p) : null;
+  }
+  return out;
+};
+// Vortex Indicator → {plus, minus}
+export const vortex = (h, l, c, p = 14) => {
+  const n = c.length, tr = _trueRange(h, l, c), vmP = new Array(n).fill(0), vmM = new Array(n).fill(0);
+  for (let i = 1; i < n; i++) { vmP[i] = Math.abs(h[i] - l[i - 1]); vmM[i] = Math.abs(l[i] - h[i - 1]); }
+  const plus = new Array(n).fill(null), minus = new Array(n).fill(null);
+  for (let i = p; i < n; i++) {
+    let sTR = 0, sP = 0, sM = 0;
+    for (let j = i - p + 1; j <= i; j++) { sTR += tr[j] || 0; sP += vmP[j]; sM += vmM[j]; }
+    if (sTR > 0) { plus[i] = sP / sTR; minus[i] = sM / sTR; }
+  }
+  return { plus, minus };
+};
+// Detrended Price Oscillator
+export const dpo = (c, p = 20) => { const sma = _sma(c, p), n = c.length, out = new Array(n).fill(null), k = Math.floor(p / 2) + 1; for (let i = 0; i < n; i++) { if (sma[i] != null && i - k >= 0) out[i] = c[i] - sma[i]; } return out; };
+// Balance of Power
+export const bop = (o, h, l, c) => c.map((cl, i) => { const rng = h[i] - l[i]; return rng > 0 ? (cl - o[i]) / rng : 0; });
+// Ease of Movement
+export const eom = (h, l, vol, p = 14) => {
+  const n = h.length, raw = new Array(n).fill(null);
+  for (let i = 1; i < n; i++) { const dm = (h[i] + l[i]) / 2 - (h[i - 1] + l[i - 1]) / 2; const br = (vol[i] || 1) / 100000000 / Math.max(h[i] - l[i], 1e-9); raw[i] = br > 0 ? dm / br : 0; }
+  return _sma(raw.map((x) => x == null ? 0 : x), p);
+};
+
 // SuperTrend → { trend:[-1/1], line:[price] }
 export const supertrend = (highs, lows, closes, p = 10, mult = 3) => {
   const a = atr(highs, lows, closes, p);
@@ -335,6 +373,11 @@ export const REGISTRY = {
   hma:  { label: 'HMA (هال)', pane: 'main', inputs: { period: 21 }, color: '#22d3ee', calc: (c, i) => ({ line: hma(c.close, i.period) }) },
   vwap: { label: 'VWAP', pane: 'main', inputs: {}, color: '#e879f9', calc: (c) => ({ line: vwap(c.high, c.low, c.close, c.volume) }) },
   avwap: { label: 'VWAP لنگرانداخته (±σ)', pane: 'main', inputs: { anchorBars: 100, mult: 1 }, color: '#e879f9', calc: (c, i) => { const r = avwap(c.high, c.low, c.close, c.volume, i.anchorBars, i.mult); return { lines: [{ data: r.vwap, color: '#e879f9' }, { data: r.upper, color: '#a855f7', dashed: true }, { data: r.lower, color: '#a855f7', dashed: true }] }; } },
+  choppiness: { label: 'شاخصِ چاپینس', pane: 'sub', inputs: { period: 14 }, color: '#94a3b8', calc: (c, i) => ({ line: choppiness(c.high, c.low, c.close, i.period), guides: [61.8, 38.2] }) },
+  vortex: { label: 'وُرتکس (VI±)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e', calc: (c, i) => { const r = vortex(c.high, c.low, c.close, i.period); return { line: r.plus, signal: r.minus }; } },
+  dpo: { label: 'DPO', pane: 'sub', inputs: { period: 20 }, color: '#f59e0b', calc: (c, i) => ({ line: dpo(c.close, i.period), guides: [0] }) },
+  bop: { label: 'موازنهٔ قدرت (BOP)', pane: 'sub', inputs: {}, color: '#8b5cf6', calc: (c) => ({ line: bop(c.open, c.high, c.low, c.close), guides: [0] }) },
+  eom: { label: 'سهولتِ حرکت (EOM)', pane: 'sub', inputs: { period: 14 }, color: '#06b6d4', calc: (c, i) => ({ line: eom(c.high, c.low, c.volume, i.period), guides: [0] }) },
   bb:   { label: 'باند بولینگر', pane: 'main', inputs: { period: 20, mult: 2 }, color: '#94a3b8', calc: (c, i) => { const b = bollinger(c.close, i.period, i.mult); return { upper: b.upper, basis: b.basis, lower: b.lower, multi: true }; } },
   supertrend: { label: 'سوپرترند', pane: 'main', inputs: { period: 10, mult: 3 }, color: '#10b981', calc: (c, i) => ({ line: supertrend(c.high, c.low, c.close, i.period, i.mult).line }) },
   rsi:  { label: 'RSI', pane: 'sub', inputs: { period: 14 }, color: '#a78bfa', calc: (c, i) => ({ line: rsi(c.close, i.period), guides: [30, 70], range: [0, 100] }) },
