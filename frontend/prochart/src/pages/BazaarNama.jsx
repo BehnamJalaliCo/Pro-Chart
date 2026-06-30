@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { createChart, CandlestickSeries, LineSeries, AreaSeries, BarSeries, BaselineSeries, HistogramSeries, createSeriesMarkers } from 'lightweight-charts';
 import {
   CandlestickChart, LineChart, AreaChart, BarChart3, Activity, Plus, X, Save,
@@ -24,9 +24,14 @@ import bnLogo from '../assets/bn-logo.png';
 import MiniChart from '../bazaarnama/MiniChart';
 import { CROSSHAIR_MODES, crosshairModeById, crosshairOptions, paintCrosshairGlyph, PRICE_SCALE_MODES, priceScaleOptions, resetPriceScaleOptions, SESSIONS, sessionBands, paintSessions, secondsToClose, formatCountdown, countdownTint, TIMEZONES, timeZoneOptions, CH3_DEFAULTS } from '../bazaarnama/scales_crosshair';
 import { attachHotkeys, SHORTCUT_GROUPS } from '../bazaarnama/hotkeys';
-import { useBreakpoint, MobileToolSheet } from '../bazaarnama/mobile';
+import { useBreakpoint, MobileToolSheet, CompactTopBar, MobileBottomNav, BREAKPOINTS } from '../bazaarnama/mobile';
 import { GRID_PRESET_ORDER, getGridLayout, presetToLegacyGrid, legacyGridToPreset } from '../bazaarnama/layoutPresets';
-import { Legend, CountdownChip, Watermark, ReplayBar } from '../bazaarnama/overlays/ChartOverlays';
+import { Legend, ChartLegend, CountdownChip, Watermark, ReplayBar } from '../bazaarnama/overlays/ChartOverlays';
+import SymbolLogo from '../bazaarnama/SymbolLogo';
+import SymbolSearchModal from '../bazaarnama/SymbolSearchModal';
+import { buildMeta } from '../bazaarnama/symbolMeta';
+import ScreenshotMenu from '../bazaarnama/ScreenshotMenu';
+import { captureChart, canvasToBlob, copyBlobToClipboard, downloadBlob } from '../bazaarnama/screenshot';
 import RightPanel from '../bazaarnama/RightPanel';
 import AuthMenu from '../AuthMenu';
 import HelpModal, { HelpDot } from '../bazaarnama/Help';
@@ -164,6 +169,7 @@ export default function BazaarNama() {
   const candlesRef = useRef([]);
   const liveLineRef = useRef(null);
   const lastMidRef = useRef({});
+  const symbolRef = useRef('EURUSD'); // نمادِ جاری برای استفاده در هندلرهای mount-time (کراس‌هیر)
   const lazyRef = useRef({ loading: false, exhausted: false }); // بارگذاریِ تنبلِ تاریخ
   const loadMoreRef = useRef(null);
   const easeRef = useRef({ target: null, display: null }); // انیمیشنِ نرمِ قیمتِ زنده (حسِ تیک‌به‌تیک)
@@ -185,7 +191,7 @@ export default function BazaarNama() {
   const [ctMenu, setCtMenu] = useState(false);
   const [watch, setWatch] = useState([]);
   const [rightTab, setRightTab] = useState('watch');
-  const [showRight, setShowRight] = useState(() => (typeof window !== 'undefined' ? window.innerWidth > 760 : true));
+  const [showRight, setShowRight] = useState(() => (typeof window !== 'undefined' ? window.innerWidth >= 1024 : true));
   const [editorOpen, setEditorOpen] = useState(false);
   const [bnPrem, setBnPrem] = useState(false); // آیا کاربر پرمیوم/VIP است (برای گیتِ نمااسکریپت #۸)
   useEffect(() => { api.me().then((m) => setBnPrem(['vip', 'premium'].includes(m && m.tier))).catch(() => {}); }, []);
@@ -194,6 +200,17 @@ export default function BazaarNama() {
     setEditorOpen((v) => !v);
   }, [bnPrem]);
   const [helpId, setHelpId] = useState(null); // #۱۷ راهنمای «؟» ابزار/اندیکاتورِ انتخاب‌شده
+  // #۱۴ شورت‌کاتِ فیچرهای منوی همبرگری (AuthMenu رویدادهای bn:* را dispatch می‌کند)
+  useEffect(() => {
+    const onTab = (e) => { const t = e.detail === 'calendar' ? 'cal' : e.detail; if (t) setRightTab(t); setShowRight(true); };
+    const onScript = () => openNamaScript();
+    const onHelp = () => { if (getHelp(tool) && tool !== 'cursor') setHelpId(tool); else setShowShortcuts(true); };
+    const ext = (url) => () => { try { window.open(url, '_blank', 'noopener'); } catch (e) {} };
+    const onTg = ext('https://t.me/CoinProFXBot'); const onSup = ext('https://pro-chart.com'); const onTerms = ext('https://pro-chart.com');
+    window.addEventListener('bn:rightTab', onTab); window.addEventListener('bn:openScript', onScript); window.addEventListener('bn:help', onHelp);
+    window.addEventListener('bn:telegram', onTg); window.addEventListener('bn:support', onSup); window.addEventListener('bn:terms', onTerms);
+    return () => { window.removeEventListener('bn:rightTab', onTab); window.removeEventListener('bn:openScript', onScript); window.removeEventListener('bn:help', onHelp); window.removeEventListener('bn:telegram', onTg); window.removeEventListener('bn:support', onSup); window.removeEventListener('bn:terms', onTerms); };
+  }, [tool, openNamaScript]);
   const [code, setCode] = useState(() => loadWS().code || ''); // کدِ نمااسکریپت با رفرش پاک نمی‌شود
   const [barMode, setBarMode] = useState(false); // اجرای بار-به-بارِ نمااسکریپت (اختیاری)
   const [scriptApplied, setScriptApplied] = useState(() => !!loadWS().scriptApplied); // آیا خروجیِ اسکریپت روی چارت اعمال شده
@@ -235,13 +252,19 @@ export default function BazaarNama() {
   const [grid, setGrid] = useState(1); // 1/2/4 چند-چارت
   const [gridMenu, setGridMenu] = useState(false); // منوی پریستِ چیدمانِ چند-چارت (layoutPresets)
   const [showShortcuts, setShowShortcuts] = useState(false); // دیالوگِ راهنمای میان‌بُرها
-  const [mobileSheet, setMobileSheet] = useState(false); // بات‌اِم‌شیتِ ابزار/تب در موبایل
+  const [symModal, setSymModal] = useState(false); // #7 مدالِ جستجوی نماد
+  const [sheet, setSheet] = useState('none'); // #4 شیتِ موبایلِ فعال: none|tf|sym|type|draw|ind|tabs
+  const [legCollapsed, setLegCollapsed] = useState(() => !!loadWS().legCollapsed); // #3 جمع‌بودنِ Legend
+  const [legView, setLegView] = useState(() => loadWS().legView || 'normal'); // #3 normal|compact
+  const [indVals, setIndVals] = useState({}); // #3 مقدارِ زندهٔ اندیکاتورها برای Legend
   const [scaleMode, setScaleMode] = useState(loadWS().scaleMode ?? CH3_DEFAULTS.scaleMode); // 0 عادی / 1 لاگ / 2 درصد / 3 پایه۱۰۰
   const [scaleLocked, setScaleLocked] = useState(loadWS().scaleLocked ?? false); // قفلِ بازهٔ مقیاس
   const [scaleInvert, setScaleInvert] = useState(loadWS().scaleInvert ?? false); // وارونگیِ محور
   const [crosshairId, setCrosshairId] = useState(loadWS().crosshairId ?? 'cross'); // حالتِ کراس‌هیر
   const [tz, setTz] = useState(loadWS().tz ?? CH3_DEFAULTS.tz); // منطقهٔ زمانیِ نمایش
   const [sessionsOn, setSessionsOn] = useState(loadWS().sessionsOn ?? false); // نمایشِ باندهای سشن
+  const [sessionSel, setSessionSel] = useState(() => loadWS().sessionSel || SESSIONS.map((s) => s.id)); // #1 سشن‌های انتخابی
+  const [sessMenu, setSessMenu] = useState(false); // #1 منوی انتخابِ سشن‌ها
   const crosshairGlyphRef = useRef('none'); // برای رسمِ glyph در هندلرِ کراس‌هیر
   const sessionsRef = useRef(null); // باندهای سشنِ محاسبه‌شدهٔ جاری برای رسم روی overlay
   const [drawColor, setDrawColor] = useState('#3b82f6');
@@ -254,6 +277,7 @@ export default function BazaarNama() {
   const [dataWin, setDataWin] = useState(null);        // {ohlc, vol, time, inds:[{label,vals,color}]}
   const [ctxMenu, setCtxMenu] = useState(null);        // منوی راست‌کلیکِ چارت {x,y,price}
   const indLabelRef = useRef({});                       // id → {label,color} برای Data Window
+  const lastIndValRef = useRef({});                     // id → [last values] برای Legend بیرون از کراس‌هیر
   const showDataWinRef = useRef(loadWS().showDataWin ?? false); // گیتِ محاسبهٔ Data Window در هندلرِ کراس‌هیر
   const [drawVer, setDrawVer] = useState(0);           // نسخه برای رفرشِ دکمه‌های undo/redo
   const treeRefresh = useCallback(() => { const dl = drawRef.current; setDrawList(dl ? dl.getDrawings().slice() : []); setDrawVer((v) => v + 1); }, []);
@@ -315,19 +339,20 @@ export default function BazaarNama() {
       const ctx = overlayRef.current && overlayRef.current.getContext('2d');
       if (ctx && sessionsRef.current) paintSessions(ctx, chart, sessionsRef.current, overlayRef.current.height);
       if (ctx && p && p.point) paintCrosshairGlyph(ctx, crosshairGlyphRef.current, p.point.x, p.point.y, TH);
-      if (!p || !p.time || !priceSeriesRef.current) { setLegend(null); if (showDataWinRef.current) setDataWin(null); return; }
+      if (!p || !p.time || !priceSeriesRef.current) { setLegend(null); setIndVals({}); if (showDataWinRef.current) setDataWin(null); return; }
       const d = p.seriesData.get(priceSeriesRef.current);
       if (d) setLegend(d.close != null ? d : { close: d.value });
-      if (showDataWinRef.current) {
-        const inds = [];
-        const collect = (store) => Object.entries(store).forEach(([id, arr]) => {
-          const meta = indLabelRef.current[id]; if (!meta || !arr || !arr.length) return;
-          const vals = arr.map((s) => { const sd = p.seriesData.get(s); return sd == null ? null : (sd.value != null ? sd.value : sd.close); }).filter((v) => v != null);
-          if (vals.length) inds.push({ label: meta.label, color: meta.color, vals });
-        });
-        collect(overlaySeries.current); collect(subChartsRef.current);
-        setDataWin({ time: p.time, ohlc: d && d.close != null ? d : null, inds });
-      }
+      // مقدارِ زندهٔ هر اندیکاتور زیرِ کراس‌هیر — هم برای Legend (#3) هم Data Window
+      const inds = [];
+      const lv = {};
+      const collect = (store) => Object.entries(store).forEach(([id, arr]) => {
+        const meta = indLabelRef.current[id]; if (!meta || !arr || !arr.length) return;
+        const vals = arr.map((s) => { const sd = p.seriesData.get(s); return sd == null ? null : (sd.value != null ? sd.value : sd.close); }).filter((v) => v != null);
+        if (vals.length) { inds.push({ label: meta.label, color: meta.color, vals }); lv[id] = vals.map((v) => fmtPrice(symbolRef.current, v)).join(' / '); }
+      });
+      collect(overlaySeries.current); collect(subChartsRef.current);
+      setIndVals(lv);
+      if (showDataWinRef.current) setDataWin({ time: p.time, ohlc: d && d.close != null ? d : null, inds });
     });
     return () => { ro.disconnect(); dl.destroy(); chart.remove(); chartRef.current = null; };
     // eslint-disable-next-line
@@ -434,6 +459,8 @@ export default function BazaarNama() {
       else mk(r.line, lc[0] || ov.color || def.color);
       overlaySeries.current[ov.id] = arr;
       indLabelRef.current[ov.id] = { label: def.label, color: lc[0] || ov.color || def.color };
+      // آخرین مقدار برای نمایش در Legend وقتی کراس‌هیر فعال نیست
+      try { const ld = r.lines ? r.lines.map((ln) => ln.data) : (r.multi ? [r.upper, r.basis, r.lower] : [r.line]); lastIndValRef.current[ov.id] = ld.map((a) => a && a.length ? a[a.length - 1] : null).filter((v) => v != null && Number.isFinite(v)); } catch (e) { /* */ }
     });
     try { chart.applyOptions({ leftPriceScale: { visible: anyLeft, borderColor: TH.grid } }); } catch (e) {}
   }, [overlays, TH]);
@@ -469,6 +496,7 @@ export default function BazaarNama() {
       try { const panes = chart.panes(); if (panes && panes[pane]) panes[pane].setHeight(108); } catch (e) {}
       subChartsRef.current[sub.id] = arr;
       indLabelRef.current[sub.id] = { label: def.label, color: sub.color || def.color };
+      try { const last = r.line && r.line.length ? r.line[r.line.length - 1] : null; lastIndValRef.current[sub.id] = (last != null && Number.isFinite(last)) ? [last] : []; } catch (e) { /* */ }
     });
   }, [subs, TH]);
 
@@ -546,6 +574,11 @@ export default function BazaarNama() {
   useEffect(() => { load(); }, [load]);
   // نگه‌داشتنِ خودکارِ میزِکار (نماد/تایم‌فریم/نوعِ چارت/تم/اندیکاتورها) — رفرش/خروج پاکش نمی‌کند
   useEffect(() => { saveWS({ symbol, tf, chartType, theme, overlays, subs }); }, [symbol, tf, chartType, theme, overlays, subs]);
+  useEffect(() => { symbolRef.current = symbol; }, [symbol]);
+  // #3 ماندگاریِ ترجیحاتِ Legend (جمع‌بودن/حالتِ نمایش)
+  useEffect(() => { saveWS({ legCollapsed, legView }); }, [legCollapsed, legView]);
+  // #4 روی موبایل grid اجباری ۱ (RAM/پینت) — بدونِ رگرسیونِ دسکتاپ
+  useEffect(() => { if (bp.isMobile && grid !== 1) setGrid(1); /* eslint-disable-next-line */ }, [bp.isMobile]);
   // باگ۳: نگه‌داشتنِ سیگنالِ AI و سفارشِ ترید تا با رفرش/بازگشت پاک نشوند
   useEffect(() => { saveWS({ aiSig }); }, [aiSig]);
   useEffect(() => { saveWS({ order }); }, [order]);
@@ -594,11 +627,11 @@ export default function BazaarNama() {
       const cs = candlesRef.current;
       const from = cs.length ? cs[0].t : Math.floor(Date.now() / 1000) - 86400;
       const to = (cs.length ? cs[cs.length - 1].t : Math.floor(Date.now() / 1000)) + 86400;
-      sessionsRef.current = sessionBands(from, to, tz, { overlap: true });
+      sessionsRef.current = sessionBands(from, to, tz, { overlap: true, sessions: sessionSel });
       drawRef.current && drawRef.current.render();
     } catch (e) { /* */ }
-    saveWS({ sessionsOn });
-  }, [sessionsOn, tz, tf, symbol]);
+    saveWS({ sessionsOn, sessionSel });
+  }, [sessionsOn, tz, tf, symbol, sessionSel]);
   // منطقهٔ زمانی (فصل ۳): قالب‌بندیِ محورِ زمان و برچسبِ کراس‌هیر
   useEffect(() => { const ch = chartRef.current; if (!ch) return; try { ch.applyOptions(timeZoneOptions(tz)); } catch (e) {} saveWS({ tz }); }, [tz]);
   useEffect(() => { if (drawRef.current) drawRef.current.setStayInMode(stayDraw); }, [stayDraw]);
@@ -1052,6 +1085,32 @@ export default function BazaarNama() {
     try { await api.paperOpen({ symbol, direction: dir, entry: px, sl: dir === 'buy' ? px * 0.995 : px * 1.005, tp: dir === 'buy' ? px * 1.01 : px * 0.99, risk_pct: 1 }); window.alert('سفارشِ تمرینی ثبت شد ✓'); } catch (e) { window.alert('خطا در ثبتِ سفارش'); }
   };
 
+  // #5 سازندهٔ ورودیِ ScreenshotMenu — chart/overlay + واترمارک/caption با توکن‌های تم
+  const getCapture = useCallback(() => ({
+    chart: chartRef.current,
+    overlay: overlayRef.current,
+    bg: TH.bg,
+    name: `${symbol}_${tf}`,
+    watermark: { enabled: true, src: bnLogo, position: 'bottom-left', opacity: 0.5, size: 40, invert: theme === 'light' },
+    caption: { symbol, tf, price: livePrice != null ? fmtPrice(symbol, livePrice) : '', bg: TH.bg, text: TH.textStrong, sub: TH.text, subText: 'bazaarnama' },
+  }), [symbol, tf, theme, livePrice, TH]);
+
+  // #5 آپلودِ snapshot برای «کپیِ لینک» — اگر بک‌اند endpoint داشته باشد استفاده می‌شود؛ وگرنه null
+  const uploadSnapshot = useCallback(async (blob) => {
+    if (!api.bnSnapshotUpload) return null;
+    try { return await api.bnSnapshotUpload(blob); } catch (e) { return null; }
+  }, []);
+
+  // #5 میان‌بُرِ S: کپیِ سریعِ عکس به کلیپ‌بورد (با واترمارک)
+  const quickScreenshot = useCallback(async () => {
+    const cap = getCapture(); if (!cap.chart) return;
+    const cv = await captureChart({ ...cap, scale: 1, format: 'png' });
+    if (!cv) return;
+    const blob = await canvasToBlob(cv, 'png');
+    const ok = await copyBlobToClipboard(blob);
+    if (!ok && blob) downloadBlob(blob, `${cap.name}.png`);
+  }, [getCapture]);
+
   // ── لایهٔ میان‌بُرهای صفحه‌کلید (فصل ۱۰) — فقط هندلرهایی که از قبل وجود دارند نگاشت می‌شوند ──
   useEffect(() => {
     const detach = attachHotkeys({
@@ -1087,6 +1146,7 @@ export default function BazaarNama() {
       toggleTheme: () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')),
       indicators: () => setIndMenu(true),
       help: () => setShowShortcuts((v) => !v),
+      screenshot: () => quickScreenshot(),
       // چیدمان
       saveLayout: () => saveLayout(),
       cycleGrid: () => setGrid((g) => (g === 1 ? 2 : g === 2 ? 4 : 1)),
@@ -1097,7 +1157,7 @@ export default function BazaarNama() {
     }, { target: window });
     return detach;
     // eslint-disable-next-line
-  }, [selDraw, replay.on, treeRefresh, replayStep]);
+  }, [selDraw, replay.on, treeRefresh, replayStep, quickScreenshot]);
 
   // جمع‌کردنِ پنلِ کناری هنگامِ ورود به نمایِ موبایل (فصل ۱۱) — افزایشی و کم‌ریسک
   useEffect(() => { if (bp.isMobile && showRight) setShowRight(false); /* eslint-disable-next-line */ }, [bp.isMobile]);
@@ -1110,35 +1170,76 @@ export default function BazaarNama() {
     return () => window.removeEventListener('keydown', onKey);
   }, [showShortcuts, editInd]);
 
+  // #7 میان‌بُرِ سراسری: Ctrl/⌘+K یا "/" → مدالِ جستجوی نماد (مثلِ TradingView)
+  useEffect(() => {
+    const onKey = (e) => {
+      const tag = (e.target.tagName || '').toLowerCase();
+      const typing = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
+      if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !typing)) {
+        e.preventDefault(); setSymModal(true);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   // §۱۶ منوها: بستن با کلیکِ بیرون یا Escape (رفتارِ استانداردِ Dropdown)
   useEffect(() => {
-    if (!ctMenu && !indMenu && !gridMenu && !search) return undefined;
-    const closeAll = () => { setCtMenu(false); setIndMenu(false); setGridMenu(false); setSearch(''); };
+    if (!ctMenu && !indMenu && !gridMenu && !search && !sessMenu) return undefined;
+    const closeAll = () => { setCtMenu(false); setIndMenu(false); setGridMenu(false); setSearch(''); setSessMenu(false); };
     const onDown = (e) => { if (!e.target.closest('[data-menu]')) closeAll(); };
     const onEsc = (e) => { if (e.key === 'Escape') closeAll(); };
     document.addEventListener('mousedown', onDown);
     window.addEventListener('keydown', onEsc);
     return () => { document.removeEventListener('mousedown', onDown); window.removeEventListener('keydown', onEsc); };
-  }, [ctMenu, indMenu, gridMenu, search]);
+  }, [ctMenu, indMenu, gridMenu, search, sessMenu]);
 
   const filteredSymbols = symbols.filter((s) => s.toLowerCase().includes(search.toLowerCase()));
   const txt = theme === 'dark' ? 'text-gray-200' : 'text-gray-800';
 
+  // #7 متادیتای نمادها (دسته‌بندی/توضیحِ فارسی) — یک‌بار با تغییرِ symbols ساخته می‌شود
+  const symbolMeta = useMemo(() => buildMeta(symbols), [symbols]);
+
+  // #3 آیتم‌های Legend (overlays + subs) + مقادیرِ زنده (کراس‌هیر، وگرنه آخرین کندل)
+  const legendItems = useMemo(() => ([
+    ...overlays.map((o) => ({ id: o.id, key: o.key, scope: 'main', label: REGISTRY[o.key] ? REGISTRY[o.key].label : o.key, color: (o.lineColors && o.lineColors[0]) || o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
+    ...subs.map((o) => ({ id: o.id, key: o.key, scope: 'sub', label: REGISTRY[o.key] ? REGISTRY[o.key].label : o.key, color: o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
+  ]), [overlays, subs]);
+  const legendVals = useMemo(() => {
+    const out = {};
+    legendItems.forEach((it) => {
+      if (indVals[it.id] != null) { out[it.id] = indVals[it.id]; return; }
+      const lv = lastIndValRef.current[it.id];
+      if (lv && lv.length) out[it.id] = lv.map((v) => fmtPrice(symbol, v)).join(' / ');
+    });
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [legendItems, indVals, symbol, overlays, subs]);
+  // #3 کنترل‌های Legend
+  const toggleIndVisible = (it) => updInd(it.scope, it.id, { visible: it.visible === false });
+  const duplicateInd = (it) => { const arr = it.scope === 'main' ? overlays : subs; const src = arr.find((x) => x.id === it.id); if (!src) return; const copy = { ...src, id: uid(), inputs: { ...src.inputs } }; if (it.scope === 'main') setOverlays((o) => [...o, copy]); else setSubs((s) => [...s, copy]); };
+  const indHasHelp = (it) => !!getHelp(it.key);
+
   return (
     <div ref={rootRef} dir="rtl" className={`flex flex-col h-screen overflow-hidden ${txt}`} style={{ background: TH.bg }}>
       <style>{`.bn-thin-scroll{scrollbar-width:thin}.bn-thin-scroll::-webkit-scrollbar{height:4px;width:4px}.bn-thin-scroll::-webkit-scrollbar-thumb{background:${TH.border};border-radius:4px}.bn-thin-scroll::-webkit-scrollbar-track{background:transparent}`}</style>
-      {/* نوارِ بالا */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 border-b flex-wrap relative" style={{ borderColor: TH.border }}>
-        <div data-menu className="flex items-center gap-1 rounded-lg px-2 py-1" style={{ background: TH.chipBg }}>
-          <Search size={14} className="opacity-60" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={symbol} className="bg-transparent text-sm w-24 outline-none tabular-nums" dir="ltr" />
-        </div>
-        {search && (
-          <div data-menu className="absolute z-40 top-12 right-3 border rounded-lg max-h-64 overflow-auto w-44" style={{ background: TH.panel, borderColor: TH.border }}>
-            {filteredSymbols.slice(0, 30).map((s) => (<button key={s} onClick={() => { setSymbol(s); setSearch(''); }} className="block w-full text-right px-3 py-1.5 text-sm hover:bg-black/5" dir="ltr">{s}</button>))}
-          </div>
-        )}
-        <span className="text-sm font-bold px-1">{symbol}</span>
+      {/* #4 نوارِ بالای فشردهٔ موبایل (زیرِ ۷۶۸px) */}
+      {bp.isMobile && (
+        <CompactTopBar
+          TH={TH} symbol={symbol} livePrice={livePrice} fmtPrice={fmtPrice} marketOpen={marketOpen}
+          tf={tf} chartType={chartType} chartLabel={CHART_TYPES.find((c) => c.id === chartType)?.label}
+          SymbolLogo={SymbolLogo}
+          onSearch={() => setSymModal(true)} onPickTf={() => setSheet('tf')} onPickType={() => setSheet('type')} onMore={() => setSheet('more')}
+        />
+      )}
+      {/* نوارِ بالا (دسکتاپ/تبلت) */}
+      <div className="md:flex items-center gap-1.5 px-3 py-1.5 border-b flex-wrap relative hidden" style={{ borderColor: TH.border }}>
+        {/* #7 سویچرِ نماد — مدالِ جستجوی حرفه‌ای را باز می‌کند */}
+        <button onClick={() => setSymModal(true)} data-menu className="flex items-center gap-2 h-9 px-3 rounded-lg transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)} title="جستجوی نماد (Ctrl+K یا /)">
+          <SymbolLogo symbol={symbol} size={20} />
+          <span className="font-bold text-sm" dir="ltr" style={{ color: TH.textStrong }}>{symbol}</span>
+          <Search size={14} className="opacity-50" />
+        </button>
         {marketOpen ? (
           <span className="flex items-center gap-1 text-[11px] text-green-400">
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
@@ -1149,11 +1250,11 @@ export default function BazaarNama() {
         )}
         <div className="flex items-center gap-0.5 rounded-lg p-0.5" style={{ background: TH.subtle }}>{TFS.map((t) => { const on = tf === t; return (<button key={t} onClick={() => setTf(t)} title={TF_TITLE[t] || t} className="px-2 h-7 rounded-md text-[12px] font-semibold tabular-nums transition-colors duration-[120ms]" dir="ltr" style={on ? { background: TH.accent, color: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,.25)' } : { background: 'transparent', color: TH.text }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>{TF_LABEL[t] || t}</button>); })}</div>
         <div data-menu className="relative">
-          <button onClick={() => setCtMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><CandlestickChart size={14} /> {CHART_TYPES.find((c) => c.id === chartType)?.label}<ChevronDown size={12} /></button>
+          <button onClick={() => setCtMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><CandlestickChart size={17} /> {CHART_TYPES.find((c) => c.id === chartType)?.label}<ChevronDown size={13} /></button>
           {ctMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-32" style={{ background: TH.panel, borderColor: TH.border }}>{CHART_TYPES.map((ct) => (<button key={ct.id} onClick={() => { setChartType(ct.id); setCtMenu(false); }} className="block w-full text-right px-3 py-1.5 text-sm hover:bg-black/5" style={chartType === ct.id ? { color: TH.accent } : {}}>{ct.label}</button>))}</div>)}
         </div>
         <div data-menu className="relative">
-          <button onClick={() => setIndMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Activity size={14} /> اندیکاتورها</button>
+          <button onClick={() => setIndMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Activity size={17} /> اندیکاتورها</button>
           {indMenu && (
             <div className="absolute z-40 mt-1 rounded-lg w-56 max-h-80 overflow-auto p-1 pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}` }}>
               {indFavs.filter((k) => REGISTRY[k]).length > 0 && (
@@ -1187,11 +1288,11 @@ export default function BazaarNama() {
             </div>
           )}
         </div>
-        <button onClick={openNamaScript} title={bnPrem ? 'نمااسکریپت' : 'ویژهٔ پرمیوم'} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={editorOpen ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBg; }}><Code2 size={14} /> نمااسکریپت{!bnPrem && <Lock size={11} className="opacity-70" />}</button>
-        <button onClick={() => (replay.on ? exitReplay() : enterReplay())} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={replay.on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBg; }}><Play size={14} /> بازپخش</button>
-        <button onClick={getAiSignal} disabled={aiBusy} className="flex items-center gap-1 px-2.5 py-1 rounded-md text-sm text-white disabled:opacity-60 transition-opacity duration-[120ms]" style={{ background: TH.accentAi }} title="ستاپِ کاملِ AI در همین نماد/تایم‌فریم"><Sparkles size={14} className={aiBusy ? 'animate-pulse' : ''} /> سیگنالِ AI {aiQuota && <span className="tabular-nums" dir="ltr">{`(${aiQuota.remaining}/${aiQuota.limit})`}</span>}</button>
+        <button onClick={openNamaScript} title={bnPrem ? 'نمااسکریپت' : 'ویژهٔ پرمیوم'} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={editorOpen ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBg; }}><Code2 size={17} /> نمااسکریپت{!bnPrem && <Lock size={12} className="opacity-70" />}</button>
+        <button onClick={() => (replay.on ? exitReplay() : enterReplay())} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={replay.on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBg; }}><Play size={17} /> بازپخش</button>
+        <button onClick={getAiSignal} disabled={aiBusy} className="flex items-center gap-1 px-2.5 py-1 rounded-md text-sm text-white disabled:opacity-60 transition-opacity duration-[120ms]" style={{ background: TH.accentAi }} title="ستاپِ کاملِ AI در همین نماد/تایم‌فریم"><Sparkles size={17} className={aiBusy ? 'animate-pulse' : ''} /> سیگنالِ AI {aiQuota && <span className="tabular-nums" dir="ltr">{`(${aiQuota.remaining}/${aiQuota.limit})`}</span>}</button>
         <div data-menu className="relative">
-          <button onClick={() => setGridMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={grid > 1 ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBg; }} title="چند-چارت — انتخابِ چیدمان"><LayoutGrid size={14} /> {grid}× <ChevronDown size={12} /></button>
+          <button onClick={() => setGridMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={grid > 1 ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBg; }} title="چند-چارت — انتخابِ چیدمان"><LayoutGrid size={17} /> {grid}× <ChevronDown size={13} /></button>
           {gridMenu && (
             <div className="absolute z-40 mt-1 border rounded-lg w-40 p-1" style={{ background: TH.popoverBg, borderColor: TH.border }}>
               {GRID_PRESET_ORDER.map((pid) => { const L = getGridLayout(pid); const active = legacyGridToPreset(grid) === pid; return (
@@ -1206,77 +1307,100 @@ export default function BazaarNama() {
         <select value={scaleMode} onChange={(e) => setScaleMode(Number(e.target.value))} title="نوعِ مقیاس" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
           {PRICE_SCALE_MODES.map((m) => (<option key={m.value} value={m.value}>{m.label}</option>))}
         </select>
-        <button onClick={() => setScaleLocked((v) => !v)} title="قفلِ مقیاس (خاموش‌کردنِ خودکار)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={scaleLocked ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBg; }}>{scaleLocked ? <Lock size={14} /> : <Unlock size={14} />}</button>
+        <button onClick={() => setScaleLocked((v) => !v)} title="قفلِ مقیاس (خاموش‌کردنِ خودکار)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={scaleLocked ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBg; }}>{scaleLocked ? <Lock size={17} /> : <Unlock size={17} />}</button>
         <button onClick={() => setScaleInvert((v) => !v)} title="وارونگیِ محورِ قیمت" aria-label="وارونگیِ محورِ قیمت" className="px-1.5 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={scaleInvert ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBg; }}>⇅</button>
         <button onClick={() => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); setScaleLocked(false); setScaleInvert(false); } catch (e) {} }} title="بازنشانیِ مقیاس" aria-label="بازنشانیِ مقیاس" className="px-1.5 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>⤢</button>
         <select value={crosshairId} onChange={(e) => setCrosshairId(e.target.value)} title="حالتِ کراس‌هیر" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
           {CROSSHAIR_MODES.map((m) => (<option key={m.id} value={m.id}>{m.label}</option>))}
         </select>
-        <button onClick={() => setSessionsOn((v) => !v)} title={`سشن‌ها: ${SESSIONS.map((s) => s.label).join('/')}`} className="px-1.5 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={sessionsOn ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!sessionsOn) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!sessionsOn) e.currentTarget.style.background = TH.chipBg; }}>سشن‌ها</button>
+        {/* #1 سشن‌های فارکس: یک کنترلِ واحد — کلیکِ متن=روشن/خاموش، فلش=انتخابِ سشن‌ها */}
+        <div data-menu className="relative flex items-center rounded-md overflow-hidden" style={sessionsOn ? { background: TH.accent } : { background: TH.chipBg }}>
+          <button onClick={() => setSessionsOn((v) => !v)} title="نمایش/پنهان‌کردنِ باندهای سشنِ فارکس" className="px-2 py-1 text-xs transition-colors duration-[120ms]" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}>سشن‌ها</button>
+          <button onClick={() => { setSessMenu((v) => !v); if (!sessionsOn) setSessionsOn(true); }} title="انتخابِ سشن‌ها" className="px-1 py-1" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}><ChevronDown size={12} /></button>
+          {sessMenu && (
+            <div className="absolute z-40 top-full mt-1 right-0 rounded-lg w-44 p-1" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+              {SESSIONS.map((s) => { const on = sessionSel.includes(s.id); return (
+                <button key={s.id} onClick={() => setSessionSel((sel) => sel.includes(s.id) ? sel.filter((x) => x !== s.id) : [...sel, s.id])} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                  <span className="w-3.5 h-3.5 rounded-sm flex items-center justify-center shrink-0" style={{ background: on ? TH.accent : 'transparent', border: `1px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="text-[9px] text-white leading-none">✓</span>}</span>
+                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.edge }} />
+                  <span className="flex-1">{s.label}</span>
+                </button>
+              ); })}
+              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
+              <div className="flex gap-1 px-1">
+                <button onClick={() => setSessionSel(SESSIONS.map((s) => s.id))} className="flex-1 text-[11px] py-1 rounded" style={{ background: TH.chipBg, color: TH.text }}>همه</button>
+                <button onClick={() => setSessionSel([])} className="flex-1 text-[11px] py-1 rounded" style={{ background: TH.chipBg, color: TH.text }}>هیچ</button>
+              </div>
+            </div>
+          )}
+        </div>
         <select value={tz} onChange={(e) => setTz(e.target.value)} title="منطقهٔ زمانی" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
           {TIMEZONES.map((z) => (<option key={z.id} value={z.id}>{z.label}</option>))}
         </select>
-        <button onClick={() => { try { if (document.fullscreenElement) document.exitFullscreen(); else rootRef.current && rootRef.current.requestFullscreen(); } catch (e) {} }} title="تمام‌صفحه" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Maximize2 size={15} /></button>
-        <button onClick={() => { try { const cv = chartRef.current && chartRef.current.takeScreenshot(); if (!cv) return; const ov = overlayRef.current; if (ov) { try { cv.getContext('2d').drawImage(ov, 0, 0); } catch (e) {} } cv.toBlob((blob) => { if (!blob) return; const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${symbol}_${tf}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }); } catch (e) {} }} title="عکسِ چارت (PNG)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Camera size={15} /></button>
+        <button onClick={() => { try { if (document.fullscreenElement) document.exitFullscreen(); else rootRef.current && rootRef.current.requestFullscreen(); } catch (e) {} }} title="تمام‌صفحه" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Maximize2 size={18} /></button>
+        <ScreenshotMenu TH={TH} getCapture={getCapture} uploadSnapshot={uploadSnapshot} iconSize={18} coarse={bp.coarse} />
         <button onClick={() => setShowShortcuts(true)} title="راهنمای میان‌بُرهای صفحه‌کلید (؟)" aria-label="راهنمای میان‌بُرهای صفحه‌کلید" className="p-1.5 rounded-md text-[13px] leading-none transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>⌨</button>
         {getHelp(tool) && tool !== 'cursor' && (
           <button onClick={() => setHelpId(tool)} title="راهنمای ابزارِ فعال" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg, color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><HelpCircle size={16} /></button>
         )}
-        {bp.name === 'sm' && (
-          <button onClick={() => setMobileSheet(true)} title="ابزارها و تب‌ها" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><List size={15} /></button>
-        )}
         <div className="flex-1" />
-        <button onClick={saveLayout} className="p-1.5 rounded-md transition-colors duration-[120ms]" title="ذخیرهٔ چیدمانِ فعلی (نماد + تایم‌فریم + اندیکاتورها + ترسیم‌ها)" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Save size={15} /></button>
+        <button onClick={saveLayout} className="p-1.5 rounded-md transition-colors duration-[120ms]" title="ذخیرهٔ چیدمانِ فعلی (نماد + تایم‌فریم + اندیکاتورها + ترسیم‌ها)" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Save size={18} /></button>
         <div className="relative">
           <select onChange={(e) => e.target.value && loadLayout(e.target.value)} title="بارگذاریِ یک چیدمانِ ذخیره‌شده (نماد/تایم‌فریم/اندیکاتور/ترسیم را یک‌جا برمی‌گرداند)" className="text-xs rounded px-2 py-1 outline-none" style={{ background: TH.chipBg, color: TH.text }}>
             <option value="">📁 چیدمان‌های ذخیره‌شده…</option>{layouts.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
           </select>
         </div>
-        <button onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))} className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}</button>
-        <button onClick={() => setShowRight((v) => !v)} title="نمایش/پنهان‌کردنِ نوارِ کناری (واچ‌لیست، سیگنال AI، اسکنر، ترید، آلارم)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={showRight ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBg; }}><Star size={15} /></button>
+        <button onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))} className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}</button>
+        <button onClick={() => setShowRight((v) => !v)} title="نمایش/پنهان‌کردنِ نوارِ کناری (واچ‌لیست، سیگنال AI، اسکنر، ترید، آلارم)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={showRight ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBg; }}><Star size={18} /></button>
         <AuthMenu theme={theme} />
       </div>
 
-      {/* اندیکاتورهای فعال — هرکدام: چرخ‌دنده=تنظیمات، ✕=حذف */}
-      {(overlays.length > 0 || subs.length > 0) && (
-        <div className="flex items-center gap-1.5 px-3 py-1 border-b flex-wrap text-xs" style={{ borderColor: TH.border }}>
-          <span className="opacity-50 flex items-center gap-1"><Activity size={12} /> اندیکاتورها:</span>
-          {[...overlays.map((o) => ({ ...o, scope: 'main' })), ...subs.map((o) => ({ ...o, scope: 'sub' }))].map((o) => (
-            <span key={o.id} className="flex items-center gap-1 rounded px-2 py-0.5 border border-white/5" style={{ background: TH.chipBg }}>
-              <span className="font-semibold">{REGISTRY[o.key].label}</span>
-              <button title="تنظیمات" onClick={() => setEditInd({ scope: o.scope, id: o.id })}><Settings2 size={12} className="opacity-50 hover:opacity-100" /></button>
-              <button title="حذفِ اندیکاتور" onClick={() => rmInd(o.scope, o.id)}><X size={13} className="opacity-60 hover:text-red-400" /></button>
-            </span>
-          ))}
-          <button onClick={() => { setOverlays([]); setSubs([]); }} className="flex items-center gap-1 text-red-400/80 hover:text-red-400 mr-1"><Trash2 size={12} /> پاکِ همه</button>
-        </div>
-      )}
+      {/* #3 نوارِ افقیِ اندیکاتورها حذف شد؛ جایش ChartLegendِ شناورِ روی چارت (پایین‌تر) آمد. */}
 
       <div dir="ltr" className="flex flex-1 min-h-0">
-        {/* نوارِ ابزارِ ترسیم (سمتِ چپ مثلِ TradingView) */}
-        <div className="w-10 border-r flex flex-col items-center py-2 gap-1 shrink-0" style={{ borderColor: TH.border }}>
+        {/* نوارِ ابزارِ ترسیم (سمتِ چپ مثلِ TradingView) — روی موبایل پنهان (#4)، به Drawing-sheet می‌رود */}
+        <div className="w-12 border-r flex-col items-center py-2 gap-1 shrink-0 hidden md:flex" style={{ borderColor: TH.border }}>
           <div className="flex-1 min-h-0 w-full">
             <ToolRail tool={tool} setTool={setTool} TH={TH} onHelp={setHelpId} />
           </div>
           <div className="h-px w-6 my-1" style={{ background: TH.border }} />
           <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>
-          <Tip label="مگنت — چسبیدنِ ترسیم به قیمتِ کندل"><button onClick={() => setMagnet((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${magnet ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={magnet ? { background: TH.accent } : {}}><Magnet size={16} /></button></Tip>
-          <Tip label="پروفایلِ حجم (توزیعِ قیمت)"><button onClick={() => setShowVP((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showVP ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showVP ? { background: TH.accent } : {}}><BarChart3 size={16} /></button></Tip>
+          <Tip label="مگنت — چسبیدنِ ترسیم به قیمتِ کندل"><button onClick={() => setMagnet((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${magnet ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={magnet ? { background: TH.accent } : {}}><Magnet size={20} /></button></Tip>
+          <Tip label="پروفایلِ حجم (توزیعِ قیمت)"><button onClick={() => setShowVP((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showVP ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showVP ? { background: TH.accent } : {}}><BarChart3 size={20} /></button></Tip>
           <div className="h-px w-6 my-1" style={{ background: TH.border }} />
-          <Tip label="واگرد (Ctrl+Z)"><button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} className="p-1.5 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Undo2 size={16} /></button></Tip>
-          <Tip label="ازنو (Ctrl+Y)"><button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} className="p-1.5 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Redo2 size={16} /></button></Tip>
-          <Tip label="ماندن در حالتِ ترسیم (پشتِ‌سرهم بکش)"><button onClick={() => setStayDraw((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${stayDraw ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={stayDraw ? { background: TH.accent } : {}}><Pencil size={16} /></button></Tip>
-          <Tip label="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)"><button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showTree ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showTree ? { background: TH.accent } : {}}><List size={16} /></button></Tip>
-          <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={16} /></button></Tip>
+          <Tip label="واگرد (Ctrl+Z)"><button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} className="p-1.5 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Undo2 size={20} /></button></Tip>
+          <Tip label="ازنو (Ctrl+Y)"><button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} className="p-1.5 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Redo2 size={20} /></button></Tip>
+          <Tip label="ماندن در حالتِ ترسیم (پشتِ‌سرهم بکش)"><button onClick={() => setStayDraw((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${stayDraw ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={stayDraw ? { background: TH.accent } : {}}><Pencil size={20} /></button></Tip>
+          <Tip label="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)"><button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showTree ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showTree ? { background: TH.accent } : {}}><List size={20} /></button></Tip>
+          <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={20} /></button></Tip>
           <div className="h-px w-6 my-1" style={{ background: TH.border }} />
-          <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1.5 rounded opacity-60 hover:opacity-100"><Minus size={16} /></button></Tip>
-          <Tip label="پاکِ همهٔ ترسیم‌ها"><button onClick={() => drawRef.current && drawRef.current.clearAll()} className="p-1.5 rounded opacity-60 hover:text-red-400"><Trash2 size={16} /></button></Tip>
+          <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1.5 rounded opacity-60 hover:opacity-100"><Minus size={20} /></button></Tip>
+          <Tip label="پاکِ همهٔ ترسیم‌ها"><button onClick={() => drawRef.current && drawRef.current.clearAll()} className="p-1.5 rounded opacity-60 hover:text-red-400"><Trash2 size={20} /></button></Tip>
         </div>
 
         {/* چارت */}
-        <div className="flex-1 flex flex-col min-w-0 relative">
-          <Legend legend={legend} TH={TH} symbol={symbol} tf={tf} />
+        <div className="flex-1 flex flex-col min-w-0 relative" style={bp.isMobile ? { paddingBottom: 'calc(56px + env(safe-area-inset-bottom))' } : undefined}>
+          {/* #3 Legendِ یکپارچهٔ روی چارت: نماد + اندیکاتورها با کنترل‌های on-hover */}
+          {legendItems.length > 0 ? (
+            <div dir="rtl">
+              <ChartLegend
+                items={legendItems} legend={legend} TH={TH} symbol={symbol} tf={tf}
+                indVals={legendVals} coarse={bp.coarse}
+                collapsed={legCollapsed} onCollapse={setLegCollapsed}
+                viewMode={legView} onToggleViewMode={() => setLegView((v) => (v === 'compact' ? 'normal' : 'compact'))}
+                onToggleVisible={toggleIndVisible}
+                onSettings={(it) => setEditInd({ scope: it.scope, id: it.id })}
+                onRemove={(it) => rmInd(it.scope, it.id)}
+                onDuplicate={duplicateInd}
+                onHelp={(it) => setHelpId(it.key)} hasHelp={indHasHelp}
+                onClearAll={() => { setOverlays([]); setSubs([]); }}
+              />
+            </div>
+          ) : (
+            <Legend legend={legend} TH={TH} symbol={symbol} tf={tf} />
+          )}
           <div className="relative flex-1 min-h-0"
+               style={bp.isMobile ? { touchAction: 'none', overscrollBehavior: 'none' } : undefined}
                onContextMenu={(e) => {
                  e.preventDefault();
                  const rect = e.currentTarget.getBoundingClientRect();
@@ -1688,22 +1812,109 @@ export default function BazaarNama() {
       )}
 
       {/* بات‌اِم‌شیتِ موبایل (فقط زیرِ ۷۶۸px) — دسترسی به ابزارها/تب‌ها در صفحهٔ کوچک */}
-      {bp.name === 'sm' && (
-        <MobileToolSheet TH={TH} open={mobileSheet} onClose={() => setMobileSheet(false)} title="ابزارها و تب‌ها">
-          <div className="text-[11px] opacity-60 px-1">پنل‌ها</div>
-          <div className="grid grid-cols-2 gap-1.5">
-            {[['watch', 'واچ‌لیست'], ['ai', 'سیگنال AI'], ['screener', 'اسکنر'], ['details', 'جزئیات'], ['news', 'اخبار'], ['cal', 'تقویم'], ['trade', 'ترید'], ['alerts', 'آلارم']].map(([k, l]) => (
-              <button key={k} onClick={() => { setRightTab(k); setShowRight(true); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms]" style={{ minHeight: 44, color: rightTab === k ? '#fff' : TH.textStrong, background: rightTab === k ? TH.accent : TH.chipBg }}>{l}</button>
-            ))}
-          </div>
-          <div className="text-[11px] opacity-60 px-1 mt-2">نما</div>
-          <div className="grid grid-cols-2 gap-1.5">
-            <button onClick={() => { setShowRight((v) => !v); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms]" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>{showRight ? 'پنهان‌کردنِ پنل' : 'نمایشِ پنل'}</button>
-            <button onClick={() => { setIndMenu(true); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms]" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>اندیکاتورها</button>
-            <button onClick={() => { openNamaScript(); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms] flex items-center justify-center gap-1" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>نمااسکریپت{!bnPrem && <Lock size={11} className="opacity-70" />}</button>
-            <button onClick={() => { setShowShortcuts(true); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms]" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>میان‌بُرها</button>
-          </div>
-        </MobileToolSheet>
+      {/* #7 مدالِ جستجوی نمادِ حرفه‌ای (fuzzy + دسته‌بندی + اسکرولِ مجازی + کیبورد) */}
+      <SymbolSearchModal open={symModal} onClose={() => setSymModal(false)} metaList={symbolMeta} watch={watch} current={symbol} onPick={(s) => setSymbol(s)} TH={TH} coarse={bp.coarse} />
+
+      {/* #4 نسخهٔ موبایل: نوارِ ناوبریِ پایینی + شیت‌های پایین */}
+      {bp.isMobile && (
+        <>
+          <MobileBottomNav
+            TH={TH} active={sheet === 'none' ? null : sheet}
+            onPick={(k) => { if (k === 'sym') setSymModal(true); else setSheet((s) => (s === k ? 'none' : k)); }}
+            items={[
+              { key: 'sym', label: 'نماد', icon: <Search size={20} /> },
+              { key: 'tf', label: 'تایم‌فریم', icon: <span className="text-[13px] font-bold leading-none" dir="ltr">{tf}</span> },
+              { key: 'draw', label: 'ابزار', icon: <Pencil size={20} /> },
+              { key: 'ind', label: 'اندیکاتور', icon: <Activity size={20} /> },
+              { key: 'tabs', label: 'تب‌ها', icon: <Star size={20} /> },
+            ]}
+          />
+
+          {/* شیتِ تایم‌فریم */}
+          <MobileToolSheet TH={TH} open={sheet === 'tf'} onClose={() => setSheet('none')} title="تایم‌فریم" maxVh={45}>
+            <div className="grid grid-cols-4 gap-1.5" dir="ltr">
+              {TFS.map((t) => (
+                <button key={t} onClick={() => { setTf(t); setSheet('none'); }} className="rounded-lg text-sm font-bold tabular-nums transition-colors duration-[120ms]" style={{ minHeight: 48, color: tf === t ? '#fff' : TH.textStrong, background: tf === t ? TH.accent : TH.chipBg }}>{TF_LABEL[t] || t}</button>
+              ))}
+            </div>
+          </MobileToolSheet>
+
+          {/* شیتِ نوعِ چارت */}
+          <MobileToolSheet TH={TH} open={sheet === 'type'} onClose={() => setSheet('none')} title="نوعِ چارت" maxVh={55}>
+            <div className="grid grid-cols-2 gap-1.5">
+              {CHART_TYPES.map((ct) => { const I = ct.Icon || CandlestickChart; return (
+                <button key={ct.id} onClick={() => { setChartType(ct.id); setSheet('none'); }} className="rounded-lg px-3 text-sm text-right flex items-center gap-2 transition-colors duration-[120ms]" style={{ minHeight: 48, color: chartType === ct.id ? '#fff' : TH.textStrong, background: chartType === ct.id ? TH.accent : TH.chipBg }}><I size={18} /> {ct.label}</button>
+              ); })}
+            </div>
+          </MobileToolSheet>
+
+          {/* شیتِ ابزارِ ترسیم — ToolRail در حالتِ لمسی */}
+          <MobileToolSheet TH={TH} open={sheet === 'draw'} onClose={() => setSheet('none')} title="ابزارِ ترسیم" maxVh={70}>
+            <div className="min-h-[200px]"><ToolRail tool={tool} setTool={(id) => { setTool(id); setSheet('none'); }} TH={TH} onHelp={setHelpId} /></div>
+            <div className="grid grid-cols-4 gap-1.5 mt-2">
+              <button onClick={() => setMagnet((v) => !v)} className="rounded-lg flex flex-col items-center justify-center gap-0.5 text-[11px]" style={{ minHeight: 56, color: magnet ? '#fff' : TH.textStrong, background: magnet ? TH.accent : TH.chipBg }}><Magnet size={18} /> مگنت</button>
+              <button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} className="rounded-lg flex flex-col items-center justify-center gap-0.5 text-[11px]" style={{ minHeight: 56, color: TH.textStrong, background: TH.chipBg }}><Undo2 size={18} /> واگرد</button>
+              <button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} className="rounded-lg flex flex-col items-center justify-center gap-0.5 text-[11px]" style={{ minHeight: 56, color: TH.textStrong, background: TH.chipBg }}><Redo2 size={18} /> ازنو</button>
+              <button onClick={() => { drawRef.current && drawRef.current.clearAll(); treeRefresh(); }} className="rounded-lg flex flex-col items-center justify-center gap-0.5 text-[11px] text-red-400" style={{ minHeight: 56, background: TH.chipBg }}><Trash2 size={18} /> پاکِ همه</button>
+            </div>
+          </MobileToolSheet>
+
+          {/* شیتِ اندیکاتورها */}
+          <MobileToolSheet TH={TH} open={sheet === 'ind'} onClose={() => setSheet('none')} title="اندیکاتورها" maxVh={75}>
+            {legendItems.length > 0 && (
+              <>
+                <div className="text-[11px] opacity-60 px-1">فعال</div>
+                <div className="flex flex-col gap-1">
+                  {legendItems.map((it) => (
+                    <div key={it.id} className="flex items-center gap-2 rounded-lg px-3" style={{ minHeight: 44, background: TH.chipBg }}>
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: it.color }} />
+                      <span className="flex-1 text-sm" style={{ color: TH.textStrong, opacity: it.visible === false ? 0.45 : 1 }}>{it.label}</span>
+                      <button onClick={() => toggleIndVisible(it)} className="p-1" style={{ color: TH.text }}>{it.visible === false ? <EyeOff size={18} /> : <Eye size={18} />}</button>
+                      <button onClick={() => { setEditInd({ scope: it.scope, id: it.id }); setSheet('none'); }} className="p-1" style={{ color: TH.text }}><Settings2 size={18} /></button>
+                      <button onClick={() => rmInd(it.scope, it.id)} className="p-1 text-red-400"><X size={18} /></button>
+                    </div>
+                  ))}
+                </div>
+                <div className="my-1 border-t" style={{ borderColor: TH.border }} />
+              </>
+            )}
+            <div className="text-[11px] opacity-60 px-1">افزودن</div>
+            <div className="flex flex-col gap-1">
+              {Object.entries(REGISTRY).map(([k, d]) => (
+                <button key={k} onClick={() => addInd(k)} className="flex items-center gap-2 rounded-lg px-3 text-right text-sm" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Plus size={16} /> {d.label}</button>
+              ))}
+            </div>
+          </MobileToolSheet>
+
+          {/* شیتِ تب‌ها/بیشتر — پنلِ راست + کنترل‌های منتقل‌شده */}
+          <MobileToolSheet TH={TH} open={sheet === 'tabs'} onClose={() => setSheet('none')} title="پنل‌ها و ابزار" maxVh={85}>
+            <div className="text-[11px] opacity-60 px-1">پنل‌ها</div>
+            <div className="grid grid-cols-2 gap-1.5">
+              {[['watch', 'واچ‌لیست'], ['ai', 'سیگنال AI'], ['screener', 'اسکنر'], ['details', 'جزئیات'], ['news', 'اخبار'], ['cal', 'تقویم'], ['trade', 'ترید'], ['alerts', 'آلارم']].map(([k, l]) => (
+                <button key={k} onClick={() => { setRightTab(k); setShowRight(true); setSheet('none'); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms]" style={{ minHeight: 44, color: rightTab === k && showRight ? '#fff' : TH.textStrong, background: rightTab === k && showRight ? TH.accent : TH.chipBg }}>{l}</button>
+              ))}
+            </div>
+          </MobileToolSheet>
+
+          {/* شیتِ More (همبرگرِ تولبار): همهٔ کنترل‌های دسکتاپ */}
+          <MobileToolSheet TH={TH} open={sheet === 'more'} onClose={() => setSheet('none')} title="بیشتر" maxVh={78}>
+            <div className="grid grid-cols-2 gap-1.5">
+              <button onClick={() => { getAiSignal(); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: '#fff', background: TH.accentAi }}><Sparkles size={16} /> سیگنالِ AI</button>
+              <button onClick={() => { setIndMenu(true); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Activity size={16} /> اندیکاتورها</button>
+              <button onClick={() => { openNamaScript(); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center justify-center gap-1" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Code2 size={16} /> نمااسکریپت{!bnPrem && <Lock size={11} className="opacity-70" />}</button>
+              <button onClick={() => { (replay.on ? exitReplay() : enterReplay()); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: replay.on ? '#fff' : TH.textStrong, background: replay.on ? TH.accent : TH.chipBg }}><Play size={16} /> بازپخش</button>
+              <button onClick={() => setSessionsOn((v) => !v)} className="rounded-lg px-3 text-sm" style={{ minHeight: 44, color: sessionsOn ? '#fff' : TH.textStrong, background: sessionsOn ? TH.accent : TH.chipBg }}>سشن‌ها</button>
+              <button onClick={() => setShowVP((v) => !v)} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: showVP ? '#fff' : TH.textStrong, background: showVP ? TH.accent : TH.chipBg }}><BarChart3 size={16} /> پروفایلِ حجم</button>
+              <button onClick={() => setScaleLocked((v) => !v)} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: scaleLocked ? '#fff' : TH.textStrong, background: scaleLocked ? TH.accent : TH.chipBg }}>{scaleLocked ? <Lock size={16} /> : <Unlock size={16} />} قفلِ مقیاس</button>
+              <button onClick={() => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); } catch (e) {} }} className="rounded-lg px-3 text-sm" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>بازنشانیِ مقیاس</button>
+              <button onClick={() => { setTheme((t) => (t === 'dark' ? 'light' : 'dark')); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>{theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />} تم</button>
+              <button onClick={async () => { await quickScreenshot(); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Camera size={16} /> عکس (کپی)</button>
+              <button onClick={() => { setShowDataWin((v) => !v); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: showDataWin ? '#fff' : TH.textStrong, background: showDataWin ? TH.accent : TH.chipBg }}><Table2 size={16} /> پنجرهٔ داده</button>
+              <button onClick={() => { setShowShortcuts(true); setSheet('none'); }} className="rounded-lg px-3 text-sm" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>⌨ میان‌بُرها</button>
+            </div>
+            <div className="mt-2"><AuthMenu theme={theme} /></div>
+          </MobileToolSheet>
+        </>
       )}
     </div>
   );
