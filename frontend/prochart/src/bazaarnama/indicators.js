@@ -121,6 +121,25 @@ export const vwap = (highs, lows, closes, vols) => {
   return out;
 };
 
+// Anchored VWAP — VWAP از anchorِ N کندلِ پیش + باندهای انحرافِ معیار (±mult·σ) — نسخهٔ مؤسساتی
+export const avwap = (highs, lows, closes, vols, anchorBars = 100, mult = 1) => {
+  const n = closes.length;
+  const out = new Array(n).fill(null), up = new Array(n).fill(null), dn = new Array(n).fill(null);
+  const start = Math.max(0, n - (anchorBars || n));
+  let pv = 0, vv = 0, pv2 = 0;
+  for (let i = start; i < n; i++) {
+    const tp = (highs[i] + lows[i] + closes[i]) / 3;
+    const v = vols[i] || 0;
+    pv += tp * v; vv += v; pv2 += tp * tp * v;
+    const vw = vv ? pv / vv : closes[i];
+    out[i] = vw;
+    const variance = vv ? Math.max(0, pv2 / vv - vw * vw) : 0;
+    const sd = Math.sqrt(variance);
+    up[i] = vw + (mult || 1) * sd; dn[i] = vw - (mult || 1) * sd;
+  }
+  return { vwap: out, upper: up, lower: dn };
+};
+
 // SuperTrend → { trend:[-1/1], line:[price] }
 export const supertrend = (highs, lows, closes, p = 10, mult = 3) => {
   const a = atr(highs, lows, closes, p);
@@ -315,6 +334,7 @@ export const REGISTRY = {
   wma:  { label: 'WMA', pane: 'main', inputs: { period: 20 }, color: '#a78bfa', calc: (c, i) => ({ line: wma(c.close, i.period) }) },
   hma:  { label: 'HMA (هال)', pane: 'main', inputs: { period: 21 }, color: '#22d3ee', calc: (c, i) => ({ line: hma(c.close, i.period) }) },
   vwap: { label: 'VWAP', pane: 'main', inputs: {}, color: '#e879f9', calc: (c) => ({ line: vwap(c.high, c.low, c.close, c.volume) }) },
+  avwap: { label: 'VWAP لنگرانداخته (±σ)', pane: 'main', inputs: { anchorBars: 100, mult: 1 }, color: '#e879f9', calc: (c, i) => { const r = avwap(c.high, c.low, c.close, c.volume, i.anchorBars, i.mult); return { lines: [{ data: r.vwap, color: '#e879f9' }, { data: r.upper, color: '#a855f7', dashed: true }, { data: r.lower, color: '#a855f7', dashed: true }] }; } },
   bb:   { label: 'باند بولینگر', pane: 'main', inputs: { period: 20, mult: 2 }, color: '#94a3b8', calc: (c, i) => { const b = bollinger(c.close, i.period, i.mult); return { upper: b.upper, basis: b.basis, lower: b.lower, multi: true }; } },
   supertrend: { label: 'سوپرترند', pane: 'main', inputs: { period: 10, mult: 3 }, color: '#10b981', calc: (c, i) => ({ line: supertrend(c.high, c.low, c.close, i.period, i.mult).line }) },
   rsi:  { label: 'RSI', pane: 'sub', inputs: { period: 14 }, color: '#a78bfa', calc: (c, i) => ({ line: rsi(c.close, i.period), guides: [30, 70], range: [0, 100] }) },
