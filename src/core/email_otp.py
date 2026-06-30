@@ -47,6 +47,11 @@ _BRANDS = {
         "subject": "کد ورود به آکادمی VIP فارکس کوین‌پرو FX",
         "intro": "کدِ ورود به آکادمیِ VIP فارکس کوین‌پرو FX:",
     },
+    "bazaarnama": {
+        "title": "بازارنما",
+        "subject": "کد تأیید ورود به بازارنما",
+        "intro": "کدِ تأیید برای ورود به حسابِ بازارنما:",
+    },
 }
 
 
@@ -63,25 +68,109 @@ _FOOTER = (
 )
 
 
+# فوترِ مستقلِ بازارنما (Pro-Chart) — جدا از برندِ آکادمی/پنل
+_BN_FOOTER = (
+    '<hr style="border:none;border-top:1px solid #1e293b;margin:22px 0 12px">'
+    '<p style="margin:0;color:#5b6b85;font-size:11px;line-height:1.8">'
+    'این یک ایمیلِ خودکارِ سیستمیِ <b style="color:#3b82f6">بازارنما</b> است؛ لطفاً پاسخ ندهید.<br>'
+    'سامانهٔ تحلیل و نمودارِ بازارِ مالی<br>'
+    '<a href="https://academy.fx.trade-future.ir" style="color:#5b6b85;text-decoration:none">academy.fx.trade-future.ir</a>'
+    '</p>'
+)
+
+
+def _bn_otp_html(code: str, minutes: str) -> str:
+    """قالبِ HTML تأییدِ ایمیل/OTP — برندِ مستقلِ بازارنما (RTL فارسی).
+
+    لوگوی شمعِ کندل‌استیک به‌صورتِ SVG inline ساخته می‌شود (بدونِ CDN خارجی)
+    تا در ایران و آفلاین هم درست لود شود؛ همه‌چیز inline-CSS و table-safe.
+    """
+    logo_svg = (
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" '
+        'xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-left:8px">'
+        '<rect x="4"  y="7"  width="4" height="10" rx="1" fill="#22c55e"/>'
+        '<rect x="5.4" y="3"  width="1.2" height="18" fill="#22c55e"/>'
+        '<rect x="14" y="9"  width="4" height="8"  rx="1" fill="#3b82f6"/>'
+        '<rect x="15.4" y="5"  width="1.2" height="16" fill="#3b82f6"/>'
+        '</svg>'
+    )
+    return (
+        '<div dir="rtl" style="font-family:Tahoma,Vazirmatn,Arial,sans-serif;'
+        'background:#070b14;padding:28px 14px;margin:0">'
+        '<div style="background:#0d1320;border:1px solid #1b2640;'
+        'border-radius:18px;max-width:480px;margin:0 auto;'
+        'padding:30px 28px;color:#e6edf6;box-shadow:0 8px 30px rgba(0,0,0,.4)">'
+
+        # هدر: لوگو + نامِ برند با گرادیان
+        '<div style="text-align:center;margin:0 0 22px">'
+        + logo_svg +
+        '<span style="font-size:24px;font-weight:800;'
+        'background:linear-gradient(90deg,#6366f1,#22d3ee);'
+        '-webkit-background-clip:text;background-clip:text;color:#3b82f6;'
+        '-webkit-text-fill-color:transparent">بازارنما</span>'
+        '<div style="color:#5b6b85;font-size:12px;margin-top:4px">'
+        'سامانهٔ تحلیل و نمودارِ بازارِ مالی</div>'
+        '</div>'
+
+        # عنوان + توضیح
+        '<h2 style="margin:0 0 8px;font-size:18px;color:#e6edf6;text-align:center">'
+        'تأییدِ ایمیلِ شما</h2>'
+        '<p style="margin:0 0 20px;color:#93a4bd;font-size:14px;'
+        'line-height:1.9;text-align:center">'
+        'برای ورود/ثبت‌نام در بازارنما، کدِ زیر را در صفحهٔ تأیید وارد کنید:</p>'
+
+        # جعبهٔ کد OTP
+        '<div style="font-size:34px;font-weight:800;letter-spacing:10px;'
+        'color:#ffffff;background:#0b1120;border:1px solid #1e293b;'
+        'border-radius:14px;padding:18px 12px;text-align:center;'
+        'direction:ltr;font-family:Consolas,monospace">'
+        f'{code}</div>'
+
+        # انقضا
+        '<p style="margin:18px 0 0;color:#5b6b85;font-size:13px;'
+        'line-height:1.8;text-align:center">'
+        f'این کد تا <b style="color:#93a4bd">{minutes} دقیقه</b> معتبر است.<br>'
+        'اگر شما این درخواست را نکرده‌اید، این ایمیل را نادیده بگیرید.</p>'
+
+        + _BN_FOOTER +
+        '</div></div>'
+    )
+
+
 async def _send_email(to: str, code: str, brand: str = "panel", ttl: int = _OTP_TTL) -> bool:
     if not settings.RESEND_API_KEY:
         logger.warning("resend_key_missing")
         return False
     b = _BRANDS.get(brand, _BRANDS["panel"])
     minutes = _fa_digits(str(max(1, round(ttl / 60))))
-    html = (
-        '<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#0b0f17;'
-        'padding:32px;color:#e5e7eb;border-radius:16px;max-width:480px;margin:auto">'
-        f'<h2 style="color:#22c55e;margin:0 0 8px">{b["title"]}</h2>'
-        f'<p style="margin:0 0 16px;color:#9ca3af">{b["intro"]}</p>'
-        f'<div style="font-size:34px;font-weight:800;letter-spacing:8px;color:#fff;'
-        'background:#111827;border-radius:12px;padding:16px;text-align:center">'
-        f'{code}</div>'
-        '<p style="margin:16px 0 0;color:#6b7280;font-size:13px">'
-        f'این کد تا {minutes} دقیقه معتبر است. اگر شما درخواست نکرده‌اید، نادیده بگیرید.</p>'
-        + _FOOTER +
-        '</div>'
-    )
+    if brand == "bazaarnama":
+        # قالبِ مستقلِ بازارنما (Pro-Chart) — برند/فوتر/متنِ جدا از آکادمی/پنل
+        html = _bn_otp_html(code, minutes)
+        text = (
+            "بازارنما — سامانهٔ تحلیل و نمودارِ بازارِ مالی\n\n"
+            f"کدِ تأییدِ ایمیلِ شما: {code}\n"
+            f"این کد تا {minutes} دقیقه معتبر است.\n"
+            "اگر شما این درخواست را نکرده‌اید، این پیام را نادیده بگیرید."
+        )
+    else:
+        html = (
+            '<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#0b0f17;'
+            'padding:32px;color:#e5e7eb;border-radius:16px;max-width:480px;margin:auto">'
+            f'<h2 style="color:#22c55e;margin:0 0 8px">{b["title"]}</h2>'
+            f'<p style="margin:0 0 16px;color:#9ca3af">{b["intro"]}</p>'
+            f'<div style="font-size:34px;font-weight:800;letter-spacing:8px;color:#fff;'
+            'background:#111827;border-radius:12px;padding:16px;text-align:center">'
+            f'{code}</div>'
+            '<p style="margin:16px 0 0;color:#6b7280;font-size:13px">'
+            f'این کد تا {minutes} دقیقه معتبر است. اگر شما درخواست نکرده‌اید، نادیده بگیرید.</p>'
+            + _FOOTER +
+            '</div>'
+        )
+        # نسخهٔ متنیِ ساده — ایمیلِ فقط‑HTML بیشتر اسپم می‌شود؛ multipart اعتماد را بالا می‌برد.
+        text = (
+            f"{b['title']}\n\nکدِ تأیید: {code}\nاین کد تا {minutes} دقیقه معتبر است.\n"
+            "اگر شما درخواست نکرده‌اید، این پیام را نادیده بگیرید."
+        )
     try:
         async with httpx.AsyncClient(timeout=15) as client:
             r = await client.post(
@@ -93,9 +182,8 @@ async def _send_email(to: str, code: str, brand: str = "panel", ttl: int = _OTP_
                     "reply_to": settings.RESEND_FROM_EMAIL,
                     "subject": b["subject"],
                     "html": html,
-                    # نسخهٔ متنیِ ساده — ایمیلِ فقط‑HTML بیشتر اسپم می‌شود؛ multipart اعتماد را بالا می‌برد.
-                    "text": f"{b['title']}\n\nکدِ تأیید: {code}\nاین کد تا {minutes} دقیقه معتبر است.\n"
-                            "اگر شما درخواست نکرده‌اید، این پیام را نادیده بگیرید.",
+                    # نسخهٔ متنیِ معادل (multipart) — برندمحور؛ ضدِ اسپم
+                    "text": text,
                 },
             )
         if r.status_code == 429:

@@ -247,8 +247,17 @@ async def remove_device_premanage(manage_token: str = Body(..., embed=True), dev
 
 
 @router.post("/auth/register/request")
-async def register_request(email: str = Body(..., embed=True), db: AsyncSession = Depends(get_db)):
-    """مرحلهٔ ۱ ثبت‌نامِ رایگان: ارسالِ کدِ تأیید به ایمیل (Resend)."""
+async def register_request(
+    email: str = Body(..., embed=True),
+    app: str = Body("academy", embed=True),  # مبدأِ صدا‌زننده: academy (پیش‌فرض) یا bazaarnama
+    db: AsyncSession = Depends(get_db),
+):
+    """مرحلهٔ ۱ ثبت‌نامِ رایگان: ارسالِ کدِ تأیید به ایمیل (Resend).
+
+    یک endpoint به دو مصرف خدمت می‌کند (آکادمیِ VIP و بازارنما/Pro-Chart). برند از
+    سمتِ مبدأ (`app`) تعیین می‌شود؛ فرانتِ Pro-Chart `app="bazaarnama"` می‌فرستد و
+    آکادمی چیزی نمی‌فرستد (پیش‌فرض `academy`) تا جریانِ فعلیِ آکادمی نشکند.
+    """
     if not settings.ACADEMY_SELF_REGISTER:
         raise HTTPException(status_code=403, detail="ثبت‌نام فعلاً غیرفعال است.")
     em = (email or "").strip().lower()
@@ -257,7 +266,8 @@ async def register_request(email: str = Body(..., embed=True), db: AsyncSession 
     dup = (await db.execute(select(AcademyStudent).where(AcademyStudent.email == em))).scalar_one_or_none()
     if dup:
         raise HTTPException(status_code=409, detail="این ایمیل قبلاً ثبت‌نام کرده؛ وارد شوید.")
-    res = await request_otp(em, brand="academy", ttl=120)  # کد ۲ دقیقه معتبر است
+    brand = "bazaarnama" if (app or "").strip().lower() == "bazaarnama" else "academy"
+    res = await request_otp(em, brand=brand, ttl=120)  # کد ۲ دقیقه معتبر است
     if not res.get("sent"):
         if res.get("cooldown"):
             raise HTTPException(status_code=429, detail=f"کد به‌تازگی ارسال شده؛ {res['cooldown']} ثانیه صبر کنید.")

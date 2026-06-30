@@ -77,7 +77,7 @@ export const api = {
   devices: () => client.get('/academy/devices'),
   removeDevice: (id) => client.delete(`/academy/devices/${id}`),
   updateProfile: (d) => client.post('/academy/profile', d),
-  registerRequest: (email) => client.post('/academy/auth/register/request', { email }),
+  registerRequest: (email) => client.post('/academy/auth/register/request', { email, app: 'bazaarnama' }),
   registerVerify: (email, code, username, password, full_name, account_type) =>
     client.post('/academy/auth/register/verify', { email, code, username, password, full_name, account_type }),
   // آکادمی
