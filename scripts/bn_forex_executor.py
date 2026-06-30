@@ -13,7 +13,7 @@ MT5ِ او لاگین می‌کند و سفارشِ بازار را روی **ح�
 
 اجرا (روی سرورِ ویندوز، کنارِ MT5):
   set BN_EXEC_TOKEN=<همان BN_EXEC_TOKEN در .env سرور pro-chart>
-  set BN_EXEC_TERMINAL=C:\Path\to\terminal64.exe   (ترمینالِ مجزا برای اجرای کاربران)
+  set BN_EXEC_TERMINAL=C:\\Path\\to\\terminal64.exe   (ترمینالِ مجزا برای اجرای کاربران)
   python bn_forex_executor.py        # روی 0.0.0.0:8770
 سپس در .env سرورِ pro-chart:
   BN_FOREX_LIVE=1
