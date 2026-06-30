@@ -1256,7 +1256,7 @@ export default function BazaarNama() {
         {/* نوارِ ابزارِ ترسیم (سمتِ چپ مثلِ TradingView) */}
         <div className="w-10 border-r flex flex-col items-center py-2 gap-1 shrink-0" style={{ borderColor: TH.border }}>
           <div className="flex-1 min-h-0 w-full">
-            <ToolRail tool={tool} setTool={setTool} TH={TH} />
+            <ToolRail tool={tool} setTool={setTool} TH={TH} onHelp={setHelpId} />
           </div>
           <div className="h-px w-6 my-1" style={{ background: TH.border }} />
           <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>

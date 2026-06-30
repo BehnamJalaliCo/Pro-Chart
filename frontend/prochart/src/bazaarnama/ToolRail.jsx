@@ -10,7 +10,9 @@
 // (در drawtools_ext.js) هستند؛ پس setTool(id) مستقیماً کار می‌کند.
 // ─────────────────────────────────────────────────────────────────────────────
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { HelpCircle } from 'lucide-react';
 import { GLYPH, GROUP_GLYPH } from './glyphs';
+import { getHelp } from './help';
 
 // چِورونِ کوچکِ درون‌خطی (جایگزینِ lucide ChevronRight) برای نشانهٔ ابزارِ فعال.
 function MiniChevron({ size = 13, ...props }) {
@@ -133,7 +135,7 @@ const TOOL_GROUP = (() => {
 // گلیفِ یک ابزار؛ در نبودِ آن به گلیفِ گروهش یا «نشانگر» برمی‌گردد.
 const ICON_FOR = (id) => GLYPH[id] || GROUP_GLYPH[TOOL_GROUP[id]] || GLYPH.cursor;
 
-export default function ToolRail({ tool, setTool, TH }) {
+export default function ToolRail({ tool, setTool, TH, onHelp }) {
   // ابزارِ «به‌خاطرسپرده‌شده» برای هر گروه (پیش‌فرض: اولین ابزارِ گروه).
   const [remembered, setRemembered] = useState(() => {
     const m = {};
@@ -277,6 +279,9 @@ export default function ToolRail({ tool, setTool, TH }) {
                       <RowIcon size={16} className="shrink-0" style={{ opacity: active ? 1 : 0.8 }} />
                       <span className="flex-1 whitespace-nowrap leading-none">{t.label}</span>
                       {active && <MiniChevron size={13} className="shrink-0 opacity-80" />}
+                      {onHelp && getHelp(t.id) && (
+                        <span role="button" title="راهنمای این ابزار" onClick={(e) => { e.stopPropagation(); onHelp(t.id); }} className="shrink-0 opacity-40 hover:opacity-100" style={{ cursor: 'pointer' }}><HelpCircle size={12} /></span>
+                      )}
                     </button>
                   );
                 })}
