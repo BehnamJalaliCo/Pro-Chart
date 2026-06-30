@@ -40,18 +40,21 @@ def _norm(name: str) -> str:
 
 
 def _init() -> None:
+    # BN_MT5_PATH: مسیرِ ترمینالِ مشخص (read-only data). با چند ترمینالِ هم‌زمان لازم است.
+    path = os.getenv("BN_MT5_PATH")
     login = os.getenv("MT5_LOGIN")
+    kw = {}
+    if path:
+        kw["path"] = path
     if login:
-        ok = mt5.initialize(login=int(login), password=os.getenv("MT5_PASSWORD", ""),
-                            server=os.getenv("MT5_SERVER", ""))
-    else:
-        ok = mt5.initialize()
+        kw.update(login=int(login), password=os.getenv("MT5_PASSWORD", ""), server=os.getenv("MT5_SERVER", ""))
+    ok = mt5.initialize(**kw) if kw else mt5.initialize()
     if not ok:
         raise SystemExit(f"mt5.initialize failed: {mt5.last_error()}")
     info = mt5.account_info()
     if info is None:
-        raise SystemExit("no MT5 account — ترمینال باید به حسابِ مَسترِ واقعی لاگین باشد")
-    print(f"MT5 connected: login={info.login} server={info.server} trade_mode={info.trade_mode}")
+        raise SystemExit("no MT5 account — terminal must be logged in")
+    print(f"MT5 connected: login={info.login} server={info.server} trade_mode={info.trade_mode}", flush=True)
 
 
 def _post(payload: dict) -> None:
