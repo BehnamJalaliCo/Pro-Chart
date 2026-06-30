@@ -1240,7 +1240,7 @@ export default function BazaarNama() {
             )}
             {/* شمارشِ معکوسِ بسته‌شدنِ کندل + وضعیتِ بازار */}
             <CountdownChip countdown={countdown} countdownColor={countdownColor} TH={TH} marketOpen={marketOpen} />
-            <Watermark src={bnLogo} />
+            <Watermark src={bnLogo} theme={theme} />
             {grid > 1 && (
               <div className="absolute inset-0 z-30 grid gap-1 p-1" style={{ background: TH.bg, gridTemplateColumns: grid === 2 ? '1fr 1fr' : '1fr 1fr', gridTemplateRows: grid === 2 ? '1fr' : '1fr 1fr' }}>
                 {Array.from({ length: grid }).map((_, i) => (
