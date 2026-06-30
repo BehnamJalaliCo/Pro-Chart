@@ -1130,7 +1130,7 @@ export default function BazaarNama() {
         </div>
         <button onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))} className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}</button>
         <button onClick={() => setShowRight((v) => !v)} title="نمایش/پنهان‌کردنِ نوارِ کناری (واچ‌لیست، سیگنال AI، اسکنر، ترید، آلارم)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={showRight ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBg; }}><Star size={15} /></button>
-        <AuthMenu />
+        <AuthMenu theme={theme} />
       </div>
 
       {/* اندیکاتورهای فعال — هرکدام: چرخ‌دنده=تنظیمات، ✕=حذف */}

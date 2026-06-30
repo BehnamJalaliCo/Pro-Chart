@@ -1,6 +1,19 @@
 import React from 'react';
-import { User, Crown, LogOut, Loader2, Bitcoin, LineChart, Link2, Copy, Check, ShieldCheck, ExternalLink } from 'lucide-react';
+import { User, Crown, LogOut, Loader2, Bitcoin, LineChart, Link2, Copy, Check, ShieldCheck, ExternalLink, Eye, EyeOff } from 'lucide-react';
 import { api, tokenStore } from './api/client';
+
+// ورودیِ رمز با آیکونِ چشم
+function PwInput({ value, onChange, placeholder }) {
+  const [show, setShow] = React.useState(false);
+  return (
+    <div className="relative">
+      <input className={inp + ' pl-9'} style={FS} type={show ? 'text' : 'password'} placeholder={placeholder} value={value} onChange={onChange} dir="ltr" />
+      <button type="button" tabIndex={-1} onClick={() => setShow((s) => !s)} className="absolute left-2 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 text-gray-300">
+        {show ? <EyeOff size={16} /> : <Eye size={16} />}
+      </button>
+    </div>
+  );
+}
 
 // پنلِ کاربرِ بازارنما (user.pro-chart.com) — حساب، اشتراک، اتصالِ صرافی/بروکر، رفرال.
 // جداسازیِ کریپتو (LBank) و بروکر (وان‌رویال) از بدوِ ثبت‌نام.
@@ -60,8 +73,8 @@ function LoginForm({ onAuthed }) {
   };
   return (
     <div className="space-y-3">
-      <input className={inp} style={FS} placeholder="نام‌کاربری" value={u} onChange={(e) => setU(e.target.value)} dir="ltr" />
-      <input className={inp} style={FS} placeholder="رمزِ عبور" type="password" value={p} onChange={(e) => setP(e.target.value)} dir="ltr" />
+      <input className={inp} style={FS} placeholder="ایمیل یا نام‌کاربری" value={u} onChange={(e) => setU(e.target.value)} dir="ltr" />
+      <PwInput value={p} onChange={(e) => setP(e.target.value)} placeholder="رمزِ عبور" />
       {err && <div className="text-[12px] text-red-400">{err}</div>}
       <button onClick={submit} disabled={busy || !u || !p} className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50">{busy && <Loader2 size={15} className="animate-spin" />} ورود</button>
     </div>
@@ -115,7 +128,7 @@ function RegisterForm({ onAuthed }) {
         <input className={inp} style={FS} placeholder="کدِ تأیید" value={code} onChange={(e) => setCode(e.target.value)} dir="ltr" />
         <input className={inp} style={FS} placeholder="نامِ کامل (اختیاری)" value={name} onChange={(e) => setName(e.target.value)} />
         <input className={inp} style={FS} placeholder="نام‌کاربری" value={u} onChange={(e) => setU(e.target.value)} dir="ltr" />
-        <input className={inp} style={FS} placeholder="رمزِ عبور" type="password" value={p} onChange={(e) => setP(e.target.value)} dir="ltr" />
+        <PwInput value={p} onChange={(e) => setP(e.target.value)} placeholder="رمزِ عبور" />
         {err && <div className="text-[12px] text-red-400">{err}</div>}
         <button onClick={verify} disabled={busy || !code || !u || !p} className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50">{busy && <Loader2 size={15} className="animate-spin" />} تأیید و ساختِ حساب</button>
       </>)}
@@ -179,7 +192,7 @@ function ConnectLbank({ conn, onDone }) {
   return (<div className="rounded-xl bg-white/5 p-3 text-[12px] space-y-2">
     <div className="opacity-80">کلیدِ API صرافیِ LBank را وارد کن (برای تریدِ واقعی روی حسابِ خودت):</div>
     <input className={inp} style={FS} placeholder="API Key" value={key} onChange={(e) => setKey(e.target.value)} dir="ltr" />
-    <input className={inp} style={FS} placeholder="API Secret" type="password" value={sec} onChange={(e) => setSec(e.target.value)} dir="ltr" />
+    <PwInput value={sec} onChange={(e) => setSec(e.target.value)} placeholder="API Secret" />
     <input className={inp} style={FS} placeholder="UID لِی‌بنک (اختیاری — برای تأییدِ رفرال)" value={uid} onChange={(e) => setUid(e.target.value)} dir="ltr" />
     {msg && <div className={msg.ok ? 'text-green-400' : 'text-red-400'}>{msg.text}</div>}
     <button onClick={save} disabled={busy || !key || !sec} className="w-full py-2 rounded-lg bg-amber-600 hover:bg-amber-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50">{busy && <Loader2 size={14} className="animate-spin" />} ذخیرهٔ امن</button>
@@ -204,7 +217,7 @@ function ConnectMt5({ conn, onDone }) {
   return (<div className="rounded-xl bg-white/5 p-3 text-[12px] space-y-2">
     <div className="opacity-80">حسابِ MT5ِ وان‌رویال را وارد کن (برای تریدِ واقعی روی حسابِ خودت):</div>
     <input className={inp} style={FS} placeholder="شمارهٔ حساب (Login)" value={login} onChange={(e) => setLogin(e.target.value)} dir="ltr" />
-    <input className={inp} style={FS} placeholder="رمزِ معاملاتی" type="password" value={pass} onChange={(e) => setPass(e.target.value)} dir="ltr" />
+    <PwInput value={pass} onChange={(e) => setPass(e.target.value)} placeholder="رمزِ معاملاتی" />
     <input className={inp} style={FS} placeholder="سرور (مثلاً OneRoyal-Live)" value={server} onChange={(e) => setServer(e.target.value)} dir="ltr" />
     {msg && <div className={msg.ok ? 'text-green-400' : 'text-red-400'}>{msg.text}</div>}
     <button onClick={save} disabled={busy || !login || !pass} className="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50">{busy && <Loader2 size={14} className="animate-spin" />} ذخیرهٔ امن</button>
