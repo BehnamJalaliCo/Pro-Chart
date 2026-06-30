@@ -154,6 +154,7 @@ export const api = {
   bnAdminSetTier: (student_id, tier, days) => client.post('/academy/bn/admin/set-tier', { student_id, tier, days }, { headers: _ah() }),
   bnAdminSetStatus: (student_id, status) => client.post('/academy/bn/admin/set-status', { student_id, status }, { headers: _ah() }),
   bnAdminOrders: (status, market) => client.get('/academy/bn/admin/orders', { params: { status: status || undefined, market: market || undefined }, headers: _ah() }),
+  bnAdminSetReferral: (student_id, kind, verified) => client.post('/academy/bn/admin/set-referral', { student_id, kind: kind || 'lbank', verified }, { headers: _ah() }),
   bnAlerts: () => client.get('/academy/bn/alerts'),
   bnAlertCreate: (d) => client.post('/academy/bn/alerts', d),
   bnAlertDelete: (id) => client.delete(`/academy/bn/alerts/${id}`),

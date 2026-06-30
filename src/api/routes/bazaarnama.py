@@ -637,6 +637,25 @@ async def bn_admin_set_status(student_id: int = Body(..., embed=True),
     return {"ok": True, "id": s.id, "status": s.status}
 
 
+@router.post("/admin/set-referral")
+async def bn_admin_set_referral(student_id: int = Body(..., embed=True),
+                                kind: str = Body("lbank", embed=True),
+                                verified: bool = Body(True, embed=True),
+                                _: bool = Depends(current_bn_admin),
+                                db: AsyncSession = Depends(get_db)):
+    """override دستیِ تأییدِ رفرال توسطِ مدیر (وقتی API هنوز وایت‌لیست نشده)."""
+    from src.core.database import BnExchangeAccount
+    a = (await db.execute(select(BnExchangeAccount).where(
+        BnExchangeAccount.student_id == int(student_id),
+        BnExchangeAccount.kind == kind))).scalar_one_or_none()
+    if not a:
+        raise HTTPException(status_code=404, detail="حسابِ متصل یافت نشد.")
+    a.referral_verified = bool(verified)
+    a.note = "تأییدِ دستیِ مدیر" if verified else "ردِ رفرال توسطِ مدیر"
+    await db.commit()
+    return {"ok": True, "student_id": a.student_id, "kind": kind, "referral_verified": a.referral_verified}
+
+
 @router.get("/admin/orders")
 async def bn_admin_orders(status: str = "", market: str = "", limit: int = 100,
                           _: bool = Depends(current_bn_admin),
@@ -752,7 +771,17 @@ async def connect_lbank(api_key: str = Body(..., embed=True), api_secret: str = 
     a.enc_secret = encrypt_secret(api_secret.strip())
     a.account_ref = (uid or "").strip() or None
     a.status = "active"
-    a.note = "ذخیره شد — تأییدِ رفرال پس از وایت‌لیستِ IP"
+    # تلاشِ خودکار برای تأییدِ رفرال (کاربر باید زیرمجموعهٔ لینکِ ما باشد؛ نیازمندِ وایت‌لیستِ IP)
+    ref = {"verified": False, "reason": "no_uid"}
+    if a.account_ref:
+        try:
+            from src.api.routes._lbank_referral import verify_referral
+            ref = await verify_referral(a.account_ref)
+        except Exception:  # noqa: BLE001
+            ref = {"verified": False, "reason": "error"}
+    a.referral_verified = bool(ref.get("verified"))
+    a.note = ("تأیید شد — زیرمجموعهٔ رفرالِ ما" if a.referral_verified
+              else f"در انتظارِ تأییدِ رفرال ({ref.get('reason')})")
     await db.commit()
     return {"ok": True, "kind": "lbank", "referral_verified": a.referral_verified, "note": a.note}
 
@@ -814,6 +843,10 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
         raise HTTPException(status_code=400, detail={
             "msg": f"ابتدا حسابِ {'LBank' if crypto else 'MT5'} خود را در پنلِ کاربری وصل کن.",
             "connect_required": True, "kind": kind})
+    if crypto and not a.referral_verified:
+        raise HTTPException(status_code=403, detail={
+            "msg": "برای تریدِ واقعی باید با لینکِ رفرالِ ما زیرمجموعه شوی و تأیید شود.",
+            "referral_required": True})
     import os as _os
     from src.core.database import BnOrder
     if crypto:
