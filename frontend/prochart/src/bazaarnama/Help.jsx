@@ -3,7 +3,7 @@ import { X, HelpCircle } from 'lucide-react';
 
 // رندرِ دیاگرامِ شماتیکِ ساخت‌یافته به SVG (مثلِ تصویرهای راهنمای TradingView، ولی برداری/تمیز).
 function Diagram({ diagram, TH }) {
-  if (!diagram || !diagram.shapes) return null;
+  if (!diagram || !Array.isArray(diagram.shapes) || !diagram.shapes.length) return null;
   const W = (diagram.ref && diagram.ref.w) || 320;
   const H = (diagram.ref && diagram.ref.h) || 200;
   const px = (x) => (x <= 1 ? x * W : x);
@@ -65,6 +65,10 @@ function Diagram({ diagram, TH }) {
 // مودالِ راهنمای یک ابزار/اندیکاتور.
 export default function HelpModal({ entry, onClose, TH }) {
   if (!entry) return null;
+  // نرمال‌سازی: برخی ورودی‌ها how/tips را رشته نوشته‌اند نه آرایه — جلوگیری از کرشِ .map
+  const toArr = (v) => (Array.isArray(v) ? v : (typeof v === 'string' && v.trim() ? v.split(/\n+|(?<=\.)\s+(?=[۱-۹0-9])/).map((x) => x.trim()).filter(Boolean) : (v ? [v] : [])));
+  const how = toArr(entry.how);
+  const tips = toArr(entry.tips);
   return (
     <div dir="rtl" className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: TH.overlayMask || 'rgba(0,0,0,.5)', backdropFilter: 'blur(2px)' }} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="w-full max-w-lg max-h-[88vh] overflow-auto rounded-xl pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}`, color: TH.text }}>
@@ -75,16 +79,16 @@ export default function HelpModal({ entry, onClose, TH }) {
         <div className="px-4 py-3 space-y-3 text-[13px] leading-7">
           {entry.what && <p style={{ color: TH.text }}>{entry.what}</p>}
           {entry.diagram && <Diagram diagram={entry.diagram} TH={TH} />}
-          {entry.how && entry.how.length > 0 && (
+          {how.length > 0 && (
             <div>
               <div className="font-bold mb-1" style={{ color: TH.textStrong }}>گام‌به‌گامِ استفاده</div>
-              <ol className="list-decimal pr-5 space-y-1">{entry.how.map((s, i) => <li key={i}>{s}</li>)}</ol>
+              <ol className="list-decimal pr-5 space-y-1">{how.map((s, i) => <li key={i}>{s}</li>)}</ol>
             </div>
           )}
-          {entry.tips && entry.tips.length > 0 && (
+          {tips.length > 0 && (
             <div>
               <div className="font-bold mb-1" style={{ color: TH.textStrong }}>نکته‌های حرفه‌ای</div>
-              <ul className="space-y-1">{entry.tips.map((s, i) => <li key={i} className="flex gap-1.5"><span style={{ color: TH.accent }}>•</span><span>{s}</span></li>)}</ul>
+              <ul className="space-y-1">{tips.map((s, i) => <li key={i} className="flex gap-1.5"><span style={{ color: TH.accent }}>•</span><span>{s}</span></li>)}</ul>
             </div>
           )}
           {entry.example && (
