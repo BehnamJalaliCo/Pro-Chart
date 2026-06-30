@@ -145,7 +145,7 @@ export function MobileToolSheet({ TH, open, onClose, title, children, maxVh = 70
   return (
     <div
       dir="rtl"
-      className="fixed inset-0 z-[60] flex flex-col justify-end md:hidden"
+      className="fixed inset-0 z-[60] flex flex-col justify-end"
       role="dialog"
       aria-modal="true"
       aria-label={title || 'ابزارها'}
@@ -249,7 +249,7 @@ export function CompactTopBar({ TH, symbol, livePrice, fmtPrice, marketOpen, tf,
 // ─────────────────────────────────────────────────────────────────────────────
 export function MobileBottomNav({ TH, items = [], active, onPick }) {
   return (
-    <nav dir="rtl" className="fixed inset-x-0 bottom-0 z-50 flex items-stretch border-t md:hidden"
+    <nav dir="rtl" className="fixed inset-x-0 bottom-0 z-50 flex items-stretch border-t"
       style={{ background: TH.panel, borderColor: TH.border, paddingBottom: 'env(safe-area-inset-bottom)' }}>
       {items.map((it) => (
         <button key={it.key} type="button" onClick={() => onPick && onPick(it.key)}

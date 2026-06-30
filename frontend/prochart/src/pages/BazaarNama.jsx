@@ -25,6 +25,7 @@ import MiniChart from '../bazaarnama/MiniChart';
 import { CROSSHAIR_MODES, crosshairModeById, crosshairOptions, paintCrosshairGlyph, PRICE_SCALE_MODES, priceScaleOptions, resetPriceScaleOptions, SESSIONS, sessionBands, paintSessions, secondsToClose, formatCountdown, countdownTint, TIMEZONES, timeZoneOptions, CH3_DEFAULTS } from '../bazaarnama/scales_crosshair';
 import { attachHotkeys, SHORTCUT_GROUPS } from '../bazaarnama/hotkeys';
 import { useBreakpoint, MobileToolSheet, CompactTopBar, MobileBottomNav, BREAKPOINTS } from '../bazaarnama/mobile';
+import { useViewport } from '../bazaarnama/useViewport';
 import { GRID_PRESET_ORDER, getGridLayout, presetToLegacyGrid, legacyGridToPreset } from '../bazaarnama/layoutPresets';
 import { Legend, ChartLegend, CountdownChip, Watermark, ReplayBar } from '../bazaarnama/overlays/ChartOverlays';
 import SymbolLogo from '../bazaarnama/SymbolLogo';
@@ -291,6 +292,11 @@ export default function BazaarNama() {
 
   const TH = THEMES[theme];
   const bp = useBreakpoint();
+  // تشخیصِ خودکارِ ویوپورت (جامع): گوشی/تبلتِ پرتره/تبلتِ لنداسکیپ/دسکتاپ + orientation.
+  // compact = هر چیدمانی که باید فشرده شود (گوشی + تبلت + لنداسکیپِ کم‌ارتفاع) تا چیزی روی چارت نیفتد.
+  const vp = useViewport();
+  const compact = vp.compact;            // تولبارِ آیکونی + نوارِ پایین + شیت‌ها (به‌جای تولبارِ wrapِ دسکتاپ)
+  const overlayPanels = compact;          // ToolRail/RightPanel به‌صورتِ overlay (روی چارت نیفتند، فضای افقی نخورند)
 
   // ── ساختِ چارت ──
   useEffect(() => {
@@ -577,8 +583,8 @@ export default function BazaarNama() {
   useEffect(() => { symbolRef.current = symbol; }, [symbol]);
   // #3 ماندگاریِ ترجیحاتِ Legend (جمع‌بودن/حالتِ نمایش)
   useEffect(() => { saveWS({ legCollapsed, legView }); }, [legCollapsed, legView]);
-  // #4 روی موبایل grid اجباری ۱ (RAM/پینت) — بدونِ رگرسیونِ دسکتاپ
-  useEffect(() => { if (bp.isMobile && grid !== 1) setGrid(1); /* eslint-disable-next-line */ }, [bp.isMobile]);
+  // #4 در چیدمانِ فشرده (گوشی/تبلت/لنداسکیپِ کوتاه) grid اجباری ۱ (RAM/پینت) — بدونِ رگرسیونِ دسکتاپ
+  useEffect(() => { if (compact && grid !== 1) setGrid(1); /* eslint-disable-next-line */ }, [compact]);
   // باگ۳: نگه‌داشتنِ سیگنالِ AI و سفارشِ ترید تا با رفرش/بازگشت پاک نشوند
   useEffect(() => { saveWS({ aiSig }); }, [aiSig]);
   useEffect(() => { saveWS({ order }); }, [order]);
@@ -1159,8 +1165,9 @@ export default function BazaarNama() {
     // eslint-disable-next-line
   }, [selDraw, replay.on, treeRefresh, replayStep, quickScreenshot]);
 
-  // جمع‌کردنِ پنلِ کناری هنگامِ ورود به نمایِ موبایل (فصل ۱۱) — افزایشی و کم‌ریسک
-  useEffect(() => { if (bp.isMobile && showRight) setShowRight(false); /* eslint-disable-next-line */ }, [bp.isMobile]);
+  // جمع‌کردنِ پنلِ کناری هنگامِ ورود به چیدمانِ فشرده (تبلت/گوشی) — افزایشی و کم‌ریسک
+  // (در حالتِ فشرده پنل به overlay تبدیل می‌شود؛ بسته‌نگه‌داشتنِ پیش‌فرض جلوی پوششِ چارت را می‌گیرد)
+  useEffect(() => { if (compact && showRight) setShowRight(false); /* eslint-disable-next-line */ }, [compact]);
 
   // §۱۷ بستنِ مودال‌ها (راهنمای میان‌بُرها + تنظیماتِ اندیکاتور) با Esc
   useEffect(() => {
@@ -1223,8 +1230,8 @@ export default function BazaarNama() {
   return (
     <div ref={rootRef} dir="rtl" className={`flex flex-col h-screen overflow-hidden ${txt}`} style={{ background: TH.bg }}>
       <style>{`.bn-thin-scroll{scrollbar-width:thin}.bn-thin-scroll::-webkit-scrollbar{height:4px;width:4px}.bn-thin-scroll::-webkit-scrollbar-thumb{background:${TH.border};border-radius:4px}.bn-thin-scroll::-webkit-scrollbar-track{background:transparent}`}</style>
-      {/* #4 نوارِ بالای فشردهٔ موبایل (زیرِ ۷۶۸px) */}
-      {bp.isMobile && (
+      {/* #4 نوارِ بالای فشرده (گوشی + تبلت + لنداسکیپِ کم‌ارتفاع) — تشخیصِ خودکارِ ویوپورت */}
+      {compact && (
         <CompactTopBar
           TH={TH} symbol={symbol} livePrice={livePrice} fmtPrice={fmtPrice} marketOpen={marketOpen}
           tf={tf} chartType={chartType} chartLabel={CHART_TYPES.find((c) => c.id === chartType)?.label}
@@ -1232,8 +1239,9 @@ export default function BazaarNama() {
           onSearch={() => setSymModal(true)} onPickTf={() => setSheet('tf')} onPickType={() => setSheet('type')} onMore={() => setSheet('more')}
         />
       )}
-      {/* نوارِ بالا (دسکتاپ/تبلت) */}
-      <div className="md:flex items-center gap-1.5 px-3 py-1.5 border-b flex-wrap relative hidden" style={{ borderColor: TH.border }}>
+      {/* نوارِ بالا (فقط دسکتاپِ ≥۱۲۸۰px) — در تبلت/گوشی جایش CompactTopBar می‌آید تا wrapِ چندردیفه روی چارت نیفتد */}
+      {!compact && (
+      <div className="flex items-center gap-1.5 px-3 py-1.5 border-b flex-wrap relative" style={{ borderColor: TH.border }}>
         {/* #7 سویچرِ نماد — مدالِ جستجوی حرفه‌ای را باز می‌کند */}
         <button onClick={() => setSymModal(true)} data-menu className="flex items-center gap-2 h-9 px-3 rounded-lg transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)} title="جستجوی نماد (Ctrl+K یا /)">
           <SymbolLogo symbol={symbol} size={20} />
@@ -1354,12 +1362,14 @@ export default function BazaarNama() {
         <button onClick={() => setShowRight((v) => !v)} title="نمایش/پنهان‌کردنِ نوارِ کناری (واچ‌لیست، سیگنال AI، اسکنر، ترید، آلارم)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={showRight ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBg; }}><Star size={18} /></button>
         <AuthMenu theme={theme} />
       </div>
+      )}
 
       {/* #3 نوارِ افقیِ اندیکاتورها حذف شد؛ جایش ChartLegendِ شناورِ روی چارت (پایین‌تر) آمد. */}
 
-      <div dir="ltr" className="flex flex-1 min-h-0">
-        {/* نوارِ ابزارِ ترسیم (سمتِ چپ مثلِ TradingView) — روی موبایل پنهان (#4)، به Drawing-sheet می‌رود */}
-        <div className="w-12 border-r flex-col items-center py-2 gap-1 shrink-0 hidden md:flex" style={{ borderColor: TH.border }}>
+      <div dir="ltr" className="flex flex-1 min-h-0 relative">
+        {/* نوارِ ابزارِ ترسیم (سمتِ چپ مثلِ TradingView) — در تبلت/گوشی پنهان (#4)، به Drawing-sheet می‌رود تا روی چارت نیفتد */}
+        {!compact && (
+        <div className="w-12 border-r flex flex-col items-center py-2 gap-1 shrink-0" style={{ borderColor: TH.border }}>
           <div className="flex-1 min-h-0 w-full">
             <ToolRail tool={tool} setTool={setTool} TH={TH} onHelp={setHelpId} />
           </div>
@@ -1377,9 +1387,10 @@ export default function BazaarNama() {
           <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1.5 rounded opacity-60 hover:opacity-100"><Minus size={20} /></button></Tip>
           <Tip label="پاکِ همهٔ ترسیم‌ها"><button onClick={() => drawRef.current && drawRef.current.clearAll()} className="p-1.5 rounded opacity-60 hover:text-red-400"><Trash2 size={20} /></button></Tip>
         </div>
+        )}
 
         {/* چارت */}
-        <div className="flex-1 flex flex-col min-w-0 relative" style={bp.isMobile ? { paddingBottom: 'calc(56px + env(safe-area-inset-bottom))' } : undefined}>
+        <div className="flex-1 flex flex-col min-w-0 relative" style={compact ? { paddingBottom: 'calc(56px + env(safe-area-inset-bottom))' } : undefined}>
           {/* #3 Legendِ یکپارچهٔ روی چارت: نماد + اندیکاتورها با کنترل‌های on-hover */}
           {legendItems.length > 0 ? (
             <div dir="rtl">
@@ -1400,7 +1411,7 @@ export default function BazaarNama() {
             <Legend legend={legend} TH={TH} symbol={symbol} tf={tf} />
           )}
           <div className="relative flex-1 min-h-0"
-               style={bp.isMobile ? { touchAction: 'none', overscrollBehavior: 'none' } : undefined}
+               style={compact ? { touchAction: 'none', overscrollBehavior: 'none' } : undefined}
                onContextMenu={(e) => {
                  e.preventDefault();
                  const rect = e.currentTarget.getBoundingClientRect();
@@ -1546,17 +1557,36 @@ export default function BazaarNama() {
           <div ref={subWrapRef} />
         </div>
 
-        {/* پنلِ راست */}
+        {/* پنلِ راست — در دسکتاپ ستونیِ درون‌جریان؛ در تبلت/گوشی به‌صورتِ overlayِ شناور (روی چارت نمی‌افتد، فضای افقی نمی‌خورد) */}
         {showRight && (
-          <RightPanel
-            TH={TH} rightTab={rightTab} setRightTab={setRightTab}
-            symbol={symbol} setSymbol={setSymbol} symbols={symbols} live={live} tf={tf}
-            watch={watch} toggleWatch={toggleWatch} fmtPrice={fmtPrice}
-            aiBusy={aiBusy} aiQuota={aiQuota} aiList={aiList} aiSig={aiSig}
-            getAiSignal={getAiSignal} gotoSignal={gotoSignal} deleteSignal={deleteSignal} clearAiSig={clearAiSig}
-            order={order} setOrder={setOrder} startTrade={startTrade} submitOrder={submitOrder} curPrice={curPrice} livePrice={livePrice} quickTrade={quickTrade}
-            overlays={overlays} subs={subs}
-          />
+          overlayPanels ? (
+            <div className="absolute inset-0 z-[55] flex" dir="ltr" style={{ pointerEvents: 'none' }}>
+              {/* بک‌دراپ برای بستن با لمس */}
+              <div className="absolute inset-0" style={{ background: TH.overlayMask || 'rgba(0,0,0,.42)', backdropFilter: 'blur(1px)', pointerEvents: 'auto' }} onClick={() => setShowRight(false)} />
+              {/* پنل: در RTL سمتِ راست می‌چسبد، عرضِ امن، ارتفاعِ کامل با اسکرولِ داخلی */}
+              <div className="ml-auto h-full shrink-0 shadow-2xl" style={{ pointerEvents: 'auto', width: 'min(86vw, 320px)' }}>
+                <RightPanel
+                  TH={TH} rightTab={rightTab} setRightTab={setRightTab}
+                  symbol={symbol} setSymbol={setSymbol} symbols={symbols} live={live} tf={tf}
+                  watch={watch} toggleWatch={toggleWatch} fmtPrice={fmtPrice}
+                  aiBusy={aiBusy} aiQuota={aiQuota} aiList={aiList} aiSig={aiSig}
+                  getAiSignal={getAiSignal} gotoSignal={gotoSignal} deleteSignal={deleteSignal} clearAiSig={clearAiSig}
+                  order={order} setOrder={setOrder} startTrade={startTrade} submitOrder={submitOrder} curPrice={curPrice} livePrice={livePrice} quickTrade={quickTrade}
+                  overlays={overlays} subs={subs}
+                />
+              </div>
+            </div>
+          ) : (
+            <RightPanel
+              TH={TH} rightTab={rightTab} setRightTab={setRightTab}
+              symbol={symbol} setSymbol={setSymbol} symbols={symbols} live={live} tf={tf}
+              watch={watch} toggleWatch={toggleWatch} fmtPrice={fmtPrice}
+              aiBusy={aiBusy} aiQuota={aiQuota} aiList={aiList} aiSig={aiSig}
+              getAiSignal={getAiSignal} gotoSignal={gotoSignal} deleteSignal={deleteSignal} clearAiSig={clearAiSig}
+              order={order} setOrder={setOrder} startTrade={startTrade} submitOrder={submitOrder} curPrice={curPrice} livePrice={livePrice} quickTrade={quickTrade}
+              overlays={overlays} subs={subs}
+            />
+          )
         )}
       </div>
 
@@ -1816,7 +1846,7 @@ export default function BazaarNama() {
       <SymbolSearchModal open={symModal} onClose={() => setSymModal(false)} metaList={symbolMeta} watch={watch} current={symbol} onPick={(s) => setSymbol(s)} TH={TH} coarse={bp.coarse} />
 
       {/* #4 نسخهٔ موبایل: نوارِ ناوبریِ پایینی + شیت‌های پایین */}
-      {bp.isMobile && (
+      {compact && (
         <>
           <MobileBottomNav
             TH={TH} active={sheet === 'none' ? null : sheet}
