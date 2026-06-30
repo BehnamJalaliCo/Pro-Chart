@@ -171,6 +171,8 @@ export default function BazaarNama() {
   const [overlays, setOverlays] = useState(() => loadWS().overlays || []);
   const [subs, setSubs] = useState(() => loadWS().subs || []);
   const [indMenu, setIndMenu] = useState(false);
+  const [indFavs, setIndFavs] = useState(() => loadWS().indFavs || []); // اندیکاتورهای منتخب (پین‌شده)
+  const toggleIndFav = (k) => setIndFavs((f) => { const n = f.includes(k) ? f.filter((x) => x !== k) : [...f, k]; saveWS({ indFavs: n }); return n; });
   const [ctMenu, setCtMenu] = useState(false);
   const [watch, setWatch] = useState([]);
   const [rightTab, setRightTab] = useState('watch');
@@ -1105,7 +1107,28 @@ export default function BazaarNama() {
         </div>
         <div data-menu className="relative">
           <button onClick={() => setIndMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Activity size={14} /> اندیکاتورها</button>
-          {indMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-52 max-h-72 overflow-auto p-1" style={{ background: TH.panel, borderColor: TH.border }}>{Object.entries(REGISTRY).map(([k, d]) => (<button key={k} onClick={() => addInd(k)} className="flex items-center justify-between w-full text-right px-2 py-1.5 text-sm hover:bg-black/5 rounded"><span>{d.label}</span><Plus size={13} className="opacity-50" /></button>))}</div>)}
+          {indMenu && (
+            <div className="absolute z-40 mt-1 rounded-lg w-56 max-h-80 overflow-auto p-1 pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}` }}>
+              {indFavs.filter((k) => REGISTRY[k]).length > 0 && (
+                <>
+                  <div className="px-2 py-1 text-[10px] opacity-50 flex items-center gap-1"><Star size={10} /> منتخب‌ها</div>
+                  {indFavs.filter((k) => REGISTRY[k]).map((k) => (
+                    <div key={'f' + k} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                      <button onClick={() => addInd(k)} className="flex-1 text-right">{REGISTRY[k].label}</button>
+                      <button onClick={() => toggleIndFav(k)} title="حذف از منتخب"><Star size={13} style={{ fill: TH.accent, color: TH.accent }} /></button>
+                    </div>
+                  ))}
+                  <div className="my-1 border-t" style={{ borderColor: TH.border }} />
+                </>
+              )}
+              {Object.entries(REGISTRY).map(([k, d]) => (
+                <div key={k} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                  <button onClick={() => addInd(k)} className="flex-1 text-right">{d.label}</button>
+                  <button onClick={() => toggleIndFav(k)} title="افزودن/حذف از منتخب" className="mr-1"><Star size={12} style={indFavs.includes(k) ? { fill: TH.accent, color: TH.accent } : { opacity: 0.35 }} /></button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <button onClick={() => setEditorOpen((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={editorOpen ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBg; }}><Code2 size={14} /> نمااسکریپت</button>
         <button onClick={() => (replay.on ? exitReplay() : enterReplay())} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={replay.on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBg; }}><Play size={14} /> بازپخش</button>
