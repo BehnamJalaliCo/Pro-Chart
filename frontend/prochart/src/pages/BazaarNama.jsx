@@ -234,6 +234,7 @@ export default function BazaarNama() {
   const [showTree, setShowTree] = useState(false);     // نمایشِ Object Tree
   const [showDataWin, setShowDataWin] = useState(loadWS().showDataWin ?? false); // Data Window (مقادیرِ زیرِ کراس‌هیر)
   const [dataWin, setDataWin] = useState(null);        // {ohlc, vol, time, inds:[{label,vals,color}]}
+  const [ctxMenu, setCtxMenu] = useState(null);        // منوی راست‌کلیکِ چارت {x,y,price}
   const indLabelRef = useRef({});                       // id → {label,color} برای Data Window
   const showDataWinRef = useRef(loadWS().showDataWin ?? false); // گیتِ محاسبهٔ Data Window در هندلرِ کراس‌هیر
   const [drawVer, setDrawVer] = useState(0);           // نسخه برای رفرشِ دکمه‌های undo/redo
@@ -1191,7 +1192,14 @@ export default function BazaarNama() {
         {/* چارت */}
         <div className="flex-1 flex flex-col min-w-0 relative">
           <Legend legend={legend} TH={TH} symbol={symbol} tf={tf} />
-          <div className="relative flex-1 min-h-0">
+          <div className="relative flex-1 min-h-0"
+               onContextMenu={(e) => {
+                 e.preventDefault();
+                 const rect = e.currentTarget.getBoundingClientRect();
+                 const yy = e.clientY - rect.top;
+                 let price = null; try { price = priceSeriesRef.current && priceSeriesRef.current.coordinateToPrice(yy); } catch (err) {}
+                 setCtxMenu({ x: e.clientX - rect.left, y: yy, price });
+               }}>
             <div ref={mainRef} className="absolute inset-0" />
             <canvas ref={overlayRef} className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }} />
             {/* جدول‌های نمااسکریپت (table.new) — گوشهٔ بالا-راست */}
@@ -1287,6 +1295,36 @@ export default function BazaarNama() {
                   ) : <div className="opacity-50 text-center py-1">نشانگر را روی چارت ببر</div>}
                 </div>
               </div>
+            )}
+            {/* منوی راست‌کلیکِ چارت (مثلِ TradingView) */}
+            {ctxMenu && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setCtxMenu(null)} onContextMenu={(e) => { e.preventDefault(); setCtxMenu(null); }} />
+                <div className="absolute z-50 w-52 rounded-md pc-pop py-1 text-[12px]" dir="rtl"
+                     style={{ left: ctxMenu.x, top: ctxMenu.y, background: TH.panel, border: `1px solid ${TH.border}`, color: TH.textStrong }}>
+                  {ctxMenu.price != null && (
+                    <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                      onClick={() => { setAlForm((f) => ({ ...f, op: 'above', value: fmtPrice(symbol, ctxMenu.price) })); setRightTab('alerts'); setShowRight(true); setCtxMenu(null); }}>
+                      <Bell size={13} /> افزودنِ آلارم در {fmtPrice(symbol, ctxMenu.price)}
+                    </button>
+                  )}
+                  {ctxMenu.price != null && (
+                    <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                      onClick={() => { startTrade('buy'); setCtxMenu(null); }}><Activity size={13} /> ترید از این سطح</button>
+                  )}
+                  <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                    onClick={() => { setShowDataWin(true); setCtxMenu(null); }}><Table2 size={13} /> پنجرهٔ داده</button>
+                  <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                    onClick={() => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); } catch (e) {} setCtxMenu(null); }}>بازنشانیِ مقیاس</button>
+                  <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                    onClick={() => { try { rootRef.current.requestFullscreen(); } catch (e) {} setCtxMenu(null); }}><Maximize2 size={13} /> تمام‌صفحه</button>
+                </div>
+              </>
             )}
             {grid > 1 && (
               <div className="absolute inset-0 z-30 grid gap-1 p-1" style={{ background: TH.bg, gridTemplateColumns: grid === 2 ? '1fr 1fr' : '1fr 1fr', gridTemplateRows: grid === 2 ? '1fr' : '1fr 1fr' }}>
