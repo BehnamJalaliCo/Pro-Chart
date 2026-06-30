@@ -484,8 +484,26 @@ export default function BazaarNama() {
       const der = DERIVED_TF[tf];
       const fetchTf = der ? der[0] : tf;
       const factor = der ? der[1] : 1;
-      const r = await api.chart(symbol, fetchTf, '', 800 * factor);
-      let cs = (r.candles || []).map((c) => ({ t: c.t, o: c.o, h: c.h, l: c.l, c: c.c, v: c.v }));
+      // نمادِ ترکیبی/اسپرد: A/B, A*B, A+B, A-B (مثلِ TradingView) — هر دو پایه را می‌گیریم و ترکیب می‌کنیم
+      const spm = symbol.match(/^([A-Za-z0-9.]+)\s*([/*+-])\s*([A-Za-z0-9.]+)$/);
+      let cs;
+      if (spm) {
+        const op = spm[2];
+        const [ra, rb] = await Promise.all([api.chart(spm[1].toUpperCase(), fetchTf, '', 800 * factor), api.chart(spm[3].toUpperCase(), fetchTf, '', 800 * factor)]);
+        const bMap = new Map((rb.candles || []).map((c) => [c.t, c]));
+        const cmb = (x, y) => op === '/' ? (y ? x / y : null) : op === '*' ? x * y : op === '+' ? x + y : x - y;
+        cs = [];
+        for (const a of (ra.candles || [])) {
+          const b = bMap.get(a.t); if (!b) continue;
+          const o = cmb(a.o, b.o), h = cmb(a.h, b.h), l = cmb(a.l, b.l), cc = cmb(a.c, b.c);
+          if ([o, h, l, cc].some((v) => v == null || !isFinite(v))) continue;
+          cs.push({ t: a.t, o, h: Math.max(o, h, l, cc), l: Math.min(o, h, l, cc), c: cc, v: a.v || 0 });
+        }
+        lazyRef.current = { loading: false, exhausted: true }; // اسپرد: بارگذاریِ تنبلِ تاریخ غیرفعال
+      } else {
+        const r = await api.chart(symbol, fetchTf, '', 800 * factor);
+        cs = (r.candles || []).map((c) => ({ t: c.t, o: c.o, h: c.h, l: c.l, c: c.c, v: c.v }));
+      }
       if (factor > 1) cs = resampleCandles(cs, factor);
       candlesRef.current = cs;
       buildPriceSeries(cs); applyOverlays(cs); applySubs(cs);
