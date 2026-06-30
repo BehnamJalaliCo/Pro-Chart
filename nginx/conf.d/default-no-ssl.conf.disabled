@@ -1,0 +1,124 @@
+# =============================================================================
+# کانفیگ موقت بدون SSL — فقط برای شروع اولیه و دریافت گواهی
+# پس از دریافت SSL:
+#   1. این فایل را حذف کنید: rm nginx/conf.d/default-no-ssl.conf
+#   2. فایل‌های website.conf و admin.conf را فعال کنید
+#   3. nginx را ری‌استارت کنید: docker compose restart nginx
+# =============================================================================
+
+# وب‌سایت اصلی
+server {
+    listen 80;
+    server_name FX.trade-future.ir;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    # محدودیت سخت‌گیرانه برای auth — جلوگیری از brute-force
+    location ~ ^/api/auth/(login|refresh) {
+        limit_req zone=auth burst=3 nodelay;
+        proxy_pass http://api_backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /api/ {
+        limit_req zone=api burst=10 nodelay;
+        proxy_pass http://api_backend/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /ws/ {
+        proxy_pass http://api_backend/ws/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_read_timeout 86400;
+    }
+
+    location / {
+        limit_req zone=general burst=20 nodelay;
+        proxy_pass http://website_frontend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
+# پنل ادمین
+server {
+    listen 80;
+    server_name Panel.FX.trade-future.ir;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location ~ ^/api/auth/(login|refresh) {
+        limit_req zone=auth burst=3 nodelay;
+        proxy_pass http://api_backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /api/ {
+        limit_req zone=api burst=10 nodelay;
+        proxy_pass http://api_backend/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        limit_req zone=general burst=20 nodelay;
+        proxy_pass http://admin_frontend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
+# API
+server {
+    listen 80;
+    server_name api.FX.trade-future.ir;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location ~ ^/auth/(login|refresh) {
+        limit_req zone=auth burst=3 nodelay;
+        proxy_pass http://api_backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        limit_req zone=api burst=10 nodelay;
+        proxy_pass http://api_backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /ws/ {
+        proxy_pass http://api_backend/ws/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_read_timeout 86400;
+    }
+}

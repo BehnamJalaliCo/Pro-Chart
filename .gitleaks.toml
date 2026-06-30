@@ -1,0 +1,24 @@
+# پیکربندیِ gitleaks — اسکنِ نشتِ سکرت در کدِ پروژه.
+# از قواعدِ پیش‌فرضِ gitleaks استفاده می‌کند + allowlistِ موارد آزمایشی/نمونه.
+title = "CoinePro-FX gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "موارد مجاز — نمونه‌ها و فیکسچرهای تست (سکرتِ واقعی نیستند)"
+paths = [
+  '''.*\.example$''',
+  '''.*\.md$''',
+  '''tests/.*''',
+  '''conftest\.py''',
+  '''deploy/windows/.*\.txt$''',
+]
+regexes = [
+  '''change-me-very-long-random-string''',
+  '''CHANGE_ME''',
+  '''your-.*-here''',
+  '''example\.com''',
+  '''test[_-]?token''',
+  '''dummy''',
+]

@@ -1,0 +1,36 @@
+# ── رازها (امنیت — هرگز) ──
+.env
+.env.*
+secrets/
+*.pem
+*.key
+*.crt
+.git-credentials
+**/rclone.conf
+certbot/
+# ── بازتولیدشونده ──
+**/node_modules/
+__pycache__/
+*.pyc
+*.pyo
+logs/
+*.log
+backups/
+backup-logs/
+# ── محتوا/باینریِ سنگین (روی سرور می‌مانند؛ گیت جای باینریِ بزرگ نیست) ──
+avatar_work/
+samples/
+ig_data/
+ig_media/
+ig-worker/
+media/
+edu_assets/
+ml_models/
+video_studio/public/
+chart_service/node_modules/
+*.mp4
+*.pth
+*.PNG
+*.JPG
+*.JPEG
+*.bak.*

@@ -1,0 +1,8 @@
+# robots.txt — کوین پرو FX
+User-agent: *
+Allow: /
+
+# منابع غیرضروری برای ایندکس
+Disallow: /api/
+
+Sitemap: https://fx.trade-future.ir/sitemap.xml

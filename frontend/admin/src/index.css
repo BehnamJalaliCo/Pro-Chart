@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    font-family: 'Vazirmatn', sans-serif;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-surface text-text-primary;
+    direction: rtl;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply bg-surface-elevated border border-surface-border text-text-primary rounded-lg px-3 py-2 outline-none transition-colors;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply border-brand-blue ring-1 ring-brand-blue/30;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-text-muted;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-blue hover:bg-brand-blue/90 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-success {
+    @apply bg-brand-green hover:bg-brand-green/90 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-danger {
+    @apply bg-brand-red hover:bg-brand-red/90 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent hover:bg-surface-hover text-text-secondary font-medium px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-surface-card border border-surface-border rounded-xl p-5;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-green {
+    @apply bg-brand-green/15 text-brand-green;
+  }
+
+  .badge-red {
+    @apply bg-brand-red/15 text-brand-red;
+  }
+
+  .badge-blue {
+    @apply bg-brand-blue/15 text-brand-blue;
+  }
+
+  .table-container {
+    @apply overflow-x-auto rounded-xl border border-surface-border;
+  }
+
+  .table-container table {
+    @apply w-full text-sm;
+  }
+
+  .table-container thead {
+    @apply bg-surface-elevated;
+  }
+
+  .table-container th {
+    @apply px-4 py-3 text-right text-text-secondary font-medium whitespace-nowrap;
+  }
+
+  .table-container td {
+    @apply px-4 py-3 text-right border-t border-surface-border whitespace-nowrap;
+  }
+
+  .table-container tbody tr {
+    @apply hover:bg-surface-hover transition-colors;
+  }
+
+  .stat-card {
+    @apply card flex flex-col gap-2;
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm;
+  }
+
+  .modal-content {
+    @apply bg-surface-card border border-surface-border rounded-2xl p-6 w-full max-w-lg max-h-[85vh] overflow-y-auto shadow-2xl;
+  }
+
+  .gauge-ring {
+    @apply relative w-24 h-24;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

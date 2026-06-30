@@ -1,0 +1,71 @@
+{
+  "_doc": "Machine-usable edit params for CoinePro forex reels/carousels. Companion to EDIT_PLAYBOOK.md. FOREX only, zero crypto.",
+  "format": {"reel": [1080, 1920], "carousel": [1080, 1350], "fps": 30, "font": "Vazirmatn", "brand": "CoinePro"},
+  "rule_2026": "Dynamic Minimalism: Hormozi mechanics (word-by-word, zoom, cut) minus noise (cartoon emoji, flashing colors, SFX clutter). One strong transition per 5s.",
+  "tts_normalize": {"کوین‌پرو": "CoinePro", "کوین پرو": "CoinePro", "فارکس": "Forex", "اسپرد": "spread", "لوریج": "leverage", "بروکر": "broker"},
+  "easing": {
+    "word_pop": "cubic-bezier(0.34,1.56,0.64,1)",
+    "springy": "cubic-bezier(0.175,0.885,0.32,1.275)",
+    "back_js": "1+(s+1)*Math.pow(x-1,3)+s*Math.pow(x-1,2)  // s=2.0 word, s=0.8 title",
+    "expo_js": "x===1?1:1-Math.pow(2,-10*x)  // big titles + counters",
+    "active_word_scale": 1.10
+  },
+  "caption_looks": {
+    "hormozi": ".cap span{font-size:96px;font-weight:900;color:#fff;text-shadow:-3px 0 #000,3px 0 #000,0 -3px #000,0 3px #000,-3px -3px #000,3px 3px #000,3px -3px #000,-3px 3px #000,0 6px 16px rgba(0,0,0,.6)} .cap span.on{color:#FFD93D;transform:scale(1.10)}",
+    "minimal": ".cap span{font-size:88px;font-weight:900;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.55)} .cap span.on{color:#FFE14D;transform:scale(1.10)}",
+    "boxed": ".cap{background:rgba(0,0,0,.55);border-radius:18px;padding:10px 26px} .cap span{font-size:84px;font-weight:900;color:#fff} .cap span.on{color:#111;background:#FFD93D;border-radius:10px;padding:0 8px}",
+    "position": "bottom:26%", "max_words_on_screen": 3, "chunk_words": 2, "line_height": 1.6, "direction": "rtl"
+  },
+  "grades_ffmpeg": {
+    "teal_orange_DEFAULT": "curves=master='0/0.03 0.25/0.20 0.5/0.5 0.75/0.80 1/0.97',colorbalance=rs=-0.06:gs=0.02:bs=0.10:rm=0.02:bm=-0.02:rh=0.10:gh=0.02:bh=-0.10,eq=contrast=1.08:saturation=1.10:gamma=0.98,selectivecolor=reds=0.06 0 -0.06 -0.02:yellows=0.05 0 -0.08 0:cyans=0 0 0 -0.10,noise=alls=8:allf=t+u,vignette=angle=PI/5",
+    "moody_warm": "curves=master='0/0.0 0.3/0.22 0.7/0.78 1/0.95',colorbalance=rs=0.05:bs=-0.04:rm=0.04:bm=-0.04:rh=0.08:gh=0.03:bh=-0.12,eq=contrast=1.12:saturation=0.95:gamma=0.95:brightness=-0.02",
+    "bleach_bypass": "curves=master='0/0.0 0.2/0.10 0.5/0.55 0.8/0.92 1/1.0',eq=contrast=1.35:saturation=0.55:gamma=0.92,colorchannelmixer=1.05:0:0:0:0:0.98:0:0:0:0:0.92:0",
+    "clean_commercial": "curves=master='0/0.02 0.5/0.52 1/0.99',eq=contrast=1.05:saturation=1.06:gamma=1.02:brightness=0.02,colorbalance=bs=0.05:rh=0.03:bh=-0.04"
+  },
+  "transitions": {
+    "ms": [150, 400], "on_beat": true,
+    "pro_top4": ["zoom-blur", "velocity-speed-ramp", "whip-pan", "light-leak-screen"],
+    "xfade_names": ["fade","fadeblack","fadewhite","dissolve","smoothleft","smoothright","slideup","wipeleft","circleopen","radial","squeezev","hblur","pixelize"],
+    "tool": "https://github.com/scriptituk/xfade-easing"
+  },
+  "sfx_lavfi": {
+    "whoosh": "anoisesrc=c=white:a=0.9:d=0.5 -af bandpass=f=900:w=600,volume='1-abs(0.5-t/0.5)':eval=frame,afade=t=in:d=0.05,afade=t=out:st=0.4:d=0.1",
+    "impact": "sine=frequency=60:duration=0.4 -af afade=t=out:st=0.05:d=0.35,volume=2",
+    "subdrop": "sine=frequency=120:duration=0.4 -af asetrate=44100*0.5,aresample=44100,afade=t=out:st=0.1:d=0.3",
+    "riser": "anoisesrc=c=pink:a=0.6:d=1.2 -af highpass=f=400,volume='t/1.2':eval=frame,afade=t=out:st=1.1:d=0.1",
+    "tick": "sine=frequency=1200:duration=0.06 -af afade=t=out:st=0.01:d=0.05",
+    "placement": {"whoosh": "-90ms before cut", "impact": "+45ms after text", "riser_peak": "on reveal"},
+    "balance_lufs": {"voice": -14, "music_under_voice": -32, "sfx": -19, "master": -14},
+    "duck": "[music][voice]sidechaincompress=threshold=0.02:ratio=10:attack=50:release=500:makeup=1:knee=6",
+    "note": "Use sparingly (Dynamic Minimalism)."
+  },
+  "hooks_forex": [
+    {"fa": "۹۰٪ تریدرها ضرر می‌کنن", "interrupt": "snap-zoom", "trigger": "loss-aversion"},
+    {"fa": "اندیکاتور پولدارت نمی‌کنه", "interrupt": "freeze+flash", "trigger": "myth-bust"},
+    {"fa": "اینجوری استاپ نذار", "interrupt": "whip-pan", "trigger": "contrarian"},
+    {"fa": "حرفه‌ای‌ها فقط اینجا وارد می‌شن", "interrupt": "zoom-in", "trigger": "curiosity-gap"},
+    {"fa": "بروکرها نمی‌خوان بدونی", "interrupt": "dark-vignette", "trigger": "forbidden"},
+    {"fa": "این اشتباه ۱۰۰۰ دلار آبه", "interrupt": "red-flash", "trigger": "cost-of-mistake"},
+    {"fa": "قبل NFP این رو ببین", "interrupt": "tick-flash", "trigger": "timing/FOMO"},
+    {"fa": "فقط ۲ عدد تو ریسک مهمه", "interrupt": "counter-pop", "trigger": "simplicity"}
+  ],
+  "cta_patterns": ["کامنت کلیدواژه 'سیگنال' + auto-DM لینک", "سیو کن، ستاپ تو بایو", "ستاپ امروز تو تلگرامه", "VIP جمعه بسته می‌شه", "سیگنال‌های این هفته رایگان"],
+  "content_pillars": ["بریف روزانه بازار", "کالبدشکافی ترید", "مدیریت ریسک", "روان‌شناسی", "افسانه‌زدایی", "واکنش خبر", "نتیجه/پروف(وین+لاس)", "آموزش مفهوم"],
+  "reel_structure_s": {"hook": [0, 3], "stakes": [3, 8], "value": [8, 22], "payoff": [22, 27], "cta": [27, 30], "interrupt_every_s": 2.5},
+  "edit_styles": ["fast-cut-hype", "calm-minimal", "breaking-news", "data-viz", "story-arc", "talking-head-cutout", "before-after", "listicle-countdown", "asmr-satisfying", "retro-vhs"],
+  "carousel": {"safe_area": [1000, 1270], "padding": 80, "bottom_reserve": 150, "cover_hook_px": [96, 120], "headline_px": [64, 80], "body_px": [38, 46], "accent": "#10B981", "base_dark": "#0B0F0D", "base_light": "#F7F9F8", "archetypes": ["cover", "stat", "step", "do-dont", "quote", "chart-explainer", "checklist", "cta"]},
+  "server_tools": {
+    "capcut_on_server": false,
+    "install_now": {
+      "whisperx": "pip install whisperx",
+      "pycaps": "pip install 'git+https://github.com/francozanardi/pycaps.git#egg=pycaps[all]'",
+      "auto-editor": "pip install auto-editor",
+      "rembg": "pip install 'rembg[cpu,cli]'",
+      "librosa": "pip install librosa soundfile",
+      "xfade-easing": "git clone https://github.com/scriptituk/xfade-easing"
+    },
+    "framework_later": {"revideo": "MIT free", "remotion": "watch company license >3 ppl"}
+  },
+  "scoring": {"flat_v1": 50, "cinematic_footage_v2": 70, "target": 90},
+  "owner_fixes": ["latin brand in TTS", "NO cartoon fantasy emoji -> minimal pro elements", "keep moving video footage bg", "tighter/more-synced edit"]
+}

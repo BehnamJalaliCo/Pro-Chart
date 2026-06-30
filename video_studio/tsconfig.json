@@ -1,0 +1,1 @@
+{ "compilerOptions": { "target": "ES2018", "module": "ESNext", "jsx": "react-jsx", "esModuleInterop": true, "skipLibCheck": true, "moduleResolution": "node", "lib": ["ES2021","DOM"] } }

@@ -1,0 +1,167 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 50},
+              {"color": "red", "value": 80}
+            ]
+          }
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"]}},
+      "title": "Active Signals",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "forex_signals_active",
+          "legendFormat": "Active"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "id": 2,
+      "title": "Win Rate (30d)",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "forex_win_rate{period=\"monthly\"}",
+          "legendFormat": "Win Rate"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "id": 3,
+      "title": "Total Signals Today",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "increase(forex_signals_generated_total[24h])",
+          "legendFormat": "Signals"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+      "id": 4,
+      "title": "Bot Users",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "forex_bot_users_total",
+          "legendFormat": "Users"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "id": 5,
+      "title": "Signals Generated (24h)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "increase(forex_signals_generated_total[1h])",
+          "legendFormat": "{{symbol}} {{direction}}"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "id": 6,
+      "title": "Signal Score Distribution",
+      "type": "histogram",
+      "targets": [
+        {
+          "expr": "forex_signal_score_bucket",
+          "legendFormat": "Score"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+      "id": 7,
+      "title": "Data Feed Status",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "forex_data_feed_status",
+          "legendFormat": "{{source}}"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+      "id": 8,
+      "title": "ML Inference Duration",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "rate(forex_ml_inference_seconds_sum[5m]) / rate(forex_ml_inference_seconds_count[5m])",
+          "legendFormat": "{{model}}"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20},
+      "id": 9,
+      "title": "API Response Time",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(forex_api_request_duration_seconds_bucket[5m]))",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "histogram_quantile(0.50, rate(forex_api_request_duration_seconds_bucket[5m]))",
+          "legendFormat": "p50"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20},
+      "id": 10,
+      "title": "Messages Sent",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "increase(forex_bot_messages_sent_total[1h])",
+          "legendFormat": "{{type}}"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "tags": ["forex", "signals"],
+  "templating": {"list": []},
+  "time": {"from": "now-24h", "to": "now"},
+  "title": "Forex Signal Bot Dashboard",
+  "uid": "forex-main",
+  "version": 1
+}

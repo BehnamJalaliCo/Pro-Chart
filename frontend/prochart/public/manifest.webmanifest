@@ -1,0 +1,24 @@
+{
+  "name": "آکادمی کوین پرو FX",
+  "short_name": "کوین‌پرو آکادمی",
+  "description": "آکادمیِ جامعِ فارکس با مربیِ هوشِ مصنوعی، چارتِ حرفه‌ای بازارنما و سیگنالِ AI",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#070b12",
+  "theme_color": "#070b12",
+  "categories": ["education", "finance"],
+  "icons": [
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "بازارنما (چارت)", "url": "/bazaarnama" },
+    { "name": "چارتِ زنده", "url": "/livechart" },
+    { "name": "دوره‌ها", "url": "/" }
+  ]
+}
