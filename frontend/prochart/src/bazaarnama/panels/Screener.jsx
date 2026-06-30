@@ -20,6 +20,22 @@ const digits = (sym = '') => {
 };
 const fmtP = (sym, v) => { const n = num(v); return n == null ? '—' : n.toFixed(digits(sym)); };
 
+// #۵ رتبهٔ «ارزش/اهمیت» — باارزش‌ترین (طلا، شاخص‌ها، میجرها، کریپتوی برتر) بالا، بقیه پایین.
+// نمادها از همین رتبه به‌صورتِ نزولی (باارزش→بی‌ارزش) چیده می‌شوند؛ پایه (USDT/USD) نادیده گرفته می‌شود.
+const _VALUE_ORDER = [
+  'XAUUSD', 'XAGUSD', 'BTCUSDT', 'ETHUSDT', 'US30', 'US500', 'NAS100', 'US100', 'DE40', 'GER40',
+  'UK100', 'JP225', 'EURUSD', 'GBPUSD', 'USDJPY', 'USDCHF', 'AUDUSD', 'USDCAD', 'NZDUSD',
+  'XTIUSD', 'USOIL', 'WTIUSD', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'EURGBP', 'EURJPY', 'GBPJPY',
+];
+const _VRANK = _VALUE_ORDER.reduce((m, s, i) => { m[s] = i; return m; }, {});
+const valueRank = (sym = '') => {
+  const s = String(sym).toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (s in _VRANK) return _VRANK[s];
+  // کریپتوی USDT بعد از لیستِ منتخب، بعد بقیه (الفبایی به‌عنوانِ گره‌گشا در sort اعمال می‌شود)
+  if (s.endsWith('USDT')) return _VALUE_ORDER.length + 1;
+  return _VALUE_ORDER.length + 5;
+};
+
 // تخمینِ اسپرد از روی تعدادِ ارقامِ اعشار (پراکسیِ سبک — بک‌اند فیدِ اسپرد جدا ندارد)
 function spreadPips(mid) {
   const n = num(mid); if (n == null) return null;
@@ -31,14 +47,14 @@ function spreadPips(mid) {
 }
 
 export default function Screener({ symbol, TH, symbols = [], prices = {}, setSymbol }) {
-  const [sortBy, setSortBy] = useState('symbol');   // symbol | last | dir
-  const [sortDir, setSortDir] = useState('asc');    // asc | desc
+  const [sortBy, setSortBy] = useState('value');    // value | symbol | last | dir
+  const [sortDir, setSortDir] = useState('asc');    // asc | desc  (value: asc = باارزش‌ترین بالا)
   const [q, setQ] = useState('');                   // فیلترِ متنیِ نماد
   const [onlyMovers, setOnlyMovers] = useState(false); // فقط نمادهای در حالِ حرکت (dir≠0)
 
   const click = (col) => {
     if (sortBy === col) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
-    else { setSortBy(col); setSortDir(col === 'symbol' ? 'asc' : 'desc'); }
+    else { setSortBy(col); setSortDir(col === 'symbol' || col === 'value' ? 'asc' : 'desc'); }
   };
 
   const rows = useMemo(() => {
@@ -49,7 +65,9 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
     const lastOf = (s) => num(prices[s]?.mid);
     list = [...list].sort((a, b) => {
       let r = 0;
-      if (sortBy === 'symbol') r = a.localeCompare(b);
+      // #۵ پیش‌فرض: مرتب‌سازی بر اساسِ ارزش/اهمیت (باارزش‌ترین بالا)، با نامِ نماد به‌عنوانِ گره‌گشا
+      if (sortBy === 'value') r = (valueRank(a) - valueRank(b)) || a.localeCompare(b);
+      else if (sortBy === 'symbol') r = a.localeCompare(b);
       else if (sortBy === 'last') r = (lastOf(a) ?? -Infinity) - (lastOf(b) ?? -Infinity);
       else if (sortBy === 'dir') r = dirOf(a) - dirOf(b);
       return sortDir === 'asc' ? r : -r;

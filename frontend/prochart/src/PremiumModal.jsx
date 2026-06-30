@@ -22,7 +22,7 @@ export default function PremiumModal() {
         </div>
         <p className="text-sm leading-7 text-gray-300 mb-4">{msg}</p>
         <div className="rounded-xl bg-white/5 p-4 mb-4 text-sm space-y-2">
-          <div className="flex justify-between"><span>اشتراکِ ماهانه</span><b className="text-indigo-300">۱۵ تتر (USDT)</b></div>
+          <div className="flex justify-between"><span>اشتراکِ ماهانه</span><b className="text-indigo-300">۲۵ تتر (USDT)</b></div>
           <div className="flex justify-between"><span>اشتراکِ سالانه</span><b className="text-indigo-300">۲۰۰ تتر (USDT)</b></div>
           <p className="text-[12px] text-gray-400 pt-1 leading-6">
             با اشتراک، قفلِ <b>هوشِ مصنوعی</b>، <b>اسکریپت‌نویسی</b> و <b>ترید روی چارت</b> (البنک/وان‌رویال) باز می‌شود.

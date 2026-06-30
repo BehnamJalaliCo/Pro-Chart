@@ -47,7 +47,8 @@ from src.core.database import (
 )
 from sqlalchemy.orm.attributes import flag_modified
 from src.academy.moderation import ai_review, hard_block
-from src.core.email_otp import consume_reset_token, request_otp, send_password_reset, verify_otp
+from src.core.email_otp import (consume_reset_token, request_otp, request_password_reset_code,
+                                send_password_reset, verify_otp, verify_password_reset_code)
 from src.core.redis_client import redis_client
 from src.llm.client import llm_client
 from src.core.logger import get_logger
@@ -309,36 +310,62 @@ async def register_verify(
 
 
 @router.post("/auth/forgot-password")
-async def forgot_password(email: str = Body(..., embed=True), db: AsyncSession = Depends(get_db)):
-    """درخواستِ بازیابیِ رمز: لینکِ امن به ایمیلِ دانش‌آموز فرستاده می‌شود.
-    ضدِ افشا: پاسخ همیشه موفق است (نمی‌گوید ایمیل ثبت‌شده هست یا نه)."""
+async def forgot_password(email: str = Body(..., embed=True), app: str = Body("academy", embed=True),
+                          db: AsyncSession = Depends(get_db)):
+    """درخواستِ بازیابیِ رمز با کدِ ۶رقمی به ایمیلِ دانش‌آموز.
+
+    دو مصرف با یک endpoint: بازارنما (`app="bazaarnama"`) و آکادمی (پیش‌فرض). کد در Redis
+    (`bn:pwreset:<email>`, TTL ۱۰دقیقه، هش‌شده) ذخیره و با قالبِ متناظر ایمیل می‌شود.
+    ضدِ افشا: پاسخ همیشه `{ok: true}` (نمی‌گوید ایمیل ثبت‌شده هست یا نه)."""
     em = (email or "").strip().lower()
     if not _EMAIL_RE.match(em):
         raise HTTPException(status_code=400, detail="ایمیلِ معتبر وارد کنید.")
+    brand = "bazaarnama" if (app or "").strip().lower() == "bazaarnama" else "academy"
     st = (await db.execute(select(AcademyStudent).where(AcademyStudent.email == em))).scalar_one_or_none()
     if st is not None and st.status == "active":
-        res = await send_password_reset(em, st.id, settings.ACADEMY_APP_URL)
+        res = await request_password_reset_code(em, brand=brand)
         if not res.get("sent") and res.get("cooldown"):
             raise HTTPException(status_code=429,
-                                detail=f"ایمیل به‌تازگی ارسال شده؛ {res['cooldown']} ثانیه صبر کنید.")
-    return {"sent": True}
+                                detail=f"کد به‌تازگی ارسال شده؛ {res['cooldown']} ثانیه صبر کنید.")
+    return {"ok": True}
 
 
 @router.post("/auth/reset-password")
-async def reset_password_self(token: str = Body(..., embed=True), password: str = Body(..., embed=True),
-                              db: AsyncSession = Depends(get_db)):
-    """تنظیمِ رمزِ جدید با توکنِ یک‌بارمصرفِ داخلِ لینکِ ایمیل."""
-    if len(password or "") < 6:
+async def reset_password_self(
+    email: str | None = Body(None, embed=True), code: str | None = Body(None, embed=True),
+    new_password: str | None = Body(None, embed=True),
+    # سازگاریِ عقب‌رو با جریانِ لینک/توکنِ قدیمیِ آکادمی:
+    token: str | None = Body(None, embed=True), password: str | None = Body(None, embed=True),
+    db: AsyncSession = Depends(get_db),
+):
+    """تنظیمِ رمزِ جدید — دو حالت:
+      • کدِ ۶رقمی: body `{email, code, new_password}` (بازارنما، #۱).
+      • توکنِ لینک: body `{token, password}` (سازگاریِ عقب‌رو با ایمیلِ لینک‌دارِ قدیم).
+    """
+    pw = new_password if (new_password is not None) else password
+    if len(pw or "") < 6:
         raise HTTPException(status_code=400, detail="رمز حداقل ۶ کاراکتر باشد.")
-    sid = await consume_reset_token((token or "").strip())
-    if not sid:
-        raise HTTPException(status_code=400, detail="لینکِ بازیابی نامعتبر یا منقضی است. دوباره درخواست دهید.")
-    st = (await db.execute(select(AcademyStudent).where(AcademyStudent.id == sid))).scalar_one_or_none()
+
+    if code is not None or email is not None:
+        # جریانِ کدِ ۶رقمی
+        em = (email or "").strip().lower()
+        if not _EMAIL_RE.match(em):
+            raise HTTPException(status_code=400, detail="ایمیلِ معتبر وارد کنید.")
+        if not await verify_password_reset_code(em, code or ""):
+            raise HTTPException(status_code=400, detail="کدِ بازیابی اشتباه یا منقضی است. دوباره درخواست دهید.")
+        st = (await db.execute(select(AcademyStudent).where(AcademyStudent.email == em))).scalar_one_or_none()
+    else:
+        # جریانِ توکنِ لینکِ قدیمی
+        sid = await consume_reset_token((token or "").strip())
+        if not sid:
+            raise HTTPException(status_code=400, detail="لینکِ بازیابی نامعتبر یا منقضی است. دوباره درخواست دهید.")
+        st = (await db.execute(select(AcademyStudent).where(AcademyStudent.id == sid))).scalar_one_or_none()
+
     if st is None:
         raise HTTPException(status_code=404, detail="حساب یافت نشد.")
-    st.password_hash = hash_password(password)
+    st.password_hash = hash_password(pw)
     await db.commit()
-    logger.info("academy_password_reset", sid=sid)
+    logger.info("academy_password_reset", sid=st.id)
     return {"ok": True}
 
 

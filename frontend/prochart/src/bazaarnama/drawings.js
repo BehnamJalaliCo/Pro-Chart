@@ -162,6 +162,15 @@ export class DrawingLayer {
       // جابه‌جاییِ کلِ آبجکت
       if (this.dragMove) { const d = this.drawings[this.dragMove.idx]; const sp = this._snap({ t: this._t(x), p: this._p(y) }); if (d && sp.t != null && sp.p != null) { this._moveBy(d, sp.t - this.dragMove.last.t, sp.p - this.dragMove.last.p); this.dragMove.last = sp; this.render(); } return; }
       const sp = this._snap({ t: this._t(x), p: this._p(y) });
+      // #۱۱ در حالتِ cursor هم ترسیم‌ها قابلِ ویرایش‌اند: وقتی کرسر روی یک ترسیم/دستگیره/خطِ سفارش
+      // است، لایهٔ ترسیم را موقتاً فعال می‌کنیم تا کلیک=انتخاب/ویرایش؛ در فضای خالی غیرفعال تا چارت
+      // اسکرول/زوم کند. (move روی window است، پس حتی با pointerEvents=none هم اجرا می‌شود.)
+      if (this.tool === 'cursor' && !this.dragging && !this.dragMove && !this.dragHandle && !this.dragOrder) {
+        const over = this._interactiveAt(x, y);
+        const want = over ? 'auto' : 'none';
+        if (cv.style.pointerEvents !== want) cv.style.pointerEvents = want;
+        cv.style.cursor = over ? 'pointer' : 'default';
+      }
       // hover برای cursor (تغییرِ نشانگر)
       if (this.tool === 'select' && !this.dragging) { const sd = this.selected >= 0 ? this.drawings[this.selected] : null; const onH = sd && !sd.locked && this._hitHandle(sd, x, y) >= 0; const h = this._hit(x, y); cv.style.cursor = onH ? 'crosshair' : (h >= 0 ? 'move' : 'default'); this.hover = h; }
       if (this.pending && sp.t != null && sp.p != null) { this.pending.preview = sp; this.render(); return; }
@@ -187,6 +196,13 @@ export class DrawingLayer {
     window.addEventListener('mouseup', up);
     window.addEventListener('keydown', key);
     this._cleanup = () => { cv.removeEventListener('mousedown', down); window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); window.removeEventListener('keydown', key); };
+  }
+
+  // #۱۱ آیا نقطهٔ (x,y) روی چیزی قابلِ‌تعامل است؟ (خطِ سفارش، دستگیرهٔ آبجکتِ انتخاب‌شده، یا بدنهٔ یک ترسیم)
+  _interactiveAt(x, y) {
+    if (this.order) { for (const k of ['entry', 'sl', 'tp']) { const yy = this._y(this.order[k]); if (yy != null && Math.abs(yy - y) < 7) return true; } }
+    if (this.selected >= 0) { const sd = this.drawings[this.selected]; if (sd && !sd.locked && this._hitHandle(sd, x, y) >= 0) return true; }
+    return this._hit(x, y) >= 0;
   }
 
   // hit-test: نزدیک‌ترین ترسیم به نقطهٔ کلیک (یا -1)

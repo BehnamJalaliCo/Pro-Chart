@@ -38,7 +38,7 @@ const inp = 'rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500';
 // قیمتِ اشتراک (طبقِ سیاستِ برند)
 const PRICE = { monthly: 25, yearly: 200 };
 // پشتیبانیِ رسمیِ CoinePro FX (کانالِ تلگرام نمایش داده نمی‌شود)
-const SUPPORT = { handle: '@CoinProFXBot', url: 'https://t.me/CoinProFXBot' };
+const SUPPORT = { handle: '@CoinePro_Admin', url: 'https://t.me/CoinePro_Admin' };
 
 export default function AdminPanel() {
   const [authed, setAuthed] = React.useState(!!adminToken.get());

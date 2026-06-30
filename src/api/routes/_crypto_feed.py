@@ -30,7 +30,7 @@ _TF_SEC = {
 # کشِ لیستِ نمادها (دینامیک از LBank). seedِ پایه تا اولین fetch، بعد گسترش می‌یابد.
 _SEED = ["BTC", "ETH", "BNB", "SOL", "XRP", "ADA", "DOGE", "TRX", "AVAX", "LINK",
          "DOT", "LTC", "BCH", "ATOM", "UNI", "XLM", "ETC", "FIL", "TON", "NEAR"]
-_pairs_set: set = {c + "USDT" for c in _SEED} | {c + "USD" for c in _SEED}
+_pairs_set: set = {c + "USDT" for c in _SEED}  # فقط *USDT — کریپتو همیشه USDT است (#۶)
 _pairs_list: List[str] = [c + "USDT" for c in _SEED]
 _pairs_ts: float = 0.0
 _PAIRS_TTL = 3600  # ۱ ساعت
@@ -51,13 +51,9 @@ def _bn_symbol(lbank_pair: str) -> str:
 
 
 def _lbank_pair(symbol: str) -> str:
+    # کریپتو فقط *USDT است؛ *USD پذیرفته نمی‌شود (#۶)
     s = (symbol or "").upper()
-    if s.endswith("USDT"):
-        base = s[:-4]
-    elif s.endswith("USD"):
-        base = s[:-3]
-    else:
-        base = s
+    base = s[:-4] if s.endswith("USDT") else s
     return f"{base.lower()}_usdt"
 
 
@@ -78,9 +74,7 @@ async def ensure_pairs() -> List[str]:
             # #۱ چیدمان بر اساسِ ارزشِ بازار: ارزها بر اساسِ رتبهٔ market-cap اول، بقیه الفبایی
             syms.sort(key=lambda s: (_MCAP_RANK.get(s, 9999), s))
             _pairs_list = syms
-            _pairs_set = set(syms) | {s[:-1] for s in syms}  # BTCUSDT + BTCUSD(درواقع BTCUSD از brisۀ T)
-            # دقیق‌تر: هم USDT و هم USD را بپذیر
-            _pairs_set = set(syms) | {s[:-4] + "USD" for s in syms}
+            _pairs_set = set(syms)  # فقط *USDT — هیچ *USD کریپتویی پذیرفته نمی‌شود (#۶)
             _pairs_ts = now
     except Exception:  # noqa: BLE001
         pass

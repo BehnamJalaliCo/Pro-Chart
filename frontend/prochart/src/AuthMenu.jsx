@@ -46,7 +46,7 @@ function palette(dark) {
 }
 
 // ── کلیدها/قراردادها (خارج از کامپوننت تا ثابت بمانند) ──
-const SUPPORT_URL = 'https://t.me/CoinProFXBot';   // پشتیبانِ CoinePro FX (#13)
+const SUPPORT_URL = 'https://t.me/CoinePro_Admin';   // پشتیبانِ CoinePro FX (#13)
 
 export default function AuthMenu({ theme = 'dark', panelUrl, onToggleTheme }) {
   // ── همهٔ stateها/refها قبل از هر افکت/کال‌بکی که استفاده‌شان می‌کند (جلوگیری از TDZ) ──
@@ -178,7 +178,6 @@ export default function AuthMenu({ theme = 'dark', panelUrl, onToggleTheme }) {
                     </>) : (
                       <MenuBtn P={P} icon={<LogOut size={16} />} label="خروج از حساب" onClick={logout} danger />
                     )}
-                    <MenuBtn P={P} icon={<User size={16} />} label="پنلِ کاربری (حساب · اشتراک · بروکر)" external onClick={() => goPanel('/?from=chart')} />
                   </Section>
 
                   {/* #۶ اشتراکِ پریمیوم — کارتِ بازاریابیِ حرفه‌ای (بدونِ آدرسِ کانترکتِ خام) */}

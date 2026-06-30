@@ -13,7 +13,7 @@ const inp = 'w-full rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ind
 const TIER = { free: 'رایگان', vip: 'VIP', premium: 'پرمیوم' };
 const CHART_URL = 'https://pro-chart.ir/';
 // پشتیبانِ رسمیِ CoinePro FX (کانالِ تلگرام حذف شد — فقط پشتیبانی)
-const SUPPORT_URL = 'https://t.me/CoinProFXBot';
+const SUPPORT_URL = 'https://t.me/CoinePro_Admin';
 // قیمتِ اشتراک — ماهانه ۲۵ تتر، سالانه ۲۰۰ تتر
 const PRICE = { monthlyUsd: 25, yearlyUsd: 200, monthlyFa: '۲۵', yearlyFa: '۲۰۰' };
 
@@ -105,7 +105,32 @@ function fmtDate(iso) {
 
 // ───────────────────────── ریشهٔ پنل ─────────────────────────
 
-export default function UserPanel() {
+// #۱۲ مرزِ خطا — هر خطای رندری در پنل به‌جای صفحهٔ مشکی، پیامِ دوستانه + دکمهٔ تلاشِ مجدد نشان می‌دهد.
+class PanelErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { err: null }; }
+  static getDerivedStateFromError(err) { return { err }; }
+  componentDidCatch(err, info) { try { console.error('UserPanel crash:', err, info); } catch (e) { /* noop */ } }
+  render() {
+    if (this.state.err) {
+      return (
+        <div dir="rtl" className="min-h-screen bg-[#0b0e14] text-gray-200 flex items-center justify-center px-4">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#13161f] p-6 text-center shadow-2xl">
+            <div className="text-3xl mb-2">⚠️</div>
+            <div className="text-lg font-extrabold mb-1">مشکلی پیش آمد</div>
+            <div className="text-[13px] opacity-60 leading-7 mb-5">صفحه به‌درستی بارگذاری نشد. لطفاً دوباره تلاش کن؛ اگر تکرار شد با پشتیبانی در میان بگذار.</div>
+            <div className="flex gap-2">
+              <button onClick={() => { try { location.reload(); } catch (e) { /* noop */ } }} className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold transition">تلاشِ دوباره</button>
+              <a href={SUPPORT_URL} target="_blank" rel="noreferrer" className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 font-bold transition inline-flex items-center justify-center gap-1.5"><Headset size={14} /> پشتیبانی</a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function UserPanelInner() {
   const [auth, setAuth] = React.useState(authStore.get());
   const [me, setMe] = React.useState(null);
   const reloadMe = React.useCallback(() => { if (authStore.get()) api.me().then(setMe).catch(() => {}); }, []);
@@ -117,6 +142,14 @@ export default function UserPanel() {
 
   if (!auth) return <AuthScreen onAuthed={onAuthed} />;
   return <PanelShell auth={auth} me={me} reloadMe={reloadMe} logout={logout} />;
+}
+
+export default function UserPanel() {
+  return (
+    <PanelErrorBoundary>
+      <UserPanelInner />
+    </PanelErrorBoundary>
+  );
 }
 
 // ───────────────────────── صفحهٔ ورود/ثبت‌نام (بازطراحیِ جهانی — #5) ─────────────────────────
@@ -195,21 +228,27 @@ function AuthScreen({ onAuthed }) {
 // ───────────────────────── ورود/ثبت‌نام (موجود — بدونِ تغییرِ منطق) ─────────────────────────
 
 function AuthGate({ onAuthed }) {
-  const [mode, setMode] = React.useState('login'); // login | register
+  const [mode, setMode] = React.useState('login'); // login | register | forgot
+  const titles = { login: 'ورود به حساب', register: 'ساختِ حسابِ جدید', forgot: 'بازیابیِ رمزِ عبور' };
+  const subs = { login: 'برای ادامه وارد شو.', register: 'در چند ثانیه عضوِ پروچارت شو.', forgot: 'با ایمیلت رمزِ جدید بساز.' };
   return (
     <div className="rounded-3xl border border-white/10 bg-[#13161f]/90 backdrop-blur p-6 sm:p-7 shadow-2xl shadow-black/40">
       <div className="lg:hidden mb-5"><BrandMark size="sm" /></div>
       <div className="mb-5">
-        <div className="text-lg font-extrabold">{mode === 'login' ? 'ورود به حساب' : 'ساختِ حسابِ جدید'}</div>
-        <div className="text-[12px] opacity-55 mt-1">{mode === 'login' ? 'برای ادامه وارد شو.' : 'در چند ثانیه عضوِ پروچارت شو.'}</div>
+        <div className="text-lg font-extrabold">{titles[mode]}</div>
+        <div className="text-[12px] opacity-55 mt-1">{subs[mode]}</div>
       </div>
-      {/* تب‌های لغزشی */}
-      <div className="relative grid grid-cols-2 p-1 rounded-xl bg-white/5 border border-white/10 mb-5 text-sm font-bold">
-        <span className={`absolute top-1 bottom-1 w-[calc(50%-0.25rem)] rounded-lg bg-indigo-600 shadow transition-all duration-300 ${mode === 'login' ? 'right-1' : 'right-[calc(50%+0.125rem)]'}`} />
-        <button onClick={() => setMode('login')} className={`relative z-10 py-2 rounded-lg transition ${mode === 'login' ? 'text-white' : 'text-gray-400 hover:text-gray-200'}`}>ورود</button>
-        <button onClick={() => setMode('register')} className={`relative z-10 py-2 rounded-lg transition ${mode === 'register' ? 'text-white' : 'text-gray-400 hover:text-gray-200'}`}>ثبت‌نام</button>
-      </div>
-      {mode === 'login' ? <LoginForm onAuthed={onAuthed} /> : <RegisterForm onAuthed={onAuthed} />}
+      {/* تب‌های لغزشی — در حالتِ فراموشیِ رمز پنهان */}
+      {mode !== 'forgot' && (
+        <div className="relative grid grid-cols-2 p-1 rounded-xl bg-white/5 border border-white/10 mb-5 text-sm font-bold">
+          <span className={`absolute top-1 bottom-1 w-[calc(50%-0.25rem)] rounded-lg bg-indigo-600 shadow transition-all duration-300 ${mode === 'login' ? 'right-1' : 'right-[calc(50%+0.125rem)]'}`} />
+          <button onClick={() => setMode('login')} className={`relative z-10 py-2 rounded-lg transition ${mode === 'login' ? 'text-white' : 'text-gray-400 hover:text-gray-200'}`}>ورود</button>
+          <button onClick={() => setMode('register')} className={`relative z-10 py-2 rounded-lg transition ${mode === 'register' ? 'text-white' : 'text-gray-400 hover:text-gray-200'}`}>ثبت‌نام</button>
+        </div>
+      )}
+      {mode === 'login' && <LoginForm onAuthed={onAuthed} onForgot={() => setMode('forgot')} />}
+      {mode === 'register' && <RegisterForm onAuthed={onAuthed} />}
+      {mode === 'forgot' && <ForgotForm onBack={() => setMode('login')} />}
       <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-[12px]">
         <span className="opacity-50">کمک لازم داری؟</span>
         <a href={SUPPORT_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-indigo-300 hover:text-indigo-200">
@@ -220,7 +259,7 @@ function AuthGate({ onAuthed }) {
   );
 }
 
-function LoginForm({ onAuthed }) {
+function LoginForm({ onAuthed, onForgot }) {
   const [u, setU] = React.useState(''); const [p, setP] = React.useState('');
   const [busy, setBusy] = React.useState(false); const [err, setErr] = React.useState('');
   const submit = async () => {
@@ -238,6 +277,60 @@ function LoginForm({ onAuthed }) {
       </Field>
       {err && <ErrLine text={err} />}
       <button onClick={submit} disabled={busy || !u || !p} className="w-full py-3 rounded-xl bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg shadow-indigo-900/30">{busy && <Loader2 size={15} className="animate-spin" />} ورود به پنل</button>
+      {onForgot && (
+        <button type="button" onClick={onForgot} className="w-full text-center text-[12px] text-indigo-300 hover:text-indigo-200 pt-1">
+          رمزت را فراموش کرده‌ای؟
+        </button>
+      )}
+    </div>
+  );
+}
+
+// #۱ فراموشی رمز — دو مرحله: ارسالِ کد به ایمیل، سپس کد + رمزِ جدید
+function ForgotForm({ onBack }) {
+  const [step, setStep] = React.useState(1);
+  const [email, setEmail] = React.useState(''); const [code, setCode] = React.useState('');
+  const [np, setNp] = React.useState('');
+  const [busy, setBusy] = React.useState(false); const [err, setErr] = React.useState(''); const [info, setInfo] = React.useState('');
+  const send = async () => {
+    setErr(''); setBusy(true);
+    try { await api.forgotPassword(email.trim()); setInfo('اگر این ایمیل در سیستم باشد، کدِ بازیابی برایت ارسال شد.'); setStep(2); }
+    catch (e) { setErr(e?.message || 'ارسالِ کد ناموفق بود.'); } finally { setBusy(false); }
+  };
+  const reset = async () => {
+    setErr('');
+    if (np.length < 6) { setErr('رمز باید حداقل ۶ کاراکتر باشد.'); return; }
+    setBusy(true);
+    try {
+      await api.resetPassword(email.trim(), code.trim(), np);
+      setInfo('رمزت با موفقیت تغییر کرد. حالا با رمزِ جدید وارد شو.');
+      setTimeout(() => onBack && onBack(), 1200);
+    } catch (e) { setErr(e?.message || 'کد اشتباه یا منقضی است.'); } finally { setBusy(false); }
+  };
+  return (
+    <div className="space-y-3">
+      {step === 1 ? (
+        <Field label="ایمیلِ حساب">
+          <input className={inp} style={FS} placeholder="example@mail.com" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && email && send()} dir="ltr" />
+        </Field>
+      ) : (
+        <>
+          <Field label="کدِ بازیابی (ایمیل)">
+            <input className={inp} style={FS} placeholder="۶ رقمی" value={code} onChange={(e) => setCode(e.target.value)} dir="ltr" inputMode="numeric" />
+          </Field>
+          <Field label="رمزِ جدید">
+            <PwInput value={np} onChange={(e) => setNp(e.target.value)} placeholder="••••••••" />
+          </Field>
+        </>
+      )}
+      {info && <div className="flex items-center gap-1.5 text-[12px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-2.5 py-2"><Check size={13} className="shrink-0" />{info}</div>}
+      {err && <ErrLine text={err} />}
+      {step === 1 ? (
+        <button onClick={send} disabled={busy || !email} className="w-full py-3 rounded-xl bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg shadow-indigo-900/30">{busy && <Loader2 size={15} className="animate-spin" />} ارسالِ کدِ بازیابی</button>
+      ) : (
+        <button onClick={reset} disabled={busy || !code || !np} className="w-full py-3 rounded-xl bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg shadow-indigo-900/30">{busy && <Loader2 size={15} className="animate-spin" />} ثبتِ رمزِ جدید</button>
+      )}
+      <button type="button" onClick={onBack} className="w-full text-center text-[12px] opacity-60 hover:opacity-100 pt-1">بازگشت به ورود</button>
     </div>
   );
 }

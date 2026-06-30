@@ -16,8 +16,8 @@ import ReactDOM from 'react-dom/client';
 //  • backward-compatible: هیچ propِ موجودی حذف/تغییرِ نام نشده؛ همه اختیاری‌اند.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SUPPORT_TG = 'https://t.me/CoinProFXBot'; // پشتیبانِ رسمیِ CoinePro FX
-const SUPPORT_HANDle = '@CoinProFXBot';
+const SUPPORT_TG = 'https://t.me/CoinePro_Admin'; // پشتیبانِ رسمیِ CoinePro FX
+const SUPPORT_HANDle = '@CoinePro_Admin';
 const BRAND = 'بازارنما';
 const BRAND_EN = 'Pro·Chart';
 const LAST_UPDATE = '۹ تیر ۱۴۰۵'; // تاریخِ آخرین بازنگری (به‌روزرسانیِ دستی)

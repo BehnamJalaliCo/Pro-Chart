@@ -80,6 +80,9 @@ export const api = {
   registerRequest: (email) => client.post('/academy/auth/register/request', { email, app: 'bazaarnama' }),
   registerVerify: (email, code, username, password, full_name, account_type) =>
     client.post('/academy/auth/register/verify', { email, code, username, password, full_name, account_type }),
+  // #۱ فراموشی رمز — بازیابی با کدِ ایمیل
+  forgotPassword: (email) => client.post('/academy/auth/forgot-password', { email, app: 'bazaarnama' }),
+  resetPassword: (email, code, new_password) => client.post('/academy/auth/reset-password', { email, code, new_password }),
   // آکادمی
   pricing: () => client.get('/academy/pricing'),
   me: () => client.get('/academy/me'),

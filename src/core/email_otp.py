@@ -319,6 +319,62 @@ async def consume_reset_token(token: str) -> int | None:
         return None
 
 
+_PWRESET_TTL = 600          # اعتبارِ کدِ بازیابیِ رمز: ۱۰ دقیقه
+_PWRESET_COOLDOWN = 60      # فاصلهٔ مجاز بینِ درخواست‌های بازیابی per ایمیل
+
+
+def _pwreset_key(email: str) -> str:
+    return "bn:pwreset:" + email.lower().strip()
+
+
+async def request_password_reset_code(email: str, brand: str = "bazaarnama") -> dict:
+    """کدِ ۶رقمیِ بازیابیِ رمز می‌سازد، در Redis (bn:pwreset:<email>, TTL ۱۰دقیقه، هش‌شده)
+    ذخیره می‌کند و با قالبِ برندِ موردِنظر ایمیل می‌فرستد. خروجی: {sent, cooldown?, error?}."""
+    email = email.strip().lower()
+    r = redis_client.client
+    cd_key = _pwreset_key(email) + ":cd"
+    if await r.exists(cd_key):
+        rem = await r.ttl(cd_key)
+        return {"sent": False, "cooldown": max(int(rem or 0), 1)}
+    code = _gen_code()
+    code_hash = hashlib.sha256(code.encode()).hexdigest()
+    await r.set(_pwreset_key(email), f"{code_hash}:0", ex=_PWRESET_TTL)
+    await r.set(cd_key, "1", ex=_PWRESET_COOLDOWN)
+    ok = await _send_email(email, code, brand=brand, ttl=_PWRESET_TTL)
+    if not ok:
+        return {"sent": False, "error": "ارسالِ ایمیل ناموفق بود."}
+    logger.info("pwreset_code_sent", brand=brand)
+    return {"sent": True, "cooldown": _PWRESET_COOLDOWN, "ttl": _PWRESET_TTL}
+
+
+async def verify_password_reset_code(email: str, code: str) -> bool:
+    """بررسیِ کدِ بازیابیِ رمز. در صورتِ درستی، کد مصرف (حذف) می‌شود.
+    حداکثر ۵ تلاشِ ناموفق با حفظِ TTL."""
+    email = email.strip().lower()
+    r = redis_client.client
+    k = _pwreset_key(email)
+    raw = await r.get(k)
+    if not raw:
+        return False
+    raw = raw.decode() if isinstance(raw, bytes) else raw
+    try:
+        stored_hash, attempts = raw.split(":")
+        attempts = int(attempts)
+    except ValueError:
+        await r.delete(k)
+        return False
+    if attempts >= _MAX_ATTEMPTS:
+        await r.delete(k)
+        return False
+    code_hash = hashlib.sha256((code or "").strip().encode()).hexdigest()
+    if hmac.compare_digest(code_hash, stored_hash):
+        await r.delete(k)
+        return True
+    ttl = await r.ttl(k)
+    await r.set(k, f"{stored_hash}:{attempts + 1}", ex=max(int(ttl or 1), 1))
+    return False
+
+
 async def verify_otp(email: str, code: str) -> bool:
     """بررسیِ کد. در صورت درستی، کد مصرف (حذف) می‌شود."""
     email = email.strip().lower()

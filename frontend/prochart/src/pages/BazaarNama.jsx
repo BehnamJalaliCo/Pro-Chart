@@ -212,7 +212,7 @@ export default function BazaarNama() {
     const onThemeT = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')); // #۳ تمِ روز/شب از منو
     const onTerms = () => setShowLegal(true);                                  // #۱۲ صفحهٔ قوانین
     const ext = (url) => () => { try { window.open(url, '_blank', 'noopener'); } catch (e) {} };
-    const onSup = ext('https://t.me/CoinProFXBot'); // #۱۳ پشتیبانِ CoinePro FX
+    const onSup = ext('https://t.me/CoinePro_Admin'); // #۱۳ پشتیبانِ CoinePro FX
     window.addEventListener('bn:rightTab', onTab); window.addEventListener('bn:openScript', onScript); window.addEventListener('bn:help', onHelp);
     window.addEventListener('bn:support', onSup); window.addEventListener('bn:terms', onTerms); window.addEventListener('bn:toggleTheme', onThemeT);
     return () => { window.removeEventListener('bn:rightTab', onTab); window.removeEventListener('bn:openScript', onScript); window.removeEventListener('bn:help', onHelp); window.removeEventListener('bn:support', onSup); window.removeEventListener('bn:terms', onTerms); window.removeEventListener('bn:toggleTheme', onThemeT); };
@@ -664,7 +664,9 @@ export default function BazaarNama() {
   // اتصالِ خطوطِ سفارش به چارت + همگام‌سازیِ درگ
   useEffect(() => { if (drawRef.current) { drawRef.current.setOrder(order); drawRef.current.onOrder = (o) => setOrder(o); } }, [order]);
   const curPrice = () => livePrice || (candlesRef.current.length ? candlesRef.current[candlesRef.current.length - 1].c : 0);
-  const startTrade = (side) => { const e = curPrice(); if (!e) return; const d = e * 0.005; setOrder({ side, entry: e, sl: side === 'buy' ? e - d : e + d, tp: side === 'buy' ? e + 2 * d : e - 2 * d }); setRightTab('trade'); };
+  // #۱۰ ترید از یک سطحِ مشخص (یا قیمتِ جاری) — تیکتِ کاملاً قابلِ‌ویرایش باز می‌کند: پنلِ ترید را
+  // نمایان می‌کند، entry/SL/TP را روی چارت قابلِ‌کشیدن می‌گذارد و قبل از ثبت همه‌چیز قابلِ‌تنظیم است.
+  const startTrade = (side, entryAt) => { const e = (entryAt != null && Number.isFinite(+entryAt)) ? +entryAt : curPrice(); if (!e) return; const d = e * 0.005; setOrder({ side, entry: e, sl: side === 'buy' ? e - d : e + d, tp: side === 'buy' ? e + 2 * d : e - 2 * d }); setRightTab('trade'); setShowRight(true); };
   // ثبتِ سفارش از روی چارت → endpointِ معاملهٔ مستقیم (gated). تا فعال‌شدنِ اجرای واقعی،
   // سرور سفارش را اعتبارسنجی و «پیش‌نمایش» برمی‌گرداند (هیچ معاملهٔ واقعی‌ای انجام نمی‌شود).
   const submitOrder = async () => {
@@ -1335,30 +1337,37 @@ export default function BazaarNama() {
         <select value={crosshairId} onChange={(e) => setCrosshairId(e.target.value)} title="حالتِ کراس‌هیر" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
           {CROSSHAIR_MODES.map((m) => (<option key={m.id} value={m.id}>{m.label}</option>))}
         </select>
-        {/* #1 سشن‌های فارکس: یک کنترلِ واحد — کلیکِ متن=روشن/خاموش، فلش=انتخابِ سشن‌ها */}
+        {/* #9 کنترلِ واحدِ «سشن‌ها» — کلیکِ متن=روشن/خاموش؛ فلش=منویی که هم سشن‌ها هم منطقهٔ زمانی (شهرها) را دارد */}
         <div data-menu className="relative flex items-center rounded-md overflow-hidden" style={sessionsOn ? { background: TH.accent } : { background: TH.chipBg }}>
           <button onClick={() => setSessionsOn((v) => !v)} title="نمایش/پنهان‌کردنِ باندهای سشنِ فارکس" className="px-2 py-1 text-xs transition-colors duration-[120ms]" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}>سشن‌ها</button>
-          <button onClick={() => { setSessMenu((v) => !v); if (!sessionsOn) setSessionsOn(true); }} title="انتخابِ سشن‌ها" className="px-1 py-1" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}><ChevronDown size={12} /></button>
+          <button onClick={() => setSessMenu((v) => !v)} title="سشن‌ها و منطقهٔ زمانی" className="px-1 py-1" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}><ChevronDown size={12} /></button>
           {sessMenu && (
-            <div className="absolute z-40 top-full mt-1 right-0 rounded-lg w-44 p-1" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+            <div className="absolute z-40 top-full mt-1 right-0 rounded-lg w-48 p-1" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+              <div className="px-2 pt-1 pb-1 text-[10px] font-bold opacity-50" style={{ color: TH.text }}>سشن‌های فارکس</div>
               {SESSIONS.map((s) => { const on = sessionSel.includes(s.id); return (
-                <button key={s.id} onClick={() => setSessionSel((sel) => sel.includes(s.id) ? sel.filter((x) => x !== s.id) : [...sel, s.id])} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                <button key={s.id} onClick={() => { setSessionSel((sel) => sel.includes(s.id) ? sel.filter((x) => x !== s.id) : [...sel, s.id]); if (!sessionsOn) setSessionsOn(true); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                   <span className="w-3.5 h-3.5 rounded-sm flex items-center justify-center shrink-0" style={{ background: on ? TH.accent : 'transparent', border: `1px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="text-[9px] text-white leading-none">✓</span>}</span>
                   <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.edge }} />
                   <span className="flex-1">{s.label}</span>
                 </button>
               ); })}
-              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
-              <div className="flex gap-1 px-1">
+              <div className="flex gap-1 px-1 mt-1">
                 <button onClick={() => setSessionSel(SESSIONS.map((s) => s.id))} className="flex-1 text-[11px] py-1 rounded" style={{ background: TH.chipBg, color: TH.text }}>همه</button>
                 <button onClick={() => setSessionSel([])} className="flex-1 text-[11px] py-1 rounded" style={{ background: TH.chipBg, color: TH.text }}>هیچ</button>
+              </div>
+              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
+              <div className="px-2 pt-0.5 pb-1 text-[10px] font-bold opacity-50" style={{ color: TH.text }}>منطقهٔ زمانی</div>
+              <div className="max-h-44 overflow-y-auto bn-thin-scroll">
+                {TIMEZONES.map((z) => { const on = tz === z.id; return (
+                  <button key={z.id} onClick={() => setTz(z.id)} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                    <span className="w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0" style={{ border: `1px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="w-2 h-2 rounded-full" style={{ background: TH.accent }} />}</span>
+                    <span className="flex-1">{z.label}</span>
+                  </button>
+                ); })}
               </div>
             </div>
           )}
         </div>
-        <select value={tz} onChange={(e) => setTz(e.target.value)} title="منطقهٔ زمانی" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
-          {TIMEZONES.map((z) => (<option key={z.id} value={z.id}>{z.label}</option>))}
-        </select>
         <button onClick={() => { try { if (document.fullscreenElement) document.exitFullscreen(); else rootRef.current && rootRef.current.requestFullscreen(); } catch (e) {} }} title="تمام‌صفحه" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Maximize2 size={18} /></button>
         <ScreenshotMenu TH={TH} getCapture={getCapture} uploadSnapshot={uploadSnapshot} iconSize={18} coarse={bp.coarse} />
         <button onClick={() => setShowShortcuts(true)} title="راهنمای میان‌بُرهای صفحه‌کلید (؟)" aria-label="راهنمای میان‌بُرهای صفحه‌کلید" className="p-1.5 rounded-md text-[13px] leading-none transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>⌨</button>
@@ -1543,9 +1552,14 @@ export default function BazaarNama() {
                     </button>
                   )}
                   {ctxMenu.price != null && (
-                    <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
-                      onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                      onClick={() => { startTrade('buy'); setCtxMenu(null); }}><Activity size={13} /> ترید از این سطح</button>
+                    <>
+                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.up }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        onClick={() => { startTrade('buy', ctxMenu.price); setCtxMenu(null); }}><Activity size={13} /> خرید از {fmtPrice(symbol, ctxMenu.price)}</button>
+                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.down }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        onClick={() => { startTrade('sell', ctxMenu.price); setCtxMenu(null); }}><Activity size={13} /> فروش از {fmtPrice(symbol, ctxMenu.price)}</button>
+                    </>
                   )}
                   <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
