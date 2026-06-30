@@ -681,6 +681,38 @@ async def bn_admin_orders(status: str = "", market: str = "", limit: int = 100,
     return {"orders": out, "count": len(out)}
 
 
+# ═══════════════ جایگاه‌های تبلیغاتیِ منو (#۱۴ — مدیریت‌پذیر از ادمین) ═══════════════
+@router.get("/ads")
+async def bn_ads():
+    """جایگاه‌های تبلیغاتیِ منوی همبرگری (لوگوی صرافی/وان‌رویال + متن + لینک). از Redis."""
+    from src.core.redis_client import redis_client
+    import json as _j
+    try:
+        raw = await redis_client.client.get("bn:ads")
+        return {"slots": _j.loads(raw) if raw else {}}
+    except Exception:  # noqa: BLE001
+        return {"slots": {}}
+
+
+@router.post("/admin/ads")
+async def bn_admin_set_ads(slot: str = Body(..., embed=True), logo: str = Body("", embed=True),
+                           text: str = Body("", embed=True), link: str = Body("", embed=True),
+                           active: bool = Body(True, embed=True), _: bool = Depends(current_bn_admin)):
+    """تنظیمِ یک جایگاهِ تبلیغاتی توسطِ ادمین."""
+    from src.core.redis_client import redis_client
+    import json as _j
+    try:
+        raw = await redis_client.client.get("bn:ads"); d = _j.loads(raw) if raw else {}
+    except Exception:  # noqa: BLE001
+        d = {}
+    if not active and slot in d:
+        del d[slot]
+    else:
+        d[slot] = {"logo": logo, "text": text, "link": link, "active": True}
+    await redis_client.client.set("bn:ads", _j.dumps(d))
+    return {"ok": True, "slots": d}
+
+
 # ═══════════════ پرداختِ خودکارِ اشتراک (USDT روی BSC) #222 ═══════════════
 async def _notify_support(text: str) -> None:
     """پیامِ بهترین‌تلاش به پشتیبانی/ادمین در تلگرام."""
