@@ -5,6 +5,28 @@ import VirtualList from './VirtualList';
 import { searchSymbols } from './fuzzy';
 import { CATEGORIES, CAT_FA } from './symbolMeta';
 
+// #۷ رنگِ بَجِ نوعِ دارایی، هم‌خانوادهٔ پالتِ TradingView (هر کلاس یک رنگِ امضا)
+const TYPE_COLOR = {
+  forex: '#2962FF', crypto: '#F7931A', metal: '#E0A526',
+  index: '#9C56E6', energy: '#26A69A', other: '#787B86',
+};
+
+// های‌لایتِ بخشِ منطبقِ کوئری درونِ نماد (امضای جستجوی TradingView)
+function hl(text, q, T) {
+  const s = String(text || '');
+  const qq = String(q || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (!qq) return s;
+  const idx = s.toUpperCase().indexOf(qq);
+  if (idx < 0) return s;
+  return (
+    <>
+      {s.slice(0, idx)}
+      <span style={{ color: T.accent, fontWeight: 800 }}>{s.slice(idx, idx + qq.length)}</span>
+      {s.slice(idx + qq.length)}
+    </>
+  );
+}
+
 const RECENT_KEY = 'bn_recent_symbols';
 const loadRecent = () => { try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch (e) { return []; } };
 const pushRecent = (s) => {
@@ -113,11 +135,16 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
                   style={{ background: isActive ? T.chipBgHover : 'transparent', boxShadow: isCur ? `inset 0 0 0 1px ${T.accent}` : 'none', color: T.textStrong }}>
                   <SymbolLogo symbol={m.symbol} size={coarse ? 30 : 26} />
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-bold leading-tight" dir="ltr">{m.symbol}</div>
+                    <div className="text-[14px] font-bold leading-tight" dir="ltr">{hl(m.symbol, dq, T)}</div>
                     <div className="text-[12px] opacity-60 leading-tight truncate">{m.desc}</div>
                   </div>
                   {watchSet.has(m.symbol) && <Star size={13} className="text-amber-400 shrink-0" />}
-                  <span className="text-[10px] opacity-45 shrink-0">{CAT_FA[m.cat] || m.cat}</span>
+                  {/* بَجِ نوعِ دارایی، سبکِ TradingView: نقطهٔ رنگی + برچسبِ کلاس */}
+                  <span className="flex items-center gap-1.5 shrink-0 px-2 rounded-md text-[10.5px] font-semibold"
+                    style={{ height: 22, color: TYPE_COLOR[m.cat] || TYPE_COLOR.other, background: (TYPE_COLOR[m.cat] || TYPE_COLOR.other) + '1f' }}>
+                    <span style={{ width: 6, height: 6, borderRadius: 99, background: TYPE_COLOR[m.cat] || TYPE_COLOR.other }} />
+                    {CAT_FA[m.cat] || m.cat}
+                  </span>
                 </button>
               );
             }}
