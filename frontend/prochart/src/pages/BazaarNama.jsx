@@ -173,6 +173,10 @@ export default function BazaarNama() {
   const [indMenu, setIndMenu] = useState(false);
   const [indFavs, setIndFavs] = useState(() => loadWS().indFavs || []); // اندیکاتورهای منتخب (پین‌شده)
   const toggleIndFav = (k) => setIndFavs((f) => { const n = f.includes(k) ? f.filter((x) => x !== k) : [...f, k]; saveWS({ indFavs: n }); return n; });
+  const [indTpls, setIndTpls] = useState(() => loadWS().indTpls || {}); // {name:{overlays,subs}} — تمپلیتِ اندیکاتورها
+  const saveIndTpl = () => { const name = (window.prompt('نامِ تمپلیتِ اندیکاتورها:') || '').trim(); if (!name) return; const n = { ...indTpls, [name]: { overlays, subs } }; setIndTpls(n); saveWS({ indTpls: n }); };
+  const applyIndTpl = (name) => { const t = indTpls[name]; if (!t) return; setOverlays(t.overlays || []); setSubs(t.subs || []); setIndMenu(false); };
+  const delIndTpl = (name) => setIndTpls((p) => { const n = { ...p }; delete n[name]; saveWS({ indTpls: n }); return n; });
   const [ctMenu, setCtMenu] = useState(false);
   const [watch, setWatch] = useState([]);
   const [rightTab, setRightTab] = useState('watch');
@@ -1125,6 +1129,15 @@ export default function BazaarNama() {
                 <div key={k} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                   <button onClick={() => addInd(k)} className="flex-1 text-right">{d.label}</button>
                   <button onClick={() => toggleIndFav(k)} title="افزودن/حذف از منتخب" className="mr-1"><Star size={12} style={indFavs.includes(k) ? { fill: TH.accent, color: TH.accent } : { opacity: 0.35 }} /></button>
+                </div>
+              ))}
+              {/* تمپلیتِ اندیکاتورها (ذخیره/اعمالِ ترکیب) */}
+              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
+              <button onClick={saveIndTpl} className="flex items-center gap-1.5 w-full text-right px-2 py-1.5 text-[12px]" style={{ color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><Save size={12} /> ذخیرهٔ ترکیبِ فعلی به‌عنوان تمپلیت</button>
+              {Object.keys(indTpls).map((name) => (
+                <div key={'t' + name} className="flex items-center justify-between w-full px-2 py-1.5 text-[12px] rounded" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                  <button onClick={() => applyIndTpl(name)} className="flex-1 text-right flex items-center gap-1.5"><FolderOpen size={12} /> {name}</button>
+                  <button onClick={() => delIndTpl(name)} title="حذف"><Trash2 size={12} className="opacity-50" /></button>
                 </div>
               ))}
             </div>
