@@ -6,7 +6,7 @@ import {
   Minus,
   FlaskConical, ChevronDown, LayoutGrid, Maximize2,
   Magnet, Sparkles,
-  Undo2, Redo2, Lock, Unlock, Eye, EyeOff, List, Pencil,
+  Undo2, Redo2, Lock, Unlock, Eye, EyeOff, List, Pencil, Table2,
 } from 'lucide-react';
 import { api } from '../api/client';
 import { REGISTRY } from '../bazaarnama/indicators';
@@ -232,6 +232,10 @@ export default function BazaarNama() {
   const [selDraw, setSelDraw] = useState(-1);          // ایندکسِ آبجکتِ انتخاب‌شده
   const [drawList, setDrawList] = useState([]);        // فهرستِ ترسیم‌ها (Object Tree)
   const [showTree, setShowTree] = useState(false);     // نمایشِ Object Tree
+  const [showDataWin, setShowDataWin] = useState(loadWS().showDataWin ?? false); // Data Window (مقادیرِ زیرِ کراس‌هیر)
+  const [dataWin, setDataWin] = useState(null);        // {ohlc, vol, time, inds:[{label,vals,color}]}
+  const indLabelRef = useRef({});                       // id → {label,color} برای Data Window
+  const showDataWinRef = useRef(loadWS().showDataWin ?? false); // گیتِ محاسبهٔ Data Window در هندلرِ کراس‌هیر
   const [drawVer, setDrawVer] = useState(0);           // نسخه برای رفرشِ دکمه‌های undo/redo
   const treeRefresh = useCallback(() => { const dl = drawRef.current; setDrawList(dl ? dl.getDrawings().slice() : []); setDrawVer((v) => v + 1); }, []);
   const rootRef = useRef(null);
@@ -249,7 +253,7 @@ export default function BazaarNama() {
     if (!mainRef.current) return;
     const el = mainRef.current;
     const chart = createChart(el, {
-      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'Vazirmatn, sans-serif', fontSize: 11 },
+      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'AnjomanMax, Vazirmatn, sans-serif', fontSize: 11 },
       grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } },
       timeScale: { timeVisible: true, borderColor: TH.grid, rightOffset: 6 },
       rightPriceScale: { borderColor: TH.grid },
@@ -288,9 +292,19 @@ export default function BazaarNama() {
       const ctx = overlayRef.current && overlayRef.current.getContext('2d');
       if (ctx && sessionsRef.current) paintSessions(ctx, chart, sessionsRef.current, overlayRef.current.height);
       if (ctx && p && p.point) paintCrosshairGlyph(ctx, crosshairGlyphRef.current, p.point.x, p.point.y, TH);
-      if (!p || !p.time || !priceSeriesRef.current) { setLegend(null); return; }
+      if (!p || !p.time || !priceSeriesRef.current) { setLegend(null); if (showDataWinRef.current) setDataWin(null); return; }
       const d = p.seriesData.get(priceSeriesRef.current);
       if (d) setLegend(d.close != null ? d : { close: d.value });
+      if (showDataWinRef.current) {
+        const inds = [];
+        const collect = (store) => Object.entries(store).forEach(([id, arr]) => {
+          const meta = indLabelRef.current[id]; if (!meta || !arr || !arr.length) return;
+          const vals = arr.map((s) => { const sd = p.seriesData.get(s); return sd == null ? null : (sd.value != null ? sd.value : sd.close); }).filter((v) => v != null);
+          if (vals.length) inds.push({ label: meta.label, color: meta.color, vals });
+        });
+        collect(overlaySeries.current); collect(subChartsRef.current);
+        setDataWin({ time: p.time, ohlc: d && d.close != null ? d : null, inds });
+      }
     });
     return () => { ro.disconnect(); dl.destroy(); chart.remove(); chartRef.current = null; };
     // eslint-disable-next-line
@@ -302,6 +316,9 @@ export default function BazaarNama() {
     ch.applyOptions({ layout: { background: { color: TH.bg }, textColor: TH.text }, grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
     // eslint-disable-next-line
   }, [theme]);
+
+  // Data Window: همگام‌سازیِ گیتِ ref + ماندگاری
+  useEffect(() => { showDataWinRef.current = showDataWin; saveWS({ showDataWin }); if (!showDataWin) setDataWin(null); }, [showDataWin]);
 
   useEffect(() => { if (drawRef.current) drawRef.current.setTool(tool, drawColor); }, [tool, drawColor]);
   useEffect(() => { try { chartRef.current && chartRef.current.priceScale('right').applyOptions(priceScaleOptions({ mode: scaleMode, locked: scaleLocked, invert: scaleInvert })); saveWS({ scaleMode, scaleLocked, scaleInvert }); } catch (e) {} }, [scaleMode, scaleLocked, scaleInvert]);
@@ -393,6 +410,7 @@ export default function BazaarNama() {
       else if (r.multi) { const base = ov.color || def.color; mk(r.upper, lc[0] || base, 1, true); mk(r.basis, lc[1] || base, 1); mk(r.lower, lc[2] || base, 1, true); }
       else mk(r.line, lc[0] || ov.color || def.color);
       overlaySeries.current[ov.id] = arr;
+      indLabelRef.current[ov.id] = { label: def.label, color: lc[0] || ov.color || def.color };
     });
     try { chart.applyOptions({ leftPriceScale: { visible: anyLeft, borderColor: TH.grid } }); } catch (e) {}
   }, [overlays, TH]);
@@ -427,6 +445,7 @@ export default function BazaarNama() {
       }
       try { const panes = chart.panes(); if (panes && panes[pane]) panes[pane].setHeight(108); } catch (e) {}
       subChartsRef.current[sub.id] = arr;
+      indLabelRef.current[sub.id] = { label: def.label, color: sub.color || def.color };
     });
   }, [subs, TH]);
 
@@ -1163,6 +1182,7 @@ export default function BazaarNama() {
           <Tip label="ازنو (Ctrl+Y)"><button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} className="p-1.5 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Redo2 size={16} /></button></Tip>
           <Tip label="ماندن در حالتِ ترسیم (پشتِ‌سرهم بکش)"><button onClick={() => setStayDraw((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${stayDraw ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={stayDraw ? { background: TH.accent } : {}}><Pencil size={16} /></button></Tip>
           <Tip label="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)"><button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showTree ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showTree ? { background: TH.accent } : {}}><List size={16} /></button></Tip>
+          <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={16} /></button></Tip>
           <div className="h-px w-6 my-1" style={{ background: TH.border }} />
           <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1.5 rounded opacity-60 hover:opacity-100"><Minus size={16} /></button></Tip>
           <Tip label="پاکِ همهٔ ترسیم‌ها"><button onClick={() => drawRef.current && drawRef.current.clearAll()} className="p-1.5 rounded opacity-60 hover:text-red-400"><Trash2 size={16} /></button></Tip>
@@ -1241,6 +1261,33 @@ export default function BazaarNama() {
             {/* شمارشِ معکوسِ بسته‌شدنِ کندل + وضعیتِ بازار */}
             <CountdownChip countdown={countdown} countdownColor={countdownColor} TH={TH} marketOpen={marketOpen} />
             <Watermark src={bnLogo} theme={theme} />
+            {/* Data Window — مقادیرِ زیرِ کراس‌هیر (مثلِ TradingView) */}
+            {showDataWin && (
+              <div className="absolute top-12 left-3 z-30 w-52 rounded-lg pc-pop text-[11px] overflow-hidden" dir="rtl"
+                   style={{ background: TH.panel, border: `1px solid ${TH.border}` }}>
+                <div className="flex items-center justify-between px-2.5 py-1.5 border-b" style={{ borderColor: TH.border }}>
+                  <span className="font-semibold" style={{ color: TH.textStrong }}>پنجرهٔ داده</span>
+                  <button onClick={() => setShowDataWin(false)} className="pc-iconbtn w-5 h-5" title="بستن"><X size={12} /></button>
+                </div>
+                <div className="px-2.5 py-1.5 tabular-nums" style={{ color: TH.text }}>
+                  {dataWin && dataWin.ohlc ? (
+                    <>
+                      {['open', 'high', 'low', 'close'].map((k) => (
+                        <div key={k} className="flex justify-between"><span>{({ open: 'O', high: 'H', low: 'L', close: 'C' })[k]}</span>
+                          <span dir="ltr" style={{ color: dataWin.ohlc.close >= dataWin.ohlc.open ? TH.up : TH.down }}>{fmtPrice(symbol, dataWin.ohlc[k])}</span></div>
+                      ))}
+                      {dataWin.inds && dataWin.inds.length > 0 && <div className="my-1 border-t" style={{ borderColor: TH.border }} />}
+                      {(dataWin.inds || []).map((ind, i) => (
+                        <div key={i} className="flex justify-between gap-2">
+                          <span className="truncate" style={{ color: ind.color }}>{ind.label}</span>
+                          <span dir="ltr" style={{ color: TH.textStrong }}>{ind.vals.map((v) => fmtPrice(symbol, v)).join(' / ')}</span>
+                        </div>
+                      ))}
+                    </>
+                  ) : <div className="opacity-50 text-center py-1">نشانگر را روی چارت ببر</div>}
+                </div>
+              </div>
+            )}
             {grid > 1 && (
               <div className="absolute inset-0 z-30 grid gap-1 p-1" style={{ background: TH.bg, gridTemplateColumns: grid === 2 ? '1fr 1fr' : '1fr 1fr', gridTemplateRows: grid === 2 ? '1fr' : '1fr 1fr' }}>
                 {Array.from({ length: grid }).map((_, i) => (
