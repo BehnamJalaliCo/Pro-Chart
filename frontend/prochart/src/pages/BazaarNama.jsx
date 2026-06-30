@@ -6,7 +6,7 @@ import {
   Minus,
   FlaskConical, ChevronDown, LayoutGrid, Maximize2,
   Magnet, Sparkles,
-  Undo2, Redo2, Lock, Unlock, Eye, EyeOff, List, Pencil, Table2,
+  Undo2, Redo2, Lock, Unlock, Eye, EyeOff, List, Pencil, Table2, Camera,
 } from 'lucide-react';
 import { api } from '../api/client';
 import { REGISTRY } from '../bazaarnama/indicators';
@@ -1182,6 +1182,7 @@ export default function BazaarNama() {
           {TIMEZONES.map((z) => (<option key={z.id} value={z.id}>{z.label}</option>))}
         </select>
         <button onClick={() => { try { if (document.fullscreenElement) document.exitFullscreen(); else rootRef.current && rootRef.current.requestFullscreen(); } catch (e) {} }} title="تمام‌صفحه" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Maximize2 size={15} /></button>
+        <button onClick={() => { try { const cv = chartRef.current && chartRef.current.takeScreenshot(); if (!cv) return; const ov = overlayRef.current; if (ov) { try { cv.getContext('2d').drawImage(ov, 0, 0); } catch (e) {} } cv.toBlob((blob) => { if (!blob) return; const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${symbol}_${tf}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }); } catch (e) {} }} title="عکسِ چارت (PNG)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Camera size={15} /></button>
         <button onClick={() => setShowShortcuts(true)} title="راهنمای میان‌بُرهای صفحه‌کلید (؟)" aria-label="راهنمای میان‌بُرهای صفحه‌کلید" className="p-1.5 rounded-md text-[13px] leading-none transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>⌨</button>
         {bp.name === 'sm' && (
           <button onClick={() => setMobileSheet(true)} title="ابزارها و تب‌ها" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><List size={15} /></button>
