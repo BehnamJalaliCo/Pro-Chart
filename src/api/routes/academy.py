@@ -1578,17 +1578,20 @@ _CHART_INDICATORS = {"macd": _ind_macd, "stoch": _ind_stoch, "atr": _ind_atr,
 
 @router.get("/chart/symbols")
 async def chart_symbols(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    syms = [r[0] for r in (await db.execute(text("SELECT DISTINCT symbol FROM candles ORDER BY symbol"))).fetchall()]
+    import re as _re
+    # کریپتو-CFDهای فارکس (BTCUSD/ETHUSD/...) حذف می‌شوند چون کریپتو از LBank می‌آید (#۶)
+    _CRYPTO_CFD = _re.compile(r'^(BTC|ETH|XRP|DOGE|SOL|LTC|BNB|ADA|DOT|MATIC|AVAX|LINK|TRX|BCH|XLM|ATOM|UNI|SHIB|PEPE|TON|NEAR)USD[T]?$', _re.I)
+    syms = [r[0] for r in (await db.execute(text("SELECT DISTINCT symbol FROM candles ORDER BY symbol"))).fetchall() if not _CRYPTO_CFD.match(r[0])]
     tfs = [r[0] for r in (await db.execute(text("SELECT DISTINCT timeframe FROM candles"))).fetchall()]
-    order = {"M5": 0, "M15": 1, "H1": 2, "H4": 3, "D1": 4}
-    tfs.sort(key=lambda t: order.get(t, 9))
+    order = {"M1": 0, "M5": 1, "M15": 2, "M30": 3, "H1": 4, "H2": 5, "H4": 6, "D1": 7, "W1": 8, "MN": 9}
+    tfs.sort(key=lambda t: order.get(t, 99))
     have = set(syms)
     # نمادهای فارکسِ حسابِ مَسترِ MT5 (همهٔ نمادهای OneRoyal که اکسپورتر می‌فرستد)
     try:
         from src.core.redis_client import redis_client
         fx = await redis_client.client.smembers("bn:fxsyms")
         for s in sorted(x.decode() if isinstance(x, bytes) else x for x in (fx or [])):
-            if s and s not in have:
+            if s and s not in have and not _CRYPTO_CFD.match(s):
                 syms.append(s); have.add(s)
     except Exception:  # noqa: BLE001
         pass
