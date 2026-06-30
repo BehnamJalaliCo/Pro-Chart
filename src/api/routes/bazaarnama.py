@@ -637,6 +637,31 @@ async def bn_admin_set_status(student_id: int = Body(..., embed=True),
     return {"ok": True, "id": s.id, "status": s.status}
 
 
+@router.get("/admin/orders")
+async def bn_admin_orders(status: str = "", market: str = "", limit: int = 100,
+                          _: bool = Depends(current_bn_admin),
+                          db: AsyncSession = Depends(get_db)):
+    """سفارش‌های تریدِ واقعیِ بازارنما (کریپتو/فارکس) برای اشرافِ مدیر."""
+    from src.core.database import BnOrder
+    q = select(BnOrder).order_by(BnOrder.id.desc())
+    if status:
+        q = q.where(BnOrder.status == status)
+    if market:
+        q = q.where(BnOrder.market == market)
+    rows = (await db.execute(q.limit(min(int(limit or 100), 500)))).scalars().all()
+    sids = {r.student_id for r in rows}
+    names = {}
+    if sids:
+        for s in (await db.execute(select(AcademyStudent).where(AcademyStudent.id.in_(sids)))).scalars().all():
+            names[s.id] = s.username or s.email
+    out = [{"id": r.id, "user": names.get(r.student_id), "market": r.market, "broker": r.broker,
+            "account_ref": r.account_ref, "symbol": r.symbol, "side": r.side, "amount": r.amount,
+            "price": r.price, "status": r.status, "broker_order_id": r.broker_order_id,
+            "error": r.error, "created_at": r.created_at.isoformat() if r.created_at else None}
+           for r in rows]
+    return {"orders": out, "count": len(out)}
+
+
 # ═══════════════ پرداختِ خودکارِ اشتراک (USDT روی BSC) #222 ═══════════════
 async def _notify_support(text: str) -> None:
     """پیامِ بهترین‌تلاش به پشتیبانی/ادمین در تلگرام."""
@@ -789,6 +814,8 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
         raise HTTPException(status_code=400, detail={
             "msg": f"ابتدا حسابِ {'LBank' if crypto else 'MT5'} خود را در پنلِ کاربری وصل کن.",
             "connect_required": True, "kind": kind})
+    import os as _os
+    from src.core.database import BnOrder
     if crypto:
         from src.api.routes._lbank_exec import place_order
         from src.core.crypto import decrypt_secret
@@ -796,13 +823,58 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
         sec = decrypt_secret(a.enc_secret or "") or ""
         if not key or not sec:
             raise HTTPException(status_code=400, detail="کلیدِ API نامعتبر؛ دوباره وصل کن.")
+        order = BnOrder(student_id=st.id, market="crypto", broker="LBank",
+                        account_ref=a.account_ref, symbol=sym, side=side,
+                        amount=float(amount), price=float(price) or None, status="pending")
+        db.add(order)
+        await db.flush()
         res = await place_order(key, sec, sym, side, float(amount), float(price) or None)
         if res.get("ok"):
+            order.status = "filled"
+            order.broker_order_id = str(res.get("order_id") or "")[:64]
+            await db.commit()
             logger.info("bn_real_order_lbank", sid=st.id, sym=sym, side=side)
             return {"placed": True, "broker": "LBank", "order_id": res.get("order_id"),
                     "symbol": sym, "side": side, "amount": amount}
+        order.status = "failed"
+        order.error = str(res.get("error") or "")[:255]
+        await db.commit()
         raise HTTPException(status_code=502, detail=res.get("error", "سفارش روی LBank ناموفق بود."))
-    # فارکس → MT5ِ وان‌رویالِ کاربر (نیازِ پلِ MT5ِ بروکر)
-    raise HTTPException(status_code=503, detail={
-        "msg": "اجرای واقعیِ MT5 پس از فعال‌سازیِ پلِ بروکرِ وان‌رویال در دسترس قرار می‌گیرد.",
-        "pending": True})
+
+    # فارکس → MT5ِ خودِ کاربر روی سرورِ اجرا (per-user؛ هرگز روی مَستر).
+    # سفارش در صفِ مستقلِ pro-chart می‌نشیند؛ اجرای زنده با فلگِ BN_FOREX_LIVE + سرورِ اجرا.
+    order = BnOrder(student_id=st.id, market="forex", broker="OneRoyal",
+                    account_ref=a.account_ref, server=a.server, symbol=sym, side=side,
+                    amount=float(amount), price=float(price) or None, status="pending")
+    db.add(order)
+    await db.commit()
+    await db.refresh(order)
+    live = _os.getenv("BN_FOREX_LIVE") == "1"
+    exec_url = _os.getenv("BN_FOREX_EXEC_URL", "").rstrip("/")
+    if live and exec_url:
+        from src.core.crypto import decrypt_secret
+        pwd = decrypt_secret(a.enc_secret or "") or ""
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=8.0) as cli:
+                r = await cli.post(
+                    f"{exec_url}/bn-forex-open",
+                    json={"order_id": order.id, "login": a.account_ref, "password": pwd,
+                          "server": a.server, "side": side, "symbol": sym,
+                          "amount": float(amount), "price": float(price) or 0,
+                          "sl": 0, "tp": 0},
+                    headers={"X-Exec-Token": _os.getenv("BN_EXEC_TOKEN", "")},
+                )
+            if r.status_code == 200:
+                order.status = "sent"
+                await db.commit()
+                logger.info("bn_real_order_forex_sent", sid=st.id, sym=sym, side=side, oid=order.id)
+                return {"placed": True, "queued": True, "broker": "OneRoyal", "order_id": order.id,
+                        "status": "sent", "symbol": sym, "side": side, "amount": amount,
+                        "msg": "سفارش به سرورِ اجرای MT5 ارسال شد."}
+        except Exception:  # noqa: BLE001
+            logger.warning("bn_real_order_forex_exec_fail", oid=order.id)
+    # اجرای زنده هنوز فعال نیست → در صف می‌ماند تا پلِ MT5 فعال شود
+    return {"placed": False, "queued": True, "broker": "OneRoyal", "order_id": order.id,
+            "status": "pending",
+            "msg": "سفارشِ فارکس در صفِ اجرا ثبت شد؛ اجرای زندهٔ MT5 پس از فعال‌سازیِ پلِ بروکرِ وان‌رویال انجام می‌شود."}

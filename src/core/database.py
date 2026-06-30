@@ -12,6 +12,7 @@ from sqlalchemy import (
     Date,
     DateTime,
     Enum,
+    Float,
     ForeignKey,
     Integer,
     Numeric,
@@ -1301,6 +1302,31 @@ class BnExchangeAccount(Base):
     status: Mapped[str] = mapped_column(String(12), server_default="active", default="active")
     last_check_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     note: Mapped[str] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+
+class BnOrder(Base):
+    """صفِ سفارشِ تریدِ واقعیِ بازارنما (مستقلِ pro-chart). کریپتو فوری روی LBankِ کاربر
+    اجرا و ثبت می‌شود؛ فارکس (MT5/وان‌رویال) اینجا pending می‌نشیند و سرورِ اجرا (همان سرورِ
+    کپیِ پنل) آن را poll می‌کند — هرگز روی حسابِ مَستر اجرا نمی‌شود (ایزولاسیونِ per-user)."""
+    __tablename__ = "bn_orders"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    student_id: Mapped[int] = mapped_column(Integer, ForeignKey("academy_students.id", ondelete="CASCADE"), index=True, nullable=False)
+    market: Mapped[str] = mapped_column(String(10), nullable=False)        # crypto | forex
+    broker: Mapped[str] = mapped_column(String(16), nullable=True)         # LBank | OneRoyal
+    account_ref: Mapped[str] = mapped_column(String(64), nullable=True)    # MT5 login / LBank uid (مقصدِ per-user)
+    server: Mapped[str] = mapped_column(String(64), nullable=True)         # MT5 server
+    symbol: Mapped[str] = mapped_column(String(32), nullable=False)
+    side: Mapped[str] = mapped_column(String(4), nullable=False)           # buy | sell
+    amount: Mapped[float] = mapped_column(Float, nullable=False)
+    price: Mapped[float] = mapped_column(Float, nullable=True)             # 0/None = market
+    sl: Mapped[float] = mapped_column(Float, nullable=True)
+    tp: Mapped[float] = mapped_column(Float, nullable=True)
+    status: Mapped[str] = mapped_column(String(12), server_default="pending", default="pending", index=True)  # pending|sent|filled|failed|canceled
+    broker_order_id: Mapped[str] = mapped_column(String(64), nullable=True)
+    error: Mapped[str] = mapped_column(String(255), nullable=True)
+    picked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
