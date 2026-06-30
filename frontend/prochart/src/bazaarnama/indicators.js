@@ -178,6 +178,18 @@ export const eom = (h, l, vol, p = 14) => {
   return _sma(raw.map((x) => x == null ? 0 : x), p);
 };
 
+const _ema2 = (arr, p) => { const n = arr.length, out = new Array(n).fill(null), k = 2 / (p + 1); let prev = null; for (let i = 0; i < n; i++) { const v = arr[i]; if (v == null) { out[i] = prev; continue; } prev = prev == null ? v : v * k + prev * (1 - k); out[i] = prev; } return out; };
+const _wma2 = (arr, p) => { const n = arr.length, out = new Array(n).fill(null), dw = p * (p + 1) / 2; for (let i = p - 1; i < n; i++) { let s = 0, ok = true; for (let j = 0; j < p; j++) { const v = arr[i - j]; if (v == null) { ok = false; break; } s += v * (p - j); } if (ok) out[i] = s / dw; } return out; };
+const _roc2 = (arr, p) => arr.map((v, i) => (i >= p && arr[i - p]) ? (v - arr[i - p]) / arr[i - p] * 100 : null);
+const _smma2 = (arr, p) => { const n = arr.length, out = new Array(n).fill(null); let prev = null; for (let i = 0; i < n; i++) { const v = arr[i]; if (v == null) { out[i] = prev; continue; } if (prev == null) { if (i >= p - 1) { let s = 0; for (let j = 0; j < p; j++) s += arr[i - j]; prev = s / p; out[i] = prev; } } else { prev = (prev * (p - 1) + v) / p; out[i] = prev; } } return out; };
+
+export const elderRay = (h, l, c, p = 13) => { const e = _ema2(c, p); return { bull: h.map((x, i) => e[i] == null ? null : x - e[i]), bear: l.map((x, i) => e[i] == null ? null : x - e[i]) }; };
+export const chandeKroll = (h, l, c, p = 10, x = 1, q = 9) => { const atrv = _sma(_trueRange(h, l, c), p); const n = c.length, hs = new Array(n).fill(null), ls = new Array(n).fill(null); for (let i = p - 1; i < n; i++) { let hh = -Infinity, ll = Infinity; for (let j = i - p + 1; j <= i; j++) { hh = Math.max(hh, h[j]); ll = Math.min(ll, l[j]); } hs[i] = hh - x * (atrv[i] || 0); ls[i] = ll + x * (atrv[i] || 0); } const hf = new Array(n).fill(null), lf = new Array(n).fill(null); for (let i = q - 1; i < n; i++) { let hh = -Infinity, ll = Infinity; for (let j = i - q + 1; j <= i; j++) { if (hs[j] != null) hh = Math.max(hh, hs[j]); if (ls[j] != null) ll = Math.min(ll, ls[j]); } hf[i] = hh === -Infinity ? null : hh; lf[i] = ll === Infinity ? null : ll; } return { high: hf, low: lf }; };
+export const massIndex = (h, l, p = 9, sum = 25) => { const n = h.length, range = h.map((x, i) => x - l[i]); const e1 = _ema2(range, p), e2 = _ema2(e1, p); const ratio = e1.map((x, i) => (x != null && e2[i]) ? x / e2[i] : null); const out = new Array(n).fill(null); for (let i = sum - 1; i < n; i++) { let s = 0, ok = true; for (let j = 0; j < sum; j++) { const v = ratio[i - j]; if (v == null) { ok = false; break; } s += v; } if (ok) out[i] = s; } return out; };
+export const coppock = (c, a = 14, b = 11, w = 10) => { const r = _roc2(c, a), r2 = _roc2(c, b); const sum = r.map((x, i) => (x != null && r2[i] != null) ? x + r2[i] : null); return _wma2(sum, w); };
+export const kst = (c) => { const r1 = _sma(_roc2(c, 10), 10), r2 = _sma(_roc2(c, 15), 10), r3 = _sma(_roc2(c, 20), 10), r4 = _sma(_roc2(c, 30), 15); const n = c.length, line = new Array(n).fill(null); for (let i = 0; i < n; i++) { if (r1[i] != null && r2[i] != null && r3[i] != null && r4[i] != null) line[i] = r1[i] + 2 * r2[i] + 3 * r3[i] + 4 * r4[i]; } return { line, signal: _sma(line.map((x) => x == null ? 0 : x), 9) }; };
+export const alligator = (h, l) => { const med = h.map((x, i) => (x + l[i]) / 2); return { jaw: _smma2(med, 13), teeth: _smma2(med, 8), lips: _smma2(med, 5) }; };
+
 // SuperTrend → { trend:[-1/1], line:[price] }
 export const supertrend = (highs, lows, closes, p = 10, mult = 3) => {
   const a = atr(highs, lows, closes, p);
@@ -378,6 +390,12 @@ export const REGISTRY = {
   dpo: { label: 'DPO', pane: 'sub', inputs: { period: 20 }, color: '#f59e0b', calc: (c, i) => ({ line: dpo(c.close, i.period), guides: [0] }) },
   bop: { label: 'موازنهٔ قدرت (BOP)', pane: 'sub', inputs: {}, color: '#8b5cf6', calc: (c) => ({ line: bop(c.open, c.high, c.low, c.close), guides: [0] }) },
   eom: { label: 'سهولتِ حرکت (EOM)', pane: 'sub', inputs: { period: 14 }, color: '#06b6d4', calc: (c, i) => ({ line: eom(c.high, c.low, c.volume, i.period), guides: [0] }) },
+  elderRay: { label: 'اِلدر ری (قدرتِ گاو/خرس)', pane: 'sub', inputs: { period: 13 }, color: '#22c55e', calc: (c, i) => { const r = elderRay(c.high, c.low, c.close, i.period); return { line: r.bull, signal: r.bear, guides: [0] }; } },
+  chandeKroll: { label: 'استاپِ چاند کرول', pane: 'main', inputs: { p: 10, x: 1, q: 9 }, color: '#ef4444', calc: (c, i) => { const r = chandeKroll(c.high, c.low, c.close, i.p, i.x, i.q); return { lines: [{ data: r.high, color: '#ef4444' }, { data: r.low, color: '#22c55e' }] }; } },
+  massIndex: { label: 'شاخصِ توده', pane: 'sub', inputs: { period: 9, sum: 25 }, color: '#f59e0b', calc: (c, i) => ({ line: massIndex(c.high, c.low, i.period, i.sum), guides: [27, 26.5] }) },
+  coppock: { label: 'منحنیِ کاپاک', pane: 'sub', inputs: {}, color: '#8b5cf6', calc: (c) => ({ line: coppock(c.close), guides: [0] }) },
+  kst: { label: 'KST', pane: 'sub', inputs: {}, color: '#06b6d4', calc: (c) => { const r = kst(c.close); return { line: r.line, signal: r.signal, guides: [0] }; } },
+  alligator: { label: 'تمساحِ ویلیامز', pane: 'main', inputs: {}, color: '#3b82f6', calc: (c) => { const r = alligator(c.high, c.low); return { lines: [{ data: r.jaw, color: '#3b82f6' }, { data: r.teeth, color: '#ef4444' }, { data: r.lips, color: '#22c55e' }] }; } },
   bb:   { label: 'باند بولینگر', pane: 'main', inputs: { period: 20, mult: 2 }, color: '#94a3b8', calc: (c, i) => { const b = bollinger(c.close, i.period, i.mult); return { upper: b.upper, basis: b.basis, lower: b.lower, multi: true }; } },
   supertrend: { label: 'سوپرترند', pane: 'main', inputs: { period: 10, mult: 3 }, color: '#10b981', calc: (c, i) => ({ line: supertrend(c.high, c.low, c.close, i.period, i.mult).line }) },
   rsi:  { label: 'RSI', pane: 'sub', inputs: { period: 14 }, color: '#a78bfa', calc: (c, i) => ({ line: rsi(c.close, i.period), guides: [30, 70], range: [0, 100] }) },
