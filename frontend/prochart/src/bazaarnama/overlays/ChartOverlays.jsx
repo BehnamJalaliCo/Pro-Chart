@@ -183,8 +183,8 @@ export function CountdownChip({ countdown, countdownColor, TH, marketOpen }) {
 
 // واترمارکِ لوگوی بازارنما — رندرِ خالص.
 export function Watermark({ src, theme }) {
-  // لوگوی سفیدِ شفاف؛ روی تمِ روشن invert می‌شود تا مشکی و خوانا بماند.
-  return <img src={src} alt="بازارنما" className="absolute bottom-3 left-3 z-20 pointer-events-none select-none" style={{ height: 40, opacity: 0.5, filter: theme === 'light' ? 'invert(1)' : 'none' }} />;
+  // لوگوی سفیدِ شفاف؛ روی تمِ روشن invert می‌شود. ۵۰٪ بزرگ‌تر (۴۰→۶۰) و بالاتر از محورِ تاریخ (bottom-8).
+  return <img src={src} alt="بازارنما" className="absolute bottom-8 left-3 z-20 pointer-events-none select-none" style={{ height: 60, opacity: 0.5, filter: theme === 'light' ? 'invert(1)' : 'none' }} />;
 }
 
 // نوارِ کنترلِ بازپخش — رندرِ خالص؛ همهٔ هندلرها از props.
