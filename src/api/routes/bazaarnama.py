@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import re
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Body, Depends, Header, HTTPException, Request
@@ -312,11 +313,22 @@ async def delete_script(script_id: int, st: AcademyStudent = Depends(current_stu
 
 # ─────────────────────────── Watchlist ───────────────────────────
 
+# #۱۱ کریپتو-CFDهای فارکس (BTCUSD/ETHUSD/…) از واچ‌لیستِ فارکس حذف می‌شوند (کریپتو از LBank به‌شکلِ *USDT می‌آید)
+_WL_CRYPTO_CFD = re.compile(
+    r'^(BTC|ETH|XRP|DOGE|SOL|LTC|BNB|ADA|DOT|MATIC|AVAX|LINK|TRX|BCH|XLM|ATOM|UNI|SHIB|PEPE|TON|NEAR)USD$'
+)
+
+
+def _clean_fx_wl(syms):
+    """کریپتو-CFDهای فارکس را از واچ‌لیست بیرون می‌کشد (BTCUSDT و امثالش که واقعاً کریپتواند، می‌مانند)."""
+    return [s for s in (syms or []) if not _WL_CRYPTO_CFD.match(str(s).upper())]
+
+
 async def _get_or_make_wl(st, db) -> BnWatchlist:
     wl = (await db.execute(select(BnWatchlist).where(BnWatchlist.student_id == st.id).limit(1))).scalar_one_or_none()
     if not wl:
         wl = BnWatchlist(student_id=st.id, name="پیش‌فرض",
-                         symbols=["EURUSD", "XAUUSD", "GBPUSD", "USDJPY", "BTCUSD"])
+                         symbols=["EURUSD", "XAUUSD", "GBPUSD", "USDJPY", "USDCHF"])
         db.add(wl)
         await db.commit()
     return wl
@@ -325,7 +337,12 @@ async def _get_or_make_wl(st, db) -> BnWatchlist:
 @router.get("/watchlist")
 async def get_watchlist(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
     wl = await _get_or_make_wl(st, db)
-    return {"id": wl.id, "name": wl.name, "symbols": wl.symbols or []}
+    cleaned = _clean_fx_wl(wl.symbols or [])
+    # اگر واچ‌لیستِ ذخیره‌شده کریپتو-CFD داشت، یک‌بار پاک‌سازی و persist کن
+    if cleaned != (wl.symbols or []):
+        wl.symbols = cleaned
+        await db.commit()
+    return {"id": wl.id, "name": wl.name, "symbols": cleaned}
 
 
 @router.put("/watchlist")

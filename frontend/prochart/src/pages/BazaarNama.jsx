@@ -1592,6 +1592,29 @@ export default function BazaarNama() {
             />
           )
         )}
+
+        {/* #۹ دستگیرهٔ کشوییِ مرئیِ پنلِ راست (دسکتاپ): وقتی پنل بسته است، یک تبِ باریکِ لبه که با کلیک کشو را باز می‌کند */}
+        {!showRight && !compact && (
+          <button
+            onClick={() => setShowRight(true)}
+            title="بازکردنِ نوارِ کناری (واچ‌لیست، سیگنال AI، اسکنر، ترید، آلارم)"
+            aria-label="بازکردنِ نوارِ کناری"
+            className="absolute z-[56] flex flex-col items-center justify-center gap-1.5 transition-all duration-150"
+            style={{
+              top: '50%', right: 0, transform: 'translateY(-50%)',
+              width: 22, paddingTop: 14, paddingBottom: 14,
+              background: TH.panel || TH.chipBg, color: TH.textStrong,
+              border: `1px solid ${TH.border}`, borderRight: 'none',
+              borderTopLeftRadius: 10, borderBottomLeftRadius: 10,
+              boxShadow: '-2px 0 10px rgba(0,0,0,.18)', cursor: 'pointer',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = TH.accent; e.currentTarget.style.color = '#fff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = TH.panel || TH.chipBg; e.currentTarget.style.color = TH.textStrong; }}
+          >
+            <ChevronDown size={15} style={{ transform: 'rotate(90deg)' }} />
+            <span style={{ writingMode: 'vertical-rl', fontSize: 11, fontWeight: 700, letterSpacing: 1 }}>پنل</span>
+          </button>
+        )}
       </div>
 
       {/* استودیوی نمااسکریپت */}
