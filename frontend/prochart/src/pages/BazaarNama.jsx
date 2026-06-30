@@ -201,6 +201,7 @@ export default function BazaarNama() {
     setEditorOpen((v) => !v);
   }, [bnPrem]);
   const [helpId, setHelpId] = useState(null); // #۱۷ راهنمای «؟» ابزار/اندیکاتورِ انتخاب‌شده
+  const [tool, setTool] = useState('cursor'); // ابزارِ ترسیمِ فعال (قبل از افکتِ bn:* تا TDZ نشود)
   // #۱۴ شورت‌کاتِ فیچرهای منوی همبرگری (AuthMenu رویدادهای bn:* را dispatch می‌کند)
   useEffect(() => {
     const onTab = (e) => { const t = e.detail === 'calendar' ? 'cal' : e.detail; if (t) setRightTab(t); setShowRight(true); };
@@ -227,7 +228,6 @@ export default function BazaarNama() {
   const [scTables, setScTables] = useState([]); // جدول‌های table.new روی چارت
   const [legend, setLegend] = useState(null);
   const [search, setSearch] = useState('');
-  const [tool, setTool] = useState('cursor');
   const [editInd, setEditInd] = useState(null); // {scope,id}
   const [indDlgTab, setIndDlgTab] = useState('inputs'); // تبِ دیالوگِ تنظیماتِ اندیکاتور: inputs | style
   const [layouts, setLayouts] = useState([]);
