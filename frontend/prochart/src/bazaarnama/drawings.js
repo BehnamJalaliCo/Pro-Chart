@@ -250,7 +250,7 @@ export class DrawingLayer {
         const y = this._y((b.lo + b.hi) / 2); if (y == null) return;
         const yh = this._y(b.hi), yl = this._y(b.lo); const h = (yh != null && yl != null) ? Math.max(2, Math.abs(yl - yh) - 1) : 4;
         const w = (b.vol / maxV) * maxW;
-        ctx.fillStyle = b.poc ? 'rgba(245,158,11,.5)' : 'rgba(59,130,246,.28)';
+        ctx.fillStyle = b.poc ? 'rgba(245,158,11,.55)' : (b.va ? 'rgba(59,130,246,.42)' : 'rgba(59,130,246,.18)');
         ctx.fillRect(W - w, y - h / 2, w, h);
       });
     }

@@ -528,6 +528,15 @@ export default function BazaarNama() {
     const B = 48, step = (hi - lo) / B || 1, buckets = Array.from({ length: B }, (_, i) => ({ lo: lo + i * step, hi: lo + (i + 1) * step, vol: 0, poc: false }));
     data.forEach((c) => { const w = (c.v || 1); const mid = (c.h + c.l) / 2; const bi = Math.min(B - 1, Math.max(0, Math.floor((mid - lo) / step))); buckets[bi].vol += w; });
     let pocI = 0; buckets.forEach((b, i) => { if (b.vol > buckets[pocI].vol) pocI = i; }); buckets[pocI].poc = true;
+    // ناحیهٔ ارزش (Value Area): گسترش از POC تا پوششِ ۷۰٪ حجم → علامتِ VAH/VAL
+    const total = buckets.reduce((s, b) => s + b.vol, 0);
+    let loI = pocI, hiI = pocI, acc = buckets[pocI].vol;
+    while (acc < total * 0.7 && (loI > 0 || hiI < B - 1)) {
+      const below = loI > 0 ? buckets[loI - 1].vol : -1;
+      const above = hiI < B - 1 ? buckets[hiI + 1].vol : -1;
+      if (above >= below) { hiI++; acc += buckets[hiI].vol; } else { loI--; acc += buckets[loI].vol; }
+    }
+    for (let i = loI; i <= hiI; i++) buckets[i].va = true;
     drawRef.current.setProfile(buckets);
   }, []);
 
