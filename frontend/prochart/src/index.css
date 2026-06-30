@@ -2,34 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-/* تمِ تاریک (پیش‌فرض) */
+/* تمِ تاریک (پیش‌فرض) — رنگ‌های دقیقِ TradingView (navy-charcoal) برای حسِ لاکچری */
 :root {
   color-scheme: dark;
-  --bg-body: #0b0d13;
-  --surface-default: #0f1117;
-  --surface-card: #161923;
-  --surface-elevated: #1c2030;
-  --surface-border: #2a2e3d;
-  --surface-hover: #222738;
-  --text-primary: #e4e6ed;
-  --text-secondary: #9499ae;
-  --text-muted: #636882;
-  --scroll-thumb: #2a2e3d;
+  --bg-body: #131722;
+  --surface-default: #131722;
+  --surface-card: #1e222d;
+  --surface-elevated: #2a2e39;
+  --surface-border: #2a2e39;
+  --surface-hover: #2a2e39;
+  --text-primary: #d1d4dc;
+  --text-secondary: #b2b5be;
+  --text-muted: #787b86;
+  --scroll-thumb: #363a45;
+  --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.2), 0 2px 12px rgba(0,0,0,.4);
 }
 
-/* تمِ روشن */
+/* تمِ روشن — رنگ‌های دقیقِ TradingView light */
 .light {
   color-scheme: light;
-  --bg-body: #f4f6fb;
+  --bg-body: #ffffff;
   --surface-default: #ffffff;
-  --surface-card: #ffffff;
-  --surface-elevated: #f1f3f9;
-  --surface-border: #e2e6ef;
-  --surface-hover: #eef1f7;
-  --text-primary: #1a1d27;
-  --text-secondary: #565b6e;
-  --text-muted: #8b90a3;
-  --scroll-thumb: #cdd3e0;
+  --surface-card: #f8f9fd;
+  --surface-elevated: #f0f3fa;
+  --surface-border: #e0e3eb;
+  --surface-hover: #f0f3fa;
+  --text-primary: #131722;
+  --text-secondary: #5d606b;
+  --text-muted: #787b86;
+  --scroll-thumb: #d1d4dc;
+  --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.1);
 }
 
 * { font-family: 'AnjomanMax', 'Vazirmatn', sans-serif; }
@@ -43,13 +45,16 @@ body {
 }
 
 @layer components {
-  .card { @apply bg-surface-card border border-surface-border rounded-2xl; }
-  .btn-primary { @apply bg-brand-blue text-white font-bold rounded-xl px-4 py-2.5 hover:opacity-90 transition disabled:opacity-50; }
-  .btn-success { @apply bg-brand-green text-white font-bold rounded-xl px-4 py-2.5 hover:opacity-90 transition disabled:opacity-50; }
-  .btn-danger  { @apply bg-brand-red text-white font-bold rounded-xl px-4 py-2.5 hover:opacity-90 transition disabled:opacity-50; }
-  .btn-ghost   { @apply bg-surface-elevated text-text-secondary font-medium rounded-xl px-4 py-2.5 hover:bg-surface-hover transition; }
-  .input { @apply w-full bg-surface-elevated border border-surface-border text-text-primary rounded-xl px-3 py-2.5 focus:border-brand-blue focus:outline-none; }
+  /* شعاعِ منضبطِ TradingView: کنترل 6px، کارت 8px (نه pill) + وزنِ 600 (نه 700) */
+  .card { @apply bg-surface-card border border-surface-border rounded-lg; }
+  .btn-primary { @apply bg-brand-blue text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
+  .btn-success { @apply bg-brand-green text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
+  .btn-danger  { @apply bg-brand-red text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
+  .btn-ghost   { @apply bg-surface-elevated text-text-secondary font-medium rounded-md px-4 py-2 hover:bg-surface-hover transition; }
+  .input { @apply w-full bg-surface-elevated border border-surface-border text-text-primary rounded-md px-3 py-2 focus:border-brand-blue focus:outline-none; }
   .label { @apply block text-sm text-text-secondary mb-1.5; }
+  /* لایهٔ شناور (منو/دیالوگ): border + یک سایه (نه روشن‌ترکردن) */
+  .pc-pop { background: var(--surface-card); border: 1px solid var(--surface-border); box-shadow: var(--pc-shadow-pop); }
 }
 
 /* اسکرول‌بار */
@@ -110,6 +115,27 @@ body { text-rendering: optimizeLegibility; -moz-osx-font-smoothing: grayscale; }
 
 /* §۳۲ focus-visible برای دسترس‌پذیریِ کیبورد (بدونِ نمایش روی کلیکِ موس) */
 :focus-visible { outline: 2px solid var(--brand-blue, #2962ff); outline-offset: 1px; }
+
+/* میکرو‌اینتراکشنِ یکدست — همهٔ کنترل‌ها snappy و native (120ms ease-out، بدون scale) */
+button, [role="button"], a, summary, .pc-btn {
+  transition: background-color var(--pc-duration-normal) var(--pc-ease-standard),
+              color var(--pc-duration-normal) var(--pc-ease-standard),
+              border-color var(--pc-duration-normal) var(--pc-ease-standard),
+              box-shadow var(--pc-duration-slow) var(--pc-ease-standard);
+}
+
+/* دکمهٔ آیکونیِ سبکِ TradingView (hover = fill، active = tintِ آبی، بدون scale) */
+.pc-iconbtn { display:inline-flex; align-items:center; justify-content:center; border-radius: var(--pc-radius-sm);
+  color: var(--text-secondary); background: transparent; }
+.pc-iconbtn:hover { background: var(--surface-hover); color: var(--text-primary); }
+.pc-iconbtn[data-active="true"], .pc-iconbtn.active {
+  color: var(--brand-blue, #2962ff); background: rgba(41,98,255,.14); }
+
+/* flashِ سبز/قرمزِ سلول روی تیکِ قیمت (حسِ زنده‌بودن) */
+@keyframes pcFlashUp   { from { background: rgba(38,166,154,.28); } to { background: transparent; } }
+@keyframes pcFlashDown { from { background: rgba(239,83,80,.28);  } to { background: transparent; } }
+.pc-flash-up   { animation: pcFlashUp   .3s var(--pc-ease-standard); }
+.pc-flash-down { animation: pcFlashDown .3s var(--pc-ease-standard); }
 
 /* §۲۳/۳۲ احترام به prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
