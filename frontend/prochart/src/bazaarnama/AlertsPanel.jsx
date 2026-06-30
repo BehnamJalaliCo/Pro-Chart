@@ -80,6 +80,7 @@ const blankForm = (symbol) => ({
   indField: 'line',
   op: 'cross_up',
   value: '',
+  and2: false, op2: 'below', value2: '', // شرطِ دومِ AND (آلارمِ چندشرطی)
   lo: '', hi: '',
   trigger: 'recurring',
   cooldownMin: 60,
@@ -155,6 +156,10 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
     // عملوندِ راست
     if (isChannel) { cond.lo = Number(form.lo); cond.hi = Number(form.hi); cond.value = Number(form.lo); }
     else { cond.value = Number(form.value); }
+    // آلارمِ چندشرطی (AND): شرطِ دوم
+    if (!isChannel && form.and2 && form.value2 !== '') {
+      cond.conditions = [{ op: form.op, value: Number(form.value) }, { op: form.op2, value: Number(form.value2) }];
+    }
     // منبع
     if (form.source === 'price') { cond.price_field = form.price_field; }
     else if (form.source === 'indicator') {
@@ -313,6 +318,23 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
             <input value={form.value} onChange={(e) => set({ value: e.target.value })} placeholder={isPct ? '٪' : 'مقدار'} dir="ltr" className={`${inputCls} w-20`} style={inputStyle} />
           )}
         </div>
+
+        {/* آلارمِ چندشرطی — شرطِ دومِ AND */}
+        {!isChannel && (
+          <div className="flex items-center gap-1">
+            <label className="flex items-center gap-1 text-[10px] opacity-70 cursor-pointer whitespace-nowrap">
+              <input type="checkbox" checked={form.and2} onChange={(e) => set({ and2: e.target.checked })} /> و…
+            </label>
+            {form.and2 && (
+              <>
+                <select value={form.op2} onChange={(e) => set({ op2: e.target.value })} className={`${inputCls} flex-1`} style={selStyle}>
+                  {OPS.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+                </select>
+                <input value={form.value2} onChange={(e) => set({ value2: e.target.value })} placeholder="مقدار" dir="ltr" className={`${inputCls} w-20`} style={inputStyle} />
+              </>
+            )}
+          </div>
+        )}
 
         {/* پیش‌نمایشِ فاصله */}
         {distancePreview && (
