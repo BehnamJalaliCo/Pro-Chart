@@ -742,7 +742,7 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
     from src.api.routes._bsc import verify_usdt_payment
 
     plan = plan if plan in ("monthly", "yearly") else "monthly"
-    min_amt, days = (15.0, 30) if plan == "monthly" else (200.0, 365)
+    min_amt, days = (25.0, 30) if plan == "monthly" else (200.0, 365)  # #۸ ماهانه ۲۵ / سالانه ۲۰۰ تتر
     txk = (tx_hash or "").strip().lower()
     try:
         if await redis_client.exists(f"bn:tx:{txk}"):

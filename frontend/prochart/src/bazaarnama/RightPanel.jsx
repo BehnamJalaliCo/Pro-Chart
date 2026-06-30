@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Sparkles, ShoppingCart, Plus, Flag, Search, MoreVertical, ChevronDown, List, Table, FolderPlus, Pencil, Trash2 } from 'lucide-react';
+import { X, Sparkles, ShoppingCart, Plus, Flag, Search, MoreVertical, ChevronDown, List, Table, FolderPlus, Pencil, Trash2, Star, BrainCircuit, ScanLine, Info, Newspaper, CalendarDays, LineChart, BellRing, ChevronRight, ChevronLeft } from 'lucide-react';
 import AlertsPanel from './AlertsPanel';
 import Screener from './panels/Screener';
 import Details from './panels/Details';
@@ -105,6 +105,18 @@ function changePctOf(lp, baseline) {
   return null;
 }
 
+// ── متادیتای تب‌ها (آیکن + برچسب) — مرجعِ واحد برای نوارِ تب و دستگیرهٔ drawer ──
+const TABS = [
+  ['watch', 'واچ‌لیست', Star],
+  ['ai', 'سیگنال AI', BrainCircuit],
+  ['screener', 'اسکنر', ScanLine],
+  ['details', 'جزئیات', Info],
+  ['news', 'اخبار', Newspaper],
+  ['cal', 'تقویم', CalendarDays],
+  ['trade', 'ترید', LineChart],
+  ['alerts', 'آلارم', BellRing],
+];
+
 export default function RightPanel({
   TH, rightTab, setRightTab,
   symbol, setSymbol, symbols, live, tf,
@@ -113,11 +125,78 @@ export default function RightPanel({
   getAiSignal, gotoSignal, deleteSignal, clearAiSig,
   order, setOrder, startTrade, submitOrder, curPrice, livePrice, quickTrade,
   overlays, subs,
+  // #9 — حالتِ کشویی (drawer). پراپِ اختیاریِ جدید؛ نبودش = رفتارِ قبلیِ کاملاً سازگارِ عقب‌رو.
+  // drawer=true: یک دستگیرهٔ همیشه‌مرئی کنارِ پنل می‌گذارد و پنل را باز/بسته می‌کند.
+  drawer = false, drawerOpen, onDrawerToggle,
 }) {
-  return (
+  // اگر والد حالتِ باز/بسته را کنترل نکند، خودمان نگه می‌داریم (uncontrolled).
+  const [openSelf, setOpenSelf] = React.useState(true);
+  const isOpen = drawer ? (drawerOpen != null ? drawerOpen : openSelf) : true;
+  const toggleDrawer = React.useCallback(() => {
+    if (onDrawerToggle) onDrawerToggle(!isOpen);
+    if (drawerOpen == null) setOpenSelf((v) => !v);
+  }, [isOpen, drawerOpen, onDrawerToggle]);
+
+  // باز کردنِ drawer روی تبِ خاص (کلیک روی آیکنِ دستگیره وقتی بسته است)
+  const openTab = (k) => { setRightTab(k); if (drawer && !isOpen) toggleDrawer(); };
+
+  // ── دستگیرهٔ عمودیِ drawer (#9) — نشانهٔ واضحِ «اینجا پنلی هست» ──
+  // ریلِ باریکِ آیکن‌دار که همیشه دیده می‌شود؛ کلیک روی هر آیکن همان تب را باز می‌کند،
+  // و فلش بالای ریل کلِ پنل را جمع/باز می‌کند.
+  const Handle = drawer ? (
+    <div className="shrink-0 flex flex-col items-center gap-1 py-2 border-l select-none" dir="rtl"
+      style={{ width: 38, borderColor: TH.border, background: TH.subtle }}>
+      <button onClick={toggleDrawer} title={isOpen ? 'جمع‌کردنِ پنل' : 'بازکردنِ پنل'}
+        className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors mb-1"
+        style={{ color: TH.textStrong, background: TH.chipBg }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
+        onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
+        {isOpen ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
+      </button>
+      {TABS.map(([k, l, Icon]) => {
+        const active = rightTab === k && isOpen;
+        const acc = k === 'ai' ? TH.accentAi : TH.accent;
+        return (
+          <button key={k} title={l} onClick={() => openTab(k)}
+            className="relative w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+            style={{ color: active ? '#fff' : TH.text, background: active ? acc : 'transparent' }}
+            onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
+            onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
+            <Icon size={15} />
+            {!isOpen && rightTab === k && <span className="absolute right-0 top-1.5 bottom-1.5 w-[2.5px] rounded-full" style={{ background: acc }} />}
+          </button>
+        );
+      })}
+    </div>
+  ) : null;
+
+  // وقتی drawer بسته است، فقط دستگیره را نشان بده (پنل جمع شده).
+  if (drawer && !isOpen) {
+    return (
+      <div dir="rtl" className="flex h-full shrink-0 max-md:absolute max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-40">
+        {Handle}
+      </div>
+    );
+  }
+
+  const panel = (
     <div dir="rtl" className="w-64 border-l overflow-hidden shrink-0 flex flex-col max-md:absolute max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-40 max-md:shadow-2xl" style={{ borderColor: TH.border, background: TH.bg }}>
+      {/* نوارِ تب — آیکن‌دار، با اندیکاتورِ پایینِ نرم و حالتِ AI متمایز */}
       <div className="flex border-b overflow-x-auto bn-thin-scroll shrink-0" style={{ borderColor: TH.border, background: TH.bg }}>
-        {[['watch', 'واچ‌لیست'], ['ai', 'سیگنال AI'], ['screener', 'اسکنر'], ['details', 'جزئیات'], ['news', 'اخبار'], ['cal', 'تقویم'], ['trade', 'ترید'], ['alerts', 'آلارم']].map(([k, l]) => { const active = rightTab === k; const acc = k === 'ai' ? TH.accentAi : TH.accent; return (<button key={k} onClick={() => setRightTab(k)} className={`shrink-0 whitespace-nowrap px-3 py-1.5 text-[11px] transition-colors duration-[120ms] ${active ? '' : 'opacity-60 hover:opacity-100'}`} style={active ? { color: acc, borderBottom: `2px solid ${acc}` } : {}}>{l}</button>); })}
+        {TABS.map(([k, l, Icon]) => {
+          const active = rightTab === k;
+          const acc = k === 'ai' ? TH.accentAi : TH.accent;
+          return (
+            <button key={k} onClick={() => setRightTab(k)} title={l}
+              className={`group/tab relative shrink-0 whitespace-nowrap flex items-center gap-1 px-2.5 py-2 text-[11px] transition-colors duration-[120ms] ${active ? '' : 'opacity-55 hover:opacity-100'}`}
+              style={active ? { color: acc } : { color: TH.text }}>
+              <Icon size={13} className="shrink-0" />
+              <span>{l}</span>
+              <span className="absolute left-1.5 right-1.5 -bottom-px h-[2px] rounded-full transition-all duration-150"
+                style={{ background: acc, opacity: active ? 1 : 0, transform: active ? 'scaleX(1)' : 'scaleX(0.4)' }} />
+            </button>
+          );
+        })}
       </div>
       <div className="flex-1 overflow-auto min-h-0 bn-thin-scroll">
       {rightTab === 'details' ? (
@@ -217,6 +296,15 @@ export default function RightPanel({
         </div>
       )}
       </div>
+    </div>
+  );
+
+  // در حالتِ drawer، پنل + دستگیره کنارِ هم؛ در غیرِ این صورت دقیقاً مثلِ قبل.
+  if (!drawer) return panel;
+  return (
+    <div dir="rtl" className="flex h-full shrink-0 max-md:absolute max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-40">
+      {panel}
+      {Handle}
     </div>
   );
 }

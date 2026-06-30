@@ -36,6 +36,7 @@ import { captureChart, canvasToBlob, copyBlobToClipboard, downloadBlob } from '.
 import RightPanel from '../bazaarnama/RightPanel';
 import AuthMenu from '../AuthMenu';
 import HelpModal, { HelpDot } from '../bazaarnama/Help';
+import Legal from './Legal';
 import { getHelp } from '../bazaarnama/help';
 import { HelpCircle } from 'lucide-react';
 
@@ -202,16 +203,19 @@ export default function BazaarNama() {
   }, [bnPrem]);
   const [helpId, setHelpId] = useState(null); // #۱۷ راهنمای «؟» ابزار/اندیکاتورِ انتخاب‌شده
   const [tool, setTool] = useState('cursor'); // ابزارِ ترسیمِ فعال (قبل از افکتِ bn:* تا TDZ نشود)
-  // #۱۴ شورت‌کاتِ فیچرهای منوی همبرگری (AuthMenu رویدادهای bn:* را dispatch می‌کند)
+  const [showLegal, setShowLegal] = useState(false); // #۱۲ مودالِ قوانین/حریمِ خصوصی (قبل از افکت)
+  // #۱۴/#۳ شورت‌کاتِ فیچرهای منوی همبرگری (AuthMenu رویدادهای bn:* را dispatch می‌کند)
   useEffect(() => {
     const onTab = (e) => { const t = e.detail === 'calendar' ? 'cal' : e.detail; if (t) setRightTab(t); setShowRight(true); };
     const onScript = () => openNamaScript();
     const onHelp = () => { if (getHelp(tool) && tool !== 'cursor') setHelpId(tool); else setShowShortcuts(true); };
+    const onThemeT = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')); // #۳ تمِ روز/شب از منو
+    const onTerms = () => setShowLegal(true);                                  // #۱۲ صفحهٔ قوانین
     const ext = (url) => () => { try { window.open(url, '_blank', 'noopener'); } catch (e) {} };
-    const onTg = ext('https://t.me/CoinProFXBot'); const onSup = ext('https://pro-chart.com'); const onTerms = ext('https://pro-chart.com');
+    const onSup = ext('https://t.me/CoinProFXBot'); // #۱۳ پشتیبانِ CoinePro FX
     window.addEventListener('bn:rightTab', onTab); window.addEventListener('bn:openScript', onScript); window.addEventListener('bn:help', onHelp);
-    window.addEventListener('bn:telegram', onTg); window.addEventListener('bn:support', onSup); window.addEventListener('bn:terms', onTerms);
-    return () => { window.removeEventListener('bn:rightTab', onTab); window.removeEventListener('bn:openScript', onScript); window.removeEventListener('bn:help', onHelp); window.removeEventListener('bn:telegram', onTg); window.removeEventListener('bn:support', onSup); window.removeEventListener('bn:terms', onTerms); };
+    window.addEventListener('bn:support', onSup); window.addEventListener('bn:terms', onTerms); window.addEventListener('bn:toggleTheme', onThemeT);
+    return () => { window.removeEventListener('bn:rightTab', onTab); window.removeEventListener('bn:openScript', onScript); window.removeEventListener('bn:help', onHelp); window.removeEventListener('bn:support', onSup); window.removeEventListener('bn:terms', onTerms); window.removeEventListener('bn:toggleTheme', onThemeT); };
   }, [tool, openNamaScript]);
   const [code, setCode] = useState(() => loadWS().code || ''); // کدِ نمااسکریپت با رفرش پاک نمی‌شود
   const [barMode, setBarMode] = useState(false); // اجرای بار-به-بارِ نمااسکریپت (اختیاری)
@@ -1811,6 +1815,8 @@ export default function BazaarNama() {
 
       {/* #۱۷ مودالِ راهنمای ابزار/اندیکاتور (؟) */}
       <HelpModal entry={getHelp(helpId)} onClose={() => setHelpId(null)} TH={TH} />
+      {/* #۱۲ مودالِ قوانین و حریمِ خصوصی */}
+      <Legal open={showLegal} onClose={() => setShowLegal(false)} theme={theme} />
 
       {/* دیالوگِ راهنمای میان‌بُرهای صفحه‌کلید (؟) */}
       {showShortcuts && (

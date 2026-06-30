@@ -34,6 +34,15 @@ _pairs_set: set = {c + "USDT" for c in _SEED} | {c + "USD" for c in _SEED}
 _pairs_list: List[str] = [c + "USDT" for c in _SEED]
 _pairs_ts: float = 0.0
 _PAIRS_TTL = 3600  # ۱ ساعت
+# #۱ رتبهٔ تقریبیِ market-cap برای چیدمانِ نزولیِ نمادهای کریپتو (ارزها اول، بقیه الفبایی)
+_MCAP_RANK = {s: i for i, s in enumerate([
+    "BTCUSDT", "ETHUSDT", "USDTUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "USDCUSDT", "ADAUSDT",
+    "DOGEUSDT", "TRXUSDT", "TONUSDT", "AVAXUSDT", "SHIBUSDT", "LINKUSDT", "DOTUSDT", "BCHUSDT",
+    "LTCUSDT", "NEARUSDT", "MATICUSDT", "UNIUSDT", "ICPUSDT", "APTUSDT", "XLMUSDT", "ETCUSDT",
+    "FILUSDT", "ATOMUSDT", "ARBUSDT", "OPUSDT", "INJUSDT", "SUIUSDT", "PEPEUSDT", "TIAUSDT",
+    "RNDRUSDT", "IMXUSDT", "HBARUSDT", "VETUSDT", "GRTUSDT", "SEIUSDT", "FTMUSDT", "AAVEUSDT",
+    "ALGOUSDT", "FLOWUSDT", "SANDUSDT", "MANAUSDT", "AXSUSDT", "EGLDUSDT", "XTZUSDT", "CHZUSDT",
+])}
 
 
 def _bn_symbol(lbank_pair: str) -> str:
@@ -66,6 +75,8 @@ async def ensure_pairs() -> List[str]:
         usdt = [p for p in data if isinstance(p, str) and p.endswith("_usdt")]
         if usdt:
             syms = [_bn_symbol(p) for p in usdt]
+            # #۱ چیدمان بر اساسِ ارزشِ بازار: ارزها بر اساسِ رتبهٔ market-cap اول، بقیه الفبایی
+            syms.sort(key=lambda s: (_MCAP_RANK.get(s, 9999), s))
             _pairs_list = syms
             _pairs_set = set(syms) | {s[:-1] for s in syms}  # BTCUSDT + BTCUSD(درواقع BTCUSD از brisۀ T)
             # دقیق‌تر: هم USDT و هم USD را بپذیر

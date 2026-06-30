@@ -1,8 +1,9 @@
 import React from 'react';
 import {
   Menu, X, LogIn, UserPlus, Crown, LogOut, User, Loader2, Eye, EyeOff,
-  ExternalLink, Sparkles, Code2, LineChart, List, Bell, Search, CalendarDays,
-  HelpCircle, Send, LifeBuoy, FileText, ChevronLeft, ArrowUpRight,
+  Sparkles, Code2, LineChart, List, Bell, Search, CalendarDays,
+  HelpCircle, LifeBuoy, FileText, ChevronLeft, ArrowUpRight, Sun, Moon,
+  Check, ShieldCheck, Zap, Star, Users, BadgeCheck,
 } from 'lucide-react';
 import { api, tokenStore } from './api/client';
 
@@ -44,19 +45,34 @@ function palette(dark) {
     : { panel: '#ffffff', card: '#ffffff', border: 'rgba(15,23,42,.10)', text: '#0f172a', sub: 'rgba(15,23,42,.55)', field: '#f8fafc', fieldBorder: '#e2e8f0', soft: 'rgba(15,23,42,.04)', softHover: 'rgba(15,23,42,.08)' };
 }
 
-export default function AuthMenu({ theme = 'dark', panelUrl }) {
-  const dark = theme !== 'light';
-  const P = palette(dark);
+// ── کلیدها/قراردادها (خارج از کامپوننت تا ثابت بمانند) ──
+const SUPPORT_URL = 'https://t.me/CoinProFXBot';   // پشتیبانِ CoinePro FX (#13)
+
+export default function AuthMenu({ theme = 'dark', panelUrl, onToggleTheme }) {
+  // ── همهٔ stateها/refها قبل از هر افکت/کال‌بکی که استفاده‌شان می‌کند (جلوگیری از TDZ) ──
   const [open, setOpen] = React.useState(false);
   const [shown, setShown] = React.useState(false);      // برای انیمیشنِ نرم (mount→slide)
   const [view, setView] = React.useState(null);
   const [auth, setAuth] = React.useState(authStore.get());
+  // تمِ محلیِ خوش‌بینانه: با propِ والد سینک می‌شود ولی اجازه می‌دهد سوییچ فوری بازتاب یابد
+  const [localTheme, setLocalTheme] = React.useState(theme);
+  React.useEffect(() => { setLocalTheme(theme); }, [theme]);
+
+  const dark = localTheme !== 'light';
+  const P = palette(dark);
 
   // اجازهٔ override به والد برای آدرسِ پنل (backward-compatible؛ propِ اختیاری)
   const goPanel = React.useCallback((path = '') => {
     const base = panelUrl || PANEL_URL;
     try { window.open(base + path, '_blank', 'noopener'); } catch (e) { /* noop */ }
   }, [panelUrl]);
+
+  // #۳ سوییچِ تمِ روز/شب — اعمالِ فوری: بازتابِ محلی + callbackِ والد (در صورت وجود) + رویدادِ سراسری
+  const toggleTheme = React.useCallback(() => {
+    setLocalTheme((t) => (t === 'light' ? 'dark' : 'light'));
+    try { if (typeof onToggleTheme === 'function') onToggleTheme(); } catch (e) { /* noop */ }
+    fire('bn:toggleTheme');
+  }, [onToggleTheme]);
 
   React.useEffect(() => {
     if (open) { const t = setTimeout(() => setShown(true), 10); return () => clearTimeout(t); }
@@ -65,6 +81,7 @@ export default function AuthMenu({ theme = 'dark', panelUrl }) {
   React.useEffect(() => {
     if (open && auth) api.me().then((m) => { if (m?.tier) { const a = { ...auth, tier: m.tier }; authStore.set(a); setAuth(a); } }).catch(() => {});
   }, [open]); // eslint-disable-line
+
   const close = () => { setShown(false); setView(null); setTimeout(() => setOpen(false), 220); };
 
   const onAuthed = (username, tier) => { const a = { username, tier: tier || 'free' }; authStore.set(a); setAuth(a); setView(null); close(); setTimeout(() => location.reload(), 250); };
@@ -72,6 +89,9 @@ export default function AuthMenu({ theme = 'dark', panelUrl }) {
 
   // شورت‌کاتِ فیچرها: رویداد به والد + بستنِ منو
   const feature = (name, detail) => { fire(name, detail); close(); };
+
+  const tier = auth?.tier || 'free';
+  const isPremium = tier === 'premium' || tier === 'vip';
 
   return (
     <>
@@ -87,48 +107,83 @@ export default function AuthMenu({ theme = 'dark', panelUrl }) {
         <div dir="rtl" className="fixed inset-0 z-[150]" onClick={close}>
           {/* backdrop با fade نرم */}
           <div className="absolute inset-0 transition-opacity duration-200"
-               style={{ background: 'rgba(0,0,0,.45)', opacity: shown ? 1 : 0 }} />
+               style={{ background: 'rgba(2,6,23,.55)', backdropFilter: shown ? 'blur(2px)' : 'blur(0)', opacity: shown ? 1 : 0 }} />
           {/* پنل با slide نرم */}
-          <div className="absolute right-0 top-0 bottom-0 w-80 max-w-[90vw] flex flex-col shadow-2xl transition-transform duration-200 ease-out"
+          <div className="absolute right-0 top-0 bottom-0 w-[22rem] max-w-[92vw] flex flex-col shadow-2xl transition-transform duration-200 ease-out"
                style={{ background: P.panel, color: P.text, borderLeft: `1px solid ${P.border}`,
                         transform: shown ? 'translateX(0)' : 'translateX(100%)' }}
                onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: `1px solid ${P.border}` }}>
-              <div className="font-extrabold">Pro<span className="text-indigo-400">·</span>Chart</div>
-              <button onClick={close} className="opacity-60 hover:opacity-100 transition-opacity"><X size={18} /></button>
+
+            {/* ── هدر ── */}
+            <div className="flex items-center justify-between px-4 h-14 shrink-0"
+                 style={{ borderBottom: `1px solid ${P.border}` }}>
+              <div className="flex items-center gap-2 font-extrabold tracking-tight">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg text-white"
+                      style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
+                  <LineChart size={16} />
+                </span>
+                Pro<span className="text-indigo-400">·</span>Chart
+              </div>
+              <div className="flex items-center gap-1">
+                {/* #۳ سوییچِ تمِ روز/شب داخلِ منو */}
+                <button onClick={toggleTheme} title={dark ? 'تمِ روشن' : 'تمِ تاریک'}
+                        className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+                        style={{ background: P.soft, color: P.text }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = P.softHover)}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = P.soft)}>
+                  {dark ? <Sun size={17} /> : <Moon size={17} />}
+                </button>
+                <button onClick={close} title="بستن"
+                        className="w-9 h-9 rounded-lg flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity"
+                        style={{ color: P.text }}>
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             <div className="p-4 overflow-auto flex-1">
               {/* کارتِ کاربر */}
-              <div className="rounded-xl p-3 mb-4 flex items-center gap-3" style={{ background: P.soft }}>
-                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(99,102,241,.25)' }}>
-                  {auth ? <Crown size={18} className="text-amber-400" /> : <User size={18} style={{ color: P.sub }} />}
+              <div className="rounded-2xl p-3.5 mb-4 flex items-center gap-3 relative overflow-hidden"
+                   style={{ background: P.soft, border: `1px solid ${P.border}` }}>
+                <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+                     style={{ background: isPremium ? 'linear-gradient(135deg,#f59e0b,#6366f1)' : 'rgba(99,102,241,.18)' }}>
+                  {auth ? <Crown size={19} className="text-white" /> : <User size={19} style={{ color: P.sub }} />}
                 </div>
-                <div className="min-w-0">
-                  <div className="font-bold truncate">{auth ? auth.username : 'کاربرِ مهمان'}</div>
-                  <div className="text-[12px]" style={{ color: P.sub }}>{auth ? `اشتراک: ${tierLabel[auth.tier] || auth.tier}` : 'بدونِ حساب'}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold truncate flex items-center gap-1.5">
+                    {auth ? auth.username : 'کاربرِ مهمان'}
+                    {isPremium && <BadgeCheck size={15} className="text-amber-400 shrink-0" />}
+                  </div>
+                  <div className="text-[12px] flex items-center gap-1.5" style={{ color: P.sub }}>
+                    {auth ? (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-bold"
+                            style={{ background: isPremium ? 'rgba(245,158,11,.16)' : P.softHover, color: isPremium ? '#f59e0b' : P.sub }}>
+                        {tierLabel[tier] || tier}
+                      </span>
+                    ) : 'هنوز وارد نشده‌اید'}
+                  </div>
                 </div>
               </div>
 
               {!view ? (
                 <>
                   {/* جایگاهِ تبلیغِ بالا (مدیریت‌پذیر از ادمین) */}
-                  <AdSlot P={P} slot="menu_top" tier={auth?.tier} />
+                  <AdSlot P={P} slot="menu_top" tier={tier} />
 
                   {/* بخشِ حساب */}
                   <Section P={P} title="حساب">
                     {!auth ? (<>
-                      <MenuBtn P={P} icon={<LogIn size={16} />} label="ورود به حساب" onClick={() => setView('login')} />
-                      <MenuBtn P={P} icon={<UserPlus size={16} />} label="ثبت‌نام در پنلِ کاربری" external accent onClick={() => goPanel('/register?from=chart')} />
+                      <MenuBtn P={P} icon={<LogIn size={16} />} label="ورود به حساب" onClick={() => setView('login')} accent />
+                      <MenuBtn P={P} icon={<UserPlus size={16} />} label="ثبت‌نام در پنلِ کاربری" external onClick={() => goPanel('/register?from=chart')} />
                     </>) : (
                       <MenuBtn P={P} icon={<LogOut size={16} />} label="خروج از حساب" onClick={logout} danger />
                     )}
                     <MenuBtn P={P} icon={<User size={16} />} label="پنلِ کاربری (حساب · اشتراک · بروکر)" external onClick={() => goPanel('/?from=chart')} />
                   </Section>
 
-                  {/* ارتقا به پریمیوم (بدونِ آدرسِ خام) */}
-                  <Section P={P} title="ارتقا به پریمیوم">
-                    <PremiumPitch P={P} onUpgrade={() => goPanel('/subscribe?from=chart')} />
+                  {/* #۶ اشتراکِ پریمیوم — کارتِ بازاریابیِ حرفه‌ای (بدونِ آدرسِ کانترکتِ خام) */}
+                  <Section P={P} title="اشتراکِ پریمیوم">
+                    <PremiumPitch P={P} isPremium={isPremium} onBuy={() => goPanel('/subscribe?from=chart')} />
                   </Section>
 
                   {/* امکاناتِ بازارنما (شورت‌کاتِ فیچرها) */}
@@ -144,16 +199,15 @@ export default function AuthMenu({ theme = 'dark', panelUrl }) {
                   </Section>
 
                   {/* جایگاهِ تبلیغِ پایین (مدیریت‌پذیر از ادمین) */}
-                  <AdSlot P={P} slot="menu_inline" tier={auth?.tier} compact />
+                  <AdSlot P={P} slot="menu_inline" tier={tier} compact />
 
-                  {/* پشتیبانی و اجتماعی */}
-                  <Section P={P} title="پشتیبانی و اجتماعی">
-                    <MenuBtn P={P} icon={<Send size={16} />}      label="کانالِ تلگرام" external onClick={() => feature('bn:telegram')} />
-                    <MenuBtn P={P} icon={<LifeBuoy size={16} />}  label="پشتیبانی"      external onClick={() => feature('bn:support')} />
+                  {/* پشتیبانی و اطلاعات — #۱۳ پشتیبانِ CoinePro FX · #۱۴ بدونِ کانالِ تلگرام */}
+                  <Section P={P} title="پشتیبانی و اطلاعات">
+                    <MenuBtn P={P} icon={<LifeBuoy size={16} />}  label="پشتیبانِ CoinePro FX" external onClick={() => feature('bn:support', SUPPORT_URL)} />
                     <MenuBtn P={P} icon={<FileText size={16} />}  label="قوانین و حریمِ خصوصی" external onClick={() => feature('bn:terms')} />
                   </Section>
 
-                  <div className="text-center text-[11px] pt-1" style={{ color: P.sub }}>نسخه ۱.۰ · بازارنما</div>
+                  <div className="text-center text-[11px] pt-1" style={{ color: P.sub }}>نسخه ۱.۰ · بازارنما · CoinePro FX</div>
                 </>
               ) : (
                 <button onClick={() => setView(null)} className="mb-3 flex items-center gap-1 text-[12px] opacity-70 hover:opacity-100">
@@ -181,7 +235,7 @@ function Section({ P, title, children }) {
 }
 
 function MenuBtn({ P, icon, label, onClick, accent, danger, external }) {
-  const style = accent ? { background: '#4f46e5', color: '#fff' }
+  const style = accent ? { background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: '#fff' }
     : danger ? { background: 'rgba(239,68,68,.18)', color: '#f87171' }
     : { background: P.soft, color: P.text };
   return (
@@ -193,7 +247,7 @@ function MenuBtn({ P, icon, label, onClick, accent, danger, external }) {
   );
 }
 
-// چیپِ فیچر — شبکهٔ سه‌تایی (سبکِ TradingView right-rail)
+// چیپِ فیچر — شبکهٔ سه‌تایی (سبکِ right-rail)
 function FeatureChip({ P, icon, label, onClick }) {
   return (
     <button onClick={onClick}
@@ -210,45 +264,136 @@ function FeatureChip({ P, icon, label, onClick }) {
 function fieldStyle(P) { return { background: P.field, border: `1px solid ${P.fieldBorder}`, color: P.text }; }
 const inpCls = 'w-full rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-500 transition';
 
-// ── بازاریابیِ پریمیومِ تمیز (G1) — کارت‌های مزیت، بدونِ آدرسِ کیف‌پولِ خام ──
-function PremiumPitch({ P, onUpgrade }) {
+// ── #۶ کارتِ بازاریابیِ اشتراکِ پریمیوم — مزایا + قیمت‌گذاری + CTA + اجتماعی‌اثبات ──
+// قیمت: ماهانه ۲۵ تتر / سالانه ۲۰۰ تتر (#۸). آدرسِ کانترکتِ خام نمایش داده نمی‌شود؛ پرداخت داخلِ پنل.
+function PremiumPitch({ P, isPremium, onBuy }) {
   const [pr, setPr] = React.useState(null);
   React.useEffect(() => { api.pricing().then(setPr).catch(() => {}); }, []);
-  // قیمت‌ها به‌صورتِ «از N تتر در ماه»؛ هیچ آدرسِ واریزی در منو رندر نمی‌شود.
-  const monthly = pr?.monthly_usdt ?? pr?.premium_monthly ?? 15;
+  const [plan, setPlan] = React.useState('yearly'); // پیش‌فرض روی صرفه‌جوترین پلن
+
+  // قیمت‌ها از API (در صورتِ وجود) وگرنه پیش‌فرضِ مصوب: ۲۵ ماهانه / ۲۰۰ سالانه
+  const monthly = pr?.monthly_usdt ?? pr?.premium_monthly ?? 25;
+  const yearly = pr?.yearly_usdt ?? pr?.premium_yearly ?? 200;
+  const yearlyPerMonth = Math.round((yearly / 12) * 10) / 10;            // ~۱۶٫۷ تتر در ماه
+  const savePct = monthly > 0 ? Math.round((1 - (yearly / (monthly * 12))) * 100) : 0; // ~۳۳٪
+
   const PERKS = [
-    { icon: <Sparkles size={16} />,  t: 'هوشِ مصنوعی',     d: 'سیگنالِ زندهٔ هوشمند روی هر نماد و تایم‌فریم' },
-    { icon: <Code2 size={16} />,     t: 'نمااسکریپت',      d: 'نوشتنِ اندیکاتور و استراتژیِ اختصاصی' },
-    { icon: <LineChart size={16} />, t: 'تریدِ روی چارت',  d: 'اجرای سفارش روی البنک / وان‌رویال' },
+    { icon: <Sparkles size={15} />,  t: 'هوشِ مصنوعیِ بازار',  d: 'سیگنالِ زندهٔ هوشمند روی هر نماد و تایم‌فریم' },
+    { icon: <Code2 size={15} />,     t: 'نمااسکریپت',          d: 'نوشتنِ اندیکاتور و استراتژیِ اختصاصی' },
+    { icon: <LineChart size={15} />, t: 'تریدِ روی چارت',      d: 'اجرای سفارش مستقیم از روی نمودار' },
+    { icon: <Zap size={15} />,       t: 'دادهٔ بلادرنگ',        d: 'قیمت و آلارمِ آنی بدونِ تأخیر' },
   ];
+
+  if (isPremium) {
+    return (
+      <div className="rounded-2xl p-4 flex items-center gap-3"
+           style={{ background: 'linear-gradient(135deg,rgba(245,158,11,.14),rgba(99,102,241,.14))', border: `1px solid ${P.border}` }}>
+        <span className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0"
+              style={{ background: 'linear-gradient(135deg,#f59e0b,#6366f1)' }}><Crown size={18} /></span>
+        <div className="min-w-0">
+          <div className="font-bold text-sm">اشتراکِ پریمیوم فعال است</div>
+          <div className="text-[12px]" style={{ color: P.sub }}>به تمامِ امکاناتِ ویژه دسترسی دارید. سپاس از همراهی‌تان.</div>
+        </div>
+      </div>
+    );
+  }
+
+  const sel = (k) => setPlan(k);
+  const active = (k) => plan === k;
+
   return (
-    <div className="space-y-2">
-      <div className="rounded-xl p-3 space-y-2.5" style={{ background: P.soft, border: `1px solid ${P.border}` }}>
+    <div className="rounded-2xl p-4 space-y-3.5"
+         style={{ background: 'linear-gradient(160deg,rgba(99,102,241,.10),rgba(139,92,246,.06))', border: `1px solid ${P.border}` }}>
+
+      {/* سرتیتر بازاریابی */}
+      <div className="flex items-start gap-2.5">
+        <span className="w-9 h-9 rounded-xl flex items-center justify-center text-white shrink-0"
+              style={{ background: 'linear-gradient(135deg,#f59e0b,#6366f1)' }}><Crown size={17} /></span>
+        <div className="min-w-0">
+          <div className="font-extrabold text-[15px] leading-5">به سطحِ حرفه‌ای ارتقا دهید</div>
+          <div className="text-[12px] leading-5" style={{ color: P.sub }}>هرچه برای تحلیل و معاملهٔ هوشمند لازم دارید، یک‌جا.</div>
+        </div>
+      </div>
+
+      {/* مزایا با تیکِ سبز */}
+      <div className="space-y-2">
         {PERKS.map((k) => (
-          <div key={k.t} className="flex items-start gap-3">
-            <span className="mt-0.5 text-amber-400 shrink-0">{k.icon}</span>
+          <div key={k.t} className="flex items-start gap-2.5">
+            <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                  style={{ background: 'rgba(34,197,94,.16)', color: '#22c55e' }}><Check size={13} strokeWidth={3} /></span>
             <div className="min-w-0">
-              <div className="font-bold text-sm">{k.t}</div>
-              <div className="text-[12px] leading-5" style={{ color: P.sub }}>{k.d}</div>
+              <div className="font-bold text-[13px] leading-4">{k.t}</div>
+              <div className="text-[11px] leading-4 mt-0.5" style={{ color: P.sub }}>{k.d}</div>
             </div>
           </div>
         ))}
       </div>
-      <div className="text-center text-[13px]" style={{ color: P.sub }}>
-        از <b className="text-indigo-400">{monthly} تتر</b> در ماه
+
+      {/* انتخابِ پلن: ماهانه / سالانه (با نشانِ صرفه‌جویی) */}
+      <div className="grid grid-cols-2 gap-2">
+        <PlanCard P={P} active={active('monthly')} onClick={() => sel('monthly')}
+                  label="ماهانه" price={monthly} per="در ماه" />
+        <PlanCard P={P} active={active('yearly')} onClick={() => sel('yearly')}
+                  label="سالانه" price={yearly} per="در سال"
+                  badge={savePct > 0 ? `${savePct}٪ صرفه‌جویی` : null}
+                  hint={`معادلِ ~${yearlyPerMonth} تتر در ماه`} />
       </div>
-      <button onClick={onUpgrade}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-l from-amber-500 to-indigo-600 text-white font-bold flex items-center justify-center gap-2 transition-transform hover:scale-[1.01] active:scale-[.99]">
-        ارتقا و پرداخت در پنلِ کاربری <ExternalLink size={14} />
+
+      {/* CTA اصلی — #۶ دکمهٔ «خریدِ پریمیوم» */}
+      <button onClick={onBuy}
+              className="w-full py-3 rounded-xl text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg transition-transform hover:scale-[1.015] active:scale-[.985]"
+              style={{ background: 'linear-gradient(135deg,#f59e0b,#6366f1)', boxShadow: '0 8px 24px -8px rgba(99,102,241,.6)' }}>
+        <Crown size={16} /> خریدِ پریمیوم
       </button>
-      <p className="text-[11px] text-center leading-5" style={{ color: P.sub }}>
-        پرداخت امن داخلِ پنل انجام می‌شود؛ پس از تأیید، قفلِ امکانات باز می‌شود.
+
+      {/* اعتمادسازی + اجتماعی‌اثبات */}
+      <div className="flex items-center justify-center gap-3 text-[11px]" style={{ color: P.sub }}>
+        <span className="inline-flex items-center gap-1"><ShieldCheck size={13} /> پرداختِ امن</span>
+        <span className="opacity-40">·</span>
+        <span className="inline-flex items-center gap-1">
+          <span className="flex text-amber-400">{[0,1,2,3,4].map((i) => <Star key={i} size={11} fill="currentColor" />)}</span>
+        </span>
+        <span className="opacity-40">·</span>
+        <span className="inline-flex items-center gap-1"><Users size={13} /> هزاران معامله‌گر</span>
+      </div>
+
+      <p className="text-[10.5px] text-center leading-4" style={{ color: P.sub }}>
+        پرداخت با تتر داخلِ پنلِ کاربری انجام می‌شود؛ پس از تأیید، قفلِ امکانات بلافاصله باز می‌شود.
       </p>
     </div>
   );
 }
 
-// ── جایگاهِ تبلیغاتیِ مدیریت‌پذیر از ادمین (G4) ──
+// کارتِ انتخابِ پلن (ماهانه/سالانه)
+function PlanCard({ P, active, onClick, label, price, per, badge, hint }) {
+  return (
+    <button onClick={onClick}
+            className="relative text-right rounded-xl p-2.5 transition-transform hover:scale-[1.02] active:scale-[.98]"
+            style={{
+              background: active ? 'rgba(99,102,241,.16)' : P.soft,
+              border: `1.5px solid ${active ? '#6366f1' : P.border}`,
+              color: P.text,
+            }}>
+      {badge && (
+        <span className="absolute -top-2 left-2 text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-full text-white"
+              style={{ background: 'linear-gradient(135deg,#22c55e,#16a34a)' }}>{badge}</span>
+      )}
+      <div className="text-[11px] font-bold" style={{ color: P.sub }}>{label}</div>
+      <div className="flex items-baseline gap-1 mt-0.5">
+        <span className="text-[18px] font-extrabold leading-none">{price}</span>
+        <span className="text-[11px] font-bold opacity-80">تتر</span>
+      </div>
+      <div className="text-[10px] mt-0.5" style={{ color: P.sub }}>{hint || per}</div>
+      <span className="absolute top-2 left-2">
+        {active
+          ? <span className="w-4 h-4 rounded-full flex items-center justify-center text-white" style={{ background: '#6366f1' }}><Check size={11} strokeWidth={3} /></span>
+          : <span className="w-4 h-4 rounded-full block" style={{ border: `1.5px solid ${P.border}` }} />}
+      </span>
+    </button>
+  );
+}
+
+// ── جایگاهِ تبلیغاتیِ مدیریت‌پذیر از ادمین ──
 // داده از API می‌آید (api.bnAds یا fallbackِ مستقیم به /academy/bn/ads). نبودِ تبلیغ ⇒ هیچ فضای خالی.
 async function fetchAds(slot) {
   // ۱) اگر متدِ اختصاصیِ client اضافه شده باشد، از آن استفاده کن (forward-compatible)

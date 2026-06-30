@@ -3,6 +3,7 @@ import {
   User, Crown, LogOut, Loader2, Bitcoin, LineChart, Link2, Copy, Check, ShieldCheck,
   ExternalLink, Eye, EyeOff, Star, Bell, Code2, LayoutGrid, BellRing, Lock, Share2,
   Menu, X, Plus, Trash2, RefreshCw, CalendarClock, Mail, ChevronLeft, Clock, CircleDot,
+  Sparkles, Zap, TrendingUp, Headset, ArrowLeft, Gem, BarChart3,
 } from 'lucide-react';
 import { api, tokenStore } from './api/client';
 
@@ -11,6 +12,10 @@ const FS = { background: '#0f1117', border: '1px solid #2a2e3d', color: '#e4e6ed
 const inp = 'w-full rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-500 transition';
 const TIER = { free: 'رایگان', vip: 'VIP', premium: 'پرمیوم' };
 const CHART_URL = 'https://pro-chart.ir/';
+// پشتیبانِ رسمیِ CoinePro FX (کانالِ تلگرام حذف شد — فقط پشتیبانی)
+const SUPPORT_URL = 'https://t.me/CoinProFXBot';
+// قیمتِ اشتراک — ماهانه ۲۵ تتر، سالانه ۲۰۰ تتر
+const PRICE = { monthlyUsd: 25, yearlyUsd: 200, monthlyFa: '۲۵', yearlyFa: '۲۰۰' };
 
 const authStore = {
   get: () => { try { return JSON.parse(localStorage.getItem('bn_auth') || 'null'); } catch (e) { return null; } },
@@ -36,7 +41,7 @@ function PwInput({ value, onChange, placeholder }) {
 // کارت (موجود — حفظِ سازگاری)
 function Card({ title, icon, children, action }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#161923] p-5 mb-4">
+    <div className="rounded-2xl border border-white/10 bg-[#161923] p-5 mb-4 transition hover:border-white/20">
       {(title || action) && (
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 font-bold">{icon}{title}</div>
@@ -110,17 +115,81 @@ export default function UserPanel() {
   };
   const logout = () => { authStore.clear(); tokenStore.clear(); setAuth(null); setMe(null); };
 
-  if (!auth) {
-    return (
-      <div dir="rtl" className="min-h-screen bg-[#0b0e14] text-gray-200">
-        <header className="flex items-center justify-between px-5 py-3 border-b border-white/10 bg-[#0f1117]">
-          <div className="font-extrabold text-lg">Pro<span className="text-indigo-400">·</span>Chart <span className="text-sm opacity-60 font-normal">پنلِ کاربری</span></div>
-        </header>
-        <div className="max-w-3xl mx-auto p-5"><AuthGate onAuthed={onAuthed} /></div>
-      </div>
-    );
-  }
+  if (!auth) return <AuthScreen onAuthed={onAuthed} />;
   return <PanelShell auth={auth} me={me} reloadMe={reloadMe} logout={logout} />;
+}
+
+// ───────────────────────── صفحهٔ ورود/ثبت‌نام (بازطراحیِ جهانی — #5) ─────────────────────────
+
+function BrandMark({ size = 'lg' }) {
+  const big = size === 'lg';
+  return (
+    <div className="flex items-center gap-2.5">
+      <div className={`relative grid place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-900/40 ${big ? 'w-11 h-11' : 'w-9 h-9'}`}>
+        <BarChart3 size={big ? 22 : 18} className="text-white" />
+        <span className="absolute -top-1 -left-1 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-[#0b0e14]" />
+      </div>
+      <div className="leading-tight">
+        <div className={`font-extrabold ${big ? 'text-xl' : 'text-lg'}`}>Pro<span className="text-indigo-400">·</span>Chart</div>
+        <div className="text-[11px] opacity-50 -mt-0.5">پلتفرمِ تریدِ بازارنما</div>
+      </div>
+    </div>
+  );
+}
+
+function AuthScreen({ onAuthed }) {
+  const heroItems = [
+    { icon: <TrendingUp size={17} className="text-emerald-300" />, t: 'تریدِ واقعی روی چارت', d: 'مستقیم از روی نمودار، سفارشِ واقعی روی حسابِ خودت باز کن.' },
+    { icon: <Code2 size={17} className="text-sky-300" />, t: 'نمااسکریپتِ شخصی', d: 'اندیکاتور و استراتژیِ اختصاصیِ خودت را بساز و اجرا کن.' },
+    { icon: <Bell size={17} className="text-amber-300" />, t: 'آلارمِ هوشمند', d: 'هر شرطِ قیمتی یا تکنیکال را دیده‌بانی کن، بی‌وقفه.' },
+  ];
+  return (
+    <div dir="rtl" className="min-h-screen bg-[#0b0e14] text-gray-200 relative overflow-hidden">
+      {/* پس‌زمینهٔ گرادیانیِ نرم */}
+      <div className="pointer-events-none absolute inset-0 opacity-70">
+        <div className="absolute -top-32 -right-24 w-[34rem] h-[34rem] rounded-full bg-indigo-600/20 blur-3xl" />
+        <div className="absolute -bottom-40 -left-24 w-[34rem] h-[34rem] rounded-full bg-violet-600/15 blur-3xl" />
+      </div>
+
+      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 min-h-screen flex flex-col">
+        <div className="mb-6 sm:mb-10"><BrandMark /></div>
+
+        <div className="flex-1 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          {/* ستونِ معرفی (برند) */}
+          <div className="hidden lg:block">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[12px] text-indigo-200 mb-5">
+              <Sparkles size={13} className="text-indigo-300" /> چارتِ حرفه‌ای، ساخته‌شده برای بازارِ ایران
+            </div>
+            <h1 className="text-3xl xl:text-4xl font-black leading-snug mb-3">
+              بازار را <span className="bg-gradient-to-l from-indigo-400 to-violet-400 bg-clip-text text-transparent">حرفه‌ای</span> ببین،
+              <br /> هوشمند معامله کن.
+            </h1>
+            <p className="text-sm opacity-70 leading-7 mb-7 max-w-md">
+              پنلِ کاربریِ پروچارت؛ مدیریتِ اشتراک، اتصالِ حسابِ معاملاتی، آلارم‌ها، واچ‌لیست و نمااسکریپت — همه در یک‌جا.
+            </p>
+            <div className="space-y-3 max-w-md">
+              {heroItems.map((it, i) => (
+                <div key={i} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 grid place-items-center shrink-0">{it.icon}</div>
+                  <div>
+                    <div className="font-bold text-sm">{it.t}</div>
+                    <div className="text-[12px] opacity-60 mt-0.5 leading-6">{it.d}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ستونِ فرم */}
+          <div className="w-full max-w-md mx-auto lg:mx-0">
+            <AuthGate onAuthed={onAuthed} />
+          </div>
+        </div>
+
+        <div className="mt-8 text-center text-[12px] opacity-40">© Pro·Chart — بازارنما · تریدِ واقعیِ کریپتو و فارکس</div>
+      </div>
+    </div>
+  );
 }
 
 // ───────────────────────── ورود/ثبت‌نام (موجود — بدونِ تغییرِ منطق) ─────────────────────────
@@ -128,13 +197,24 @@ export default function UserPanel() {
 function AuthGate({ onAuthed }) {
   const [mode, setMode] = React.useState('login'); // login | register
   return (
-    <div className="max-w-md mx-auto mt-8">
-      <div className="rounded-2xl border border-white/10 bg-[#161923] p-6">
-        <div className="flex gap-2 mb-5">
-          <button onClick={() => setMode('login')} className={`flex-1 py-2 rounded-lg text-sm font-bold ${mode === 'login' ? 'bg-indigo-600' : 'bg-white/5'}`}>ورود</button>
-          <button onClick={() => setMode('register')} className={`flex-1 py-2 rounded-lg text-sm font-bold ${mode === 'register' ? 'bg-indigo-600' : 'bg-white/5'}`}>ثبت‌نام</button>
-        </div>
-        {mode === 'login' ? <LoginForm onAuthed={onAuthed} /> : <RegisterForm onAuthed={onAuthed} />}
+    <div className="rounded-3xl border border-white/10 bg-[#13161f]/90 backdrop-blur p-6 sm:p-7 shadow-2xl shadow-black/40">
+      <div className="lg:hidden mb-5"><BrandMark size="sm" /></div>
+      <div className="mb-5">
+        <div className="text-lg font-extrabold">{mode === 'login' ? 'ورود به حساب' : 'ساختِ حسابِ جدید'}</div>
+        <div className="text-[12px] opacity-55 mt-1">{mode === 'login' ? 'برای ادامه وارد شو.' : 'در چند ثانیه عضوِ پروچارت شو.'}</div>
+      </div>
+      {/* تب‌های لغزشی */}
+      <div className="relative grid grid-cols-2 p-1 rounded-xl bg-white/5 border border-white/10 mb-5 text-sm font-bold">
+        <span className={`absolute top-1 bottom-1 w-[calc(50%-0.25rem)] rounded-lg bg-indigo-600 shadow transition-all duration-300 ${mode === 'login' ? 'right-1' : 'right-[calc(50%+0.125rem)]'}`} />
+        <button onClick={() => setMode('login')} className={`relative z-10 py-2 rounded-lg transition ${mode === 'login' ? 'text-white' : 'text-gray-400 hover:text-gray-200'}`}>ورود</button>
+        <button onClick={() => setMode('register')} className={`relative z-10 py-2 rounded-lg transition ${mode === 'register' ? 'text-white' : 'text-gray-400 hover:text-gray-200'}`}>ثبت‌نام</button>
+      </div>
+      {mode === 'login' ? <LoginForm onAuthed={onAuthed} /> : <RegisterForm onAuthed={onAuthed} />}
+      <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-[12px]">
+        <span className="opacity-50">کمک لازم داری؟</span>
+        <a href={SUPPORT_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-indigo-300 hover:text-indigo-200">
+          <Headset size={13} /> پشتیبانیِ CoinePro FX
+        </a>
       </div>
     </div>
   );
@@ -150,12 +230,24 @@ function LoginForm({ onAuthed }) {
   };
   return (
     <div className="space-y-3">
-      <input className={inp} style={FS} placeholder="ایمیل یا نام‌کاربری" value={u} onChange={(e) => setU(e.target.value)} dir="ltr" />
-      <PwInput value={p} onChange={(e) => setP(e.target.value)} placeholder="رمزِ عبور" />
-      {err && <div className="text-[12px] text-red-400">{err}</div>}
-      <button onClick={submit} disabled={busy || !u || !p} className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50">{busy && <Loader2 size={15} className="animate-spin" />} ورود</button>
+      <Field label="ایمیل یا نام‌کاربری">
+        <input className={inp} style={FS} placeholder="example@mail.com" value={u} onChange={(e) => setU(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && u && p && submit()} dir="ltr" />
+      </Field>
+      <Field label="رمزِ عبور">
+        <PwInput value={p} onChange={(e) => setP(e.target.value)} placeholder="••••••••" />
+      </Field>
+      {err && <ErrLine text={err} />}
+      <button onClick={submit} disabled={busy || !u || !p} className="w-full py-3 rounded-xl bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg shadow-indigo-900/30">{busy && <Loader2 size={15} className="animate-spin" />} ورود به پنل</button>
     </div>
   );
+}
+
+// لیبل و خطای فرم — قابلِ استفادهٔ مشترک
+function Field({ label, children }) {
+  return (<label className="block"><span className="block text-[12px] opacity-60 mb-1.5">{label}</span>{children}</label>);
+}
+function ErrLine({ text }) {
+  return (<div className="flex items-center gap-1.5 text-[12px] text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-2.5 py-2"><X size={13} className="shrink-0" />{text}</div>);
 }
 
 function RegisterForm({ onAuthed }) {
@@ -176,38 +268,58 @@ function RegisterForm({ onAuthed }) {
   if (!acct) {
     return (
       <div className="space-y-3">
-        <p className="text-sm opacity-80 mb-1">نوعِ حسابت را انتخاب کن (جدا و بدونِ تداخل):</p>
-        <button onClick={() => { setAcct('crypto'); setStep(2); }} className="w-full flex items-center gap-3 p-4 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition">
-          <Bitcoin size={22} className="text-amber-400" />
-          <div className="text-right"><div className="font-bold">کاربرِ کریپتو</div><div className="text-[12px] opacity-70">تریدِ واقعیِ کریپتو روی صرافیِ LBank (البنک)</div></div>
+        <p className="text-[13px] opacity-70 mb-1">نوعِ حسابت را انتخاب کن — این انتخاب جدا و بدونِ تداخل است:</p>
+        <button onClick={() => { setAcct('crypto'); setStep(2); }} className="group w-full flex items-center gap-3 p-4 rounded-2xl bg-amber-500/[0.07] hover:bg-amber-500/15 border border-amber-500/25 hover:border-amber-500/50 transition text-right">
+          <div className="w-11 h-11 rounded-xl bg-amber-500/15 grid place-items-center shrink-0"><Bitcoin size={22} className="text-amber-400" /></div>
+          <div className="flex-1"><div className="font-bold">کاربرِ کریپتو</div><div className="text-[12px] opacity-65 mt-0.5">تریدِ واقعیِ کریپتو روی صرافیِ LBank (البنک)</div></div>
+          <ArrowLeft size={16} className="opacity-30 group-hover:opacity-70 transition" />
         </button>
-        <button onClick={() => { setAcct('broker'); setStep(2); }} className="w-full flex items-center gap-3 p-4 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 transition">
-          <LineChart size={22} className="text-indigo-400" />
-          <div className="text-right"><div className="font-bold">کاربرِ فارکس</div><div className="text-[12px] opacity-70">تریدِ واقعیِ فارکس روی بروکرِ وان‌رویال (MT5)</div></div>
+        <button onClick={() => { setAcct('broker'); setStep(2); }} className="group w-full flex items-center gap-3 p-4 rounded-2xl bg-indigo-500/[0.07] hover:bg-indigo-500/15 border border-indigo-500/25 hover:border-indigo-500/50 transition text-right">
+          <div className="w-11 h-11 rounded-xl bg-indigo-500/15 grid place-items-center shrink-0"><LineChart size={22} className="text-indigo-400" /></div>
+          <div className="flex-1"><div className="font-bold">کاربرِ فارکس</div><div className="text-[12px] opacity-65 mt-0.5">تریدِ واقعیِ فارکس روی بروکرِ وان‌رویال (MT5)</div></div>
+          <ArrowLeft size={16} className="opacity-30 group-hover:opacity-70 transition" />
         </button>
       </div>
     );
   }
   return (
     <div className="space-y-3">
-      <div className="text-[12px] opacity-70 flex items-center gap-2">
+      <div className="flex items-center gap-2 text-[12px] rounded-lg bg-white/5 border border-white/10 px-3 py-2">
         {acct === 'crypto' ? <Bitcoin size={14} className="text-amber-400" /> : <LineChart size={14} className="text-indigo-400" />}
-        نوعِ حساب: <b>{acct === 'crypto' ? 'کریپتو (LBank)' : 'فارکس (وان‌رویال)'}</b>
-        <button onClick={() => { setAcct(''); setStep(1); }} className="opacity-50 hover:opacity-100 underline">تغییر</button>
+        <span className="opacity-70">نوعِ حساب:</span> <b>{acct === 'crypto' ? 'کریپتو (LBank)' : 'فارکس (وان‌رویال)'}</b>
+        <button onClick={() => { setAcct(''); setStep(1); }} className="mr-auto opacity-60 hover:opacity-100 text-indigo-300">تغییر</button>
+      </div>
+      {/* نشانگرِ مرحله */}
+      <div className="flex items-center gap-2">
+        {[2, 3].map((s, i) => (
+          <React.Fragment key={s}>
+            <span className={`h-1.5 flex-1 rounded-full transition ${step >= s ? 'bg-indigo-500' : 'bg-white/10'}`} />
+          </React.Fragment>
+        ))}
       </div>
       {step === 2 && (<>
-        <input className={inp} style={FS} placeholder="ایمیل" type="email" value={email} onChange={(e) => setEmail(e.target.value)} dir="ltr" />
-        {err && <div className="text-[12px] text-red-400">{err}</div>}
-        <button onClick={send} disabled={busy || !email} className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50">{busy && <Loader2 size={15} className="animate-spin" />} ارسالِ کدِ تأیید</button>
+        <Field label="ایمیل">
+          <input className={inp} style={FS} placeholder="example@mail.com" type="email" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && email && send()} dir="ltr" />
+        </Field>
+        {err && <ErrLine text={err} />}
+        <button onClick={send} disabled={busy || !email} className="w-full py-3 rounded-xl bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg shadow-indigo-900/30">{busy && <Loader2 size={15} className="animate-spin" />} ارسالِ کدِ تأیید</button>
       </>)}
       {step === 3 && (<>
-        {info && <div className="text-[12px] text-green-400">{info}</div>}
-        <input className={inp} style={FS} placeholder="کدِ تأیید" value={code} onChange={(e) => setCode(e.target.value)} dir="ltr" />
-        <input className={inp} style={FS} placeholder="نامِ کامل (اختیاری)" value={name} onChange={(e) => setName(e.target.value)} />
-        <input className={inp} style={FS} placeholder="نام‌کاربری" value={u} onChange={(e) => setU(e.target.value)} dir="ltr" />
-        <PwInput value={p} onChange={(e) => setP(e.target.value)} placeholder="رمزِ عبور" />
-        {err && <div className="text-[12px] text-red-400">{err}</div>}
-        <button onClick={verify} disabled={busy || !code || !u || !p} className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50">{busy && <Loader2 size={15} className="animate-spin" />} تأیید و ساختِ حساب</button>
+        {info && <div className="flex items-center gap-1.5 text-[12px] text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg px-2.5 py-2"><Check size={13} className="shrink-0" />{info}</div>}
+        <Field label="کدِ تأیید (ارسال‌شده به ایمیل)">
+          <input className={inp + ' tracking-[0.4em] text-center'} style={FS} placeholder="------" value={code} onChange={(e) => setCode(e.target.value)} dir="ltr" inputMode="numeric" />
+        </Field>
+        <Field label="نامِ کامل (اختیاری)">
+          <input className={inp} style={FS} placeholder="نامِ نمایشی" value={name} onChange={(e) => setName(e.target.value)} />
+        </Field>
+        <Field label="نام‌کاربری">
+          <input className={inp} style={FS} placeholder="username" value={u} onChange={(e) => setU(e.target.value)} dir="ltr" />
+        </Field>
+        <Field label="رمزِ عبور">
+          <PwInput value={p} onChange={(e) => setP(e.target.value)} placeholder="••••••••" />
+        </Field>
+        {err && <ErrLine text={err} />}
+        <button onClick={verify} disabled={busy || !code || !u || !p} className="w-full py-3 rounded-xl bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg shadow-indigo-900/30">{busy && <Loader2 size={15} className="animate-spin" />} تأیید و ساختِ حساب</button>
       </>)}
     </div>
   );
@@ -289,17 +401,19 @@ function PanelShell({ auth, me, reloadMe, logout }) {
 
   return (
     <div dir="rtl" className="min-h-screen bg-[#0b0e14] text-gray-200">
-      <header className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-white/10 bg-[#0f1117] sticky top-0 z-30">
-        <div className="flex items-center gap-2">
-          <button onClick={() => setMobileNav((v) => !v)} className="lg:hidden p-2 -mr-1 rounded-lg hover:bg-white/5">{mobileNav ? <X size={18} /> : <Menu size={18} />}</button>
-          <div className="font-extrabold text-lg">Pro<span className="text-indigo-400">·</span>Chart <span className="text-sm opacity-60 font-normal">پنلِ کاربری</span></div>
+      {/* هدرِ تمیز — بدونِ دکمه‌های حساب/اشتراک/بروکر (#4)؛ ناوبری در سایدبار است */}
+      <header className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-white/10 bg-[#0f1117]/95 backdrop-blur sticky top-0 z-30">
+        <div className="flex items-center gap-2.5">
+          <button onClick={() => setMobileNav((v) => !v)} aria-label="منو" className="lg:hidden p-2 -mr-1 rounded-lg hover:bg-white/5">{mobileNav ? <X size={18} /> : <Menu size={18} />}</button>
+          <div className="grid place-items-center w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 shrink-0"><BarChart3 size={17} className="text-white" /></div>
+          <div className="font-extrabold text-lg leading-none">Pro<span className="text-indigo-400">·</span>Chart <span className="text-[13px] opacity-50 font-normal">پنلِ کاربری</span></div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 text-sm">
-            <span className="opacity-70" dir="ltr">{auth.username}</span>
+          <div className="hidden sm:flex items-center gap-2 text-sm rounded-full bg-white/5 border border-white/10 pr-2 pl-1 py-1">
+            <span className="opacity-75" dir="ltr">{auth.username}</span>
             <Badge tier={tier} />
           </div>
-          <button onClick={logout} className="flex items-center gap-1 px-3 py-2 rounded-lg bg-red-600/20 text-red-300 hover:bg-red-600/30 text-sm"><LogOut size={14} /> خروج</button>
+          <button onClick={logout} className="flex items-center gap-1 px-3 py-2 rounded-lg bg-red-600/15 text-red-300 hover:bg-red-600/25 text-sm transition"><LogOut size={14} /> <span className="hidden sm:inline">خروج</span></button>
         </div>
       </header>
 
@@ -394,7 +508,11 @@ function DashboardTab({ ctx }) {
           ) : (
             <div className="text-sm opacity-80">برای تریدِ واقعی روی چارت به پرمیوم نیاز داری.</div>
           )}
-          <button onClick={() => go('billing')} className="mt-3 inline-flex items-center gap-1 text-sm text-indigo-300 hover:underline">مدیریتِ اشتراک <ChevronLeft size={14} /></button>
+          {isVip ? (
+            <button onClick={() => go('billing')} className="mt-3 inline-flex items-center gap-1 text-sm text-indigo-300 hover:underline">مدیریتِ اشتراک <ChevronLeft size={14} /></button>
+          ) : (
+            <button onClick={() => go('billing')} className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold px-3 py-2 rounded-xl bg-gradient-to-l from-amber-400 to-orange-400 text-black hover:from-amber-300 hover:to-orange-300 transition"><Crown size={14} /> خریدِ اشتراکِ پرمیوم</button>
+          )}
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-[#161923] p-5">
@@ -480,30 +598,77 @@ function AccountTab({ ctx }) {
 
 // ───────────────────────── تب: اشتراک ─────────────────────────
 
-function PaymentForm() {
-  const [plan, setPlan] = React.useState('monthly');
-  const [tx, setTx] = React.useState('');
-  const [busy, setBusy] = React.useState(false);
-  const [msg, setMsg] = React.useState(null);
-  const submit = async () => {
-    setMsg(null); setBusy(true);
-    try {
-      const r = await api.bnPaymentSubmit(tx.trim(), plan);
-      setMsg({ ok: true, text: `پرداخت تأیید شد ✅ پرمیوم برای ${r.days} روز فعال شد (مبلغ: ${r.amount} USDT).` });
-      setTimeout(() => location.reload(), 2500);
-    } catch (e) { setMsg({ ok: false, text: e?.message || 'تأییدِ پرداخت ناموفق بود.' }); }
-    finally { setBusy(false); }
-  };
+// کارتِ بازاریابیِ خریدِ پرمیوم (#6 + #8) — بدونِ نمایشِ آدرسِ خام/قیمتِ ۱۵؛ خرید از طریقِ پشتیبانی
+function PremiumPurchase() {
+  const [plan, setPlan] = React.useState('yearly'); // پیش‌فرض روی پیشنهادِ ویژه
+  const isYearly = plan === 'yearly';
+  const monthlyEquivOfYear = Math.round(PRICE.yearlyUsd / 12); // ~۱۷
+  const saveUsd = PRICE.monthlyUsd * 12 - PRICE.yearlyUsd;     // ۱۰۰
+  const savePct = Math.round((saveUsd / (PRICE.monthlyUsd * 12)) * 100); // ~۳۳٪
+  const buyUrl = `${SUPPORT_URL}?text=${encodeURIComponent('سلام، می‌خواهم اشتراکِ پرمیومِ ' + (isYearly ? 'سالانه (۲۰۰ تتر)' : 'ماهانه (۲۵ تتر)') + ' را تهیه کنم.')}`;
+
+  const perks = [
+    { icon: <TrendingUp size={16} className="text-emerald-300" />, t: 'تریدِ واقعی روی چارت', d: 'سفارشِ واقعی مستقیم از نمودار' },
+    { icon: <Code2 size={16} className="text-sky-300" />, t: 'نمااسکریپتِ نامحدود', d: 'اندیکاتور و استراتژیِ اختصاصی' },
+    { icon: <Zap size={16} className="text-amber-300" />, t: 'آلارمِ پیشرفته', d: 'چندشرطی و تکنیکال، بی‌محدودیت' },
+    { icon: <Headset size={16} className="text-violet-300" />, t: 'پشتیبانیِ اولویت‌دار', d: 'پاسخِ سریع از تیمِ CoinePro FX' },
+  ];
+
   return (
-    <div className="pt-2 mt-2 border-t border-white/10 space-y-2">
-      <div className="opacity-70 text-[12px]">پس از واریز، هشِ تراکنش را بفرست — خودکار از شبکهٔ BSC بررسی و فعال می‌شود:</div>
-      <div className="flex gap-1">
-        <button onClick={() => setPlan('monthly')} className={`flex-1 py-1.5 rounded text-sm ${plan === 'monthly' ? 'bg-indigo-600' : 'bg-white/5'}`}>ماهانه ۱۵</button>
-        <button onClick={() => setPlan('yearly')} className={`flex-1 py-1.5 rounded text-sm ${plan === 'yearly' ? 'bg-indigo-600' : 'bg-white/5'}`}>سالانه ۲۰۰</button>
+    <div className="relative overflow-hidden rounded-3xl border border-amber-400/25 bg-gradient-to-br from-[#1b1830] via-[#161923] to-[#13161f] p-6 shadow-2xl shadow-black/40">
+      {/* درخششِ تزئینی */}
+      <div className="pointer-events-none absolute -top-20 -left-16 w-72 h-72 rounded-full bg-amber-500/15 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -right-10 w-72 h-72 rounded-full bg-violet-600/15 blur-3xl" />
+
+      <div className="relative">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-200 text-[12px] font-bold mb-4">
+          <Gem size={13} /> پرمیومِ پروچارت
+        </div>
+        <h3 className="text-2xl font-black mb-1.5">قدرتِ کامل را آزاد کن</h3>
+        <p className="text-sm opacity-65 leading-7 mb-5 max-w-lg">تریدِ واقعی روی چارت، نمااسکریپتِ نامحدود و آلارمِ حرفه‌ای — با یک اشتراکِ ساده، تجربهٔ سطحِ جهانی.</p>
+
+        {/* انتخابِ پلن */}
+        <div className="grid sm:grid-cols-2 gap-3 mb-5">
+          <button onClick={() => setPlan('monthly')} className={`text-right rounded-2xl border p-4 transition ${!isYearly ? 'border-indigo-500 bg-indigo-500/10 ring-2 ring-indigo-500/30' : 'border-white/10 bg-white/[0.03] hover:border-white/25'}`}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-sm font-bold">ماهانه</span>
+              <span className={`w-4 h-4 rounded-full border-2 grid place-items-center ${!isYearly ? 'border-indigo-400' : 'border-white/25'}`}>{!isYearly && <span className="w-2 h-2 rounded-full bg-indigo-400" />}</span>
+            </div>
+            <div className="flex items-baseline gap-1"><span className="text-3xl font-black tabular-nums">{PRICE.monthlyFa}</span><span className="text-sm opacity-60">تتر / ماه</span></div>
+            <div className="text-[12px] opacity-50 mt-1">پرداختِ ماه‌به‌ماه</div>
+          </button>
+
+          <button onClick={() => setPlan('yearly')} className={`relative text-right rounded-2xl border p-4 transition ${isYearly ? 'border-amber-400 bg-amber-400/10 ring-2 ring-amber-400/30' : 'border-white/10 bg-white/[0.03] hover:border-white/25'}`}>
+            <span className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full bg-amber-400 text-black text-[11px] font-extrabold">صرفه‌جوییِ {toFa(savePct)}٪</span>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-sm font-bold flex items-center gap-1">سالانه <Star size={12} className="text-amber-300" /></span>
+              <span className={`w-4 h-4 rounded-full border-2 grid place-items-center ${isYearly ? 'border-amber-400' : 'border-white/25'}`}>{isYearly && <span className="w-2 h-2 rounded-full bg-amber-400" />}</span>
+            </div>
+            <div className="flex items-baseline gap-1"><span className="text-3xl font-black tabular-nums">{PRICE.yearlyFa}</span><span className="text-sm opacity-60">تتر / سال</span></div>
+            <div className="text-[12px] opacity-60 mt-1">معادلِ ماهی ~{toFa(monthlyEquivOfYear)} تتر</div>
+          </button>
+        </div>
+
+        {/* مزایا */}
+        <div className="grid sm:grid-cols-2 gap-2.5 mb-5">
+          {perks.map((p, i) => (
+            <div key={i} className="flex items-start gap-2.5 rounded-xl bg-white/[0.03] border border-white/10 p-3">
+              <div className="w-8 h-8 rounded-lg bg-white/5 grid place-items-center shrink-0">{p.icon}</div>
+              <div><div className="text-sm font-bold">{p.t}</div><div className="text-[12px] opacity-55">{p.d}</div></div>
+            </div>
+          ))}
+        </div>
+
+        {/* فراخوانِ عمل */}
+        <a href={buyUrl} target="_blank" rel="noreferrer"
+          className="group w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-gradient-to-l from-amber-400 to-orange-400 text-black font-extrabold text-[15px] hover:from-amber-300 hover:to-orange-300 transition shadow-lg shadow-amber-900/30">
+          <Crown size={18} /> خریدِ اشتراکِ پرمیوم — {isYearly ? PRICE.yearlyFa : PRICE.monthlyFa} تتر
+          <ArrowLeft size={17} className="group-hover:-translate-x-1 transition" />
+        </a>
+        <div className="mt-3 flex items-center justify-center gap-1.5 text-[12px] opacity-55">
+          <ShieldCheck size={13} className="text-green-400" /> فعال‌سازیِ سریع پس از پرداخت — پشتیبانیِ مستقیمِ CoinePro FX
+        </div>
       </div>
-      <input value={tx} onChange={(e) => setTx(e.target.value)} placeholder="هشِ تراکنش (0x...)" className="w-full rounded-lg px-3 py-2 outline-none text-sm" style={FS} dir="ltr" />
-      {msg && <div className={`text-sm ${msg.ok ? 'text-green-400' : 'text-red-400'}`}>{msg.text}</div>}
-      <button onClick={submit} disabled={busy || !tx} className="w-full py-2 rounded-lg bg-green-600 hover:bg-green-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50">{busy && <Loader2 size={14} className="animate-spin" />} ارسال و تأییدِ خودکار</button>
     </div>
   );
 }
@@ -539,8 +704,6 @@ function PlanCompare() {
 function BillingTab({ ctx }) {
   const { tier, me } = ctx;
   const isVip = tier === 'vip' || tier === 'premium';
-  const [pr, setPr] = React.useState(null);
-  React.useEffect(() => { api.pricing().then(setPr).catch(() => {}); }, []);
   return (
     <div>
       <h2 className="text-lg font-extrabold mb-4">اشتراک</h2>
@@ -553,24 +716,18 @@ function BillingTab({ ctx }) {
         )}
       </Card>
 
+      {!isVip && (
+        <div className="mb-4"><PremiumPurchase /></div>
+      )}
+
       <Card title="مقایسهٔ پلن‌ها" icon={<Star size={16} className="text-indigo-300" />}>
         <PlanCompare />
       </Card>
 
-      {!isVip && (
-        <Card title="پرداخت و ارتقا" icon={<Crown size={16} className="text-amber-300" />}>
-          {pr?.wallet ? (
-            <div className="rounded-xl bg-white/5 p-3 space-y-2">
-              <div className="flex justify-between text-sm"><span>ماهانه</span><b className="text-indigo-300">۱۵ تتر</b></div>
-              <div className="flex justify-between text-sm"><span>سالانه</span><b className="text-indigo-300">۲۰۰ تتر</b></div>
-              <div className="opacity-70 pt-1 text-[12px]">آدرسِ واریز ({pr.network} · {pr.currency}):</div>
-              <div className="flex items-center gap-2">
-                <code className="flex-1 break-all bg-black/30 rounded px-2 py-1 text-[12px]" dir="ltr">{pr.wallet}</code>
-                <CopyButton text={pr.wallet} k="w" />
-              </div>
-              <PaymentForm />
-            </div>
-          ) : <Spinner />}
+      {isVip && (
+        <Card title="تمدیدِ اشتراک" icon={<Crown size={16} className="text-amber-300" />}>
+          <p className="text-sm opacity-70 leading-7 mb-3">برای تمدید یا ارتقای اشتراکت کافی است با پشتیبانیِ CoinePro FX در ارتباط باشی.</p>
+          <a href={SUPPORT_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-bold"><Headset size={15} /> ارتباط با پشتیبانی</a>
         </Card>
       )}
 
@@ -582,6 +739,11 @@ function BillingTab({ ctx }) {
       </Card>
     </div>
   );
+}
+
+// تبدیلِ عدد به ارقامِ فارسی
+function toFa(n) {
+  try { return String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]); } catch (e) { return String(n); }
 }
 
 // ───────────────────────── تب: اتصالِ حساب ─────────────────────────
