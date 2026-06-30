@@ -29,6 +29,9 @@ import { GRID_PRESET_ORDER, getGridLayout, presetToLegacyGrid, legacyGridToPrese
 import { Legend, CountdownChip, Watermark, ReplayBar } from '../bazaarnama/overlays/ChartOverlays';
 import RightPanel from '../bazaarnama/RightPanel';
 import AuthMenu from '../AuthMenu';
+import HelpModal, { HelpDot } from '../bazaarnama/Help';
+import { getHelp } from '../bazaarnama/help';
+import { HelpCircle } from 'lucide-react';
 
 const TFS = ['M1', 'M5', 'M15', 'M30', 'H1', 'H2', 'H4', 'D1', 'W1', 'MN'];
 // باسِ همگام‌سازیِ چندچارتی (زمان + کراس‌هیر) — هر MiniChart مشترک می‌شود
@@ -190,6 +193,7 @@ export default function BazaarNama() {
     if (!bnPrem) { try { window.dispatchEvent(new CustomEvent('bn:premium', { detail: 'نمااسکریپت ویژهٔ کاربرانِ پرمیومِ بازارنماست.' })); } catch (e) {} return; }
     setEditorOpen((v) => !v);
   }, [bnPrem]);
+  const [helpId, setHelpId] = useState(null); // #۱۷ راهنمای «؟» ابزار/اندیکاتورِ انتخاب‌شده
   const [code, setCode] = useState(() => loadWS().code || ''); // کدِ نمااسکریپت با رفرش پاک نمی‌شود
   const [barMode, setBarMode] = useState(false); // اجرای بار-به-بارِ نمااسکریپت (اختیاری)
   const [scriptApplied, setScriptApplied] = useState(() => !!loadWS().scriptApplied); // آیا خروجیِ اسکریپت روی چارت اعمال شده
@@ -1167,6 +1171,7 @@ export default function BazaarNama() {
               {Object.entries(REGISTRY).map(([k, d]) => (
                 <div key={k} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                   <button onClick={() => addInd(k)} className="flex-1 text-right">{d.label}</button>
+                  {getHelp(k) && <HelpDot onClick={() => setHelpId(k)} TH={TH} size={12} />}
                   <button onClick={() => toggleIndFav(k)} title="افزودن/حذف از منتخب" className="mr-1"><Star size={12} style={indFavs.includes(k) ? { fill: TH.accent, color: TH.accent } : { opacity: 0.35 }} /></button>
                 </div>
               ))}
@@ -1214,6 +1219,9 @@ export default function BazaarNama() {
         <button onClick={() => { try { if (document.fullscreenElement) document.exitFullscreen(); else rootRef.current && rootRef.current.requestFullscreen(); } catch (e) {} }} title="تمام‌صفحه" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Maximize2 size={15} /></button>
         <button onClick={() => { try { const cv = chartRef.current && chartRef.current.takeScreenshot(); if (!cv) return; const ov = overlayRef.current; if (ov) { try { cv.getContext('2d').drawImage(ov, 0, 0); } catch (e) {} } cv.toBlob((blob) => { if (!blob) return; const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${symbol}_${tf}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }); } catch (e) {} }} title="عکسِ چارت (PNG)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Camera size={15} /></button>
         <button onClick={() => setShowShortcuts(true)} title="راهنمای میان‌بُرهای صفحه‌کلید (؟)" aria-label="راهنمای میان‌بُرهای صفحه‌کلید" className="p-1.5 rounded-md text-[13px] leading-none transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>⌨</button>
+        {getHelp(tool) && tool !== 'cursor' && (
+          <button onClick={() => setHelpId(tool)} title="راهنمای ابزارِ فعال" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg, color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><HelpCircle size={16} /></button>
+        )}
         {bp.name === 'sm' && (
           <button onClick={() => setMobileSheet(true)} title="ابزارها و تب‌ها" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><List size={15} /></button>
         )}
@@ -1646,6 +1654,9 @@ export default function BazaarNama() {
           </div>
         );
       })()}
+
+      {/* #۱۷ مودالِ راهنمای ابزار/اندیکاتور (؟) */}
+      <HelpModal entry={getHelp(helpId)} onClose={() => setHelpId(null)} TH={TH} />
 
       {/* دیالوگِ راهنمای میان‌بُرهای صفحه‌کلید (؟) */}
       {showShortcuts && (
