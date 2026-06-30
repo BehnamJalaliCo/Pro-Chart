@@ -34,3 +34,4 @@ chart_service/node_modules/
 *.JPG
 *.JPEG
 *.bak.*
+.github/
