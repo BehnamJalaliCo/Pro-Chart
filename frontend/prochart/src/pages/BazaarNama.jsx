@@ -30,12 +30,12 @@ import { Legend, CountdownChip, Watermark, ReplayBar } from '../bazaarnama/overl
 import RightPanel from '../bazaarnama/RightPanel';
 import AuthMenu from '../AuthMenu';
 
-const TFS = ['M5', 'M15', 'M30', 'H1', 'H2', 'H4', 'D1', 'W1', 'MN'];
+const TFS = ['M1', 'M5', 'M15', 'M30', 'H1', 'H2', 'H4', 'D1', 'W1', 'MN'];
 // باسِ همگام‌سازیِ چندچارتی (زمان + کراس‌هیر) — هر MiniChart مشترک می‌شود
 function makeSyncBus() { let subs = []; return { subscribe(fn) { subs.push(fn); return () => { subs = subs.filter((s) => s !== fn); }; }, emit(type, payload, self) { subs.forEach((fn) => { if (fn !== self) fn(type, payload); }); } }; }
 // برچسبِ کوتاه + عنوانِ فارسی برای نوارِ تایم‌فریمِ حرفه‌ای
-const TF_LABEL = { M5: '5m', M15: '15m', M30: '30m', H1: '1H', H2: '2H', H4: '4H', D1: '1D', W1: '1W', MN: '1M' };
-const TF_TITLE = { M5: '۵ دقیقه', M15: '۱۵ دقیقه', M30: '۳۰ دقیقه', H1: '۱ ساعته', H2: '۲ ساعته', H4: '۴ ساعته', D1: 'روزانه', W1: 'هفتگی', MN: 'ماهانه' };
+const TF_LABEL = { M1: '1m', M5: '5m', M15: '15m', M30: '30m', H1: '1H', H2: '2H', H4: '4H', D1: '1D', W1: '1W', MN: '1M' };
+const TF_TITLE = { M1: '۱ دقیقه', M5: '۵ دقیقه', M15: '۱۵ دقیقه', M30: '۳۰ دقیقه', H1: '۱ ساعته', H2: '۲ ساعته', H4: '۴ ساعته', D1: 'روزانه', W1: 'هفتگی', MN: 'ماهانه' };
 // طولِ هر کندل به ثانیه — برای ساختِ کندلِ زندهٔ بعدی و پروجکشنِ رو به جلوی ناحیه‌ها
 const TF_SEC = { M1: 60, M5: 300, M15: 900, M30: 1800, H1: 3600, H2: 7200, H4: 14400, D1: 86400, W1: 604800, MN: 2592000 };
 const tfSec = (t) => TF_SEC[t] || 3600;
@@ -184,6 +184,12 @@ export default function BazaarNama() {
   const [rightTab, setRightTab] = useState('watch');
   const [showRight, setShowRight] = useState(() => (typeof window !== 'undefined' ? window.innerWidth > 760 : true));
   const [editorOpen, setEditorOpen] = useState(false);
+  const [bnPrem, setBnPrem] = useState(false); // آیا کاربر پرمیوم/VIP است (برای گیتِ نمااسکریپت #۸)
+  useEffect(() => { api.me().then((m) => setBnPrem(['vip', 'premium'].includes(m && m.tier))).catch(() => {}); }, []);
+  const openNamaScript = useCallback(() => {
+    if (!bnPrem) { try { window.dispatchEvent(new CustomEvent('bn:premium', { detail: 'نمااسکریپت ویژهٔ کاربرانِ پرمیومِ بازارنماست.' })); } catch (e) {} return; }
+    setEditorOpen((v) => !v);
+  }, [bnPrem]);
   const [code, setCode] = useState(() => loadWS().code || ''); // کدِ نمااسکریپت با رفرش پاک نمی‌شود
   const [barMode, setBarMode] = useState(false); // اجرای بار-به-بارِ نمااسکریپت (اختیاری)
   const [scriptApplied, setScriptApplied] = useState(() => !!loadWS().scriptApplied); // آیا خروجیِ اسکریپت روی چارت اعمال شده
@@ -279,6 +285,9 @@ export default function BazaarNama() {
     // نگه‌داشتنِ خودکارِ ترسیم‌ها در مرورگر + بازیابیِ آن‌ها پس از رفرش
     dl.onChange = (drawings) => { saveWS({ drawings }); setDrawList(drawings.slice()); setDrawVer((v) => v + 1); };
     dl.onSelect = (i) => setSelDraw(i);
+    // باگ#۲: وقتی ابزار پس از ترسیم به cursor ریست می‌شود، استیتِ React هم همگام شود
+    // تا انتخابِ دوبارهٔ همان ابزار دوباره effect را trigger کند (وگرنه ابزارها بعد از یک‌بار/حذف کار نمی‌کنند).
+    dl.onToolReset = () => setTool('cursor');
     const savedDr = loadWS().drawings;
     if (savedDr && savedDr.length) setTimeout(() => { try { dl.setDrawings(savedDr); } catch (e) {} }, 500);
     // سایزدهیِ صریح (مثلِ Terminalِ کارا) — autoSize با DOMِ مطلق ارتفاعِ صفر می‌داد
@@ -1173,7 +1182,7 @@ export default function BazaarNama() {
             </div>
           )}
         </div>
-        <button onClick={() => setEditorOpen((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={editorOpen ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBg; }}><Code2 size={14} /> نمااسکریپت</button>
+        <button onClick={openNamaScript} title={bnPrem ? 'نمااسکریپت' : 'ویژهٔ پرمیوم'} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={editorOpen ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBg; }}><Code2 size={14} /> نمااسکریپت{!bnPrem && <Lock size={11} className="opacity-70" />}</button>
         <button onClick={() => (replay.on ? exitReplay() : enterReplay())} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={replay.on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBg; }}><Play size={14} /> بازپخش</button>
         <button onClick={getAiSignal} disabled={aiBusy} className="flex items-center gap-1 px-2.5 py-1 rounded-md text-sm text-white disabled:opacity-60 transition-opacity duration-[120ms]" style={{ background: TH.accentAi }} title="ستاپِ کاملِ AI در همین نماد/تایم‌فریم"><Sparkles size={14} className={aiBusy ? 'animate-pulse' : ''} /> سیگنالِ AI {aiQuota && <span className="tabular-nums" dir="ltr">{`(${aiQuota.remaining}/${aiQuota.limit})`}</span>}</button>
         <div data-menu className="relative">
@@ -1680,7 +1689,7 @@ export default function BazaarNama() {
           <div className="grid grid-cols-2 gap-1.5">
             <button onClick={() => { setShowRight((v) => !v); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms]" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>{showRight ? 'پنهان‌کردنِ پنل' : 'نمایشِ پنل'}</button>
             <button onClick={() => { setIndMenu(true); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms]" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>اندیکاتورها</button>
-            <button onClick={() => { setEditorOpen((v) => !v); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms]" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>نمااسکریپت</button>
+            <button onClick={() => { openNamaScript(); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms] flex items-center justify-center gap-1" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>نمااسکریپت{!bnPrem && <Lock size={11} className="opacity-70" />}</button>
             <button onClick={() => { setShowShortcuts(true); setMobileSheet(false); }} className="rounded-lg px-3 text-sm transition-colors duration-[120ms]" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}>میان‌بُرها</button>
           </div>
         </MobileToolSheet>

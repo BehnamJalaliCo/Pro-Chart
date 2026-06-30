@@ -209,7 +209,7 @@ export class DrawingLayer {
     return -1;
   }
 
-  _reset() { if (!this.stayInMode) { this.tool = 'cursor'; this.canvas.style.pointerEvents = 'none'; this.canvas.style.cursor = 'default'; } this._changed(); }
+  _reset() { if (!this.stayInMode) { this.tool = 'cursor'; this.canvas.style.pointerEvents = 'none'; this.canvas.style.cursor = 'default'; this.onToolReset && this.onToolReset(); } this._changed(); }
   destroy() { this._cleanup && this._cleanup(); }
 
   resize(w, h) { this.canvas.width = w; this.canvas.height = h; this.render(); }
