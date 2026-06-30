@@ -5,7 +5,7 @@ import { api } from '../api/client';
 const TH = { bg: '#0e1117', grid: '#1c2230', text: '#9aa0b5', up: '#26a69a', down: '#ef5350' };
 
 // چارتِ کوچکِ مستقل برای حالتِ چند-چارت (هر کدام نماد + تایم‌فریمِ خود)
-export default function MiniChart({ symbols = [], tf, initial }) {
+export default function MiniChart({ symbols = [], tf, initial, syncBus = null }) {
   const elRef = useRef(null);
   const chartRef = useRef(null);
   const seriesRef = useRef(null);
@@ -15,7 +15,7 @@ export default function MiniChart({ symbols = [], tf, initial }) {
   useEffect(() => {
     if (!elRef.current) return;
     const chart = createChart(elRef.current, {
-      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'Vazirmatn' },
+      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'AnjomanMax, Vazirmatn' },
       grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } },
       timeScale: { timeVisible: true, borderColor: TH.grid },
       rightPriceScale: { borderColor: TH.grid },
@@ -26,8 +26,23 @@ export default function MiniChart({ symbols = [], tf, initial }) {
     seriesRef.current = chart.addSeries(CandlestickSeries, { upColor: TH.up, downColor: TH.down, borderUpColor: TH.up, borderDownColor: TH.down, wickUpColor: TH.up, wickDownColor: TH.down });
     const ro = new ResizeObserver(() => { if (elRef.current && chartRef.current) chartRef.current.applyOptions({ width: elRef.current.clientWidth, height: elRef.current.clientHeight }); });
     ro.observe(elRef.current);
-    return () => { ro.disconnect(); chart.remove(); };
-  }, []);
+    // ── همگام‌سازیِ چندچارتی (زمان + کراس‌هیر) مثلِ TradingView ──
+    let applying = false, unsub = null;
+    if (syncBus) {
+      const onMsg = (type, payload) => {
+        if (!chartRef.current) return; applying = true;
+        try {
+          if (type === 'time' && payload) chartRef.current.timeScale().setVisibleLogicalRange(payload);
+          else if (type === 'cross') { if (payload && payload.time != null) chartRef.current.setCrosshairPosition(payload.value || 0, payload.time, seriesRef.current); else chartRef.current.clearCrosshairPosition(); }
+        } catch (e) {}
+        applying = false;
+      };
+      unsub = syncBus.subscribe(onMsg);
+      chart.timeScale().subscribeVisibleLogicalRangeChange((r) => { if (!applying && r) syncBus.emit('time', r, onMsg); });
+      chart.subscribeCrosshairMove((p) => { if (applying) return; if (p && p.time != null) { const d = p.seriesData.get(seriesRef.current); syncBus.emit('cross', { time: p.time, value: d ? (d.close != null ? d.close : d.value) : 0 }, onMsg); } else syncBus.emit('cross', { time: null }, onMsg); });
+    }
+    return () => { ro.disconnect(); if (unsub) unsub(); chart.remove(); };
+  }, [syncBus]);
 
   useEffect(() => {
     let stop = false;

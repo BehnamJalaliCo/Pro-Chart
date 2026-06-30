@@ -31,6 +31,8 @@ import RightPanel from '../bazaarnama/RightPanel';
 import AuthMenu from '../AuthMenu';
 
 const TFS = ['M5', 'M15', 'M30', 'H1', 'H2', 'H4', 'D1', 'W1', 'MN'];
+// باسِ همگام‌سازیِ چندچارتی (زمان + کراس‌هیر) — هر MiniChart مشترک می‌شود
+function makeSyncBus() { let subs = []; return { subscribe(fn) { subs.push(fn); return () => { subs = subs.filter((s) => s !== fn); }; }, emit(type, payload, self) { subs.forEach((fn) => { if (fn !== self) fn(type, payload); }); } }; }
 // برچسبِ کوتاه + عنوانِ فارسی برای نوارِ تایم‌فریمِ حرفه‌ای
 const TF_LABEL = { M5: '5m', M15: '15m', M30: '30m', H1: '1H', H2: '2H', H4: '4H', D1: '1D', W1: '1W', MN: '1M' };
 const TF_TITLE = { M5: '۵ دقیقه', M15: '۱۵ دقیقه', M30: '۳۰ دقیقه', H1: '۱ ساعته', H2: '۲ ساعته', H4: '۴ ساعته', D1: 'روزانه', W1: 'هفتگی', MN: 'ماهانه' };
@@ -246,6 +248,7 @@ export default function BazaarNama() {
   const [drawVer, setDrawVer] = useState(0);           // نسخه برای رفرشِ دکمه‌های undo/redo
   const treeRefresh = useCallback(() => { const dl = drawRef.current; setDrawList(dl ? dl.getDrawings().slice() : []); setDrawVer((v) => v + 1); }, []);
   const rootRef = useRef(null);
+  const syncBusRef = useRef(null); if (!syncBusRef.current) syncBusRef.current = makeSyncBus(); // باسِ همگام‌سازیِ چندچارتی
   const [replay, setReplay] = useState({ on: false, playing: false, speed: 1, idx: 0, length: 0 });
   const replayRef = useRef({ full: [], idx: 0 });
   const replayPlayingRef = useRef(false);
@@ -1393,7 +1396,7 @@ export default function BazaarNama() {
             {grid > 1 && (
               <div className="absolute inset-0 z-30 grid gap-1 p-1" style={{ background: TH.bg, gridTemplateColumns: grid === 2 ? '1fr 1fr' : '1fr 1fr', gridTemplateRows: grid === 2 ? '1fr' : '1fr 1fr' }}>
                 {Array.from({ length: grid }).map((_, i) => (
-                  <MiniChart key={i} symbols={symbols} tf={tf} initial={i === 0 ? symbol : (watch[i] || symbols[i] || symbol)} />
+                  <MiniChart key={i} symbols={symbols} tf={tf} initial={i === 0 ? symbol : (watch[i] || symbols[i] || symbol)} syncBus={syncBusRef.current} />
                 ))}
               </div>
             )}
