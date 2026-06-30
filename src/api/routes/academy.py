@@ -176,9 +176,11 @@ async def login(username: str = Body(..., embed=True), password: str = Body(...,
                 db: AsyncSession = Depends(get_db)):
     """ورودِ دانش‌آموز — با سقفِ ۲ دستگاهِ هم‌زمان (ضدِ اشتراکِ حساب)."""
     uname = (username or "").strip().lower()
-    st = (await db.execute(select(AcademyStudent).where(AcademyStudent.username == uname))).scalar_one_or_none()
+    # ورودِ جامع: با نام‌کاربری یا ایمیل
+    st = (await db.execute(select(AcademyStudent).where(
+        (AcademyStudent.username == uname) | (AcademyStudent.email == uname)))).scalar_one_or_none()
     if st is None or not verify_password(password or "", st.password_hash):
-        raise HTTPException(status_code=401, detail="نام‌کاربری یا رمز اشتباه است.")
+        raise HTTPException(status_code=401, detail="نام‌کاربری/ایمیل یا رمز اشتباه است.")
     if st.status != "active":
         raise HTTPException(status_code=403, detail="حسابِ شما غیرفعال است؛ با پشتیبانی تماس بگیرید.")
     did = _norm_device_id(device_id, user_agent)
@@ -275,8 +277,9 @@ async def register_verify(
         raise HTTPException(status_code=403, detail="ثبت‌نام فعلاً غیرفعال است.")
     em = (email or "").strip().lower()
     uname = (username or "").strip().lower()
+    # نام‌کاربری الزامی است (ورود بعداً با نام‌کاربری یا ایمیل ممکن است).
     if not _USERNAME_RE.match(uname):
-        raise HTTPException(status_code=400, detail="نام‌کاربری: ۳ تا ۶۴ کاراکترِ انگلیسی/عدد/_/. .")
+        raise HTTPException(status_code=400, detail="نام‌کاربری الزامی است: ۳ تا ۶۴ کاراکترِ انگلیسی/عدد/_/. .")
     if len(password or "") < 6:
         raise HTTPException(status_code=400, detail="رمز حداقل ۶ کاراکتر.")
     if not await verify_otp(em, code):
@@ -1579,9 +1582,18 @@ async def chart_symbols(st: AcademyStudent = Depends(current_student), db: Async
     tfs = [r[0] for r in (await db.execute(text("SELECT DISTINCT timeframe FROM candles"))).fetchall()]
     order = {"M5": 0, "M15": 1, "H1": 2, "H4": 3, "D1": 4}
     tfs.sort(key=lambda t: order.get(t, 9))
+    have = set(syms)
+    # نمادهای فارکسِ حسابِ مَسترِ MT5 (همهٔ نمادهای OneRoyal که اکسپورتر می‌فرستد)
+    try:
+        from src.core.redis_client import redis_client
+        fx = await redis_client.client.smembers("bn:fxsyms")
+        for s in sorted(x.decode() if isinstance(x, bytes) else x for x in (fx or [])):
+            if s and s not in have:
+                syms.append(s); have.add(s)
+    except Exception:  # noqa: BLE001
+        pass
     # نمادهای کریپتوی LBank (دینامیک، خودبه‌خود آپدیت) را هم به دامنه اضافه کن
     from src.api.routes._crypto_feed import ensure_pairs
-    have = set(syms)
     for cs in await ensure_pairs():
         if cs not in have:
             syms.append(cs)

@@ -878,3 +878,66 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
     return {"placed": False, "queued": True, "broker": "OneRoyal", "order_id": order.id,
             "status": "pending",
             "msg": "سفارشِ فارکس در صفِ اجرا ثبت شد؛ اجرای زندهٔ MT5 پس از فعال‌سازیِ پلِ بروکرِ وان‌رویال انجام می‌شود."}
+
+
+# ═══════════ فیدِ دادهٔ زندهٔ فارکس از حسابِ مَسترِ MT5 (اکسپورترِ سرورِ کپی) ═══════════
+# اکسپورتر روی سرورِ ویندوزِ مَستر اجرا می‌شود (همان‌جا که MT5ِ مَسترِ OneRoyal هست)،
+# همهٔ نمادها + کندل + قیمت را با BN_FEED_TOKEN به اینجا می‌فرستد. کندل در candles
+# upsert و قیمت در Redis می‌نشیند؛ نمادها در bn:fxsyms تا dropdown همه را نشان دهد.
+@router.post("/feed/forex")
+async def feed_forex(payload: dict = Body(...),
+                     x_feed_token: str | None = Header(None),
+                     db: AsyncSession = Depends(get_db)):
+    import hmac as _hmac
+    import os as _os
+    want = _os.getenv("BN_FEED_TOKEN", "")
+    if not (want and x_feed_token and _hmac.compare_digest(x_feed_token, want)):
+        raise HTTPException(status_code=401, detail="unauthorized")
+    from sqlalchemy import text as _text
+    from src.core.redis_client import redis_client
+
+    symbols = payload.get("symbols") or []
+    candles = payload.get("candles") or []     # [{symbol,timeframe,rows:[[ts,o,h,l,c,v],...]}]
+    quotes = payload.get("quotes") or []       # [{symbol,bid,ask}]
+
+    if symbols:
+        try:
+            await redis_client.client.sadd("bn:fxsyms", *[str(s)[:10] for s in symbols])
+        except Exception:  # noqa: BLE001
+            pass
+
+    n = 0
+    for c in candles:
+        sym = (c.get("symbol") or "")[:10]
+        tf = (c.get("timeframe") or "")[:5]
+        rows = c.get("rows") or []
+        if not (sym and tf and rows):
+            continue
+        for r in rows:
+            try:
+                ts = int(r[0]); o = float(r[1]); h = float(r[2]); lo = float(r[3]); cl = float(r[4])
+                v = float(r[5]) if len(r) > 5 and r[5] is not None else 0.0
+            except Exception:  # noqa: BLE001
+                continue
+            await db.execute(_text(
+                "INSERT INTO candles(time,symbol,timeframe,open,high,low,close,volume,source) "
+                "VALUES (to_timestamp(:ts),:s,:tf,:o,:h,:l,:c,:v,'mt5_master') "
+                "ON CONFLICT (time,symbol,timeframe) DO UPDATE SET "
+                "open=excluded.open,high=excluded.high,low=excluded.low,"
+                "close=excluded.close,volume=excluded.volume,source='mt5_master'"),
+                {"ts": ts, "s": sym, "tf": tf, "o": o, "h": h, "l": lo, "c": cl, "v": v})
+            n += 1
+    if n:
+        await db.commit()
+
+    for q in quotes:
+        sym = (q.get("symbol") or "")[:10]
+        try:
+            bid = float(q.get("bid") or 0); ask = float(q.get("ask") or bid)
+        except Exception:  # noqa: BLE001
+            continue
+        if sym and (bid or ask):
+            mid = (bid + ask) / 2 if (bid and ask) else (bid or ask)
+            await redis_client.set_price(sym, {"bid": bid, "ask": ask, "price": mid,
+                                               "ts": _now().isoformat()})
+    return {"ok": True, "candles": n, "symbols": len(symbols), "quotes": len(quotes)}
