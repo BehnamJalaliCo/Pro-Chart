@@ -1,9 +1,0 @@
-# Flow-Runner — ایمیجِ سبک برای سرو کردنِ فلوهای Prefect (مستقل از app تا تداخلِ deps نشود).
-# فقط prefect + کلاینتِ Celery لازم است؛ آموزشِ سنگین روی celery-worker اجرا می‌شود.
-FROM prefecthq/prefect:2.19-python3.11
-
-WORKDIR /app
-RUN pip install --no-cache-dir "celery>=5.3,<5.5" "redis>=5.0,<6"
-COPY flows /app/flows
-
-CMD ["python", "-m", "flows.retrain_flow"]

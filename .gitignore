@@ -35,3 +35,27 @@ chart_service/node_modules/
 *.JPEG
 *.bak.*
 .github/
+
+# ── بخش‌های coinepro fx که در دیپلویِ pro-chart استفاده نمی‌شوند (آکادمی مالِ coinepro fx) ──
+frontend/academy/
+frontend/admin/
+frontend/ig/
+frontend/website/
+frontend/user/
+video_studio/
+backtest/
+chart_service/
+ci/
+deploy/
+flows/
+monitoring/
+tests/
+run_bot.py
+run_celery.py
+run_signal_engine.py
+run_tracker.py
+run_watchdog.py
+docker-compose.yml
+Makefile
+RESTORE_GDRIVE.md
+CLAUDE.md
