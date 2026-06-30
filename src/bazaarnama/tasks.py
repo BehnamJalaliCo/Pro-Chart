@@ -91,20 +91,30 @@ async def _check() -> dict:
             except Exception:  # noqa: BLE001
                 pass
 
-            hit = False
-            if op == "above":
-                hit = mid >= val
-            elif op == "below":
-                hit = mid <= val
-            elif op == "cross_up":
-                hit = prev is not None and prev < val <= mid
-            elif op == "cross_down":
-                hit = prev is not None and prev > val >= mid
-            elif op == "cross":
-                hit = prev is not None and ((prev < val <= mid) or (prev > val >= mid))
-            elif op in ("pct_up", "pct_down") and prev:
-                chg = (mid - prev) / prev * 100.0
-                hit = (op == "pct_up" and chg >= val) or (op == "pct_down" and chg <= -val)
+            def _one(o, v):
+                if o == "above":
+                    return mid >= v
+                if o == "below":
+                    return mid <= v
+                if o == "cross_up":
+                    return prev is not None and prev < v <= mid
+                if o == "cross_down":
+                    return prev is not None and prev > v >= mid
+                if o == "cross":
+                    return prev is not None and ((prev < v <= mid) or (prev > v >= mid))
+                if o in ("pct_up", "pct_down") and prev:
+                    chg = (mid - prev) / prev * 100.0
+                    return (o == "pct_up" and chg >= v) or (o == "pct_down" and chg <= -v)
+                return False
+            # آلارمِ چندشرطی (AND): اگر conditions آرایه باشد، همهٔ شرط‌ها باید با هم برقرار شوند
+            conds = cond.get("conditions")
+            if isinstance(conds, list) and conds:
+                try:
+                    hit = all(_one(c.get("op"), float(c.get("value") or 0)) for c in conds)
+                except (TypeError, ValueError):
+                    hit = False
+            else:
+                hit = _one(op, val)
             if not hit:
                 continue
 
