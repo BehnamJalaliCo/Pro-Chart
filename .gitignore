@@ -34,7 +34,6 @@ chart_service/node_modules/
 *.JPG
 *.JPEG
 *.bak.*
-.github/
 
 # ── بخش‌های coinepro fx که در دیپلویِ pro-chart استفاده نمی‌شوند (آکادمی مالِ coinepro fx) ──
 frontend/academy/
