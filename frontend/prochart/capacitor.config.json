@@ -1,0 +1,13 @@
+{
+  "appId": "com.prochart.app",
+  "appName": "Pro-Chart",
+  "webDir": "www",
+  "server": {
+    "url": "https://pro-chart.com",
+    "cleartext": false,
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

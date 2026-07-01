@@ -1,0 +1,84 @@
+name: Build Android APK (Pro-Chart)
+
+on:
+  push:
+    branches:
+      - claude/android-apk-project-build-l9a960
+    paths:
+      - 'frontend/prochart/**'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/prochart
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/prochart/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate app icons & splash
+        run: npx @capacitor/assets generate --android --iconBackgroundColor '#0b0e14' --iconBackgroundColorDark '#0b0e14' --splashBackgroundColor '#0b0e14' --splashBackgroundColorDark '#0b0e14'
+
+      - name: Sync Capacitor Android project
+        run: npx cap sync android
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install required SDK packages
+        run: yes | sdkmanager --install "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
+      - name: Build debug APK
+        working-directory: frontend/prochart/android
+        run: ./gradlew assembleDebug --stacktrace --no-daemon
+
+      - name: Locate APK
+        id: apk
+        working-directory: frontend/prochart/android
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/debug -name "*.apk" | head -1)
+          echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
+          cp "$APK_PATH" "$GITHUB_WORKSPACE/pro-chart-debug.apk"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pro-chart-debug-apk
+          path: pro-chart-debug.apk
+
+      - name: Create GitHub Release with APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-apk-${{ github.run_number }}
+          name: Pro-Chart Android APK (build ${{ github.run_number }})
+          body: |
+            APK دیباگ (بدون امضای رسمی) — خودکار ساخته شده از commit ${{ github.sha }}.
+            برای نصب: «منابع ناشناس» را در گوشی فعال کن و فایل APK را نصب کن.
+          files: pro-chart-debug.apk
+          draft: false
+          prerelease: true
