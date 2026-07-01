@@ -16,6 +16,20 @@
   --text-muted: #787b86;
   --scroll-thumb: #363a45;
   --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.2), 0 2px 12px rgba(0,0,0,.4);
+  /* توکن‌های معنایی (تاریک) — هم‌راستا با THEMES.dark چارت */
+  --accent: #4d82ff; --accent-weak: rgba(77,130,255,.14); --accent-2: #a78bfa;
+  --up: #26a69a; --up-weak: rgba(38,166,154,.16); --down: #ef5350; --down-weak: rgba(239,83,80,.16);
+  --warn: #f0b95d; --danger: #ff6169; --success: #2db39a;
+  --border-strong: #31394b; --ring: rgba(94,140,255,.45);
+  --elev-1: 0 1px 2px rgba(0,0,0,.4), 0 10px 26px -12px rgba(0,0,0,.6);
+  --elev-2: 0 2px 8px rgba(0,0,0,.5), 0 20px 44px -16px rgba(0,0,0,.7);
+}
+
+/* مقیاس‌های مستقل از تم (تایپ/فاصله/گوشه) — توکنِ لایهٔ ۱ */
+:root {
+  --fs-xs: 11px; --fs-sm: 12.5px; --fs-md: 14px; --fs-lg: 17px; --fs-xl: 22px; --fs-2xl: 30px;
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px;
+  --r-sm: 9px; --r-md: 14px; --r-lg: 20px; --r-xl: 26px; --r-full: 999px;
 }
 
 /* تمِ روشن — رنگ‌های دقیقِ TradingView light */
@@ -32,6 +46,13 @@
   --text-muted: #787b86;
   --scroll-thumb: #d1d4dc;
   --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.1);
+  /* توکن‌های معنایی (روشن) — هم‌راستا با THEMES.light چارت */
+  --accent: #2962FF; --accent-weak: rgba(41,98,255,.10); --accent-2: #8b5cf6;
+  --up: #089981; --up-weak: rgba(8,153,129,.12); --down: #f23645; --down-weak: rgba(242,54,69,.12);
+  --warn: #e8a33d; --danger: #e5484d; --success: #12a594;
+  --border-strong: #d7dceb; --ring: rgba(41,98,255,.35);
+  --elev-1: 0 1px 2px rgba(16,24,40,.04), 0 10px 26px -12px rgba(16,24,40,.14);
+  --elev-2: 0 2px 8px rgba(16,24,40,.06), 0 20px 44px -16px rgba(16,24,40,.18);
 }
 
 * { font-family: 'Ravagh', 'AnjomanMax', 'Vazirmatn', sans-serif; }
