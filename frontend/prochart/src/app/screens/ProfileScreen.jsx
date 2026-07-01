@@ -6,6 +6,8 @@ import { useApp } from '../../appStore';
 import { useT } from '../../i18n';
 import { Screen, ACCENT } from '../ui';
 import { hasPin, setPin, clearPin } from '../lock';
+import { bioEnabled, setBioEnabled, bioAvailable, bioVerify } from '../biometric';
+import { Fingerprint } from 'lucide-react';
 
 function Segmented({ options, value, onChange }) {
   return (
@@ -44,6 +46,9 @@ export default function ProfileScreen() {
   const [mt, setMt] = useState({ login: '', password: '', server: '' });
   const [busy, setBusy] = useState(false);
   const [pinOn, setPinOn] = useState(hasPin());
+  const [bioOn, setBioOn] = useState(bioEnabled());
+  const [bioCan, setBioCan] = useState(false);
+  useEffect(() => { let a = true; bioAvailable().then((v) => { if (a) setBioCan(v); }); return () => { a = false; }; }, []);
 
   const refresh = () => api.bnConnectStatus().then((r) => setConn(r || {})).catch(() => setConn({}));
   useEffect(() => { let a = true; api.bnConnectStatus().then((r) => { if (a) setConn(r || {}); }).catch(() => { if (a) setConn({}); }); return () => { a = false; }; }, []);
@@ -64,10 +69,15 @@ export default function ProfileScreen() {
   const remove = async (kind) => { try { await api.bnConnectRemove(kind); refresh(); } catch (e) { /* noop */ } };
 
   const toggleLock = () => {
-    if (pinOn) { clearPin(); setPinOn(false); return; }
+    if (pinOn) { clearPin(); setPinOn(false); setBioEnabled(false); setBioOn(false); return; } // خاموش‌کردنِ PIN بیومتریک را هم غیرفعال می‌کند
     const p = window.prompt(lang === 'fa' ? 'یک PIN چهاررقمی وارد کن:' : 'Enter a 4-digit PIN:');
     if (p && /^\d{4,8}$/.test(p.trim())) { setPin(p.trim()); setPinOn(true); }
     else if (p != null) window.alert(lang === 'fa' ? 'PIN باید ۴ تا ۸ رقم باشد.' : 'PIN must be 4-8 digits.');
+  };
+  const toggleBio = async () => {
+    if (bioOn) { setBioEnabled(false); setBioOn(false); return; }
+    const ok = await bioVerify(lang === 'fa' ? 'تأییدِ هویت' : 'Verify identity');
+    if (ok) { setBioEnabled(true); setBioOn(true); }
   };
 
   const divider = <div style={{ height: 1, background: 'var(--surface-border)', margin: '0 14px' }} />;
@@ -151,6 +161,19 @@ export default function ProfileScreen() {
               <span style={{ position: 'absolute', top: 3, insetInlineStart: pinOn ? 23 : 3, width: 20, height: 20, borderRadius: '50%', background: '#fff', transition: 'inset-inline-start .25s cubic-bezier(.34,1.56,.64,1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{pinOn && <Check size={12} color={ACCENT} />}</span>
             </span>
           </button>
+          {/* بیومتریک — فقط اگر دستگاه پشتیبانی کند و PIN به‌عنوانِ fallback فعال باشد */}
+          {bioCan && pinOn && (<>
+            {divider}
+            <button onClick={toggleBio} className="w-full flex items-center justify-between" style={{ padding: '14px 14px' }}>
+              <span className="flex items-center gap-3" style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 600 }}>
+                <span className="flex items-center justify-center" style={{ width: 34, height: 34, borderRadius: 10, background: 'var(--surface-elevated)', color: ACCENT }}><Fingerprint size={17} /></span>
+                {t('profile.biometric')}
+              </span>
+              <span className="flex items-center justify-center" style={{ width: 46, height: 26, borderRadius: 999, background: bioOn ? ACCENT : 'var(--surface-elevated)', transition: '.25s', position: 'relative' }}>
+                <span style={{ position: 'absolute', top: 3, insetInlineStart: bioOn ? 23 : 3, width: 20, height: 20, borderRadius: '50%', background: '#fff', transition: 'inset-inline-start .25s cubic-bezier(.34,1.56,.64,1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{bioOn && <Check size={12} color={ACCENT} />}</span>
+              </span>
+            </button>
+          </>)}
         </div>
 
         {/* دربارهٔ اپ */}

@@ -5,6 +5,7 @@ import AppShell from './app/AppShell';
 import Onboarding, { needsOnboarding } from './app/Onboarding';
 import AppLock from './app/AppLock';
 import { hasPin } from './app/lock';
+import { bioEnabled } from './app/biometric';
 import PremiumModal from './PremiumModal';
 import AdminPanel from './AdminPanel';
 import UserPanel from './UserPanel';
@@ -86,7 +87,7 @@ export default function App() {
   const [bootDone, setBootDone] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
   const [showOb, setShowOb] = useState(() => needsOnboarding());
-  const [locked, setLocked] = useState(() => hasPin());
+  const [locked, setLocked] = useState(() => hasPin() || bioEnabled());
   const startRef = React.useRef(Date.now());
 
   useEffect(() => {

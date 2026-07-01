@@ -1,17 +1,26 @@
 // صفحهٔ قفلِ اپ — ورودِ PIN با کیبوردِ عددی. تم‌آگاه، دوزبانه، لوگوی برند.
-import React, { useState } from 'react';
-import { Delete } from 'lucide-react';
-import { verifyPin } from './lock';
+import React, { useState, useEffect } from 'react';
+import { Delete, Fingerprint } from 'lucide-react';
+import { verifyPin, hasPin } from './lock';
+import { bioEnabled, bioVerify } from './biometric';
 import { useApp } from '../appStore';
+import { useT } from '../i18n';
 import { tap } from './haptics';
 
 const ACCENT = '#2962FF';
 
 export default function AppLock({ onUnlock }) {
   const lang = useApp((s) => s.lang);
+  const t = useT();
   const [pin, setPinVal] = useState('');
   const [err, setErr] = useState(false);
-  const title = lang === 'fa' ? 'ورودِ رمز' : 'Enter PIN';
+  const pinSet = hasPin();
+  const bioOn = bioEnabled();
+  const title = t('lock.enter');
+
+  const tryBio = async () => { const ok = await bioVerify(t('lock.enter')); if (ok) onUnlock(); };
+  // بارِ اول اگر بیومتریک فعال است، خودکار دیالوگِ سیستمی را باز کن
+  useEffect(() => { if (bioOn) { tryBio(); } /* eslint-disable-next-line */ }, []);
 
   const push = (d) => {
     if (pin.length >= 8) return;
@@ -44,6 +53,11 @@ export default function AppLock({ onUnlock }) {
           return <button key={k} onClick={() => push(k)} className="flex items-center justify-center active:scale-90 transition-transform tabular-nums" style={{ height: 62, borderRadius: 18, background: 'var(--surface-card)', border: '1px solid var(--surface-border)', color: 'var(--text-primary)', fontWeight: 700, fontSize: 22, cursor: 'pointer' }} dir="ltr">{k}</button>;
         })}
       </div>
+      {bioOn && (
+        <button onClick={tryBio} className="flex items-center gap-2 mt-7 active:scale-95 transition-transform" style={{ background: 'transparent', border: 0, cursor: 'pointer', color: ACCENT, fontWeight: 700, fontSize: 13 }}>
+          <Fingerprint size={22} /> {t('lock.useBio')}
+        </button>
+      )}
     </div>
   );
 }
