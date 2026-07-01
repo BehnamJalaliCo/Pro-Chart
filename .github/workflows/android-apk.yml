@@ -73,12 +73,6 @@ jobs:
           echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
           cp "$APK_PATH" "$GITHUB_WORKSPACE/pro-chart-debug.apk"
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: pro-chart-debug-apk
-          path: pro-chart-debug.apk
-
       # ── نسخهٔ Release امضاشده (اختیاری/مقاوم به خطا؛ هرگز جلوی تحویلِ debug را نمی‌گیرد) ──
       - name: Build release APK (unsigned)
         id: relbuild
@@ -113,17 +107,21 @@ jobs:
           "$BT/apksigner" verify "$GITHUB_WORKSPACE/pro-chart-release.apk" && echo "امضا تأیید شد ✓"
 
       - name: Upload debug artifact
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: pro-chart-debug-apk
           path: pro-chart-debug.apk
+          overwrite: true
 
       - name: Upload release artifact
         if: steps.relsign.outcome == 'success'
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: pro-chart-release-apk
           path: pro-chart-release.apk
+          overwrite: true
 
       - name: Create GitHub Release with APK(s)
         uses: softprops/action-gh-release@v2
