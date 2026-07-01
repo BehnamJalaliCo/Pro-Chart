@@ -262,11 +262,44 @@ function AuthGate({ onAuthed }) {
 function LoginForm({ onAuthed, onForgot }) {
   const [u, setU] = React.useState(''); const [p, setP] = React.useState('');
   const [busy, setBusy] = React.useState(false); const [err, setErr] = React.useState('');
+  const [devLimit, setDevLimit] = React.useState(null); // {manage_token, devices, max}
   const submit = async () => {
     setErr(''); setBusy(true);
-    try { const r = await api.login(u.trim(), p); if (r?.token) { tokenStore.set(r.token); onAuthed(r.username || u.trim(), r.tier, r.account_type); } }
-    catch (e) { setErr(e?.message || 'نام‌کاربری یا رمز اشتباه است.'); } finally { setBusy(false); }
+    try {
+      const r = await api.login(u.trim(), p);
+      if (r?.token) { tokenStore.set(r.token); onAuthed(r.username || u.trim(), r.tier, r.account_type); }
+      else if (r?.device_limit) { setDevLimit(r); }        // سقفِ دستگاه پر است → نمایشِ لیست برای حذف
+      else { setErr('پاسخِ نامعتبر از سرور.'); }
+    } catch (e) { setErr(e?.message || 'نام‌کاربری یا رمز اشتباه است.'); } finally { setBusy(false); }
   };
+  const removeDevice = async (id) => {
+    setBusy(true); setErr('');
+    try { await api.removeDevicePre(devLimit.manage_token, id); setDevLimit(null); await submit(); }
+    catch (e) { setErr(e?.message || 'حذفِ دستگاه ناموفق بود.'); setBusy(false); }
+  };
+  // نمایِ «سقفِ دستگاه پر است» — یک دستگاه را خارج کن تا وارد شوی
+  if (devLimit) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-1.5 text-[12px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg px-2.5 py-2">
+          <Lock size={13} className="shrink-0" /> سقفِ {devLimit.max || 2} دستگاهِ هم‌زمان پر است. برای ورود، یکی از دستگاه‌های زیر را خارج کن:
+        </div>
+        <div className="space-y-2">
+          {(devLimit.devices || []).map((d) => (
+            <div key={d.id} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
+              <div className="min-w-0">
+                <div className="text-sm font-bold truncate">{d.name || d.device_name || 'دستگاه'}</div>
+                {d.last_seen && <div className="text-[11px] opacity-50">{fmtDate(d.last_seen)}</div>}
+              </div>
+              <button onClick={() => removeDevice(d.id)} disabled={busy} className="shrink-0 text-[12px] px-3 py-1.5 rounded-lg bg-red-500/15 text-red-300 hover:bg-red-500/25 disabled:opacity-50 flex items-center gap-1"><Trash2 size={13} /> خروج</button>
+            </div>
+          ))}
+        </div>
+        {err && <ErrLine text={err} />}
+        <button onClick={() => { setDevLimit(null); setErr(''); }} className="w-full text-center text-[12px] opacity-60 hover:opacity-100 pt-1">بازگشت</button>
+      </div>
+    );
+  }
   return (
     <div className="space-y-3">
       <Field label="ایمیل یا نام‌کاربری">
