@@ -86,6 +86,9 @@ export class DrawingLayer {
   setDrawings(arr) { this.drawings = arr || []; this.render(); }
   getDrawings() { return this.drawings; }
   clearLast() { this.drawings.pop(); this._changed(); }
+
+  // #۹ افزودنِ برنامه‌ایِ یک ترسیم (مثلِ جعبهٔ لانگ/شورت از کلیک‌راست) + ثبت در undo/persist
+  addDrawing(d) { if (!d || typeof d !== 'object') return; this._pushUndo(); this.drawings.push(d); this.selected = this.drawings.length - 1; this._changed(); this.onSelect && this.onSelect(this.selected); }
   clearAll() { this.drawings = []; this._changed(); }
   _changed() { this.render(); this.onChange && this.onChange(this.drawings); }
 

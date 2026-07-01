@@ -180,7 +180,7 @@ function Dash({ onLogout }) {
         <div className="p-3 border-t" style={{ borderColor: TH.border }}>
           <a href={SUPPORT.url} target="_blank" rel="noreferrer"
              className="block text-center text-[11px] mb-3" style={{ color: TH.textFaint }}>
-            پشتیبانیِ CoinePro FX · <span dir="ltr">{SUPPORT.handle}</span>
+            پشتیبانی · <span dir="ltr">{SUPPORT.handle}</span>
           </a>
           <button onClick={() => { adminToken.clear(); onLogout(); }}
                   className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-red-600/15 text-red-300 hover:bg-red-600/25 text-[13px] font-semibold">

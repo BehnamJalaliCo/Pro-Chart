@@ -7,7 +7,7 @@ import {
   FlaskConical, ChevronDown, LayoutGrid, Maximize2,
   Magnet, Sparkles,
   Undo2, Redo2, Lock, Unlock, Eye, EyeOff, List, Pencil, Table2, Camera,
-  TrendingUp, TrendingDown,
+  TrendingUp, TrendingDown, ArrowUpDown, Scaling,
 } from 'lucide-react';
 import { api } from '../api/client';
 import { REGISTRY } from '../bazaarnama/indicators';
@@ -671,6 +671,24 @@ export default function BazaarNama() {
   // #۱۰ ترید از یک سطحِ مشخص (یا قیمتِ جاری) — تیکتِ کاملاً قابلِ‌ویرایش باز می‌کند: پنلِ ترید را
   // نمایان می‌کند، entry/SL/TP را روی چارت قابلِ‌کشیدن می‌گذارد و قبل از ثبت همه‌چیز قابلِ‌تنظیم است.
   const startTrade = (side, entryAt) => { const e = (entryAt != null && Number.isFinite(+entryAt)) ? +entryAt : curPrice(); if (!e) return; const d = e * 0.005; setOrder({ side, entry: e, sl: side === 'buy' ? e - d : e + d, tp: side === 'buy' ? e + 2 * d : e - 2 * d }); setRightTab('trade'); setShowRight(true); };
+
+  // #۹ رسمِ جعبهٔ «موقعیتِ لانگ/شورت» رو‌به‌جلو از نقطهٔ کلیک‌شده (نه خطوطِ تمام‌عرض). یک ترسیمِ قابلِ‌ویرایش/پاک است.
+  const placeLongShort = (side, price, atX) => {
+    const ch = chartRef.current, dl = drawRef.current;
+    if (!ch || !dl || price == null) return;
+    try {
+      const ts = ch.timeScale();
+      let t0 = ts.coordinateToTime(atX);
+      const vr = ts.getVisibleRange();
+      const span = (vr && typeof vr.to === 'number' && typeof vr.from === 'number') ? (vr.to - vr.from) : 86400;
+      if (typeof t0 !== 'number') t0 = (vr && typeof vr.to === 'number' ? vr.to : Math.floor(Date.now() / 1000));
+      const t1 = t0 + Math.round(span * 0.28); // پروجکشنِ رو‌به‌جلو ~۲۸٪ محدودهٔ دید
+      const risk = price * 0.005;
+      const stop = side === 'buy' ? price - risk : price + risk; // p1.p = حدِ ضرر؛ هدفِ 2R خودکار محاسبه می‌شود
+      dl.addDrawing({ type: 'longshort', p0: { t: t0, p: price }, p1: { t: t1, p: stop }, color: side === 'buy' ? (TH.up || '#22c55e') : (TH.down || '#ef4444'), width: 1.5 });
+      treeRefresh();
+    } catch (e) { /* noop */ }
+  };
   // ثبتِ سفارش از روی چارت → endpointِ معاملهٔ مستقیم (gated). تا فعال‌شدنِ اجرای واقعی،
   // سرور سفارش را اعتبارسنجی و «پیش‌نمایش» برمی‌گرداند (هیچ معاملهٔ واقعی‌ای انجام نمی‌شود).
   const submitOrder = async () => {
@@ -1336,8 +1354,8 @@ export default function BazaarNama() {
           {PRICE_SCALE_MODES.map((m) => (<option key={m.value} value={m.value}>{m.label}</option>))}
         </select>
         <button onClick={() => setScaleLocked((v) => !v)} title="قفلِ مقیاس (خاموش‌کردنِ خودکار)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={scaleLocked ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBg; }}>{scaleLocked ? <Lock size={17} /> : <Unlock size={17} />}</button>
-        <button onClick={() => setScaleInvert((v) => !v)} title="وارونگیِ محورِ قیمت" aria-label="وارونگیِ محورِ قیمت" className="px-1.5 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={scaleInvert ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBg; }}>⇅</button>
-        <button onClick={() => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); setScaleLocked(false); setScaleInvert(false); } catch (e) {} }} title="بازنشانیِ مقیاس" aria-label="بازنشانیِ مقیاس" className="px-1.5 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>⤢</button>
+        <Tip label="وارونه‌کردنِ محورِ قیمت — بالا و پایینِ نمودار جابه‌جا می‌شود (مناسبِ تحلیلِ معکوس)"><button onClick={() => setScaleInvert((v) => !v)} title="وارونه‌کردنِ محورِ قیمت (بالا↔پایین)" aria-label="وارونه‌کردنِ محورِ قیمت" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={scaleInvert ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBg; }}><ArrowUpDown size={16} /></button></Tip>
+        <Tip label="بازنشانیِ زوم و مقیاسِ نمودار به حالتِ اولیه (اتوفیت)"><button onClick={() => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); setScaleLocked(false); setScaleInvert(false); } catch (e) {} }} title="بازنشانیِ زوم و مقیاس به حالتِ اولیه" aria-label="بازنشانیِ مقیاس" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Scaling size={16} /></button></Tip>
         <select value={crosshairId} onChange={(e) => setCrosshairId(e.target.value)} title="حالتِ کراس‌هیر" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
           {CROSSHAIR_MODES.map((m) => (<option key={m.id} value={m.id}>{m.label}</option>))}
         </select>
@@ -1567,19 +1585,26 @@ export default function BazaarNama() {
                   )}
                   {ctxMenu.price != null && (
                     <>
-                      <div className="px-3 pt-1.5 pb-1 text-[10px] font-bold opacity-45" style={{ color: TH.text }}>تریدِ حرفه‌ای از {fmtPrice(symbol, ctxMenu.price)}</div>
+                      <div className="px-3 pt-1.5 pb-1 text-[10px] font-bold opacity-45" style={{ color: TH.text }}>موقعیت از {fmtPrice(symbol, ctxMenu.price)} (رسمِ رو‌به‌جلو)</div>
                       <button className="w-full text-right px-3 py-2 flex items-center gap-2 font-semibold" style={{ color: TH.up }}
                         onMouseEnter={(e) => (e.currentTarget.style.background = (TH.up || '#26a69a') + '1f')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { startTrade('buy', ctxMenu.price); setCtxMenu(null); }}>
+                        onClick={() => { placeLongShort('buy', ctxMenu.price, ctxMenu.x); setCtxMenu(null); }}>
                         <span className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ background: (TH.up || '#26a69a') + '2a', color: TH.up }}><TrendingUp size={12} /></span>
                         لانگ <span className="opacity-55 font-normal text-[11px]">(Long / خرید)</span>
                       </button>
                       <button className="w-full text-right px-3 py-2 flex items-center gap-2 font-semibold" style={{ color: TH.down }}
                         onMouseEnter={(e) => (e.currentTarget.style.background = (TH.down || '#ef5350') + '1f')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { startTrade('sell', ctxMenu.price); setCtxMenu(null); }}>
+                        onClick={() => { placeLongShort('sell', ctxMenu.price, ctxMenu.x); setCtxMenu(null); }}>
                         <span className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ background: (TH.down || '#ef5350') + '2a', color: TH.down }}><TrendingDown size={12} /></span>
                         شورت <span className="opacity-55 font-normal text-[11px]">(Short / فروش)</span>
                       </button>
+                      {/* #۹ ترید واقعی (پنلِ سفارش) + پاک‌کردنِ ترسیم‌ها */}
+                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2 opacity-80" style={{ color: TH.textStrong }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        onClick={() => { startTrade('buy', ctxMenu.price); setCtxMenu(null); }}><Activity size={13} /> ترید واقعی (پنلِ سفارش)</button>
+                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.down }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        onClick={() => { try { drawRef.current && drawRef.current.clearAll(); } catch (e) {} setOrder(null); treeRefresh(); setCtxMenu(null); }}><Trash2 size={13} /> پاک‌کردنِ ترسیم‌ها/موقعیت‌ها</button>
                       <div className="my-1 border-t" style={{ borderColor: TH.border }} />
                     </>
                   )}
