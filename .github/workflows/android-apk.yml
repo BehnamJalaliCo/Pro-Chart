@@ -32,10 +32,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build web app (standalone bundle, online API)
+        run: npm run build
+        env:
+          # اپ مستقل است: کلِ UI/چارت/دیزاین داخلِ APK بسته‌بندی می‌شود،
+          # و فقط دادهٔ زنده/ترید/AI/لاگین به سرور وصل می‌شود (آنلاین).
+          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://pro-chart.com/api' }}
+          VITE_USER_PANEL_URL: ${{ vars.VITE_USER_PANEL_URL || 'https://user.pro-chart.com' }}
+
       - name: Generate app icons & splash
         run: npx @capacitor/assets generate --android --iconBackgroundColor '#0b0e14' --iconBackgroundColorDark '#0b0e14' --splashBackgroundColor '#0b0e14' --splashBackgroundColorDark '#0b0e14'
 
-      - name: Sync Capacitor Android project
+      - name: Sync Capacitor Android project (bundle dist/ into the app)
         run: npx cap sync android
 
       - name: Setup JDK

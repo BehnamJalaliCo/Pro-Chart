@@ -1,13 +1,12 @@
 {
   "appId": "com.prochart.app",
   "appName": "Pro-Chart",
-  "webDir": "www",
+  "webDir": "dist",
   "server": {
-    "url": "https://pro-chart.com",
-    "cleartext": false,
     "androidScheme": "https"
   },
   "android": {
-    "allowMixedContent": false
+    "allowMixedContent": false,
+    "backgroundColor": "#0b0e14"
   }
 }
