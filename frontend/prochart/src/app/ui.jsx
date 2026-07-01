@@ -38,6 +38,20 @@ export function EmptyState({ icon, text }) {
   );
 }
 
+// اسپارک‌لاین — نمودارِ خطیِ کوچکِ بدونِ محور (SVG، تیز). data: آرایهٔ اعداد.
+export function Sparkline({ data, up, width = 54, height = 26, stroke }) {
+  if (!data || data.length < 2) return <svg width={width} height={height} />;
+  const min = Math.min(...data), max = Math.max(...data), rng = max - min || 1;
+  const stepX = width / (data.length - 1);
+  const pts = data.map((v, i) => `${(i * stepX).toFixed(1)},${(height - 3 - ((v - min) / rng) * (height - 6)).toFixed(1)}`).join(' ');
+  const col = stroke || (up ? 'var(--up)' : 'var(--down)') || (up ? '#089981' : '#f23645');
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none" style={{ flex: '0 0 auto' }}>
+      <polyline points={pts} stroke={col} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function Loading({ text }) {
   return (
     <div className="h-full flex flex-col items-center justify-center gap-3" style={{ minHeight: 200 }}>
