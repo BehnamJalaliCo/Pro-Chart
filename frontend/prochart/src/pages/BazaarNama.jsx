@@ -1400,19 +1400,19 @@ export default function BazaarNama() {
           <div className="flex-1 min-h-0 w-full">
             <ToolRail tool={tool} setTool={setTool} TH={TH} onHelp={setHelpId} />
           </div>
-          <div className="h-px w-6 my-1" style={{ background: TH.border }} />
-          <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>
-          <Tip label="مگنت — چسبیدنِ ترسیم به قیمتِ کندل"><button onClick={() => setMagnet((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${magnet ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={magnet ? { background: TH.accent } : {}}><Magnet size={20} /></button></Tip>
-          <Tip label="پروفایلِ حجم (توزیعِ قیمت)"><button onClick={() => setShowVP((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showVP ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showVP ? { background: TH.accent } : {}}><BarChart3 size={20} /></button></Tip>
-          <div className="h-px w-6 my-1" style={{ background: TH.border }} />
-          <Tip label="واگرد (Ctrl+Z)"><button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} className="p-1.5 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Undo2 size={20} /></button></Tip>
-          <Tip label="ازنو (Ctrl+Y)"><button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} className="p-1.5 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Redo2 size={20} /></button></Tip>
-          <Tip label="ماندن در حالتِ ترسیم (پشتِ‌سرهم بکش)"><button onClick={() => setStayDraw((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${stayDraw ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={stayDraw ? { background: TH.accent } : {}}><Pencil size={20} /></button></Tip>
-          <Tip label="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)"><button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showTree ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showTree ? { background: TH.accent } : {}}><List size={20} /></button></Tip>
-          <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={20} /></button></Tip>
-          <div className="h-px w-6 my-1" style={{ background: TH.border }} />
-          <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1.5 rounded opacity-60 hover:opacity-100"><Minus size={20} /></button></Tip>
-          <Tip label="پاکِ همهٔ ترسیم‌ها"><button onClick={() => drawRef.current && drawRef.current.clearAll()} className="p-1.5 rounded opacity-60 hover:text-red-400"><Trash2 size={20} /></button></Tip>
+          <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
+          <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-4 h-4 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>
+          <Tip label="مگنت — چسبیدنِ ترسیم به قیمتِ کندل"><button onClick={() => setMagnet((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${magnet ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={magnet ? { background: TH.accent } : {}}><Magnet size={12} /></button></Tip>
+          <Tip label="پروفایلِ حجم (توزیعِ قیمت)"><button onClick={() => setShowVP((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${showVP ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showVP ? { background: TH.accent } : {}}><BarChart3 size={12} /></button></Tip>
+          <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
+          <Tip label="واگرد (Ctrl+Z)"><button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} className="p-1 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Undo2 size={12} /></button></Tip>
+          <Tip label="ازنو (Ctrl+Y)"><button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} className="p-1 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Redo2 size={12} /></button></Tip>
+          <Tip label="ماندن در حالتِ ترسیم (پشتِ‌سرهم بکش)"><button onClick={() => setStayDraw((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${stayDraw ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={stayDraw ? { background: TH.accent } : {}}><Pencil size={12} /></button></Tip>
+          <Tip label="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)"><button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} className={`p-1 rounded-md transition-colors duration-[120ms] ${showTree ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showTree ? { background: TH.accent } : {}}><List size={12} /></button></Tip>
+          <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={12} /></button></Tip>
+          <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
+          <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1 rounded opacity-60 hover:opacity-100"><Minus size={12} /></button></Tip>
+          <Tip label="پاکِ همهٔ ترسیم‌ها"><button onClick={() => drawRef.current && drawRef.current.clearAll()} className="p-1 rounded opacity-60 hover:text-red-400"><Trash2 size={12} /></button></Tip>
         </div>
         )}
 
