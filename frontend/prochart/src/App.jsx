@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { tokenStore } from './api/client';
 import AppShell from './app/AppShell';
+import Onboarding, { needsOnboarding } from './app/Onboarding';
+import AppLock from './app/AppLock';
+import { hasPin } from './app/lock';
 import PremiumModal from './PremiumModal';
 import AdminPanel from './AdminPanel';
 import UserPanel from './UserPanel';
@@ -61,25 +64,8 @@ function LaunchScreen({ fading }) {
     <div className={'pc-launch' + (fading ? ' pc-launch--out' : '')} dir="rtl" role="status" aria-label="در حال راه‌اندازی">
       <div className="pc-launch__glow" />
       <div className="pc-launch__mark">
-        <svg viewBox="0 0 220 120" width="220" height="120" fill="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="pcLine" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stopColor="#2962FF" /><stop offset="1" stopColor="#8b5cf6" />
-            </linearGradient>
-          </defs>
-          {/* کندل‌ها */}
-          <g className="pc-launch__candles">
-            <rect x="18"  y="60" width="10" height="30" rx="2" className="pc-cd pc-cd--up" style={{ ['--i']: 0 }} />
-            <rect x="48"  y="44" width="10" height="34" rx="2" className="pc-cd pc-cd--dn" style={{ ['--i']: 1 }} />
-            <rect x="78"  y="52" width="10" height="26" rx="2" className="pc-cd pc-cd--up" style={{ ['--i']: 2 }} />
-            <rect x="108" y="30" width="10" height="40" rx="2" className="pc-cd pc-cd--up" style={{ ['--i']: 3 }} />
-            <rect x="138" y="40" width="10" height="28" rx="2" className="pc-cd pc-cd--dn" style={{ ['--i']: 4 }} />
-            <rect x="168" y="22" width="10" height="34" rx="2" className="pc-cd pc-cd--up" style={{ ['--i']: 5 }} />
-          </g>
-          {/* خطِ روند که خودش را می‌کشد */}
-          <path className="pc-launch__path" d="M12 78 L53 60 L83 66 L113 42 L143 52 L173 32 L208 24" stroke="url(#pcLine)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-          <circle className="pc-launch__dot" r="4.5" cx="208" cy="24" fill="#8b5cf6" />
-        </svg>
+        {/* لوگوی رسمیِ پرو‌چارت/بازارنما */}
+        <img src="/logo.png" alt="Pro-Chart" className="pc-launch__logo" width="128" height="128" />
       </div>
       <div className="pc-launch__brand">Pro<span>·</span>Chart</div>
       <div className="pc-launch__sub">بازارنما</div>
@@ -99,6 +85,8 @@ export default function App() {
   // راه‌اندازیِ سینمایی: تا کامل‌شدنِ بوت (با حداقلِ زمانِ نمایش) روی اپ می‌ماند و نرم محو می‌شود.
   const [bootDone, setBootDone] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
+  const [showOb, setShowOb] = useState(() => needsOnboarding());
+  const [locked, setLocked] = useState(() => hasPin());
   const startRef = React.useRef(Date.now());
 
   useEffect(() => {
@@ -123,7 +111,9 @@ export default function App() {
   return (
     <>
       {ready && (authed ? (<><AppShell /><PremiumModal /></>) : <RetryGate />)}
+      {ready && authed && bootDone && showOb && <Onboarding onDone={() => setShowOb(false)} />}
       {!bootDone && <LaunchScreen fading={fadeOut} />}
+      {ready && locked && <AppLock onUnlock={() => setLocked(false)} />}
     </>
   );
 }

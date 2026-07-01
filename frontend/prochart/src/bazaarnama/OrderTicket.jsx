@@ -4,6 +4,8 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { useT } from '../i18n';
+import { api } from '../api/client';
+import { bump } from '../app/haptics';
 
 const PCTS = [25, 50, 75, 100];
 const LEV_PRESETS = [5, 10, 20, 50, 100];
@@ -17,6 +19,8 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
   const [amount, setAmount] = useState('');
   const [leverage, setLeverage] = useState(order?.leverage || 10);
   const [pct, setPct] = useState(0);
+  const [conn, setConn] = useState(null);
+  useEffect(() => { let a = true; api.bnConnectStatus().then((r) => { if (a) setConn(r || {}); }).catch(() => {}); return () => { a = false; }; }, []);
 
   const px = (orderType === 'limit' && order?.entry) ? num(order.entry) : (curPrice() || livePrice || 0);
   const isCrypto = /USDT|USDC|BTC|ETH|USD$/.test(symbol || '') && !/^(EUR|GBP|USD|AUD|NZD|CAD|CHF|JPY|XAU|XAG)/.test(symbol || '');
@@ -32,6 +36,24 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
 
   // با تغییرِ اهرم، در order هم نگه‌داریم (برای اجرای واقعیِ آینده)
   useEffect(() => { if (order && order.leverage !== leverage) setOrder((o) => (o ? { ...o, leverage } : o)); /* eslint-disable-next-line */ }, [leverage]);
+
+  // آیا برای این نماد اتصالِ زنده هست؟ (کریپتو→LBank، فارکس→MT5)
+  const connected = isCrypto ? !!(conn && (conn.lbank || conn.lbank_connected)) : !!(conn && (conn.mt5 || conn.mt5_connected));
+
+  const placeReal = async () => {
+    const msg = `${side === 'buy' ? t('trade.buy') : t('trade.sell')} ${baseUnit}\n${t('trade.amount')}: ${amount || 0}\n${t('trade.price')}: ${orderType === 'limit' ? (order?.entry ?? px) : px}`;
+    if (!window.confirm(msg)) return;
+    bump();
+    try {
+      const r = await api.bnRealOrder(side, symbol, amt, orderType === 'limit' ? num(order?.entry) : 0);
+      window.alert(r?.placed || r?.ok ? '✓' : (r?.msg || 'OK'));
+    } catch (e) { window.alert(e?.message || (e?.data?.detail) || 'خطا'); }
+  };
+
+  const onAction = () => {
+    if (!order) { startTrade(side); return; }
+    if (connected && amt > 0) placeReal(); else submitOrder();
+  };
 
   const pickSide = (s) => { startTrade(s); };
   const applyPct = (p) => { setPct(p); const a = (notional / (px || 1)) * (p / 100); setAmount(a ? a.toFixed(isCrypto ? 4 : 2) : ''); };
@@ -125,12 +147,13 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
         <Row TH={TH} k={t('trade.fee')} v={`${fmt(fee)} USDT`} />
       </div>
 
-      {/* دکمهٔ اقدام */}
-      <button onClick={() => { if (!order) startTrade(side); else submitOrder(); }}
+      {/* دکمهٔ اقدام — اگر حساب متصل باشد سفارشِ واقعی (با تأیید)، وگرنه پیش‌نمایش */}
+      <button onClick={onAction}
         className="w-full flex items-center justify-center gap-2 rounded-xl active:scale-[.98] transition-transform"
         style={{ height: 50, border: 0, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 800, fontSize: 15, color: '#fff', background: side === 'buy' ? TH.up : TH.down, boxShadow: '0 10px 22px -8px rgba(0,0,0,.3)' }}>
         <ShoppingCart size={17} /> {side === 'buy' ? t('trade.buy') : t('trade.sell')} {baseUnit}
       </button>
+      {!connected && <div className="text-center" style={{ fontSize: 10.5, color: TH.text, opacity: .7, marginTop: -4 }}>{t('trade.connect')}</div>}
     </div>
   );
 }
