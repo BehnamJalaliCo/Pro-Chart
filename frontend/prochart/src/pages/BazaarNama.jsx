@@ -7,6 +7,7 @@ import {
   FlaskConical, ChevronDown, LayoutGrid, Maximize2,
   Magnet, Sparkles,
   Undo2, Redo2, Lock, Unlock, Eye, EyeOff, List, Pencil, Table2, Camera,
+  TrendingUp, TrendingDown,
 } from 'lucide-react';
 import { api } from '../api/client';
 import { REGISTRY } from '../bazaarnama/indicators';
@@ -44,7 +45,7 @@ const TFS = ['M1', 'M5', 'M15', 'M30', 'H1', 'H2', 'H4', 'D1', 'W1', 'MN'];
 // باسِ همگام‌سازیِ چندچارتی (زمان + کراس‌هیر) — هر MiniChart مشترک می‌شود
 function makeSyncBus() { let subs = []; return { subscribe(fn) { subs.push(fn); return () => { subs = subs.filter((s) => s !== fn); }; }, emit(type, payload, self) { subs.forEach((fn) => { if (fn !== self) fn(type, payload); }); } }; }
 // برچسبِ کوتاه + عنوانِ فارسی برای نوارِ تایم‌فریمِ حرفه‌ای
-const TF_LABEL = { M1: '1m', M5: '5m', M15: '15m', M30: '30m', H1: '1H', H2: '2H', H4: '4H', D1: '1D', W1: '1W', MN: '1M' };
+const TF_LABEL = { M1: '1m', M5: '5m', M15: '15m', M30: '30m', H1: '1H', H2: '2H', H4: '4H', D1: '1D', W1: '1W', MN: '1Mo' };
 const TF_TITLE = { M1: '۱ دقیقه', M5: '۵ دقیقه', M15: '۱۵ دقیقه', M30: '۳۰ دقیقه', H1: '۱ ساعته', H2: '۲ ساعته', H4: '۴ ساعته', D1: 'روزانه', W1: 'هفتگی', MN: 'ماهانه' };
 // طولِ هر کندل به ثانیه — برای ساختِ کندلِ زندهٔ بعدی و پروجکشنِ رو به جلوی ناحیه‌ها
 const TF_SEC = { M1: 60, M5: 300, M15: 900, M30: 1800, H1: 3600, H2: 7200, H4: 14400, D1: 86400, W1: 604800, MN: 2592000 };
@@ -247,7 +248,7 @@ export default function BazaarNama() {
   const [countdownColor, setCountdownColor] = useState(null); // تینتِ نزدیکِ بسته‌شدن (قرمز/کهربایی)
   const [showVP, setShowVP] = useState(false);
   const [magnet, setMagnet] = useState(loadWS().magnet ?? false);
-  const [order, setOrder] = useState(() => loadWS().order || null); // {side, entry, sl, tp} — باگ۳: با رفرش پاک نشود
+  const [order, setOrder] = useState(null); // {side, entry, sl, tp} — #D: پیش‌فرض هیچ پوزیشنی باز نیست (از localStorage بازیابی نمی‌شود)
   const [aiSig, setAiSig] = useState(() => loadWS().aiSig || null); // سیگنالِ AI — باگ۳: با رفرش پاک نشود
   const [aiList, setAiList] = useState([]); // همهٔ سیگنال‌های اخیر — همیشه در ساید‌بار می‌مانند
   const [aiBusy, setAiBusy] = useState(false);
@@ -649,6 +650,9 @@ export default function BazaarNama() {
       const to = (cs.length ? cs[cs.length - 1].t : Math.floor(Date.now() / 1000)) + 86400;
       sessionsRef.current = sessionBands(from, to, tz, { overlap: true, sessions: sessionSel });
       drawRef.current && drawRef.current.render();
+      // A: باندها را فوری رسم کن (وگرنه تا وقتی کاربر چارت را pan/zoom نکند نمایان نمی‌شوند).
+      const ctx = overlayRef.current && overlayRef.current.getContext('2d');
+      if (ctx && sessionsRef.current) paintSessions(ctx, ch, sessionsRef.current, overlayRef.current.height);
     } catch (e) { /* */ }
     saveWS({ sessionsOn, sessionSel });
   }, [sessionsOn, tz, tf, symbol, sessionSel]);
@@ -1553,12 +1557,20 @@ export default function BazaarNama() {
                   )}
                   {ctxMenu.price != null && (
                     <>
-                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.up }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { startTrade('buy', ctxMenu.price); setCtxMenu(null); }}><Activity size={13} /> خرید از {fmtPrice(symbol, ctxMenu.price)}</button>
-                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.down }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { startTrade('sell', ctxMenu.price); setCtxMenu(null); }}><Activity size={13} /> فروش از {fmtPrice(symbol, ctxMenu.price)}</button>
+                      <div className="px-3 pt-1.5 pb-1 text-[10px] font-bold opacity-45" style={{ color: TH.text }}>تریدِ حرفه‌ای از {fmtPrice(symbol, ctxMenu.price)}</div>
+                      <button className="w-full text-right px-3 py-2 flex items-center gap-2 font-semibold" style={{ color: TH.up }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = (TH.up || '#26a69a') + '1f')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        onClick={() => { startTrade('buy', ctxMenu.price); setCtxMenu(null); }}>
+                        <span className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ background: (TH.up || '#26a69a') + '2a', color: TH.up }}><TrendingUp size={12} /></span>
+                        لانگ <span className="opacity-55 font-normal text-[11px]">(Long / خرید)</span>
+                      </button>
+                      <button className="w-full text-right px-3 py-2 flex items-center gap-2 font-semibold" style={{ color: TH.down }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = (TH.down || '#ef5350') + '1f')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        onClick={() => { startTrade('sell', ctxMenu.price); setCtxMenu(null); }}>
+                        <span className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ background: (TH.down || '#ef5350') + '2a', color: TH.down }}><TrendingDown size={12} /></span>
+                        شورت <span className="opacity-55 font-normal text-[11px]">(Short / فروش)</span>
+                      </button>
+                      <div className="my-1 border-t" style={{ borderColor: TH.border }} />
                     </>
                   )}
                   <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}

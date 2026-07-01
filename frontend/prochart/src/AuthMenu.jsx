@@ -202,11 +202,11 @@ export default function AuthMenu({ theme = 'dark', panelUrl, onToggleTheme }) {
 
                   {/* پشتیبانی و اطلاعات — #۱۳ پشتیبانِ CoinePro FX · #۱۴ بدونِ کانالِ تلگرام */}
                   <Section P={P} title="پشتیبانی و اطلاعات">
-                    <MenuBtn P={P} icon={<LifeBuoy size={16} />}  label="پشتیبانِ CoinePro FX" external onClick={() => feature('bn:support', SUPPORT_URL)} />
+                    <MenuBtn P={P} icon={<LifeBuoy size={16} />}  label="پشتیبانی" external onClick={() => feature('bn:support', SUPPORT_URL)} />
                     <MenuBtn P={P} icon={<FileText size={16} />}  label="قوانین و حریمِ خصوصی" external onClick={() => feature('bn:terms')} />
                   </Section>
 
-                  <div className="text-center text-[11px] pt-1" style={{ color: P.sub }}>نسخه ۱.۰ · بازارنما · CoinePro FX</div>
+                  <div className="text-center text-[11px] pt-1" style={{ color: P.sub }}>نسخه ۱.۰ · بازارنما</div>
                 </>
               ) : (
                 <button onClick={() => setView(null)} className="mb-3 flex items-center gap-1 text-[12px] opacity-70 hover:opacity-100">

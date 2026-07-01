@@ -208,7 +208,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp }) {
               aria-label={g.label}
               aria-pressed={isActiveGroup}
               onClick={() => (isOpen ? setOpenKey(null) : openOn(g.key))}
-              className="relative flex items-center justify-center w-7 h-7 rounded-md"
+              className="relative flex items-center justify-center w-6 h-6 rounded-md"
               style={{
                 background: isActiveGroup ? TH.accent : (isOpen ? TH.chipBgHover : 'transparent'),
                 color: isActiveGroup ? '#fff' : TH.text,
@@ -224,7 +224,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp }) {
                 if (!isActiveGroup && !isOpen) e.currentTarget.style.background = 'transparent';
               }}
             >
-              <Icon size={14} />
+              <Icon size={11} />
               {/* نشانهٔ ریزِ کارت: مثلثِ ظریف در گوشهٔ پایین‌راست */}
               <span
                 className="absolute bottom-1 right-1 w-0 h-0 pointer-events-none"
