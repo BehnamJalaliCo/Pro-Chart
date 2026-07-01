@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { api } from '../api/client';
 import { useApp } from '../appStore';
+import { tap } from '../app/haptics';
 import { REGISTRY } from '../bazaarnama/indicators';
 import { NONSTANDARD, buildNonStandard } from '../bazaarnama/chartbuilders';
 import { runScript } from '../bazaarnama/namascript';
@@ -222,9 +223,26 @@ export default function BazaarNama() {
   }, [tool, openNamaScript]);
 
   // همگام‌سازیِ تم با فروشگاهِ سراسریِ اپ (پروفایل = منبعِ اصلی؛ تاگلِ داخلی هم برمی‌گرداند)
+  const lang = useApp((s) => s.lang);
   const appTheme = useApp((s) => s.theme);
   useEffect(() => { setTheme(appTheme); }, [appTheme]);
   useEffect(() => { if (useApp.getState().theme !== theme) useApp.getState().setTheme(theme); }, [theme]);
+
+  // ── فاز۲: تجربهٔ چارت ──
+  // ترنزیشنِ سینماییِ تعویضِ تایم‌فریم/نوعِ چارت + هپتیکِ سبک (بعد از mount)
+  const [swapKey, setSwapKey] = useState(0);
+  const bn2Mount = useRef(false);
+  useEffect(() => { if (bn2Mount.current) { setSwapKey((k) => k + 1); tap(); } else { bn2Mount.current = true; } }, [tf, chartType]);
+  // هپتیکِ انتخابِ ابزارِ ترسیم
+  const toolMount = useRef(false);
+  useEffect(() => { if (toolMount.current) tap(); else toolMount.current = true; }, [tool]);
+  // راهنمای ژستِ بارِ اول
+  const [showGestureHint, setShowGestureHint] = useState(() => { try { return !localStorage.getItem('bn_gesture_hint_seen'); } catch (e) { return false; } });
+  const dismissGestureHint = () => { try { localStorage.setItem('bn_gesture_hint_seen', '1'); } catch (e) { /* noop */ } setShowGestureHint(false); };
+  // جهتِ حرکتِ قیمتِ زنده (برای فلَشِ سبز/قرمزِ برچسبِ قیمت)
+  const prevLpRef = useRef(null);
+  const priceDir = (livePrice != null && prevLpRef.current != null) ? (livePrice > prevLpRef.current ? 'up' : livePrice < prevLpRef.current ? 'down' : '') : '';
+  useEffect(() => { prevLpRef.current = livePrice; }, [livePrice]);
   const [code, setCode] = useState(() => loadWS().code || ''); // کدِ نمااسکریپت با رفرش پاک نمی‌شود
   const [barMode, setBarMode] = useState(false); // اجرای بار-به-بارِ نمااسکریپت (اختیاری)
   const [scriptApplied, setScriptApplied] = useState(() => !!loadWS().scriptApplied); // آیا خروجیِ اسکریپت روی چارت اعمال شده
@@ -1257,7 +1275,7 @@ export default function BazaarNama() {
       {/* #4 نوارِ بالای فشرده (گوشی + تبلت + لنداسکیپِ کم‌ارتفاع) — تشخیصِ خودکارِ ویوپورت */}
       {compact && (
         <CompactTopBar
-          TH={TH} symbol={symbol} livePrice={livePrice} fmtPrice={fmtPrice} marketOpen={marketOpen}
+          TH={TH} symbol={symbol} livePrice={livePrice} priceDir={priceDir} fmtPrice={fmtPrice} marketOpen={marketOpen}
           tf={tf} chartType={chartType} chartLabel={CHART_TYPES.find((c) => c.id === chartType)?.label}
           SymbolLogo={SymbolLogo}
           onSearch={() => setSymModal(true)} onPickTf={() => setSheet('tf')} onPickType={() => setSheet('type')} onMore={() => setSheet('more')}
@@ -1452,6 +1470,19 @@ export default function BazaarNama() {
                }}>
             <div ref={mainRef} className="absolute inset-0" />
             <canvas ref={overlayRef} className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }} />
+            {/* فاز۲: پردهٔ محوِ سینمایی هنگامِ تعویضِ تایم‌فریم/نوعِ چارت */}
+            {swapKey > 0 && (
+              <div key={swapKey} className="absolute inset-0 z-[15] pointer-events-none pc-chart-swap" style={{ background: TH.bg }} />
+            )}
+            {/* فاز۲: راهنمای ژستِ بارِ اول (موبایل) */}
+            {showGestureHint && compact && (
+              <button onClick={dismissGestureHint} className="absolute left-1/2 -translate-x-1/2 z-[22] flex items-center gap-2 px-3.5 py-2 rounded-full text-[11.5px] font-semibold pc-hint-in"
+                style={{ bottom: 54, background: TH.popoverBg, color: TH.textStrong, border: `1px solid ${TH.border}`, boxShadow: '0 8px 24px rgba(0,0,0,.28)' }}>
+                <span>👆</span>
+                <span>{lang === 'en' ? 'Long-press for details · pinch to zoom' : 'برای جزئیات نگه‌دار · با دو انگشت زوم کن'}</span>
+                <span style={{ opacity: .5 }}>✕</span>
+              </button>
+            )}
             {/* جدول‌های نمااسکریپت (table.new) — گوشهٔ بالا-راست */}
             {scTables.length > 0 && (
               <div className="absolute top-2 right-2 z-20 pointer-events-none flex flex-col gap-2" dir="rtl">

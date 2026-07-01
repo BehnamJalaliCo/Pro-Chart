@@ -4,6 +4,7 @@ import React from 'react';
 import { CandlestickChart, List, Sparkles, Newspaper, User } from 'lucide-react';
 import { useApp } from '../appStore';
 import { useT } from '../i18n';
+import { tap } from './haptics';
 
 const ACCENT = '#2962FF';
 
@@ -17,7 +18,8 @@ const TABS = [
 
 export default function BottomNav() {
   const tab = useApp((s) => s.tab);
-  const setTab = useApp((s) => s.setTab);
+  const setTabRaw = useApp((s) => s.setTab);
+  const setTab = (id) => { if (id !== tab) tap(); setTabRaw(id); };
   const t = useT();
 
   return (

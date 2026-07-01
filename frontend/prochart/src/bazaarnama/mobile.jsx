@@ -209,8 +209,11 @@ export function MobileToolSheet({ TH, open, onClose, title, children, maxVh = 70
 // CompactTopBar (#4 §3) — تولبارِ بالای فشردهٔ موبایل: تک‌ردیف، فقط آیکون/تک‌دکمه.
 // همهٔ کنشِ‌ها از props؛ هیچ منطقِ داخلی. هدف‌های لمسی ≥36px (با padding ~44px).
 // ─────────────────────────────────────────────────────────────────────────────
-export function CompactTopBar({ TH, symbol, livePrice, fmtPrice, marketOpen, tf, chartType, chartLabel, onSearch, onPickTf, onPickType, onMore, SymbolLogo, MenuIcon }) {
+export function CompactTopBar({ TH, symbol, livePrice, priceDir, fmtPrice, marketOpen, tf, chartType, chartLabel, onSearch, onPickTf, onPickType, onMore, SymbolLogo, MenuIcon }) {
   const btn = (extra) => ({ minWidth: 36, minHeight: 36, background: TH.chipBg, color: TH.textStrong, ...extra });
+  // فاز۲: رنگ و فلَشِ قیمتِ زنده بر اساسِ جهتِ حرکت (سبز/قرمز). key=livePrice انیمیشن را روی هر تیک بازپخش می‌کند.
+  const priceColor = priceDir === 'down' ? TH.down : TH.up;
+  const flashClass = priceDir === 'down' ? 'pc-flash-down' : priceDir === 'up' ? 'pc-flash-up' : '';
   return (
     <div dir="rtl" className="flex items-center gap-1.5 px-2 py-1.5 border-b" style={{ borderColor: TH.border }}>
       {/* نماد + جستجو */}
@@ -221,9 +224,9 @@ export function CompactTopBar({ TH, symbol, livePrice, fmtPrice, marketOpen, tf,
       {/* قیمتِ زنده */}
       <div className="flex-1 min-w-0 flex items-center justify-center">
         {marketOpen ? (
-          <span className="flex items-center gap-1 text-[12px]" style={{ color: TH.up }}>
-            <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: TH.up }} />
-            {livePrice != null ? <b dir="ltr" className="tabular-nums">{fmtPrice ? fmtPrice(symbol, livePrice) : livePrice}</b> : 'زنده'}
+          <span className="flex items-center gap-1 text-[12px]" style={{ color: priceColor }}>
+            <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: priceColor }} />
+            {livePrice != null ? <b key={livePrice} dir="ltr" className={`tabular-nums ${flashClass}`}>{fmtPrice ? fmtPrice(symbol, livePrice) : livePrice}</b> : 'زنده'}
           </span>
         ) : (<span className="text-[11px]" style={{ color: '#f59e0b' }}>● بازار بسته</span>)}
       </div>
