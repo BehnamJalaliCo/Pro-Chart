@@ -428,7 +428,7 @@ function Diagram({ diagram, TH }) {
 }
 
 // مودالِ راهنمای یک ابزار/اندیکاتور.
-export default function HelpModal({ entry, onClose, TH }) {
+function HelpModalInner({ entry, onClose, TH }) {
   if (!entry) return null;
   // نرمال‌سازی: برخی ورودی‌ها how/tips را رشته نوشته‌اند نه آرایه — جلوگیری از کرشِ .map
   const toArr = (v) => (Array.isArray(v) ? v : (typeof v === 'string' && v.trim() ? v.split(/\n+|(?<=\.)\s+(?=[۱-۹0-9])/).map((x) => x.trim()).filter(Boolean) : (v ? [v] : [])));
@@ -465,6 +465,38 @@ export default function HelpModal({ entry, onClose, TH }) {
         </div>
       </div>
     </div>
+  );
+}
+
+// مرزِ خطا برای راهنما — اگر رندرِ یک راهنما/دیاگرام به هر دلیل خطا داد، به‌جای کرشِ کلِ صفحه
+// یک پیامِ کوتاه + دکمهٔ بستن نشان می‌دهد. (باگِ موبایل: تپِ «؟» صفحه را سفید نکند.)
+class HelpErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { err: null }; }
+  static getDerivedStateFromError(err) { return { err }; }
+  componentDidCatch(err, info) { try { console.error('Help crash:', err, info); } catch (e) { /* noop */ } }
+  render() {
+    const TH = this.props.TH || {};
+    if (this.state.err) {
+      return (
+        <div dir="rtl" className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: TH.overlayMask || 'rgba(0,0,0,.5)' }} onMouseDown={(e) => { if (e.target === e.currentTarget) this.props.onClose && this.props.onClose(); }}>
+          <div className="w-full max-w-sm rounded-xl p-5 text-center" style={{ background: TH.panel || '#161923', border: `1px solid ${TH.border || '#2a2e39'}`, color: TH.text || '#ddd' }}>
+            <div className="text-2xl mb-2">📘</div>
+            <div className="font-bold mb-1" style={{ color: TH.textStrong || '#fff' }}>راهنمای این مورد در دسترس نیست</div>
+            <div className="text-[12px] opacity-60 leading-6 mb-4">در نمایشِ این راهنما مشکلی پیش آمد. صفحه سالم است؛ می‌توانی ببندی و ادامه بدهی.</div>
+            <button onClick={() => this.props.onClose && this.props.onClose()} className="px-5 py-2 rounded-lg font-bold" style={{ background: TH.accent || '#2962FF', color: '#fff' }}>باشه</button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default function HelpModal(props) {
+  return (
+    <HelpErrorBoundary TH={props.TH} onClose={props.onClose}>
+      <HelpModalInner {...props} />
+    </HelpErrorBoundary>
   );
 }
 
