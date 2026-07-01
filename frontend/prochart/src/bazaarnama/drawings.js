@@ -286,7 +286,7 @@ export class DrawingLayer {
     const W = this.canvas.width;
     const o = this.order;
     const yE = this._y(o.entry), yS = this._y(o.sl), yT = this._y(o.tp);
-    ctx.font = '11px Vazirmatn, sans-serif'; ctx.lineWidth = 1;
+    ctx.font = '11px Ravagh, Vazirmatn, sans-serif'; ctx.lineWidth = 1;
     const risk = Math.abs(o.entry - o.sl), reward = Math.abs(o.tp - o.entry);
     const rr = risk ? (reward / risk).toFixed(2) : '—';
     // نواحی
@@ -307,7 +307,7 @@ export class DrawingLayer {
     if (isExt(d.type)) { extDraw(ctx, d, this); return; }
     if (d.visible === false) return;
     const W = this.canvas.width, H = this.canvas.height;
-    ctx.lineWidth = d.width || 1.5; ctx.strokeStyle = d.color; ctx.fillStyle = d.color; ctx.font = '12px Vazirmatn, sans-serif';
+    ctx.lineWidth = d.width || 1.5; ctx.strokeStyle = d.color; ctx.fillStyle = d.color; ctx.font = '12px Ravagh, Vazirmatn, sans-serif';
     ctx.setLineDash(d.dashed ? [6, 4] : []);
     // ابزارهای چندنقطه‌ای
     if (d.type === 'channel' && d.pts) {

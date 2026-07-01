@@ -12,7 +12,7 @@ export default {
         },
         text: { primary: 'var(--text-primary)', secondary: 'var(--text-secondary)', muted: 'var(--text-muted)' },
       },
-      fontFamily: { sans: ['AnjomanMax', 'Vazirmatn', 'sans-serif'], anjoman: ['AnjomanMax', 'sans-serif'], vazir: ['Vazirmatn', 'sans-serif'] },
+      fontFamily: { sans: ['Ravagh', 'AnjomanMax', 'Vazirmatn', 'sans-serif'], ravagh: ['Ravagh', 'sans-serif'], anjoman: ['AnjomanMax', 'sans-serif'], vazir: ['Vazirmatn', 'sans-serif'] },
       borderRadius: { xl: '0.875rem', '2xl': '1rem' },
     },
   },

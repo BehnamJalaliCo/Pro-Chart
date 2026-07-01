@@ -45,7 +45,7 @@ function palette(dark) {
 }
 
 const baseOpts = (pal) => ({
-  layout: { background: { type: ColorType.Solid, color: pal.bg }, textColor: pal.text, fontFamily: 'Vazirmatn, sans-serif', fontSize: 11 },
+  layout: { background: { type: ColorType.Solid, color: pal.bg }, textColor: pal.text, fontFamily: 'Ravagh, Vazirmatn, sans-serif', fontSize: 11 },
   grid: { vertLines: { color: pal.grid }, horzLines: { color: pal.grid } },
   rightPriceScale: { borderColor: pal.border },
   timeScale: { borderColor: pal.border, timeVisible: true, secondsVisible: false },
@@ -346,7 +346,7 @@ export default function Terminal({
       const p0 = d.points[0].price, p1 = d.points[1].price;
       const x1 = Math.min(a.x, b.x), x2 = Math.max(a.x, b.x);
       ctx.lineWidth = 1;
-      ctx.font = '10px Vazirmatn, sans-serif';
+      ctx.font = '10px Ravagh, Vazirmatn, sans-serif';
       ctx.textBaseline = 'middle';
       FIB_LEVELS.forEach((lv, i) => {
         const price = p0 + (p1 - p0) * lv;

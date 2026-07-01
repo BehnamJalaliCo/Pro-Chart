@@ -10,6 +10,8 @@ secrets/
 certbot/
 # ── بازتولیدشونده ──
 **/node_modules/
+frontend/prochart/dist/
+frontend/prochart/public/crypto-icons/
 __pycache__/
 *.pyc
 *.pyo
