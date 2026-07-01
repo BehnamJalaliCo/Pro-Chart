@@ -430,19 +430,25 @@ function Diagram({ diagram, TH }) {
 // مودالِ راهنمای یک ابزار/اندیکاتور.
 function HelpModalInner({ entry, onClose, TH }) {
   if (!entry) return null;
+  // نرمال‌سازیِ متن: برخی ورودی‌ها title/what/example را به‌صورتِ آبجکتِ {fa,en} نوشته‌اند نه رشته.
+  // رندرِ مستقیمِ آبجکت در React خطای «Objects are not valid as a React child» و کرش می‌دهد → رشته‌اش کن.
+  const str = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? (v.fa || v.en || v.text || v.label || '') : v);
   // نرمال‌سازی: برخی ورودی‌ها how/tips را رشته نوشته‌اند نه آرایه — جلوگیری از کرشِ .map
-  const toArr = (v) => (Array.isArray(v) ? v : (typeof v === 'string' && v.trim() ? v.split(/\n+|(?<=\.)\s+(?=[۱-۹0-9])/).map((x) => x.trim()).filter(Boolean) : (v ? [v] : [])));
+  const toArr = (v) => (Array.isArray(v) ? v.map(str) : (typeof v === 'string' && v.trim() ? v.split(/\n+|(?<=\.)\s+(?=[۱-۹0-9])/).map((x) => x.trim()).filter(Boolean) : (v ? [str(v)] : [])));
   const how = toArr(entry.how);
   const tips = toArr(entry.tips);
+  const title = str(entry.title);
+  const what = str(entry.what);
+  const example = str(entry.example);
   return (
     <div dir="rtl" className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: TH.overlayMask || 'rgba(0,0,0,.5)', backdropFilter: 'blur(2px)' }} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="w-full max-w-lg max-h-[88vh] overflow-auto rounded-xl pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}`, color: TH.text }}>
         <div className="flex items-center justify-between px-4 py-3 border-b sticky top-0" style={{ borderColor: TH.border, background: TH.panel }}>
-          <div className="flex items-center gap-2"><HelpCircle size={17} style={{ color: TH.accent }} /><b style={{ color: TH.textStrong }}>{entry.title}</b></div>
+          <div className="flex items-center gap-2"><HelpCircle size={17} style={{ color: TH.accent }} /><b style={{ color: TH.textStrong }}>{title}</b></div>
           <button onClick={onClose} className="pc-iconbtn w-7 h-7"><X size={16} /></button>
         </div>
         <div className="px-4 py-3 space-y-3 text-[13px] leading-7">
-          {entry.what && <p style={{ color: TH.text }}>{entry.what}</p>}
+          {what && <p style={{ color: TH.text }}>{what}</p>}
           {entry.diagram && <Diagram diagram={entry.diagram} TH={TH} />}
           {how.length > 0 && (
             <div>
@@ -456,10 +462,10 @@ function HelpModalInner({ entry, onClose, TH }) {
               <ul className="space-y-1">{tips.map((s, i) => <li key={i} className="flex gap-1.5"><span style={{ color: TH.accent }}>•</span><span>{s}</span></li>)}</ul>
             </div>
           )}
-          {entry.example && (
+          {example && (
             <div className="rounded-lg p-2.5" style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
               <div className="font-bold mb-1 text-[12px]" style={{ color: TH.up }}>مثالِ واقعی</div>
-              <p className="text-[12.5px]" style={{ color: TH.text }}>{entry.example}</p>
+              <p className="text-[12.5px]" style={{ color: TH.text }}>{example}</p>
             </div>
           )}
         </div>
@@ -483,7 +489,7 @@ class HelpErrorBoundary extends React.Component {
             <div className="text-2xl mb-2">📘</div>
             <div className="font-bold mb-1" style={{ color: TH.textStrong || '#fff' }}>راهنمای این مورد در دسترس نیست</div>
             <div className="text-[12px] opacity-60 leading-6 mb-4">در نمایشِ این راهنما مشکلی پیش آمد. صفحه سالم است؛ می‌توانی ببندی و ادامه بدهی.</div>
-            <button onClick={() => this.props.onClose && this.props.onClose()} className="px-5 py-2 rounded-lg font-bold" style={{ background: TH.accent || '#2962FF', color: '#fff' }}>باشه</button>
+            <button onClick={() => { this.setState({ err: null }); this.props.onClose && this.props.onClose(); }} className="px-5 py-2 rounded-lg font-bold" style={{ background: TH.accent || '#2962FF', color: '#fff' }}>باشه</button>
           </div>
         </div>
       );

@@ -1860,8 +1860,8 @@ export default function BazaarNama() {
         );
       })()}
 
-      {/* #۱۷ مودالِ راهنمای ابزار/اندیکاتور (؟) */}
-      <HelpModal entry={getHelp(helpId)} onClose={() => setHelpId(null)} TH={TH} />
+      {/* #۱۷ مودالِ راهنمای ابزار/اندیکاتور (؟) — key={helpId} تا هر بار مرزِ خطا تازه شود و در fallback گیر نکند */}
+      <HelpModal key={helpId || 'none'} entry={getHelp(helpId)} onClose={() => setHelpId(null)} TH={TH} />
       {/* #۱۲ مودالِ قوانین و حریمِ خصوصی */}
       <Legal open={showLegal} onClose={() => setShowLegal(false)} theme={theme} />
 
