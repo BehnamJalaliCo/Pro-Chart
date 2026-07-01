@@ -152,7 +152,7 @@ export const api = {
   bnAiActive: () => client.get('/academy/bn/ai-signal/active'),
   bnAiDelete: (id) => client.delete(`/academy/bn/ai-signal/${id}`),
   // ── ادمینِ بازارنما (توکنِ جدا) ──
-  bnAdminLogin: (password) => client.post('/academy/bn/admin/login', { password }),
+  bnAdminLogin: (username, password) => client.post('/academy/bn/admin/login', { username, password }),
   bnAdminUsers: (q) => client.get('/academy/bn/admin/users', { params: { q: q || undefined }, headers: _ah() }),
   bnAdminSetTier: (student_id, tier, days) => client.post('/academy/bn/admin/set-tier', { student_id, tier, days }, { headers: _ah() }),
   bnAdminSetStatus: (student_id, status) => client.post('/academy/bn/admin/set-status', { student_id, status }, { headers: _ah() }),
