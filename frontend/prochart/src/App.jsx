@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { tokenStore } from './api/client';
-import BazaarNama from './pages/BazaarNama';
+import AppShell from './app/AppShell';
 import PremiumModal from './PremiumModal';
 import AdminPanel from './AdminPanel';
 import UserPanel from './UserPanel';
+import './appStore'; // اعمالِ اولیهٔ زبان/تم روی <html>
 
 // Pro-Chart — نسخهٔ مستقلِ تمام‌صفحهٔ بازارنما (دامنه/سرورِ جدا، مستقل از آکادمی).
 // ورود: (۱) اگر از آکادمی آمد، توکنش در hash «#t=» پاس می‌شود (سازگاریِ عقب‌رو)؛
@@ -121,7 +122,7 @@ export default function App() {
 
   return (
     <>
-      {ready && (authed ? (<><BazaarNama /><PremiumModal /></>) : <RetryGate />)}
+      {ready && (authed ? (<><AppShell /><PremiumModal /></>) : <RetryGate />)}
       {!bootDone && <LaunchScreen fading={fadeOut} />}
     </>
   );
