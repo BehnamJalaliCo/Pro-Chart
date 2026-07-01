@@ -1341,30 +1341,40 @@ export default function BazaarNama() {
         <select value={crosshairId} onChange={(e) => setCrosshairId(e.target.value)} title="حالتِ کراس‌هیر" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
           {CROSSHAIR_MODES.map((m) => (<option key={m.id} value={m.id}>{m.label}</option>))}
         </select>
-        {/* #9 کنترلِ واحدِ «سشن‌ها» — کلیکِ متن=روشن/خاموش؛ فلش=منویی که هم سشن‌ها هم منطقهٔ زمانی (شهرها) را دارد */}
-        <div data-menu className="relative flex items-center rounded-md overflow-hidden" style={sessionsOn ? { background: TH.accent } : { background: TH.chipBg }}>
-          <button onClick={() => setSessionsOn((v) => !v)} title="نمایش/پنهان‌کردنِ باندهای سشنِ فارکس" className="px-2 py-1 text-xs transition-colors duration-[120ms]" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}>سشن‌ها</button>
-          <button onClick={() => setSessMenu((v) => !v)} title="سشن‌ها و منطقهٔ زمانی" className="px-1 py-1" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}><ChevronDown size={12} /></button>
+        {/* #1 کنترلِ حرفه‌ایِ «سشن‌ها» — pillِ overflow-hidden جدا از dropdown (وگرنه منو کلیپ می‌شد و باز نمی‌شد) */}
+        <div data-menu className="relative">
+          <div className="flex items-center rounded-md overflow-hidden" style={sessionsOn ? { background: TH.accent } : { background: TH.chipBg }}>
+            <button onClick={() => setSessionsOn((v) => !v)} title="نمایش/پنهان‌کردنِ باندهای سشنِ فارکس" className="px-2 py-1 text-xs font-semibold transition-colors duration-[120ms]" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}>سشن‌ها</button>
+            <button onClick={() => setSessMenu((v) => !v)} title="انتخابِ سشن‌ها و منطقهٔ زمانی" className="px-1 py-1" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}><ChevronDown size={12} style={{ transform: sessMenu ? 'rotate(180deg)' : 'none', transition: 'transform 120ms' }} /></button>
+          </div>
           {sessMenu && (
-            <div className="absolute z-40 top-full mt-1 right-0 rounded-lg w-48 p-1" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
-              <div className="px-2 pt-1 pb-1 text-[10px] font-bold opacity-50" style={{ color: TH.text }}>سشن‌های فارکس</div>
+            <div className="absolute z-[60] top-full mt-1 right-0 rounded-xl w-56 p-1.5 shadow-2xl" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+              <div className="flex items-center justify-between px-2 pt-0.5 pb-1.5">
+                <span className="text-[11px] font-bold" style={{ color: TH.textStrong }}>سشن‌های معاملاتی</span>
+                <label className="flex items-center gap-1 text-[10px] cursor-pointer" style={{ color: TH.text }} onClick={() => setSessionsOn((v) => !v)}>
+                  <span>نمایش</span>
+                  <span className="relative inline-block w-7 h-4 rounded-full transition-colors" style={{ background: sessionsOn ? TH.accent : TH.border }}>
+                    <span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" style={{ [sessionsOn ? 'left' : 'right']: '2px' }} />
+                  </span>
+                </label>
+              </div>
               {SESSIONS.map((s) => { const on = sessionSel.includes(s.id); return (
-                <button key={s.id} onClick={() => { setSessionSel((sel) => sel.includes(s.id) ? sel.filter((x) => x !== s.id) : [...sel, s.id]); if (!sessionsOn) setSessionsOn(true); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-                  <span className="w-3.5 h-3.5 rounded-sm flex items-center justify-center shrink-0" style={{ background: on ? TH.accent : 'transparent', border: `1px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="text-[9px] text-white leading-none">✓</span>}</span>
-                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.edge }} />
-                  <span className="flex-1">{s.label}</span>
+                <button key={s.id} onClick={() => { setSessionSel((sel) => sel.includes(s.id) ? sel.filter((x) => x !== s.id) : [...sel, s.id]); if (!sessionsOn) setSessionsOn(true); }} className="flex items-center gap-2.5 w-full text-right px-2 py-2 text-[12px] rounded-lg" style={{ color: TH.textStrong, background: on ? (TH.chipBg) : 'transparent' }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = on ? TH.chipBg : 'transparent')}>
+                  <span className="w-4 h-4 rounded flex items-center justify-center shrink-0" style={{ background: on ? s.edge : 'transparent', border: `1.5px solid ${on ? s.edge : TH.border}` }}>{on && <span className="text-[10px] text-white leading-none">✓</span>}</span>
+                  <span className="w-3 h-3 rounded shrink-0" style={{ background: s.color, border: `1px solid ${s.edge}` }} />
+                  <span className="flex-1 font-medium">{s.label}</span>
                 </button>
               ); })}
               <div className="flex gap-1 px-1 mt-1">
-                <button onClick={() => setSessionSel(SESSIONS.map((s) => s.id))} className="flex-1 text-[11px] py-1 rounded" style={{ background: TH.chipBg, color: TH.text }}>همه</button>
-                <button onClick={() => setSessionSel([])} className="flex-1 text-[11px] py-1 rounded" style={{ background: TH.chipBg, color: TH.text }}>هیچ</button>
+                <button onClick={() => { setSessionSel(SESSIONS.map((s) => s.id)); if (!sessionsOn) setSessionsOn(true); }} className="flex-1 text-[11px] py-1.5 rounded-lg font-semibold" style={{ background: TH.chipBg, color: TH.text }}>همه</button>
+                <button onClick={() => setSessionSel([])} className="flex-1 text-[11px] py-1.5 rounded-lg font-semibold" style={{ background: TH.chipBg, color: TH.text }}>هیچ</button>
               </div>
-              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
-              <div className="px-2 pt-0.5 pb-1 text-[10px] font-bold opacity-50" style={{ color: TH.text }}>منطقهٔ زمانی</div>
-              <div className="max-h-44 overflow-y-auto bn-thin-scroll">
+              <div className="my-1.5 border-t" style={{ borderColor: TH.border }} />
+              <div className="px-2 pb-1 text-[11px] font-bold" style={{ color: TH.textStrong }}>منطقهٔ زمانی (نمایشِ ساعت)</div>
+              <div className="max-h-40 overflow-y-auto bn-thin-scroll">
                 {TIMEZONES.map((z) => { const on = tz === z.id; return (
-                  <button key={z.id} onClick={() => setTz(z.id)} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-                    <span className="w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0" style={{ border: `1px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="w-2 h-2 rounded-full" style={{ background: TH.accent }} />}</span>
+                  <button key={z.id} onClick={() => setTz(z.id)} className="flex items-center gap-2.5 w-full text-right px-2 py-1.5 text-[12px] rounded-lg" style={{ color: TH.textStrong, background: on ? TH.chipBg : 'transparent' }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = on ? TH.chipBg : 'transparent')}>
+                    <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="w-2 h-2 rounded-full" style={{ background: TH.accent }} />}</span>
                     <span className="flex-1">{z.label}</span>
                   </button>
                 ); })}

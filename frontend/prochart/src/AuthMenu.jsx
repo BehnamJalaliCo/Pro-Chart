@@ -6,6 +6,7 @@ import {
   Check, ShieldCheck, Zap, Star, Users, BadgeCheck,
 } from 'lucide-react';
 import { api, tokenStore } from './api/client';
+import bnLogo from './assets/bn-logo.png';
 
 // آدرسِ پنلِ کاربری (ثبت‌نام/پرداخت/بروکر). از env قابلِ تنظیم؛ پیش‌فرضِ امن.
 const PANEL_URL = (import.meta.env && import.meta.env.VITE_USER_PANEL_URL) || 'https://user.pro-chart.com';
@@ -117,12 +118,14 @@ export default function AuthMenu({ theme = 'dark', panelUrl, onToggleTheme }) {
             {/* ── هدر ── */}
             <div className="flex items-center justify-between px-4 h-14 shrink-0"
                  style={{ borderBottom: `1px solid ${P.border}` }}>
-              <div className="flex items-center gap-2 font-extrabold tracking-tight">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg text-white"
-                      style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
-                  <LineChart size={16} />
-                </span>
-                Pro<span className="text-indigo-400">·</span>Chart
+              {/* #۴ لوگوی رسمیِ سایت (همان روی چارت) + نامِ انگلیسی/فارسی */}
+              <div className="flex items-center gap-2.5">
+                <img src={bnLogo} alt="بازارنما" className="w-8 h-8 object-contain shrink-0"
+                     style={{ filter: dark ? 'none' : 'invert(1)' }} />
+                <div className="leading-tight">
+                  <div className="font-extrabold tracking-tight text-[15px]" dir="ltr">Pro-Chart</div>
+                  <div className="text-[11px] opacity-60 -mt-0.5">بازارنما</div>
+                </div>
               </div>
               <div className="flex items-center gap-1">
                 {/* #۳ سوییچِ تمِ روز/شب داخلِ منو */}
