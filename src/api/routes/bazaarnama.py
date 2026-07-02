@@ -117,6 +117,70 @@ async def bn_signals(market: str = "crypto", limit: int = 50,
     return {"market": market, "signals": out, "count": len(out)}
 
 
+@router.get("/copytrade/status")
+async def bn_copytrade_status(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """وضعیتِ کپی‌تریدِ per-user برای هر دو بازار + صلاحیت."""
+    from src.core.database import BnExchangeAccount
+    accs = (await db.execute(select(BnExchangeAccount).where(BnExchangeAccount.student_id == st.id))).scalars().all()
+    lbank = next((a for a in accs if a.kind == "lbank"), None)
+    mt5 = next((a for a in accs if a.kind == "mt5"), None)
+    now = datetime.now(timezone.utc)
+    fx_sub = bool(getattr(st, "forex_copy_until", None) and st.forex_copy_until > now)
+    ref_ok = bool(lbank and getattr(lbank, "referral_verified", False))
+    return {
+        "crypto": {"enabled": bool(getattr(st, "copy_crypto", False)),
+                   "risk_pct": float(getattr(st, "copy_crypto_risk", 1.0) or 1.0),
+                   "connected": bool(lbank), "referral_ok": ref_ok, "eligible": ref_ok},
+        "forex": {"enabled": bool(getattr(st, "copy_forex", False)),
+                  "risk_pct": float(getattr(st, "copy_forex_risk", 1.0) or 1.0),
+                  "connected": bool(mt5), "subscription": fx_sub, "eligible": bool(mt5 and fx_sub)},
+    }
+
+
+@router.post("/copytrade/{market}")
+async def bn_copytrade_set(market: str, payload: dict = Body(...),
+                           st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """روشن/خاموشِ کپی‌تریدِ per-user. فارکس=اشتراکِ کپی‌فارکس+MT5؛ کریپتو=LBank+رفرال."""
+    from src.core.database import BnExchangeAccount
+    market = market if market in ("crypto", "forex") else "crypto"
+    enabled = bool(payload.get("enabled"))
+    try:
+        risk = float(payload.get("risk_pct", 1.0) or 1.0)
+    except Exception:  # noqa: BLE001
+        risk = 1.0
+    risk = max(0.1, min(risk, 100.0))
+    accs = (await db.execute(select(BnExchangeAccount).where(BnExchangeAccount.student_id == st.id))).scalars().all()
+    now = datetime.now(timezone.utc)
+    if market == "crypto":
+        lbank = next((a for a in accs if a.kind == "lbank"), None)
+        if not (lbank and getattr(lbank, "referral_verified", False)):
+            raise HTTPException(403, {"msg": "کپیِ کریپتو نیازمندِ اتصالِ LBank + تأییدِ رفرال است.", "premium_required": True})
+        st.copy_crypto = enabled; st.copy_crypto_risk = risk
+        await db.commit()
+        return {"ok": True, "market": "crypto", "enabled": enabled, "risk_pct": risk,
+                "note": "ثبت شد؛ اجرا با سیگنال‌های بعدیِ کریپتو"}
+    mt5 = next((a for a in accs if a.kind == "mt5"), None)
+    fx_sub = bool(getattr(st, "forex_copy_until", None) and st.forex_copy_until > now)
+    if not mt5:
+        raise HTTPException(403, {"msg": "کپیِ فارکس نیازمندِ اتصالِ MT5 است.", "premium_required": True})
+    if not fx_sub:
+        raise HTTPException(403, {"msg": "کپیِ فارکس نیازمندِ اشتراکِ کپی‌تریدِ فارکس است.", "premium_required": True})
+    st.copy_forex = enabled; st.copy_forex_risk = risk
+    await db.commit()
+    fwd_ok = False
+    try:
+        import os as _os, httpx as _httpx
+        base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
+        async with _httpx.AsyncClient(timeout=6.0) as cx:
+            r = await cx.post(base + "/user/copy-svc",
+                              headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")},
+                              json={"mt5_login": mt5.account_ref, "enabled": enabled, "risk_value": risk})
+            fwd_ok = (r.status_code == 200)
+    except Exception as e:  # noqa: BLE001
+        logger.warning("bn_copy_forward_failed", error=str(e))
+    return {"ok": True, "market": "forex", "enabled": enabled, "risk_pct": risk, "forwarded": fwd_ok}
+
+
 def _now():
     return datetime.now(timezone.utc)
 
