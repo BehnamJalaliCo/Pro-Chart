@@ -28,6 +28,8 @@ services:
       - ./keys:/app/keys:ro
     ports:
       - "127.0.0.1:8100:8100"
+      # IP خصوصیِ Hetzner (prochart-internal) تا هاب/سرویس‌ها برسند؛ عمومی نمی‌شود
+      - "${CENTRAL_PRIVATE_BIND:-127.0.0.1}:8100:8100"
 
 volumes:
   central_pg:
