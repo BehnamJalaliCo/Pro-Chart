@@ -31,10 +31,15 @@ COPY requirements.txt .
 # Install numpy first, then main deps, then pandas-ta (skip dep check), then compile TA-Lib
 RUN pip install --no-cache-dir numpy==2.2.6
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir numba
+# numba را نصب کن ولی numpy را روی 2.2.6 نگه دار (numba نیازمند numpy<2.5 است؛
+# بدونِ این پین، نصبِ numba به‌طور جانبی numpy را به 2.5 ارتقا می‌داد و باعثِ
+# کرشِ «Numba needs NumPy 2.4 or less» در ماژول‌های ML/pandas-ta می‌شد).
+RUN pip install --no-cache-dir numba "numpy==2.2.6"
 RUN pip install --no-cache-dir --no-deps pandas-ta==0.4.71b0
 RUN pip install --no-cache-dir cython setuptools wheel && \
-    pip install --no-cache-dir --no-binary TA-Lib --no-build-isolation --force-reinstall TA-Lib==0.4.32
+    pip install --no-cache-dir --no-binary TA-Lib --no-build-isolation --no-deps --force-reinstall TA-Lib==0.4.32
+# اطمینانِ نهایی: numpy روی 2.2.6 قفل بماند (TA-Lib/سایر مراحل آن را ارتقا ندهند).
+RUN pip install --no-cache-dir "numpy==2.2.6" && python -c "import numpy,numba; print('numpy',numpy.__version__,'numba',numba.__version__)"
 
 # کپی سورس کد
 COPY src/ ./src/

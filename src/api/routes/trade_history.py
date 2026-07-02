@@ -152,11 +152,32 @@ async def query_stats(db, uid, days=30):
     peak = 0.0
     max_dd = 0.0
     curve = []
+    returns: list[float] = []           # سود/زیانِ خالصِ هر معامله (به‌ترتیبِ زمان)
+    cur_loss_streak = 0
+    max_loss_streak = 0                  # بیشترین باخت‌های متوالی
     for ct, npf in seq:
-        cum += _f(npf)
+        v = _f(npf)
+        returns.append(v)
+        cum += v
         peak = max(peak, cum)
         max_dd = min(max_dd, cum - peak)
         curve.append({"t": ct.isoformat() if ct else None, "equity": round(cum, 2)})
+        if v < 0:
+            cur_loss_streak += 1
+            max_loss_streak = max(max_loss_streak, cur_loss_streak)
+        else:
+            cur_loss_streak = 0
+
+    # Sharpe (per-trade): mean(returns) / std(returns) — EMPTY-SAFE
+    # با کمتر از ۲ معامله یا پراکندگیِ صفر → 0.0 (بدونِ تقسیم بر صفر)
+    sharpe = 0.0
+    if len(returns) >= 2:
+        mean_r = sum(returns) / len(returns)
+        var_r = sum((x - mean_r) ** 2 for x in returns) / (len(returns) - 1)
+        std_r = var_r ** 0.5
+        if std_r > 1e-12:
+            sharpe = round(mean_r / std_r, 3)
+
     return {
         "range_days": days,
         "trades": n, "net": _f(net), "gross": _f(gross),
@@ -165,6 +186,8 @@ async def query_stats(db, uid, days=30):
         "win_rate": win_rate, "profit_factor": profit_factor,
         "avg_net": round(_f(avg), 2), "best": _f(best), "worst": _f(worst),
         "max_drawdown": round(max_dd, 2),
+        "sharpe": sharpe,
+        "consecutive_losses": max_loss_streak,
         "expectancy": round(_f(net) / n, 2) if n else 0.0,
         "equity_curve": curve[-500:],
     }

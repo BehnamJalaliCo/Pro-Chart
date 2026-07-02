@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.api.deps import get_db, require_role
 from src.core.crypto import decrypt_secret, encrypt_secret
 from src.core.database import (
+    ActivityLog,
     Admin,
     IGUser,
     IgAccount,
@@ -244,10 +245,19 @@ async def user_activity(uid: int, _: Admin = Depends(require_role("admin")), db:
 
 # ═══════════════ نمایشِ رمزِ پنل به ادمین ═══════════════
 @router.get("/{uid}/password")
-async def reveal_password(uid: int, _: Admin = Depends(require_role("admin")), db: AsyncSession = Depends(get_db)):
+async def reveal_password(uid: int, admin: Admin = Depends(require_role("admin")), db: AsyncSession = Depends(get_db)):
     u = (await db.execute(select(IGUser).where(IGUser.id == uid))).scalar_one_or_none()
     if not u:
         raise HTTPException(404, "کاربر یافت نشد.")
+    # ثبتِ audit trail: هر بار افشای رمز، یک رکورد در activity_logs نوشته می‌شود
+    db.add(ActivityLog(
+        action="ig_password_reveal",
+        entity_type="ig_user",
+        entity_id=uid,
+        admin_id=admin.id,
+        details={"target_uid": uid, "target_username": u.username},
+    ))
+    await db.commit()
     if not u.enc_login_password:
         return {"password": None, "message": "رمزِ این کاربر قبل از این قابلیت ست شده؛ برای دیدن، یک رمزِ جدید ست کنید."}
     return {"password": decrypt_secret(u.enc_login_password) or None}

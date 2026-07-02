@@ -60,7 +60,17 @@ def create_refresh_token(data: dict[str, Any]) -> str:
 
 
 def decode_token(token: str) -> Optional[dict[str, Any]]:
-    """رمزگشایی توکن"""
+    """رمزگشایی توکن — اول RS256ِ مرکزی (SSO، اگر فعال باشد)، بعد HS256ِ فعلی (fallback)."""
+    # ۱) توکنِ سرویسِ Auth مرکزی (M2) — فقط وقتی صریحاً فعال شده باشد
+    if settings.CENTRAL_AUTH_ENABLED and settings.CENTRAL_JWT_PUBLIC_KEY:
+        try:
+            return jwt.decode(
+                token, settings.CENTRAL_JWT_PUBLIC_KEY, algorithms=["RS256"],
+                options={"verify_aud": False},
+            )
+        except JWTError:
+            pass  # توکنِ مرکزی نبود → مسیرِ قدیمی
+    # ۲) HS256 فعلی (بدونِ تغییر)
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         return payload

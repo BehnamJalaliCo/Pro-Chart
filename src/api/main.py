@@ -22,31 +22,25 @@ from src.api.routes import (
     bazaarnama,
     admin,
     admin_academy,
+    admin_bn_core,
+    admin_bn_dash,
+    admin_bn_trading,
+    bn_user_extra,
     admin_ig_users,
     analytics,
     articles,
     auth,
-    backtest,
-    bot_admin,
     broadcasts,
-    ea,
     ig_panel,
-    launch,
-    live,
     live_prices,
     monitoring,
     panel,
     payments,
-    performance,
     public,
-    reports,
-    risk,
     seo,
     seo_admin,
     settings as settings_routes,
-    signals,
     subscriptions,
-    trade_history,
     user_panel,
     users,
 )
@@ -208,8 +202,6 @@ async def metrics(admin: Admin = Depends(get_current_admin)):
 
 
 app.include_router(auth.router, prefix="/auth", tags=["احراز هویت"])
-app.include_router(signals.router, prefix="/signals", tags=["سیگنال‌ها"])
-app.include_router(performance.router, prefix="/performance", tags=["عملکرد"])
 app.include_router(users.router, prefix="/users", tags=["کاربران"])
 app.include_router(admin.router, prefix="/admin", tags=["مدیریت"])
 app.include_router(live_prices.router, prefix="/ws", tags=["قیمت زنده"])
@@ -219,25 +211,21 @@ app.include_router(public.router, prefix="/public", tags=["عمومی (وب‌س
 app.include_router(broadcasts.router, prefix="/broadcasts", tags=["پیام‌رسانی"])
 app.include_router(monitoring.router, prefix="/monitoring", tags=["مانیتورینگ"])
 app.include_router(settings_routes.router, prefix="/settings", tags=["تنظیمات"])
-app.include_router(backtest.router, prefix="/backtest", tags=["بک‌تست"])
-app.include_router(risk.router, prefix="/admin/risk", tags=["مدیریت ریسک"])
-app.include_router(launch.router, prefix="/admin/launch", tags=["launch"])
-app.include_router(reports.router, prefix="/admin/reports", tags=["گزارش‌های پیشرفته"])
 app.include_router(payments.router, prefix="/admin/payments", tags=["پرداخت‌ها"])
 app.include_router(subscriptions.router, prefix="/admin/subscriptions", tags=["اشتراک‌ها"])
-app.include_router(bot_admin.router, prefix="/admin", tags=["داشبورد ربات"])
 app.include_router(analytics.router, prefix="/admin/analytics", tags=["آنالیتیکس بازدید"])
-app.include_router(trade_history.router, prefix="/admin/trade-history", tags=["تاریخچهٔ سود/زیان"])
 app.include_router(seo_admin.router, prefix="/admin/seo", tags=["SEO داشبورد"])
 
 # --- روتر پنل ادمین: فرانت همه‌چیز را با پیشوند /admin و شکل camelCase صدا می‌زند ---
 # routerهای پایتون شکل/نام فیلد متفاوتی دارند؛ panel.py دادهٔ واقعی را با شکل دقیق فرانت برمی‌گرداند.
 app.include_router(panel.router, prefix="/admin", tags=["پنل ادمین"])
-app.include_router(live.router, prefix="/live", tags=["لایو ترید"])
-app.include_router(ea.router, prefix="/ea", tags=["EA اتو-تریدر"])
 app.include_router(user_panel.router, prefix="/user", tags=["پنل کاربری VIP"])
 app.include_router(academy.router, prefix="/academy", tags=["آکادمی VIP"])
 app.include_router(bazaarnama.router, prefix="/academy/bn", tags=["بازارنما (TradingView ایرانی)"])
+app.include_router(bn_user_extra.router, prefix="/academy/bn", tags=["بازارنما — پنل کاربر"])
 app.include_router(admin_academy.router, prefix="/admin/academy", tags=["مدیریت آکادمی VIP"])
 app.include_router(admin_ig_users.router, prefix="/admin/ig-users", tags=["مدیریت کاربران IG"])
+app.include_router(admin_bn_core.router, prefix="/admin/bn", tags=["بازارنما — هسته"])
+app.include_router(admin_bn_trading.router, prefix="/admin/bn", tags=["بازارنما — معاملات"])
+app.include_router(admin_bn_dash.router, prefix="/admin/bn", tags=["بازارنما — داشبورد/بازار"])
 app.include_router(ig_panel.router, prefix="/ig", tags=["پنل مستقل اینستاگرام"])

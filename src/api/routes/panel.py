@@ -2048,8 +2048,19 @@ async def ml_retrain(
 async def ml_ensemble_weights(
     admin: Admin = Depends(get_current_admin),
 ):
-    from src.ml.ensemble import DEFAULT_WEIGHTS
-    return [{"model": k, "weight": round(float(v), 3)} for k, v in DEFAULT_WEIGHTS.items()]
+    # وزن‌های پیش‌فرضِ ترکیبی — inline تا از import سنگینِ src.ml.ensemble
+    # (pandas_ta/numba که با NumPy 2.5 ناسازگار است) جلوگیری شود.
+    default_weights = {"xgboost": 0.40, "lgbm": 0.35, "lstm": 0.25}
+    # اگر override در Redis ثبت شده باشد (از طریق PUT)، همان را برمی‌گردانیم.
+    try:
+        raw = await redis_client.client.get("ml:ensemble_weights_override")
+        if raw:
+            override = json.loads(raw)
+            if isinstance(override, list) and override:
+                return override
+    except Exception:  # noqa: BLE001
+        pass
+    return [{"model": k, "weight": round(float(v), 3)} for k, v in default_weights.items()]
 
 
 class WeightsBody(BaseModel):

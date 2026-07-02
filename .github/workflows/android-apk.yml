@@ -32,10 +32,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build web app (standalone bundle, online API)
+        run: npm run build
+        env:
+          # اپ مستقل است: کلِ UI/چارت/دیزاین داخلِ APK بسته‌بندی می‌شود،
+          # و فقط دادهٔ زنده/ترید/AI/لاگین به سرور وصل می‌شود (آنلاین).
+          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://pro-chart.com/api' }}
+          VITE_USER_PANEL_URL: ${{ vars.VITE_USER_PANEL_URL || 'https://user.pro-chart.com' }}
+
       - name: Generate app icons & splash
         run: npx @capacitor/assets generate --android --iconBackgroundColor '#0b0e14' --iconBackgroundColorDark '#0b0e14' --splashBackgroundColor '#0b0e14' --splashBackgroundColorDark '#0b0e14'
 
-      - name: Sync Capacitor Android project
+      - name: Sync Capacitor Android project (bundle dist/ into the app)
         run: npx cap sync android
 
       - name: Setup JDK
@@ -65,20 +73,68 @@ jobs:
           echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
           cp "$APK_PATH" "$GITHUB_WORKSPACE/pro-chart-debug.apk"
 
-      - name: Upload APK artifact
+      # ── نسخهٔ Release امضاشده (اختیاری/مقاوم به خطا؛ هرگز جلوی تحویلِ debug را نمی‌گیرد) ──
+      - name: Build release APK (unsigned)
+        id: relbuild
+        continue-on-error: true
+        working-directory: frontend/prochart/android
+        run: ./gradlew assembleRelease --stacktrace --no-daemon
+
+      - name: Sign release APK
+        id: relsign
+        continue-on-error: true
+        working-directory: frontend/prochart/android
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -e
+          SP="${KS_PASS:-prochart-dev}"; KP="${KEY_PASS:-$SP}"; ALIAS="${KEY_ALIAS:-prochart}"
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > ks.jks
+            echo "استفاده از keystore پایدار از secrets"
+          else
+            keytool -genkeypair -keystore ks.jks -alias "$ALIAS" -keyalg RSA -keysize 2048 -validity 3650 \
+              -storepass "$SP" -keypass "$KP" -dname "CN=Pro-Chart, O=Pro-Chart, C=IR"
+            echo "::warning::keystore پایدار در secrets نبود؛ یک keystoreِ موقت ساخته شد (برای نسخهٔ پایدار secretها را اضافه کن)."
+          fi
+          BT="$ANDROID_SDK_ROOT/build-tools/36.0.0"
+          UNSIGNED=$(find app/build/outputs/apk/release -name "*-unsigned.apk" | head -1)
+          "$BT/zipalign" -f 4 "$UNSIGNED" aligned.apk
+          "$BT/apksigner" sign --ks ks.jks --ks-pass pass:"$SP" --key-pass pass:"$KP" --ks-key-alias "$ALIAS" --out "$GITHUB_WORKSPACE/pro-chart-release.apk" aligned.apk
+          "$BT/apksigner" verify "$GITHUB_WORKSPACE/pro-chart-release.apk" && echo "امضا تأیید شد ✓"
+
+      - name: Upload debug artifact
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: pro-chart-debug-apk
           path: pro-chart-debug.apk
+          overwrite: true
 
-      - name: Create GitHub Release with APK
+      - name: Upload release artifact
+        if: steps.relsign.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: pro-chart-release-apk
+          path: pro-chart-release.apk
+          overwrite: true
+
+      - name: Create GitHub Release with APK(s)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: android-apk-${{ github.run_number }}
           name: Pro-Chart Android APK (build ${{ github.run_number }})
           body: |
-            APK دیباگ (بدون امضای رسمی) — خودکار ساخته شده از commit ${{ github.sha }}.
-            برای نصب: «منابع ناشناس» را در گوشی فعال کن و فایل APK را نصب کن.
-          files: pro-chart-debug.apk
+            APKِ خودکار از commit ${{ github.sha }}.
+            • pro-chart-debug.apk — دیباگ (نصبِ سریع با «منابعِ ناشناس»).
+            • pro-chart-release.apk — نسخهٔ Release امضاشده (در صورتِ موفقیتِ مرحلهٔ امضا).
+          files: |
+            pro-chart-debug.apk
+            pro-chart-release.apk
+          fail_on_unmatched_files: false
           draft: false
           prerelease: true

@@ -227,6 +227,12 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    # ── Auth مرکزی (M2 — SSO با RS256) ────────────────────
+    # تا CENTRAL_AUTH_ENABLED=1 نشود هیچ اثری ندارد؛ HS256 فعلی دست‌نخورده می‌ماند.
+    CENTRAL_AUTH_ENABLED: int = 0
+    CENTRAL_JWT_PUBLIC_KEY: str = ""  # PEM کلیدِ عمومیِ سرویسِ auth مرکزی (kid=central-2026-07)
+    CENTRAL_JWT_ISSUER: str = "https://auth.pro-chart.internal"
+
     # ── ادمین ────────────────────────────────────────────
     ADMIN_USERNAME: str = "admin"
     ADMIN_PASSWORD: str = "changeme"
