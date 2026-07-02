@@ -5,6 +5,7 @@
 """
 from __future__ import annotations
 
+import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
@@ -20,7 +21,6 @@ from app.security import (
     create_access_token,
     create_refresh_token,
     decode_token,
-    hash_password,
     jwks,
     verify_password,
 )
@@ -113,7 +113,7 @@ async def login(body: LoginIn, db: AsyncSession = Depends(get_db)) -> TokenOut:
 @app.post("/auth/guest", response_model=TokenOut)
 async def guest() -> TokenOut:
     """مهمانِ اپ — بدونِ ردیفِ DB، جایگزینِ bn-guest. tier=free."""
-    claims = {"sub": "guest:" + hash_password("x")[:12], "kind": "guest", "scope": "app", "tier": "free", "guest": True}
+    claims = {"sub": "guest:" + uuid.uuid4().hex[:12], "kind": "guest", "scope": "app", "tier": "free", "guest": True}
     return TokenOut(access_token=create_access_token(claims), refresh_token=None, tier="free", kind="guest")
 
 

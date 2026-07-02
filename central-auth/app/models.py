@@ -4,7 +4,9 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import false as sa_false
+from sqlalchemy import true as sa_true
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -24,24 +26,24 @@ class Identity(Base):
     __tablename__ = "identities"
 
     id: Mapped[str] = mapped_column(PGUUID(as_uuid=False), primary_key=True, default=_uuid)
-    kind: Mapped[str] = mapped_column(String(16), default="student")  # student|admin|guest
+    kind: Mapped[str] = mapped_column(String(16), default="student", server_default="student")  # student|admin|guest
     username: Mapped[str | None] = mapped_column(String(64), unique=True, index=True)
     email: Mapped[str | None] = mapped_column(String(255), index=True)
     phone_number: Mapped[str | None] = mapped_column(String(32), index=True)
     password_hash: Mapped[str | None] = mapped_column(Text)
     full_name: Mapped[str | None] = mapped_column(String(128))
 
-    tier: Mapped[str] = mapped_column(String(20), default="free")  # free|vip|premium
-    status: Mapped[str] = mapped_column(String(16), default="active")  # active|disabled
+    tier: Mapped[str] = mapped_column(String(20), default="free", server_default="free")  # free|vip|premium
+    status: Mapped[str] = mapped_column(String(16), default="active", server_default="active")  # active|disabled
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    phone_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    phone_verified: Mapped[bool] = mapped_column(Boolean, default=False, server_default=sa_false())
     account_type: Mapped[str | None] = mapped_column(String(16))  # crypto|broker
 
     # ردِ کاربرِ قدیمی برای مهاجرت
     legacy_student_id: Mapped[int | None] = mapped_column(Integer, index=True)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, onupdate=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, onupdate=_now, server_default=func.now())
 
     devices: Mapped[list["Device"]] = relationship(back_populates="identity", cascade="all, delete-orphan")
 
@@ -53,7 +55,7 @@ class Device(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     identity_id: Mapped[str] = mapped_column(ForeignKey("identities.id", ondelete="CASCADE"), index=True)
     device_id: Mapped[str] = mapped_column(String(128))
-    last_seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    last_seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, server_default=func.now())
 
     identity: Mapped[Identity] = relationship(back_populates="devices")
 
@@ -64,8 +66,8 @@ class RefreshToken(Base):
     jti: Mapped[str] = mapped_column(String(64), primary_key=True)
     identity_id: Mapped[str] = mapped_column(ForeignKey("identities.id", ondelete="CASCADE"), index=True)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    revoked: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    revoked: Mapped[bool] = mapped_column(Boolean, default=False, server_default=sa_false())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, server_default=func.now())
 
 
 class SigningKey(Base):
@@ -74,8 +76,8 @@ class SigningKey(Base):
 
     kid: Mapped[str] = mapped_column(String(64), primary_key=True)
     public_pem: Mapped[str] = mapped_column(Text)
-    active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, server_default=sa_true())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, server_default=func.now())
 
 
 class AuditLog(Base):
@@ -85,4 +87,4 @@ class AuditLog(Base):
     identity_id: Mapped[str | None] = mapped_column(String(64), index=True)
     action: Mapped[str] = mapped_column(String(48))  # login|logout|refresh|set_tier|register|guest
     detail: Mapped[str | None] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, server_default=func.now())
