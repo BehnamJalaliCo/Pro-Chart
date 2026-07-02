@@ -45,10 +45,19 @@ _AI_QUOTA = {"vip": 2, "premium": 5}
 # قابلیت‌های پرمیومِ بازارنما (کاربرِ عادی/free قفل است): اسکریپت‌نویسی، هوشِ مصنوعی،
 # و ترید روی چارت (البنک/وان‌رویال). فعال‌سازی: ثبت‌نام → واریز → تأییدِ مدیر (tier=vip/premium).
 _PREMIUM_MSG = "این قابلیت ویژهٔ کاربرانِ پرمیومِ بازارنماست؛ پس از ثبت‌نام، واریز و تأییدِ مدیر فعال می‌شود."
+_VIP_MSG = "این قابلیت ویژهٔ اعضای VIP و پرمیومِ بازارنماست؛ با تهیهٔ اشتراک فعال می‌شود."
+
+
+def _require_vip(st: "AcademyStudent") -> None:
+    # VIP یا بالاتر: دیدنِ سیگنال، هوشِ مصنوعی، اسکریپت‌نویسی
+    if _effective_tier(st) not in ("vip", "premium"):
+        raise HTTPException(status_code=403,
+                            detail={"msg": _VIP_MSG, "premium_required": True})
 
 
 def _require_premium(st: "AcademyStudent") -> None:
-    if _effective_tier(st) not in ("vip", "premium"):
+    # فقط پرمیوم: معاملهٔ واقعی (اتصالِ صرافی + سفارشِ واقعی)
+    if _effective_tier(st) != "premium":
         raise HTTPException(status_code=403,
                             detail={"msg": _PREMIUM_MSG, "premium_required": True})
 
@@ -278,7 +287,7 @@ async def get_script(script_id: int, st: AcademyStudent = Depends(current_studen
 
 @router.post("/scripts")
 async def save_script(payload: dict = Body(...), st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    _require_premium(st)  # اسکریپت‌نویسی/اسکریپتِ خودکار قابلیتِ پرمیوم است
+    _require_vip(st)  # اسکریپت‌نویسی قابلیتِ VIP است
     name = (payload.get("name") or "اسکریپت").strip()[:120]
     source = payload.get("source") or ""
     kind = payload.get("kind") if payload.get("kind") in ("indicator", "strategy") else "indicator"
@@ -438,7 +447,7 @@ async def ai_active(st: AcademyStudent = Depends(current_student), db: AsyncSess
 async def ai_signal(payload: dict = Body(...), st: AcademyStudent = Depends(current_student),
                     db: AsyncSession = Depends(get_db)):
     """ستاپِ کاملِ AI در تایم‌فریمِ کاربر — ترکیبِ همگراییِ تکنیکال + هوشِ مصنوعی، SL/TP مبتنی بر ATR."""
-    _require_premium(st)  # سیگنالِ AI قابلیتِ پرمیوم است (free → مودالِ ارتقاء)
+    _require_vip(st)  # سیگنالِ AI قابلیتِ VIP است (free → مودالِ ارتقاء)
     tier = _effective_tier(st)
     limit = _AI_QUOTA.get(tier, 0)
     if not limit:
@@ -759,6 +768,7 @@ async def _notify_support(text: str) -> None:
 @router.post("/payment/submit")
 async def payment_submit(tx_hash: str = Body(..., embed=True),
                          plan: str = Body("monthly", embed=True),
+                         tier: str = Body("vip", embed=True),
                          st: AcademyStudent = Depends(current_student),
                          db: AsyncSession = Depends(get_db)):
     """کاربر هشِ تراکنشِ USDT (BEP-20) را می‌فرستد → تأییدِ خودکار روی BSC →
@@ -767,8 +777,12 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
     from src.core.redis_client import redis_client
     from src.api.routes._bsc import verify_usdt_payment
 
+    tier = tier if tier in ("vip", "premium") else "vip"
     plan = plan if plan in ("monthly", "yearly") else "monthly"
-    min_amt, days = (25.0, 30) if plan == "monthly" else (200.0, 365)  # #۸ ماهانه ۲۵ / سالانه ۲۰۰ تتر
+    # نردبانِ واحد: VIP=دیدنِ سیگنال، پرمیوم=معاملهٔ واقعی
+    _PRICES = {"vip": {"monthly": 25.0, "yearly": 250.0}, "premium": {"monthly": 60.0, "yearly": 600.0}}
+    min_amt = _PRICES[tier][plan]
+    days = 30 if plan == "monthly" else 365
     txk = (tx_hash or "").strip().lower()
     try:
         if await redis_client.exists(f"bn:tx:{txk}"):
@@ -786,7 +800,7 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
         await redis_client.client.set(f"bn:tx:{txk}", str(st.id), ex=86400 * 90)
     except Exception:  # noqa: BLE001
         pass
-    st.tier = "premium"
+    st.tier = tier
     st.expires_at = datetime.now(timezone.utc) + timedelta(days=days)
     await db.commit()
     await _notify_support(
@@ -796,7 +810,7 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
         f"از: {res.get('from')}\ntx: {tx_hash}"
     )
     logger.info("bn_payment_verified", sid=st.id, amount=res.get("amount"), plan=plan)
-    return {"ok": True, "tier": "premium", "days": days, "amount": res.get("amount")}
+    return {"ok": True, "tier": tier, "days": days, "amount": res.get("amount")}
 
 
 # ═══════════════ اتصالِ حسابِ واقعیِ کاربر (LBank / MT5) #217 #218 ═══════════════
