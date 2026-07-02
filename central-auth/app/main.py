@@ -101,6 +101,8 @@ async def login(body: LoginIn, db: AsyncSession = Depends(get_db)) -> TokenOut:
 
     tier = _effective_tier(idn)
     claims = {"sub": idn.id, "kind": idn.kind, "scope": "app", "tier": tier}
+    if idn.legacy_student_id is not None:
+        claims["legacy_student_id"] = idn.legacy_student_id
     access = create_access_token(claims)
     refresh = create_refresh_token({"sub": idn.id})
     rp = decode_token(refresh)
@@ -131,7 +133,10 @@ async def refresh(body: RefreshIn, db: AsyncSession = Depends(get_db)) -> TokenO
     # چرخش: ابطالِ قدیمی، صدورِ جدید
     row.revoked = True
     tier = _effective_tier(idn)
-    access = create_access_token({"sub": idn.id, "kind": idn.kind, "scope": "app", "tier": tier})
+    claims = {"sub": idn.id, "kind": idn.kind, "scope": "app", "tier": tier}
+    if idn.legacy_student_id is not None:
+        claims["legacy_student_id"] = idn.legacy_student_id
+    access = create_access_token(claims)
     new_refresh = create_refresh_token({"sub": idn.id})
     rp = decode_token(new_refresh)
     db.add(RefreshToken(jti=rp["jti"], identity_id=idn.id, expires_at=datetime.fromtimestamp(rp["exp"], timezone.utc)))
