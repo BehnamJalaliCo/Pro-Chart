@@ -15,7 +15,7 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null })
   useEffect(() => {
     if (!elRef.current) return;
     const chart = createChart(elRef.current, {
-      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'AnjomanMax, Vazirmatn' },
+      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'Ravagh, AnjomanMax, Vazirmatn' },
       grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } },
       timeScale: { timeVisible: true, borderColor: TH.grid },
       rightPriceScale: { borderColor: TH.grid },

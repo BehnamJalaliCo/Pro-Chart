@@ -6,6 +6,7 @@ import Details from './panels/Details';
 import NewsTab from './panels/NewsTab';
 import Calendar from './panels/Calendar';
 import SymbolLogo from './SymbolLogo';
+import OrderTicket from './OrderTicket';
 
 // پنلِ راست — نوارِ تب + بدنه‌های inline (watch/ai/trade) و واگذاری به پنل‌های جدا
 // (Screener/Details/NewsTab/Calendar/AlertsPanel). همهٔ state/handlerها از props می‌آیند؛
@@ -268,27 +269,11 @@ export default function RightPanel({
       ) : rightTab === 'screener' ? (
         <Screener symbol={symbol} TH={TH} symbols={symbols} prices={live} setSymbol={setSymbol} />
       ) : rightTab === 'trade' ? (
-        <div className="p-2 text-xs space-y-2">
-          <div className="flex gap-1">
-            <button onClick={() => startTrade('buy')} className="flex-1 py-1.5 rounded bg-green-600 text-white font-bold">خرید</button>
-            <button onClick={() => startTrade('sell')} className="flex-1 py-1.5 rounded bg-red-600 text-white font-bold">فروش</button>
-          </div>
-          {order ? (() => {
-            const risk = Math.abs(order.entry - order.sl), reward = Math.abs(order.tp - order.entry);
-            const rr = risk ? (reward / risk).toFixed(2) : '—';
-            const row = (lbl, key, col) => (<div className="flex items-center justify-between"><span style={{ color: col }}>{lbl}</span><input type="number" value={order[key]} onChange={(e) => setOrder((o) => ({ ...o, [key]: parseFloat(e.target.value) }))} className="w-24 rounded px-2 py-0.5 outline-none font-mono" style={{ background: TH.chipBg }} dir="ltr" /></div>);
-            return (<div className="space-y-1.5 rounded p-2" style={{ background: TH.subtle }}>
-              <div className="text-[10px] opacity-60">روی چارت خطوط را بکش (⇕) یا اینجا ویرایش کن:</div>
-              {row('🎯 هدف', 'tp', '#22c55e')}
-              {row(order.side === 'buy' ? '🔵 ورودِ خرید' : '🔴 ورودِ فروش', 'entry', '#3b82f6')}
-              {row('🛑 حد ضرر', 'sl', '#ef4444')}
-              <div className="flex justify-between border-t pt-1" style={{ borderColor: TH.border }}><span>نسبتِ ریسک/ریوارد</span><b className={reward >= risk ? 'text-green-400' : 'text-amber-400'}>R:R {rr}</b></div>
-              <div className="flex gap-1"><button onClick={submitOrder} className="flex-1 py-1 rounded-md text-white transition-opacity duration-[120ms]" style={{ background: TH.accent }}>ثبتِ سفارش</button><button onClick={() => setOrder(null)} className="px-2 py-1 rounded" style={{ background: TH.chipBg }}>لغو</button></div>
-            </div>);
-          })() : <div className="opacity-50 text-[11px]">خرید/فروش را بزن تا خطوطِ سفارشِ قابلِ‌درگ روی چارت بیاید.</div>}
-          {/* DOM — نردبانِ قیمت */}
-          {(() => { const px = curPrice(); if (!px) return null; const step = px * 0.0002; const rows = []; for (let i = 8; i >= -8; i--) { const lv = px + i * step; rows.push(<div key={i} onClick={() => order && setOrder((o) => ({ ...o, entry: lv }))} className={`flex justify-between px-2 py-0.5 cursor-pointer ${Math.abs(i) < 1 ? 'bg-blue-500/20' : ''}`} dir="ltr"><span className="font-mono opacity-80">{lv.toFixed(5)}</span><span className="font-mono" style={{ color: i > 0 ? '#ef4444' : i < 0 ? '#22c55e' : '#3b82f6' }}>{Math.abs(Math.round(50 * Math.exp(-Math.abs(i) / 3)))}</span></div>); } return (<div className="mt-1"><div className="text-[10px] opacity-50 px-2 mb-0.5">DOM — عمقِ بازار</div><div className="rounded overflow-hidden text-[10px] border" style={{ borderColor: TH.border }}>{rows}</div></div>); })()}
-        </div>
+        <OrderTicket
+          TH={TH} symbol={symbol}
+          order={order} setOrder={setOrder} startTrade={startTrade} submitOrder={submitOrder}
+          curPrice={curPrice} livePrice={livePrice} fmtPrice={fmtPrice}
+        />
       ) : (
         <div className="p-2 text-xs">
           <AlertsPanel symbol={symbol} price={curPrice() || livePrice} TH={TH} indicators={[...overlays, ...subs]} />

@@ -28,8 +28,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
-// ثبتِ service worker — نصب‌پذیریِ PWA + آپدیتِ خودکار (تا کاربر هرگز روی نسخهٔ قدیمی گیر نکند)
-if ('serviceWorker' in navigator) {
+// در اپِ نیتیوِ Capacitor به service worker نیازی نیست (خودِ اپ محتوا را محلی سرو می‌کند)؛
+// ثبتِ آن باعثِ یک رفرشِ اضافیِ اولِ اجرا می‌شود که تجربهٔ راه‌اندازی را خراب می‌کند.
+const _isNative = !!(window.Capacitor && (window.Capacitor.isNativePlatform ? window.Capacitor.isNativePlatform() : window.Capacitor.isNative));
+
+// ثبتِ service worker — نصب‌پذیریِ PWA + آپدیتِ خودکار (تا کاربر هرگز روی نسخهٔ قدیمی گیر نکند). فقط در وب.
+if (!_isNative && 'serviceWorker' in navigator) {
   let refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (refreshing) return; refreshing = true; window.location.reload(); // SWِ جدید کنترل گرفت → یک‌بار رفرش با فایل‌های تازه

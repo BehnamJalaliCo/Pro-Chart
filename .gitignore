@@ -10,6 +10,8 @@ secrets/
 certbot/
 # ── بازتولیدشونده ──
 **/node_modules/
+frontend/prochart/dist/
+frontend/prochart/public/crypto-icons/
 __pycache__/
 *.pyc
 *.pyo
@@ -57,5 +59,5 @@ run_watchdog.py
 docker-compose.yml
 Makefile
 RESTORE_GDRIVE.md
-CLAUDE.md
+# CLAUDE.md دیگر ignore نیست — راهنمای Claude Code روی سرورِ مرکزی است (به docs/SERVER-HANDOFF.md اشاره می‌کند)
 Anjoman Max SemiPro.zip

@@ -10,6 +10,8 @@ import {
   TrendingUp, TrendingDown, ArrowUpDown, Scaling,
 } from 'lucide-react';
 import { api } from '../api/client';
+import { useApp } from '../appStore';
+import { tap } from '../app/haptics';
 import { REGISTRY } from '../bazaarnama/indicators';
 import { NONSTANDARD, buildNonStandard } from '../bazaarnama/chartbuilders';
 import { runScript } from '../bazaarnama/namascript';
@@ -25,7 +27,7 @@ import bnLogo from '../assets/bn-logo.png';
 import MiniChart from '../bazaarnama/MiniChart';
 import { CROSSHAIR_MODES, crosshairModeById, crosshairOptions, paintCrosshairGlyph, PRICE_SCALE_MODES, priceScaleOptions, resetPriceScaleOptions, SESSIONS, sessionBands, paintSessions, secondsToClose, formatCountdown, countdownTint, TIMEZONES, timeZoneOptions, CH3_DEFAULTS } from '../bazaarnama/scales_crosshair';
 import { attachHotkeys, SHORTCUT_GROUPS } from '../bazaarnama/hotkeys';
-import { useBreakpoint, MobileToolSheet, CompactTopBar, MobileBottomNav, BREAKPOINTS } from '../bazaarnama/mobile';
+import { useBreakpoint, MobileToolSheet, CompactTopBar, BREAKPOINTS } from '../bazaarnama/mobile';
 import { useViewport } from '../bazaarnama/useViewport';
 import { GRID_PRESET_ORDER, getGridLayout, presetToLegacyGrid, legacyGridToPreset } from '../bazaarnama/layoutPresets';
 import { Legend, ChartLegend, CountdownChip, Watermark, ReplayBar } from '../bazaarnama/overlays/ChartOverlays';
@@ -180,7 +182,7 @@ export default function BazaarNama() {
   const [symbol, setSymbol] = useState(() => loadWS().symbol || 'EURUSD');
   const [tf, setTf] = useState(() => loadWS().tf || 'H1');
   const [chartType, setChartType] = useState(() => loadWS().chartType || 'candles');
-  const [theme, setTheme] = useState(() => loadWS().theme || 'dark');
+  const [theme, setTheme] = useState(() => useApp.getState().theme || loadWS().theme || 'light');
   const [symbols, setSymbols] = useState([]);
   const [overlays, setOverlays] = useState(() => loadWS().overlays || []);
   const [subs, setSubs] = useState(() => loadWS().subs || []);
@@ -214,10 +216,34 @@ export default function BazaarNama() {
     const onTerms = () => setShowLegal(true);                                  // #۱۲ صفحهٔ قوانین
     const ext = (url) => () => { try { window.open(url, '_blank', 'noopener'); } catch (e) {} };
     const onSup = ext('https://t.me/CoinePro_Admin'); // #۱۳ پشتیبانِ CoinePro FX
+    const onSetSym = (e) => { const s = e && e.detail; if (s && typeof s === 'string') setSymbol(s); }; // از پوستهٔ اپ (واچ‌لیست/سیگنال)
     window.addEventListener('bn:rightTab', onTab); window.addEventListener('bn:openScript', onScript); window.addEventListener('bn:help', onHelp);
     window.addEventListener('bn:support', onSup); window.addEventListener('bn:terms', onTerms); window.addEventListener('bn:toggleTheme', onThemeT);
-    return () => { window.removeEventListener('bn:rightTab', onTab); window.removeEventListener('bn:openScript', onScript); window.removeEventListener('bn:help', onHelp); window.removeEventListener('bn:support', onSup); window.removeEventListener('bn:terms', onTerms); window.removeEventListener('bn:toggleTheme', onThemeT); };
+    window.addEventListener('bn:setSymbol', onSetSym);
+    return () => { window.removeEventListener('bn:rightTab', onTab); window.removeEventListener('bn:openScript', onScript); window.removeEventListener('bn:help', onHelp); window.removeEventListener('bn:support', onSup); window.removeEventListener('bn:terms', onTerms); window.removeEventListener('bn:toggleTheme', onThemeT); window.removeEventListener('bn:setSymbol', onSetSym); };
   }, [tool, openNamaScript]);
+
+  // همگام‌سازیِ تم با فروشگاهِ سراسریِ اپ (پروفایل = منبعِ اصلی؛ تاگلِ داخلی هم برمی‌گرداند)
+  const lang = useApp((s) => s.lang);
+  const appTheme = useApp((s) => s.theme);
+  useEffect(() => { setTheme(appTheme); }, [appTheme]);
+  useEffect(() => { if (useApp.getState().theme !== theme) useApp.getState().setTheme(theme); }, [theme]);
+
+  // ── فاز۲: تجربهٔ چارت ──
+  // ترنزیشنِ سینماییِ تعویضِ تایم‌فریم/نوعِ چارت + هپتیکِ سبک (بعد از mount)
+  const [swapKey, setSwapKey] = useState(0);
+  const bn2Mount = useRef(false);
+  useEffect(() => { if (bn2Mount.current) { setSwapKey((k) => k + 1); tap(); } else { bn2Mount.current = true; } }, [tf, chartType]);
+  // هپتیکِ انتخابِ ابزارِ ترسیم
+  const toolMount = useRef(false);
+  useEffect(() => { if (toolMount.current) tap(); else toolMount.current = true; }, [tool]);
+  // راهنمای ژستِ بارِ اول
+  const [showGestureHint, setShowGestureHint] = useState(() => { try { return !localStorage.getItem('bn_gesture_hint_seen'); } catch (e) { return false; } });
+  const dismissGestureHint = () => { try { localStorage.setItem('bn_gesture_hint_seen', '1'); } catch (e) { /* noop */ } setShowGestureHint(false); };
+  // جهتِ حرکتِ قیمتِ زنده (برای فلَشِ سبز/قرمزِ برچسبِ قیمت)
+  const prevLpRef = useRef(null);
+  const priceDir = (livePrice != null && prevLpRef.current != null) ? (livePrice > prevLpRef.current ? 'up' : livePrice < prevLpRef.current ? 'down' : '') : '';
+  useEffect(() => { prevLpRef.current = livePrice; }, [livePrice]);
   const [code, setCode] = useState(() => loadWS().code || ''); // کدِ نمااسکریپت با رفرش پاک نمی‌شود
   const [barMode, setBarMode] = useState(false); // اجرای بار-به-بارِ نمااسکریپت (اختیاری)
   const [scriptApplied, setScriptApplied] = useState(() => !!loadWS().scriptApplied); // آیا خروجیِ اسکریپت روی چارت اعمال شده
@@ -309,7 +335,7 @@ export default function BazaarNama() {
     const el = mainRef.current;
     const chart = createChart(el, {
       // #۱۰/#۱۸ فیدلیتیِ TradingView: لوگوی پیش‌فرضِ کتابخانه پنهان (لوگوی خودِ بازارنما پایین‌چپ هست)
-      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'AnjomanMax, Vazirmatn, sans-serif', fontSize: 11, attributionLogo: false },
+      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'Ravagh, AnjomanMax, Vazirmatn, sans-serif', fontSize: 11, attributionLogo: false },
       grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } },
       // مقیاسِ زمان سبکِ TV: قفلِ رِنج روی resize، آخرین کندل ثابت هنگام اسکرول، فاصلهٔ پایهٔ میله، بدونِ tickِ ریز
       timeScale: {
@@ -1266,12 +1292,12 @@ export default function BazaarNama() {
   const indHasHelp = (it) => !!getHelp(it.key);
 
   return (
-    <div ref={rootRef} dir="rtl" className={`flex flex-col h-screen overflow-hidden ${txt}`} style={{ background: TH.bg }}>
+    <div ref={rootRef} dir="rtl" className={`flex flex-col h-full overflow-hidden ${txt}`} style={{ background: TH.bg }}>
       <style>{`.bn-thin-scroll{scrollbar-width:thin}.bn-thin-scroll::-webkit-scrollbar{height:4px;width:4px}.bn-thin-scroll::-webkit-scrollbar-thumb{background:${TH.border};border-radius:4px}.bn-thin-scroll::-webkit-scrollbar-track{background:transparent}`}</style>
       {/* #4 نوارِ بالای فشرده (گوشی + تبلت + لنداسکیپِ کم‌ارتفاع) — تشخیصِ خودکارِ ویوپورت */}
       {compact && (
         <CompactTopBar
-          TH={TH} symbol={symbol} livePrice={livePrice} fmtPrice={fmtPrice} marketOpen={marketOpen}
+          TH={TH} symbol={symbol} livePrice={livePrice} priceDir={priceDir} fmtPrice={fmtPrice} marketOpen={marketOpen}
           tf={tf} chartType={chartType} chartLabel={CHART_TYPES.find((c) => c.id === chartType)?.label}
           SymbolLogo={SymbolLogo}
           onSearch={() => setSymModal(true)} onPickTf={() => setSheet('tf')} onPickType={() => setSheet('type')} onMore={() => setSheet('more')}
@@ -1444,8 +1470,8 @@ export default function BazaarNama() {
         </div>
         )}
 
-        {/* چارت */}
-        <div className="flex-1 flex flex-col min-w-0 relative" style={compact ? { paddingBottom: 'calc(56px + env(safe-area-inset-bottom))' } : undefined}>
+        {/* چارت — دیگر به paddingِ پایین نیازی نیست؛ ناوبریِ اپ در AppShell زیرِ BazaarNama است */}
+        <div className="flex-1 flex flex-col min-w-0 relative">
           {/* #3 Legendِ یکپارچهٔ روی چارت: نماد + اندیکاتورها با کنترل‌های on-hover */}
           {legendItems.length > 0 ? (
             <div dir="rtl">
@@ -1476,6 +1502,19 @@ export default function BazaarNama() {
                }}>
             <div ref={mainRef} className="absolute inset-0" />
             <canvas ref={overlayRef} className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }} />
+            {/* فاز۲: پردهٔ محوِ سینمایی هنگامِ تعویضِ تایم‌فریم/نوعِ چارت */}
+            {swapKey > 0 && (
+              <div key={swapKey} className="absolute inset-0 z-[15] pointer-events-none pc-chart-swap" style={{ background: TH.bg }} />
+            )}
+            {/* فاز۲: راهنمای ژستِ بارِ اول (موبایل) */}
+            {showGestureHint && compact && (
+              <button onClick={dismissGestureHint} className="absolute left-1/2 -translate-x-1/2 z-[22] flex items-center gap-2 px-3.5 py-2 rounded-full text-[11.5px] font-semibold pc-hint-in"
+                style={{ bottom: 54, background: TH.popoverBg, color: TH.textStrong, border: `1px solid ${TH.border}`, boxShadow: '0 8px 24px rgba(0,0,0,.28)' }}>
+                <span>👆</span>
+                <span>{lang === 'en' ? 'Long-press for details · pinch to zoom' : 'برای جزئیات نگه‌دار · با دو انگشت زوم کن'}</span>
+                <span style={{ opacity: .5 }}>✕</span>
+              </button>
+            )}
             {/* جدول‌های نمااسکریپت (table.new) — گوشهٔ بالا-راست */}
             {scTables.length > 0 && (
               <div className="absolute top-2 right-2 z-20 pointer-events-none flex flex-col gap-2" dir="rtl">
@@ -1945,21 +1984,9 @@ export default function BazaarNama() {
       {/* #7 مدالِ جستجوی نمادِ حرفه‌ای (fuzzy + دسته‌بندی + اسکرولِ مجازی + کیبورد) */}
       <SymbolSearchModal open={symModal} onClose={() => setSymModal(false)} metaList={symbolMeta} watch={watch} current={symbol} onPick={(s) => setSymbol(s)} TH={TH} coarse={bp.coarse} />
 
-      {/* #4 نسخهٔ موبایل: نوارِ ناوبریِ پایینی + شیت‌های پایین */}
+      {/* #4 نسخهٔ موبایل: شیت‌های پایین (ناوبریِ پایینیِ اپ اکنون در AppShell است؛ ابزارها از نوارِ بالا/«بیشتر» باز می‌شوند) */}
       {compact && (
         <>
-          <MobileBottomNav
-            TH={TH} active={sheet === 'none' ? null : sheet}
-            onPick={(k) => { if (k === 'sym') setSymModal(true); else setSheet((s) => (s === k ? 'none' : k)); }}
-            items={[
-              { key: 'sym', label: 'نماد', icon: <Search size={20} /> },
-              { key: 'tf', label: 'تایم‌فریم', icon: <span className="text-[13px] font-bold leading-none" dir="ltr">{tf}</span> },
-              { key: 'draw', label: 'ابزار', icon: <Pencil size={20} /> },
-              { key: 'ind', label: 'اندیکاتور', icon: <Activity size={20} /> },
-              { key: 'tabs', label: 'تب‌ها', icon: <Star size={20} /> },
-            ]}
-          />
-
           {/* شیتِ تایم‌فریم */}
           <MobileToolSheet TH={TH} open={sheet === 'tf'} onClose={() => setSheet('none')} title="تایم‌فریم" maxVh={45}>
             <div className="grid grid-cols-4 gap-1.5" dir="ltr">
@@ -2029,6 +2056,8 @@ export default function BazaarNama() {
           {/* شیتِ More (همبرگرِ تولبار): همهٔ کنترل‌های دسکتاپ */}
           <MobileToolSheet TH={TH} open={sheet === 'more'} onClose={() => setSheet('none')} title="بیشتر" maxVh={78}>
             <div className="grid grid-cols-2 gap-1.5">
+              <button onClick={() => { setSheet('draw'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Pencil size={16} /> ابزارِ ترسیم</button>
+              <button onClick={() => { setSheet('tabs'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Star size={16} /> پنل‌ها</button>
               <button onClick={() => { getAiSignal(); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: '#fff', background: TH.accentAi }}><Sparkles size={16} /> سیگنالِ AI</button>
               <button onClick={() => { setIndMenu(true); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Activity size={16} /> اندیکاتورها</button>
               <button onClick={() => { openNamaScript(); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center justify-center gap-1" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Code2 size={16} /> نمااسکریپت{!bnPrem && <Lock size={11} className="opacity-70" />}</button>

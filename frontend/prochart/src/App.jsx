@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { tokenStore } from './api/client';
-import BazaarNama from './pages/BazaarNama';
+import AppShell from './app/AppShell';
+import Onboarding, { needsOnboarding } from './app/Onboarding';
+import AppLock from './app/AppLock';
+import { hasPin } from './app/lock';
+import { bioEnabled } from './app/biometric';
 import PremiumModal from './PremiumModal';
 import AdminPanel from './AdminPanel';
 import UserPanel from './UserPanel';
+import './appStore'; // اعمالِ اولیهٔ زبان/تم روی <html>
 
 // Pro-Chart — نسخهٔ مستقلِ تمام‌صفحهٔ بازارنما (دامنه/سرورِ جدا، مستقل از آکادمی).
 // ورود: (۱) اگر از آکادمی آمد، توکنش در hash «#t=» پاس می‌شود (سازگاریِ عقب‌رو)؛
@@ -53,6 +58,23 @@ function RetryGate() {
   );
 }
 
+// نمایشِ راه‌اندازیِ سینمایی — لوگو/چارتی که خودش را رسم می‌کند، سپس نرم محو می‌شود.
+// حسِ «اپِ نیتیو»، نه صفحهٔ وب. کاملاً CSS/SVG، بدون وابستگی.
+function LaunchScreen({ fading }) {
+  return (
+    <div className={'pc-launch' + (fading ? ' pc-launch--out' : '')} dir="rtl" role="status" aria-label="در حال راه‌اندازی">
+      <div className="pc-launch__glow" />
+      <div className="pc-launch__mark">
+        {/* لوگوی رسمیِ پرو‌چارت/بازارنما */}
+        <img src="/logo.png" alt="Pro-Chart" className="pc-launch__logo" width="128" height="128" />
+      </div>
+      <div className="pc-launch__brand">Pro<span>·</span>Chart</div>
+      <div className="pc-launch__sub">بازارنما</div>
+      <div className="pc-launch__bar"><i /></div>
+    </div>
+  );
+}
+
 export default function App() {
   // پنلِ ادمین — فقط روی ساب‌دامینِ panel.* (روی دامنهٔ اصلی در دسترس نیست = امن‌تر)
   const _host = (window.location.hostname || '').split('.')[0];
@@ -61,6 +83,12 @@ export default function App() {
 
   const [ready, setReady] = useState(false);
   const [authed, setAuthed] = useState(false);
+  // راه‌اندازیِ سینمایی: تا کامل‌شدنِ بوت (با حداقلِ زمانِ نمایش) روی اپ می‌ماند و نرم محو می‌شود.
+  const [bootDone, setBootDone] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
+  const [showOb, setShowOb] = useState(() => needsOnboarding());
+  const [locked, setLocked] = useState(() => hasPin() || bioEnabled());
+  const startRef = React.useRef(Date.now());
 
   useEffect(() => {
     (async () => {
@@ -71,7 +99,22 @@ export default function App() {
     })();
   }, []);
 
-  if (!ready) return <div className="min-h-screen bg-[#0b0e14]" />;
-  if (!authed) return <RetryGate />;
-  return (<><BazaarNama /><PremiumModal /></>);
+  useEffect(() => {
+    if (!ready) return undefined;
+    const MIN = 1500; // حداقل نمایشِ اسپلش برای حسِ سینمایی
+    const elapsed = Date.now() - startRef.current;
+    const wait = Math.max(0, MIN - elapsed);
+    const t1 = setTimeout(() => setFadeOut(true), wait);        // شروعِ محوشدن
+    const t2 = setTimeout(() => setBootDone(true), wait + 620); // برداشتن از DOM بعدِ ترنزیشن
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [ready]);
+
+  return (
+    <>
+      {ready && (authed ? (<><AppShell /><PremiumModal /></>) : <RetryGate />)}
+      {ready && authed && bootDone && showOb && <Onboarding onDone={() => setShowOb(false)} />}
+      {!bootDone && <LaunchScreen fading={fadeOut} />}
+      {ready && locked && <AppLock onUnlock={() => setLocked(false)} />}
+    </>
+  );
 }

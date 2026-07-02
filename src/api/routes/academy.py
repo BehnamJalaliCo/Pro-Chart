@@ -95,9 +95,39 @@ async def current_student(
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(status_code=401, detail="ورود لازم است.")
     p = verify_access_token(authorization.split(" ", 1)[1].strip())
-    if not p or p.get("scope") != "academy":
+    if not p:
+        raise HTTPException(status_code=401, detail="توکنِ نامعتبر.")
+    # M2 (SSO): توکنِ Auth مرکزی scope="app" و sub=uuid دارد — فقط وقتی CENTRAL_AUTH_ENABLED=1
+    central = bool(settings.CENTRAL_AUTH_ENABLED) and p.get("scope") == "app"
+    if p.get("scope") != "academy" and not central:
         raise HTTPException(status_code=401, detail="توکنِ نامعتبر.")
     sid = int(p.get("sid", 0) or 0)
+    if central and sid <= 0:
+        # نگاشتِ کاربرِ قدیمی↔مرکزی (جدولِ مرکزی legacy_student_id را نگه می‌دارد)
+        sid = int(p.get("legacy_student_id", 0) or 0)
+    if central and sid <= 0:
+        # کاربرِ تمام-مرکزی (فقط uuid): find-or-create با نامِ کاربریِ قطعیِ مشتق از sub
+        sub = str(p.get("sub") or "").strip()
+        if not sub:
+            raise HTTPException(status_code=401, detail="توکنِ نامعتبر.")
+        uname = f"central-{sub[:40]}"
+        st = (await db.execute(select(AcademyStudent).where(AcademyStudent.username == uname))).scalar_one_or_none()
+        if st is None:
+            st = AcademyStudent(
+                username=uname, password_hash="!central",
+                tier=(p.get("tier") if p.get("tier") in _TIER_RANK else "free"),
+                status="active", phone_number="central",
+            )
+            db.add(st)
+            try:
+                await db.commit()
+                await db.refresh(st)
+            except Exception:
+                await db.rollback()
+                st = (await db.execute(select(AcademyStudent).where(AcademyStudent.username == uname))).scalar_one_or_none()
+                if st is None:
+                    raise HTTPException(status_code=401, detail="توکنِ نامعتبر.")
+        return st
     # حالتِ standalone (سرورِ Pro-Chart): توکن فقط با امضا اعتبارسنجی می‌شود (همان JWT_SECRET_KEY
     # سرورِ اصلی)؛ هویت از claimها ساخته می‌شود، بدونِ نیاز به DBِ دانشجویانِ سرورِ اصلی.
     if os.getenv("BN_STANDALONE_AUTH") == "1":

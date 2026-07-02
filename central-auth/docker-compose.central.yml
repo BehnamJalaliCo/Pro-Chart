@@ -1,0 +1,35 @@
+# استکِ سرورِ مرکزی — سرویسِ Auth + PostgreSQL مرکزی. فقط روی 127.0.0.1 (پشتِ شبکهٔ خصوصی/nginx بعداً).
+services:
+  central-postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-central_identity}
+      POSTGRES_USER: ${DB_USER:-central}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      - central_pg:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5442:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-central}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  central-auth:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      central-postgres:
+        condition: service_healthy
+    volumes:
+      - ./keys:/app/keys:ro
+    ports:
+      - "127.0.0.1:8100:8100"
+      # IP خصوصیِ Hetzner (prochart-internal) تا هاب/سرویس‌ها برسند؛ عمومی نمی‌شود
+      - "${CENTRAL_PRIVATE_BIND:-127.0.0.1}:8100:8100"
+
+volumes:
+  central_pg:

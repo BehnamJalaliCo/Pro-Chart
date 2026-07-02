@@ -1,0 +1,14 @@
+# کلیدهای امضا — هرگز commit نشوند
+keys/
+*.pem
+*.key
+
+# محیط
+.env
+.env.local
+
+# پایتون
+__pycache__/
+*.pyc
+.venv/
+venv/

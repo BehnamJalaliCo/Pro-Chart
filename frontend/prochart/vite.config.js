@@ -33,5 +33,12 @@ export default defineConfig({
       },
     })]),
   ],
-  build: { outDir: 'dist', sourcemap: false, minify: process.env.NO_OBF ? false : 'esbuild' },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: process.env.NO_OBF ? false : 'esbuild',
+    // تک‌چانک: چون اپ داخلِ WebView از دیسکِ محلی لود می‌شود، تقسیمِ چانک سودی ندارد و
+    // چانک‌های dynamicِ مبهم‌سازی‌شده گاهی در APK جا نمی‌افتند. همه‌چیز در یک فایل = مطمئن.
+    rollupOptions: { output: { manualChunks: () => 'index', inlineDynamicImports: false } },
+  },
 });
