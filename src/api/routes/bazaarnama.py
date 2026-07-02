@@ -72,6 +72,51 @@ def _require_premium(st: "AcademyStudent") -> None:
     _require_prochart(st)
 
 
+def _norm_dir(d):
+    return "buy" if str(d or "").lower() in ("long", "buy") else "sell"
+
+
+@router.get("/signals")
+async def bn_signals(market: str = "crypto", limit: int = 50,
+                     st: AcademyStudent = Depends(current_student)):
+    """فیدِ سیگنالِ یکپارچه (کریپتو/فارکس) — نیازمندِ اشتراکِ پرو-چارت."""
+    _require_prochart(st)
+    import os as _os, httpx as _httpx
+    limit = max(1, min(int(limit or 50), 100))
+    market = market if market in ("crypto", "forex") else "crypto"
+    out = []
+    try:
+        async with _httpx.AsyncClient(timeout=6.0) as cx:
+            if market == "crypto":
+                base = _os.getenv("BN_CRYPTO_SVC_URL", "http://10.10.1.4:8000")
+                r = await cx.get(base + "/api/demo/signals")  # demoِ کریپتو حداقلِ limit دارد → محلی برش می‌زنیم
+                data = (r.json().get("signals", []) if r.status_code == 200 else [])
+                for x in data[:limit]:
+                    out.append({"id": f"cx-{x.get('id')}", "market": "crypto", "symbol": x.get("symbol"),
+                                "direction": _norm_dir(x.get("direction")), "entry": x.get("entry_price"),
+                                "sl": x.get("sl_price"),
+                                "tps": [v for v in (x.get("tp1_price"), x.get("tp2_price")) if v is not None],
+                                "confidence": x.get("confidence"), "status": x.get("status"),
+                                "timeframe": x.get("timeframe"), "source": "tradeyar",
+                                "created_at": x.get("created_at")})
+            else:
+                base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
+                r = await cx.get(base + "/public/signals/svc", params={"limit": limit},
+                                 headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")})
+                data = (r.json().get("items", []) if r.status_code == 200 else [])
+                for x in data[:limit]:
+                    out.append({"id": f"fx-{x.get('id')}", "market": "forex", "symbol": x.get("symbol"),
+                                "direction": _norm_dir(x.get("direction")), "entry": x.get("entry_price"),
+                                "sl": x.get("sl"),
+                                "tps": [v for v in (x.get("tp1"), x.get("tp2"), x.get("tp3")) if v is not None],
+                                "confidence": x.get("signal_score"), "status": x.get("status"),
+                                "timeframe": x.get("timeframe"), "source": "coinepro-fx",
+                                "created_at": x.get("created_at")})
+    except Exception as e:  # noqa: BLE001
+        logger.warning("bn_signals_fetch_failed", market=market, error=str(e))
+    return {"market": market, "signals": out, "count": len(out)}
+
+
 def _now():
     return datetime.now(timezone.utc)
 
