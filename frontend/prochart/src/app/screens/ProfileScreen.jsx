@@ -7,7 +7,8 @@ import { useT } from '../../i18n';
 import { Screen, ACCENT } from '../ui';
 import { hasPin, setPin, clearPin } from '../lock';
 import { bioEnabled, setBioEnabled, bioAvailable, bioVerify } from '../biometric';
-import { Fingerprint } from 'lucide-react';
+import { Fingerprint, Crown, ChevronLeft } from 'lucide-react';
+import SubscribeScreen from './SubscribeScreen';
 
 function Segmented({ options, value, onChange }) {
   return (
@@ -49,6 +50,13 @@ export default function ProfileScreen() {
   const [bioOn, setBioOn] = useState(bioEnabled());
   const [bioCan, setBioCan] = useState(false);
   useEffect(() => { let a = true; bioAvailable().then((v) => { if (a) setBioCan(v); }); return () => { a = false; }; }, []);
+  // M3/M4 — tier فعلی + صفحهٔ اشتراک
+  const [me, setMe] = useState(null);
+  const [showSub, setShowSub] = useState(false);
+  const loadMe = () => api.me().then((r) => setMe(r || {})).catch(() => setMe({}));
+  useEffect(() => { loadMe(); }, []);
+  const myTier = (me && me.tier) || 'free';
+  const tierColor = myTier === 'premium' ? '#8b5cf6' : myTier === 'vip' ? ACCENT : 'var(--text-muted)';
 
   const refresh = () => api.bnConnectStatus().then((r) => setConn(r || {})).catch(() => setConn({}));
   useEffect(() => { let a = true; api.bnConnectStatus().then((r) => { if (a) setConn(r || {}); }).catch(() => { if (a) setConn({}); }); return () => { a = false; }; }, []);
@@ -115,10 +123,28 @@ export default function ProfileScreen() {
           <span className="flex items-center justify-center flex-none" style={{ width: 54, height: 54, borderRadius: '50%', overflow: 'hidden', background: '#0b0e14' }}>
             <img src="/logo.png" alt="Pro-Chart" style={{ width: 54, height: 54, objectFit: 'cover' }} />
           </span>
-          <div className="min-w-0">
-            <div className="font-extrabold" style={{ color: 'var(--text-primary)', fontSize: 16 }}>Pro-Chart</div>
-            <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>{t('profile.guest')}</div>
+          <div className="min-w-0 flex-1">
+            <div className="font-extrabold" style={{ color: 'var(--text-primary)', fontSize: 16 }}>{(me && (me.full_name || me.username)) || 'Pro-Chart'}</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>{(me && me.username) ? me.username : t('profile.guest')}</div>
           </div>
+          {/* نشانِ tier (M3) */}
+          <span className="flex items-center gap-1 flex-none font-extrabold" style={{ fontSize: 11, color: '#fff', background: tierColor, borderRadius: 999, padding: '4px 10px' }}>
+            {myTier !== 'free' && <Crown size={12} />} {t(`tier.${myTier}`)}
+          </span>
+        </div>
+
+        {/* اشتراک و ارتقا (M4) */}
+        <div style={card}>
+          <button onClick={() => setShowSub(true)} className="w-full flex items-center justify-between" style={{ padding: '14px 14px' }}>
+            <span className="flex items-center gap-3" style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 700 }}>
+              <span className="flex items-center justify-center" style={{ width: 34, height: 34, borderRadius: 10, background: 'linear-gradient(135deg, var(--accent-weak), rgba(139,92,246,.15))', color: '#8b5cf6' }}><Crown size={17} /></span>
+              {t('sub.title')}
+            </span>
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+              {myTier !== 'premium' && <span style={{ fontSize: 11, fontWeight: 800, color: '#8b5cf6' }}>{t('sub.upgrade')}</span>}
+              <ChevronLeft size={16} />
+            </span>
+          </button>
         </div>
 
         {/* زبان */}
@@ -188,6 +214,9 @@ export default function ProfileScreen() {
 
         <p style={{ color: 'var(--text-muted)', fontSize: 11.5, lineHeight: 1.8, textAlign: 'center', padding: '4px 16px' }}>{t('profile.aboutText')}</p>
       </div>
+
+      {/* صفحهٔ اشتراک/پرداختِ BSC (M4) */}
+      {showSub && <SubscribeScreen me={me} onClose={() => setShowSub(false)} onUpgraded={() => { loadMe(); setShowSub(false); }} />}
     </Screen>
   );
 }
