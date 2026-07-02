@@ -87,7 +87,7 @@ export default function ScreenshotMenu({ TH, getCapture, uploadSnapshot, iconSiz
         <Camera size={iconSize} /><ChevronDown size={11} className="opacity-70" />
       </button>
       {open && (
-        <div className="absolute z-50 mt-1 left-0 w-56 rounded-lg py-1 shadow-xl" dir="rtl" style={{ background: T.popoverBg, border: `1px solid ${T.border}` }}>
+        <div className="absolute z-50 mt-1 right-0 w-56 rounded-lg py-1 shadow-xl" dir="rtl" style={{ background: T.popoverBg, border: `1px solid ${T.border}` }}>
           {item(<Copy size={15} />, 'کپی تصویر', doCopy)}
           {item(<Download size={15} />, 'ذخیرهٔ تصویر', doDownload)}
           {item(<LinkIcon size={15} />, 'کپیِ لینکِ تصویر', doLink)}

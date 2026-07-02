@@ -572,6 +572,11 @@ import os as _os_admin
 import hmac as _hmac_admin
 
 
+def _bn_admin_user() -> str:
+    # نام‌کاربریِ ادمینِ بازارنما (پیش‌فرض behnamjalali؛ در آینده برای سوپرادمین/چند ادمین قابلِ گسترش)
+    return _os_admin.getenv("BN_ADMIN_USERNAME", "behnamjalali")
+
+
 def _bn_admin_pw() -> str:
     return _os_admin.getenv("BN_ADMIN_PASSWORD", "")
 
@@ -586,11 +591,15 @@ async def current_bn_admin(authorization: str | None = Header(None)) -> bool:
 
 
 @router.post("/admin/login")
-async def bn_admin_login(password: str = Body(..., embed=True)):
-    pw = _bn_admin_pw()
-    if not pw or not _hmac_admin.compare_digest(password or "", pw):
-        raise HTTPException(status_code=403, detail="رمزِ ادمین نادرست است.")
-    token = create_access_token({"sub": "bn_admin", "scope": "bn_admin"}, expires_delta=timedelta(hours=12))
+async def bn_admin_login(username: str = Body("", embed=True), password: str = Body(..., embed=True)):
+    exp_user = _bn_admin_user()
+    exp_pw = _bn_admin_pw()
+    ok_user = _hmac_admin.compare_digest((username or "").strip().lower(), (exp_user or "").strip().lower())
+    ok_pw = bool(exp_pw) and _hmac_admin.compare_digest(password or "", exp_pw)
+    if not (ok_user and ok_pw):
+        raise HTTPException(status_code=403, detail="نام‌کاربری یا رمزِ ادمین نادرست است.")
+    token = create_access_token({"sub": (username or "").strip() or exp_user, "scope": "bn_admin"},
+                                expires_delta=timedelta(hours=12))
     return {"token": token}
 
 

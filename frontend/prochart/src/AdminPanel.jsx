@@ -49,18 +49,19 @@ export default function AdminPanel() {
 
 /* ───────────────────────── ورود ───────────────────────── */
 function Login({ onLogin }) {
+  const [user, setUser] = React.useState('');
   const [pw, setPw] = React.useState('');
   const [show, setShow] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
   const [err, setErr] = React.useState('');
   const submit = async () => {
-    if (!pw) return;
+    if (!user || !pw) return;
     setErr(''); setBusy(true);
     try {
-      const r = await api.bnAdminLogin(pw);
+      const r = await api.bnAdminLogin(user.trim(), pw);
       if (r?.token) { adminToken.set(r.token); onLogin(); }
       else setErr('پاسخِ نامعتبر.');
-    } catch (e) { setErr(e?.message || 'رمز نادرست است.'); }
+    } catch (e) { setErr(e?.message || 'نام‌کاربری یا رمز نادرست است.'); }
     finally { setBusy(false); }
   };
   return (
@@ -81,12 +82,19 @@ function Login({ onLogin }) {
             <p className="text-[12px]" style={{ color: TH.textDim }}>ورودِ مدیریت</p>
           </div>
         </div>
-        <div className="mt-5 mb-3 relative">
+        <div className="mt-5 mb-3">
+          <input
+            className={`${inp} w-full`} style={FS}
+            type="text" placeholder="نام‌کاربری" value={user} dir="ltr"
+            onChange={(e) => setUser(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && submit()} autoFocus autoComplete="username" />
+        </div>
+        <div className="mb-3 relative">
           <input
             className={`${inp} w-full pl-9`} style={FS}
-            type={show ? 'text' : 'password'} placeholder="رمزِ ادمین" value={pw} dir="ltr"
+            type={show ? 'text' : 'password'} placeholder="رمزِ عبور" value={pw} dir="ltr"
             onChange={(e) => setPw(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && submit()} autoFocus />
+            onKeyDown={(e) => e.key === 'Enter' && submit()} autoComplete="current-password" />
           <button type="button" onClick={() => setShow((s) => !s)}
                   className="absolute left-2.5 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-90"
                   title={show ? 'پنهان' : 'نمایش'}>
@@ -94,7 +102,7 @@ function Login({ onLogin }) {
           </button>
         </div>
         {err && <div className="text-[12px] text-red-400 mb-2">{err}</div>}
-        <button onClick={submit} disabled={busy || !pw}
+        <button onClick={submit} disabled={busy || !user || !pw}
                 className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition font-bold flex items-center justify-center gap-2 disabled:opacity-50">
           {busy && <Loader2 size={15} className="animate-spin" />} ورود
         </button>
@@ -172,7 +180,7 @@ function Dash({ onLogout }) {
         <div className="p-3 border-t" style={{ borderColor: TH.border }}>
           <a href={SUPPORT.url} target="_blank" rel="noreferrer"
              className="block text-center text-[11px] mb-3" style={{ color: TH.textFaint }}>
-            پشتیبانیِ CoinePro FX · <span dir="ltr">{SUPPORT.handle}</span>
+            پشتیبانی · <span dir="ltr">{SUPPORT.handle}</span>
           </a>
           <button onClick={() => { adminToken.clear(); onLogout(); }}
                   className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-red-600/15 text-red-300 hover:bg-red-600/25 text-[13px] font-semibold">

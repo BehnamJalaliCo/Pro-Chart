@@ -252,7 +252,7 @@ function AuthGate({ onAuthed }) {
       <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-[12px]">
         <span className="opacity-50">کمک لازم داری؟</span>
         <a href={SUPPORT_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-indigo-300 hover:text-indigo-200">
-          <Headset size={13} /> پشتیبانیِ CoinePro FX
+          <Headset size={13} /> پشتیبانی
         </a>
       </div>
     </div>
@@ -262,11 +262,44 @@ function AuthGate({ onAuthed }) {
 function LoginForm({ onAuthed, onForgot }) {
   const [u, setU] = React.useState(''); const [p, setP] = React.useState('');
   const [busy, setBusy] = React.useState(false); const [err, setErr] = React.useState('');
+  const [devLimit, setDevLimit] = React.useState(null); // {manage_token, devices, max}
   const submit = async () => {
     setErr(''); setBusy(true);
-    try { const r = await api.login(u.trim(), p); if (r?.token) { tokenStore.set(r.token); onAuthed(r.username || u.trim(), r.tier, r.account_type); } }
-    catch (e) { setErr(e?.message || 'نام‌کاربری یا رمز اشتباه است.'); } finally { setBusy(false); }
+    try {
+      const r = await api.login(u.trim(), p);
+      if (r?.token) { tokenStore.set(r.token); onAuthed(r.username || u.trim(), r.tier, r.account_type); }
+      else if (r?.device_limit) { setDevLimit(r); }        // سقفِ دستگاه پر است → نمایشِ لیست برای حذف
+      else { setErr('پاسخِ نامعتبر از سرور.'); }
+    } catch (e) { setErr(e?.message || 'نام‌کاربری یا رمز اشتباه است.'); } finally { setBusy(false); }
   };
+  const removeDevice = async (id) => {
+    setBusy(true); setErr('');
+    try { await api.removeDevicePre(devLimit.manage_token, id); setDevLimit(null); await submit(); }
+    catch (e) { setErr(e?.message || 'حذفِ دستگاه ناموفق بود.'); setBusy(false); }
+  };
+  // نمایِ «سقفِ دستگاه پر است» — یک دستگاه را خارج کن تا وارد شوی
+  if (devLimit) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-1.5 text-[12px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg px-2.5 py-2">
+          <Lock size={13} className="shrink-0" /> سقفِ {devLimit.max || 2} دستگاهِ هم‌زمان پر است. برای ورود، یکی از دستگاه‌های زیر را خارج کن:
+        </div>
+        <div className="space-y-2">
+          {(devLimit.devices || []).map((d) => (
+            <div key={d.id} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
+              <div className="min-w-0">
+                <div className="text-sm font-bold truncate">{d.name || d.device_name || 'دستگاه'}</div>
+                {d.last_seen && <div className="text-[11px] opacity-50">{fmtDate(d.last_seen)}</div>}
+              </div>
+              <button onClick={() => removeDevice(d.id)} disabled={busy} className="shrink-0 text-[12px] px-3 py-1.5 rounded-lg bg-red-500/15 text-red-300 hover:bg-red-500/25 disabled:opacity-50 flex items-center gap-1"><Trash2 size={13} /> خروج</button>
+            </div>
+          ))}
+        </div>
+        {err && <ErrLine text={err} />}
+        <button onClick={() => { setDevLimit(null); setErr(''); }} className="w-full text-center text-[12px] opacity-60 hover:opacity-100 pt-1">بازگشت</button>
+      </div>
+    );
+  }
   return (
     <div className="space-y-3">
       <Field label="ایمیل یا نام‌کاربری">
@@ -530,13 +563,39 @@ function PanelShell({ auth, me, reloadMe, logout }) {
           </div>
         )}
 
-        {/* Content */}
+        {/* Content — هر تب در مرزِ خطای مستقل تا خطای یک تب، کلِ پنل و ناوبری را نیندازد (#F) */}
         <main className="flex-1 min-w-0">
-          <TabContent tab={tab} ctx={ctx} />
+          <TabBoundary tabKey={tab} onGoHome={() => go('dashboard')}>
+            <TabContent tab={tab} ctx={ctx} />
+          </TabBoundary>
         </main>
       </div>
     </div>
   );
+}
+
+// مرزِ خطای هر تب — با تغییرِ تب ریست می‌شود (key). یک تبِ خراب فقط پیامِ کوتاه می‌دهد؛
+// سایدبار و بقیهٔ تب‌ها سالم می‌مانند (کاربر گیر نمی‌کند).
+class TabBoundaryInner extends React.Component {
+  constructor(props) { super(props); this.state = { err: null }; }
+  static getDerivedStateFromError(err) { return { err }; }
+  componentDidCatch(err, info) { try { console.error('Panel tab crash:', this.props.tabKey, err, info); } catch (e) { /* noop */ } }
+  render() {
+    if (this.state.err) {
+      return (
+        <div className="rounded-2xl border border-white/10 bg-[#161923] p-6 text-center">
+          <div className="text-2xl mb-2">⚠️</div>
+          <div className="font-bold mb-1">این بخش به‌درستی باز نشد</div>
+          <div className="text-[12px] opacity-60 leading-6 mb-4">می‌توانی به داشبورد برگردی یا بخشِ دیگری را باز کنی؛ بقیهٔ پنل سالم است.</div>
+          <button onClick={() => this.props.onGoHome && this.props.onGoHome()} className="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-bold transition">بازگشت به داشبورد</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+function TabBoundary({ tabKey, onGoHome, children }) {
+  return <TabBoundaryInner key={tabKey} tabKey={tabKey} onGoHome={onGoHome}>{children}</TabBoundaryInner>;
 }
 
 function TabContent({ tab, ctx }) {
@@ -704,7 +763,7 @@ function PremiumPurchase() {
     { icon: <TrendingUp size={16} className="text-emerald-300" />, t: 'تریدِ واقعی روی چارت', d: 'سفارشِ واقعی مستقیم از نمودار' },
     { icon: <Code2 size={16} className="text-sky-300" />, t: 'نمااسکریپتِ نامحدود', d: 'اندیکاتور و استراتژیِ اختصاصی' },
     { icon: <Zap size={16} className="text-amber-300" />, t: 'آلارمِ پیشرفته', d: 'چندشرطی و تکنیکال، بی‌محدودیت' },
-    { icon: <Headset size={16} className="text-violet-300" />, t: 'پشتیبانیِ اولویت‌دار', d: 'پاسخِ سریع از تیمِ CoinePro FX' },
+    { icon: <Headset size={16} className="text-violet-300" />, t: 'پشتیبانیِ اولویت‌دار', d: 'پاسخِ سریع از تیمِ پشتیبانی' },
   ];
 
   return (
@@ -759,7 +818,7 @@ function PremiumPurchase() {
           <ArrowLeft size={17} className="group-hover:-translate-x-1 transition" />
         </a>
         <div className="mt-3 flex items-center justify-center gap-1.5 text-[12px] opacity-55">
-          <ShieldCheck size={13} className="text-green-400" /> فعال‌سازیِ سریع پس از پرداخت — پشتیبانیِ مستقیمِ CoinePro FX
+          <ShieldCheck size={13} className="text-green-400" /> فعال‌سازیِ سریع پس از پرداخت — پشتیبانیِ مستقیم
         </div>
       </div>
     </div>
@@ -819,7 +878,7 @@ function BillingTab({ ctx }) {
 
       {isVip && (
         <Card title="تمدیدِ اشتراک" icon={<Crown size={16} className="text-amber-300" />}>
-          <p className="text-sm opacity-70 leading-7 mb-3">برای تمدید یا ارتقای اشتراکت کافی است با پشتیبانیِ CoinePro FX در ارتباط باشی.</p>
+          <p className="text-sm opacity-70 leading-7 mb-3">برای تمدید یا ارتقای اشتراکت کافی است با پشتیبانی در ارتباط باشی.</p>
           <a href={SUPPORT_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-bold"><Headset size={15} /> ارتباط با پشتیبانی</a>
         </Card>
       )}

@@ -32,8 +32,9 @@ export function matchSymbol(meta, q) {
 export function searchSymbols(metaList, q, cat) {
   const filtered = cat && cat !== 'all' ? metaList.filter((m) => m.cat === cat) : metaList;
   if (!q) {
-    // بدونِ کوئری: محبوب‌ها اول، بعد الفبایی
-    return [...filtered].sort((x, y) => (Number(y.popular) - Number(x.popular)) || x.symbol.localeCompare(y.symbol));
+    // #۷ بدونِ کوئری: محبوب‌ها اول، سپس ترتیبِ ورودی حفظ می‌شود (کریپتو از بک‌اند بر اساسِ ارزشِ بازار
+    // مرتب می‌آید؛ sortِ پایدارِ JS آن را نگه می‌دارد). tiebreakِ الفبایی حذف شد چون ترتیبِ mcap را می‌شکست.
+    return [...filtered].sort((x, y) => (Number(y.popular) - Number(x.popular)));
   }
   const scored = [];
   for (const m of filtered) { const s = matchSymbol(m, q); if (s >= 0) scored.push([s, m]); }

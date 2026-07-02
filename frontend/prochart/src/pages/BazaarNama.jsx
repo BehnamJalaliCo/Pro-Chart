@@ -7,6 +7,7 @@ import {
   FlaskConical, ChevronDown, LayoutGrid, Maximize2,
   Magnet, Sparkles,
   Undo2, Redo2, Lock, Unlock, Eye, EyeOff, List, Pencil, Table2, Camera,
+  TrendingUp, TrendingDown, ArrowUpDown, Scaling,
 } from 'lucide-react';
 import { api } from '../api/client';
 import { useApp } from '../appStore';
@@ -46,7 +47,7 @@ const TFS = ['M1', 'M5', 'M15', 'M30', 'H1', 'H2', 'H4', 'D1', 'W1', 'MN'];
 // باسِ همگام‌سازیِ چندچارتی (زمان + کراس‌هیر) — هر MiniChart مشترک می‌شود
 function makeSyncBus() { let subs = []; return { subscribe(fn) { subs.push(fn); return () => { subs = subs.filter((s) => s !== fn); }; }, emit(type, payload, self) { subs.forEach((fn) => { if (fn !== self) fn(type, payload); }); } }; }
 // برچسبِ کوتاه + عنوانِ فارسی برای نوارِ تایم‌فریمِ حرفه‌ای
-const TF_LABEL = { M1: '1m', M5: '5m', M15: '15m', M30: '30m', H1: '1H', H2: '2H', H4: '4H', D1: '1D', W1: '1W', MN: '1M' };
+const TF_LABEL = { M1: '1m', M5: '5m', M15: '15m', M30: '30m', H1: '1H', H2: '2H', H4: '4H', D1: '1D', W1: '1W', MN: '1Mo' };
 const TF_TITLE = { M1: '۱ دقیقه', M5: '۵ دقیقه', M15: '۱۵ دقیقه', M30: '۳۰ دقیقه', H1: '۱ ساعته', H2: '۲ ساعته', H4: '۴ ساعته', D1: 'روزانه', W1: 'هفتگی', MN: 'ماهانه' };
 // طولِ هر کندل به ثانیه — برای ساختِ کندلِ زندهٔ بعدی و پروجکشنِ رو به جلوی ناحیه‌ها
 const TF_SEC = { M1: 60, M5: 300, M15: 900, M30: 1800, H1: 3600, H2: 7200, H4: 14400, D1: 86400, W1: 604800, MN: 2592000 };
@@ -273,7 +274,7 @@ export default function BazaarNama() {
   const [countdownColor, setCountdownColor] = useState(null); // تینتِ نزدیکِ بسته‌شدن (قرمز/کهربایی)
   const [showVP, setShowVP] = useState(false);
   const [magnet, setMagnet] = useState(loadWS().magnet ?? false);
-  const [order, setOrder] = useState(() => loadWS().order || null); // {side, entry, sl, tp} — باگ۳: با رفرش پاک نشود
+  const [order, setOrder] = useState(null); // {side, entry, sl, tp} — #D: پیش‌فرض هیچ پوزیشنی باز نیست (از localStorage بازیابی نمی‌شود)
   const [aiSig, setAiSig] = useState(() => loadWS().aiSig || null); // سیگنالِ AI — باگ۳: با رفرش پاک نشود
   const [aiList, setAiList] = useState([]); // همهٔ سیگنال‌های اخیر — همیشه در ساید‌بار می‌مانند
   const [aiBusy, setAiBusy] = useState(false);
@@ -675,6 +676,9 @@ export default function BazaarNama() {
       const to = (cs.length ? cs[cs.length - 1].t : Math.floor(Date.now() / 1000)) + 86400;
       sessionsRef.current = sessionBands(from, to, tz, { overlap: true, sessions: sessionSel });
       drawRef.current && drawRef.current.render();
+      // A: باندها را فوری رسم کن (وگرنه تا وقتی کاربر چارت را pan/zoom نکند نمایان نمی‌شوند).
+      const ctx = overlayRef.current && overlayRef.current.getContext('2d');
+      if (ctx && sessionsRef.current) paintSessions(ctx, ch, sessionsRef.current, overlayRef.current.height);
     } catch (e) { /* */ }
     saveWS({ sessionsOn, sessionSel });
   }, [sessionsOn, tz, tf, symbol, sessionSel]);
@@ -693,6 +697,24 @@ export default function BazaarNama() {
   // #۱۰ ترید از یک سطحِ مشخص (یا قیمتِ جاری) — تیکتِ کاملاً قابلِ‌ویرایش باز می‌کند: پنلِ ترید را
   // نمایان می‌کند، entry/SL/TP را روی چارت قابلِ‌کشیدن می‌گذارد و قبل از ثبت همه‌چیز قابلِ‌تنظیم است.
   const startTrade = (side, entryAt) => { const e = (entryAt != null && Number.isFinite(+entryAt)) ? +entryAt : curPrice(); if (!e) return; const d = e * 0.005; setOrder({ side, entry: e, sl: side === 'buy' ? e - d : e + d, tp: side === 'buy' ? e + 2 * d : e - 2 * d }); setRightTab('trade'); setShowRight(true); };
+
+  // #۹ رسمِ جعبهٔ «موقعیتِ لانگ/شورت» رو‌به‌جلو از نقطهٔ کلیک‌شده (نه خطوطِ تمام‌عرض). یک ترسیمِ قابلِ‌ویرایش/پاک است.
+  const placeLongShort = (side, price, atX) => {
+    const ch = chartRef.current, dl = drawRef.current;
+    if (!ch || !dl || price == null) return;
+    try {
+      const ts = ch.timeScale();
+      let t0 = ts.coordinateToTime(atX);
+      const vr = ts.getVisibleRange();
+      const span = (vr && typeof vr.to === 'number' && typeof vr.from === 'number') ? (vr.to - vr.from) : 86400;
+      if (typeof t0 !== 'number') t0 = (vr && typeof vr.to === 'number' ? vr.to : Math.floor(Date.now() / 1000));
+      const t1 = t0 + Math.round(span * 0.28); // پروجکشنِ رو‌به‌جلو ~۲۸٪ محدودهٔ دید
+      const risk = price * 0.005;
+      const stop = side === 'buy' ? price - risk : price + risk; // p1.p = حدِ ضرر؛ هدفِ 2R خودکار محاسبه می‌شود
+      dl.addDrawing({ type: 'longshort', p0: { t: t0, p: price }, p1: { t: t1, p: stop }, color: side === 'buy' ? (TH.up || '#22c55e') : (TH.down || '#ef4444'), width: 1.5 });
+      treeRefresh();
+    } catch (e) { /* noop */ }
+  };
   // ثبتِ سفارش از روی چارت → endpointِ معاملهٔ مستقیم (gated). تا فعال‌شدنِ اجرای واقعی،
   // سرور سفارش را اعتبارسنجی و «پیش‌نمایش» برمی‌گرداند (هیچ معاملهٔ واقعی‌ای انجام نمی‌شود).
   const submitOrder = async () => {
@@ -1358,35 +1380,45 @@ export default function BazaarNama() {
           {PRICE_SCALE_MODES.map((m) => (<option key={m.value} value={m.value}>{m.label}</option>))}
         </select>
         <button onClick={() => setScaleLocked((v) => !v)} title="قفلِ مقیاس (خاموش‌کردنِ خودکار)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={scaleLocked ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBg; }}>{scaleLocked ? <Lock size={17} /> : <Unlock size={17} />}</button>
-        <button onClick={() => setScaleInvert((v) => !v)} title="وارونگیِ محورِ قیمت" aria-label="وارونگیِ محورِ قیمت" className="px-1.5 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={scaleInvert ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBg; }}>⇅</button>
-        <button onClick={() => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); setScaleLocked(false); setScaleInvert(false); } catch (e) {} }} title="بازنشانیِ مقیاس" aria-label="بازنشانیِ مقیاس" className="px-1.5 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>⤢</button>
+        <Tip label="وارونه‌کردنِ محورِ قیمت — بالا و پایینِ نمودار جابه‌جا می‌شود (مناسبِ تحلیلِ معکوس)"><button onClick={() => setScaleInvert((v) => !v)} title="وارونه‌کردنِ محورِ قیمت (بالا↔پایین)" aria-label="وارونه‌کردنِ محورِ قیمت" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={scaleInvert ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBg; }}><ArrowUpDown size={16} /></button></Tip>
+        <Tip label="بازنشانیِ زوم و مقیاسِ نمودار به حالتِ اولیه (اتوفیت)"><button onClick={() => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); setScaleLocked(false); setScaleInvert(false); } catch (e) {} }} title="بازنشانیِ زوم و مقیاس به حالتِ اولیه" aria-label="بازنشانیِ مقیاس" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Scaling size={16} /></button></Tip>
         <select value={crosshairId} onChange={(e) => setCrosshairId(e.target.value)} title="حالتِ کراس‌هیر" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
           {CROSSHAIR_MODES.map((m) => (<option key={m.id} value={m.id}>{m.label}</option>))}
         </select>
-        {/* #9 کنترلِ واحدِ «سشن‌ها» — کلیکِ متن=روشن/خاموش؛ فلش=منویی که هم سشن‌ها هم منطقهٔ زمانی (شهرها) را دارد */}
-        <div data-menu className="relative flex items-center rounded-md overflow-hidden" style={sessionsOn ? { background: TH.accent } : { background: TH.chipBg }}>
-          <button onClick={() => setSessionsOn((v) => !v)} title="نمایش/پنهان‌کردنِ باندهای سشنِ فارکس" className="px-2 py-1 text-xs transition-colors duration-[120ms]" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}>سشن‌ها</button>
-          <button onClick={() => setSessMenu((v) => !v)} title="سشن‌ها و منطقهٔ زمانی" className="px-1 py-1" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}><ChevronDown size={12} /></button>
+        {/* #1 کنترلِ حرفه‌ایِ «سشن‌ها» — pillِ overflow-hidden جدا از dropdown (وگرنه منو کلیپ می‌شد و باز نمی‌شد) */}
+        <div data-menu className="relative">
+          <div className="flex items-center rounded-md overflow-hidden" style={sessionsOn ? { background: TH.accent } : { background: TH.chipBg }}>
+            <button onClick={() => setSessionsOn((v) => !v)} title="نمایش/پنهان‌کردنِ باندهای سشنِ فارکس" className="px-2 py-1 text-xs font-semibold transition-colors duration-[120ms]" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}>سشن‌ها</button>
+            <button onClick={() => setSessMenu((v) => !v)} title="انتخابِ سشن‌ها و منطقهٔ زمانی" className="px-1 py-1" style={sessionsOn ? { color: '#fff' } : { color: TH.text }}><ChevronDown size={12} style={{ transform: sessMenu ? 'rotate(180deg)' : 'none', transition: 'transform 120ms' }} /></button>
+          </div>
           {sessMenu && (
-            <div className="absolute z-40 top-full mt-1 right-0 rounded-lg w-48 p-1" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
-              <div className="px-2 pt-1 pb-1 text-[10px] font-bold opacity-50" style={{ color: TH.text }}>سشن‌های فارکس</div>
+            <div className="absolute z-[60] top-full mt-1 right-0 rounded-xl w-56 p-1.5 shadow-2xl" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+              <div className="flex items-center justify-between px-2 pt-0.5 pb-1.5">
+                <span className="text-[11px] font-bold" style={{ color: TH.textStrong }}>سشن‌های معاملاتی</span>
+                <label className="flex items-center gap-1 text-[10px] cursor-pointer" style={{ color: TH.text }} onClick={() => setSessionsOn((v) => !v)}>
+                  <span>نمایش</span>
+                  <span className="relative inline-block w-7 h-4 rounded-full transition-colors" style={{ background: sessionsOn ? TH.accent : TH.border }}>
+                    <span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" style={{ [sessionsOn ? 'left' : 'right']: '2px' }} />
+                  </span>
+                </label>
+              </div>
               {SESSIONS.map((s) => { const on = sessionSel.includes(s.id); return (
-                <button key={s.id} onClick={() => { setSessionSel((sel) => sel.includes(s.id) ? sel.filter((x) => x !== s.id) : [...sel, s.id]); if (!sessionsOn) setSessionsOn(true); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-                  <span className="w-3.5 h-3.5 rounded-sm flex items-center justify-center shrink-0" style={{ background: on ? TH.accent : 'transparent', border: `1px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="text-[9px] text-white leading-none">✓</span>}</span>
-                  <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: s.edge }} />
-                  <span className="flex-1">{s.label}</span>
+                <button key={s.id} onClick={() => { setSessionSel((sel) => sel.includes(s.id) ? sel.filter((x) => x !== s.id) : [...sel, s.id]); if (!sessionsOn) setSessionsOn(true); }} className="flex items-center gap-2.5 w-full text-right px-2 py-2 text-[12px] rounded-lg" style={{ color: TH.textStrong, background: on ? (TH.chipBg) : 'transparent' }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = on ? TH.chipBg : 'transparent')}>
+                  <span className="w-4 h-4 rounded flex items-center justify-center shrink-0" style={{ background: on ? s.edge : 'transparent', border: `1.5px solid ${on ? s.edge : TH.border}` }}>{on && <span className="text-[10px] text-white leading-none">✓</span>}</span>
+                  <span className="w-3 h-3 rounded shrink-0" style={{ background: s.color, border: `1px solid ${s.edge}` }} />
+                  <span className="flex-1 font-medium">{s.label}</span>
                 </button>
               ); })}
               <div className="flex gap-1 px-1 mt-1">
-                <button onClick={() => setSessionSel(SESSIONS.map((s) => s.id))} className="flex-1 text-[11px] py-1 rounded" style={{ background: TH.chipBg, color: TH.text }}>همه</button>
-                <button onClick={() => setSessionSel([])} className="flex-1 text-[11px] py-1 rounded" style={{ background: TH.chipBg, color: TH.text }}>هیچ</button>
+                <button onClick={() => { setSessionSel(SESSIONS.map((s) => s.id)); if (!sessionsOn) setSessionsOn(true); }} className="flex-1 text-[11px] py-1.5 rounded-lg font-semibold" style={{ background: TH.chipBg, color: TH.text }}>همه</button>
+                <button onClick={() => setSessionSel([])} className="flex-1 text-[11px] py-1.5 rounded-lg font-semibold" style={{ background: TH.chipBg, color: TH.text }}>هیچ</button>
               </div>
-              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
-              <div className="px-2 pt-0.5 pb-1 text-[10px] font-bold opacity-50" style={{ color: TH.text }}>منطقهٔ زمانی</div>
-              <div className="max-h-44 overflow-y-auto bn-thin-scroll">
+              <div className="my-1.5 border-t" style={{ borderColor: TH.border }} />
+              <div className="px-2 pb-1 text-[11px] font-bold" style={{ color: TH.textStrong }}>منطقهٔ زمانی (نمایشِ ساعت)</div>
+              <div className="max-h-40 overflow-y-auto bn-thin-scroll">
                 {TIMEZONES.map((z) => { const on = tz === z.id; return (
-                  <button key={z.id} onClick={() => setTz(z.id)} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-                    <span className="w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0" style={{ border: `1px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="w-2 h-2 rounded-full" style={{ background: TH.accent }} />}</span>
+                  <button key={z.id} onClick={() => setTz(z.id)} className="flex items-center gap-2.5 w-full text-right px-2 py-1.5 text-[12px] rounded-lg" style={{ color: TH.textStrong, background: on ? TH.chipBg : 'transparent' }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = on ? TH.chipBg : 'transparent')}>
+                    <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="w-2 h-2 rounded-full" style={{ background: TH.accent }} />}</span>
                     <span className="flex-1">{z.label}</span>
                   </button>
                 ); })}
@@ -1422,19 +1454,19 @@ export default function BazaarNama() {
           <div className="flex-1 min-h-0 w-full">
             <ToolRail tool={tool} setTool={setTool} TH={TH} onHelp={setHelpId} />
           </div>
-          <div className="h-px w-6 my-1" style={{ background: TH.border }} />
-          <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>
-          <Tip label="مگنت — چسبیدنِ ترسیم به قیمتِ کندل"><button onClick={() => setMagnet((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${magnet ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={magnet ? { background: TH.accent } : {}}><Magnet size={20} /></button></Tip>
-          <Tip label="پروفایلِ حجم (توزیعِ قیمت)"><button onClick={() => setShowVP((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showVP ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showVP ? { background: TH.accent } : {}}><BarChart3 size={20} /></button></Tip>
-          <div className="h-px w-6 my-1" style={{ background: TH.border }} />
-          <Tip label="واگرد (Ctrl+Z)"><button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} className="p-1.5 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Undo2 size={20} /></button></Tip>
-          <Tip label="ازنو (Ctrl+Y)"><button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} className="p-1.5 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Redo2 size={20} /></button></Tip>
-          <Tip label="ماندن در حالتِ ترسیم (پشتِ‌سرهم بکش)"><button onClick={() => setStayDraw((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${stayDraw ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={stayDraw ? { background: TH.accent } : {}}><Pencil size={20} /></button></Tip>
-          <Tip label="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)"><button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showTree ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showTree ? { background: TH.accent } : {}}><List size={20} /></button></Tip>
-          <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1.5 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={20} /></button></Tip>
-          <div className="h-px w-6 my-1" style={{ background: TH.border }} />
-          <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1.5 rounded opacity-60 hover:opacity-100"><Minus size={20} /></button></Tip>
-          <Tip label="پاکِ همهٔ ترسیم‌ها"><button onClick={() => drawRef.current && drawRef.current.clearAll()} className="p-1.5 rounded opacity-60 hover:text-red-400"><Trash2 size={20} /></button></Tip>
+          <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
+          <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-4 h-4 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>
+          <Tip label="مگنت — چسبیدنِ ترسیم به قیمتِ کندل"><button onClick={() => setMagnet((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${magnet ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={magnet ? { background: TH.accent } : {}}><Magnet size={12} /></button></Tip>
+          <Tip label="پروفایلِ حجم (توزیعِ قیمت)"><button onClick={() => setShowVP((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${showVP ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showVP ? { background: TH.accent } : {}}><BarChart3 size={12} /></button></Tip>
+          <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
+          <Tip label="واگرد (Ctrl+Z)"><button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} className="p-1 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Undo2 size={12} /></button></Tip>
+          <Tip label="ازنو (Ctrl+Y)"><button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} className="p-1 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Redo2 size={12} /></button></Tip>
+          <Tip label="ماندن در حالتِ ترسیم (پشتِ‌سرهم بکش)"><button onClick={() => setStayDraw((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${stayDraw ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={stayDraw ? { background: TH.accent } : {}}><Pencil size={12} /></button></Tip>
+          <Tip label="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)"><button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} className={`p-1 rounded-md transition-colors duration-[120ms] ${showTree ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showTree ? { background: TH.accent } : {}}><List size={12} /></button></Tip>
+          <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={12} /></button></Tip>
+          <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
+          <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1 rounded opacity-60 hover:opacity-100"><Minus size={12} /></button></Tip>
+          <Tip label="پاکِ همهٔ ترسیم‌ها"><button onClick={() => drawRef.current && drawRef.current.clearAll()} className="p-1 rounded opacity-60 hover:text-red-400"><Trash2 size={12} /></button></Tip>
         </div>
         )}
 
@@ -1592,12 +1624,27 @@ export default function BazaarNama() {
                   )}
                   {ctxMenu.price != null && (
                     <>
-                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.up }}
+                      <div className="px-3 pt-1.5 pb-1 text-[10px] font-bold opacity-45" style={{ color: TH.text }}>موقعیت از {fmtPrice(symbol, ctxMenu.price)} (رسمِ رو‌به‌جلو)</div>
+                      <button className="w-full text-right px-3 py-2 flex items-center gap-2 font-semibold" style={{ color: TH.up }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = (TH.up || '#26a69a') + '1f')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        onClick={() => { placeLongShort('buy', ctxMenu.price, ctxMenu.x); setCtxMenu(null); }}>
+                        <span className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ background: (TH.up || '#26a69a') + '2a', color: TH.up }}><TrendingUp size={12} /></span>
+                        لانگ <span className="opacity-55 font-normal text-[11px]">(Long / خرید)</span>
+                      </button>
+                      <button className="w-full text-right px-3 py-2 flex items-center gap-2 font-semibold" style={{ color: TH.down }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = (TH.down || '#ef5350') + '1f')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        onClick={() => { placeLongShort('sell', ctxMenu.price, ctxMenu.x); setCtxMenu(null); }}>
+                        <span className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ background: (TH.down || '#ef5350') + '2a', color: TH.down }}><TrendingDown size={12} /></span>
+                        شورت <span className="opacity-55 font-normal text-[11px]">(Short / فروش)</span>
+                      </button>
+                      {/* #۹ ترید واقعی (پنلِ سفارش) + پاک‌کردنِ ترسیم‌ها */}
+                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2 opacity-80" style={{ color: TH.textStrong }}
                         onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { startTrade('buy', ctxMenu.price); setCtxMenu(null); }}><Activity size={13} /> خرید از {fmtPrice(symbol, ctxMenu.price)}</button>
+                        onClick={() => { startTrade('buy', ctxMenu.price); setCtxMenu(null); }}><Activity size={13} /> ترید واقعی (پنلِ سفارش)</button>
                       <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.down }}
                         onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { startTrade('sell', ctxMenu.price); setCtxMenu(null); }}><Activity size={13} /> فروش از {fmtPrice(symbol, ctxMenu.price)}</button>
+                        onClick={() => { try { drawRef.current && drawRef.current.clearAll(); } catch (e) {} setOrder(null); treeRefresh(); setCtxMenu(null); }}><Trash2 size={13} /> پاک‌کردنِ ترسیم‌ها/موقعیت‌ها</button>
+                      <div className="my-1 border-t" style={{ borderColor: TH.border }} />
                     </>
                   )}
                   <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
