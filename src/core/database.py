@@ -656,6 +656,9 @@ class AcademyStudent(Base):
     phone_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     # بازارنما (Pro-Chart): نوعِ حساب از بدوِ ثبت‌نام — crypto (LBank) یا broker (وان‌رویال). جدا و بدونِ تداخل.
     account_type: Mapped[str] = mapped_column(String(20), nullable=True)
+    # اشتراک‌های محصولِ مجزا (گزینهٔ A — همه به یک کیفِ کانترکت واریز)
+    prochart_until: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)   # اشتراکِ پرو-چارت (VIP)
+    forex_copy_until: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True) # اشتراکِ کپی‌تریدِ فارکس
 
 
 class AcademyDevice(Base):

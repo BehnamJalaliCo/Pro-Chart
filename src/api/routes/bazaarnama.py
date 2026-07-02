@@ -45,21 +45,31 @@ _AI_QUOTA = {"vip": 2, "premium": 5}
 # قابلیت‌های پرمیومِ بازارنما (کاربرِ عادی/free قفل است): اسکریپت‌نویسی، هوشِ مصنوعی،
 # و ترید روی چارت (البنک/وان‌رویال). فعال‌سازی: ثبت‌نام → واریز → تأییدِ مدیر (tier=vip/premium).
 _PREMIUM_MSG = "این قابلیت ویژهٔ کاربرانِ پرمیومِ بازارنماست؛ پس از ثبت‌نام، واریز و تأییدِ مدیر فعال می‌شود."
-_VIP_MSG = "این قابلیت ویژهٔ اعضای VIP و پرمیومِ بازارنماست؛ با تهیهٔ اشتراک فعال می‌شود."
+_VIP_MSG = "این قابلیت با اشتراکِ پرو-چارت (VIP) فعال می‌شود."
 
 
-def _require_vip(st: "AcademyStudent") -> None:
-    # VIP یا بالاتر: دیدنِ سیگنال، هوشِ مصنوعی، اسکریپت‌نویسی
-    if _effective_tier(st) not in ("vip", "premium"):
+def _prochart_active(st: "AcademyStudent") -> bool:
+    # اشتراکِ پرو-چارت (تک‌سطحیِ VIP) فعال است؟ — با سازگاریِ عقب‌روِ tier قدیمی
+    pu = getattr(st, "prochart_until", None)
+    if pu is not None and pu > datetime.now(timezone.utc):
+        return True
+    return _effective_tier(st) in ("vip", "premium")
+
+
+def _require_prochart(st: "AcademyStudent") -> None:
+    # پرو-چارت VIP همه‌چیزِ اپ را باز می‌کند (سیگنال/AI/اسکریپت/معاملهٔ واقعی)
+    if not _prochart_active(st):
         raise HTTPException(status_code=403,
-                            detail={"msg": _VIP_MSG, "premium_required": True})
+                            detail={"msg": _PREMIUM_MSG, "premium_required": True})
+
+
+# سازگاری: گِیت‌های قدیمی حالا = اشتراکِ پرو-چارت (تک‌سطحی)
+def _require_vip(st: "AcademyStudent") -> None:
+    _require_prochart(st)
 
 
 def _require_premium(st: "AcademyStudent") -> None:
-    # فقط پرمیوم: معاملهٔ واقعی (اتصالِ صرافی + سفارشِ واقعی)
-    if _effective_tier(st) != "premium":
-        raise HTTPException(status_code=403,
-                            detail={"msg": _PREMIUM_MSG, "premium_required": True})
+    _require_prochart(st)
 
 
 def _now():
@@ -767,8 +777,8 @@ async def _notify_support(text: str) -> None:
 
 @router.post("/payment/submit")
 async def payment_submit(tx_hash: str = Body(..., embed=True),
+                         product: str = Body("prochart", embed=True),
                          plan: str = Body("monthly", embed=True),
-                         tier: str = Body("vip", embed=True),
                          st: AcademyStudent = Depends(current_student),
                          db: AsyncSession = Depends(get_db)):
     """کاربر هشِ تراکنشِ USDT (BEP-20) را می‌فرستد → تأییدِ خودکار روی BSC →
@@ -777,12 +787,17 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
     from src.core.redis_client import redis_client
     from src.api.routes._bsc import verify_usdt_payment
 
-    tier = tier if tier in ("vip", "premium") else "vip"
-    plan = plan if plan in ("monthly", "yearly") else "monthly"
-    # نردبانِ واحد: VIP=دیدنِ سیگنال، پرمیوم=معاملهٔ واقعی
-    _PRICES = {"vip": {"monthly": 25.0, "yearly": 250.0}, "premium": {"monthly": 60.0, "yearly": 600.0}}
-    min_amt = _PRICES[tier][plan]
-    days = 30 if plan == "monthly" else 365
+    # محصولاتِ مجزا — همه به یک کیفِ کانترکت واریز؛ تفکیک با (محصول+مبلغ)+ضدِتکرارِ tx
+    _PRODUCT_PRICES = {
+        "prochart":        {"monthly": (25.0, 30),  "yearly": (200.0, 365)},
+        "academy_vip":     {"monthly": (25.0, 30),  "yearly": (250.0, 365)},
+        "academy_premium": {"monthly": (60.0, 30),  "yearly": (600.0, 365)},
+        "forex_copy":      {"monthly": (90.0, 30),  "quarterly": (200.0, 90)},
+    }
+    product = product if product in _PRODUCT_PRICES else "prochart"
+    _plans = _PRODUCT_PRICES[product]
+    plan = plan if plan in _plans else next(iter(_plans))
+    min_amt, days = _plans[plan]
     txk = (tx_hash or "").strip().lower()
     try:
         if await redis_client.exists(f"bn:tx:{txk}"):
@@ -800,17 +815,24 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
         await redis_client.client.set(f"bn:tx:{txk}", str(st.id), ex=86400 * 90)
     except Exception:  # noqa: BLE001
         pass
-    st.tier = tier
-    st.expires_at = datetime.now(timezone.utc) + timedelta(days=days)
+    until = datetime.now(timezone.utc) + timedelta(days=days)
+    if product == "prochart":
+        st.prochart_until = until
+    elif product == "academy_vip":
+        st.tier = "vip"; st.expires_at = until
+    elif product == "academy_premium":
+        st.tier = "premium"; st.expires_at = until
+    elif product == "forex_copy":
+        st.forex_copy_until = until
     await db.commit()
     await _notify_support(
-        "💰 پرداختِ پرمیومِ بازارنما\n"
+        "💰 پرداختِ اشتراکِ بازارنما\n"
         f"کاربر: {st.username} ({getattr(st, 'account_type', None) or '-'})\n"
-        f"مبلغ: {res.get('amount')} USDT | پلن: {plan} ({days} روز)\n"
+        f"محصول: {product} | پلن: {plan} ({days} روز) | مبلغ: {res.get('amount')} USDT\n"
         f"از: {res.get('from')}\ntx: {tx_hash}"
     )
-    logger.info("bn_payment_verified", sid=st.id, amount=res.get("amount"), plan=plan)
-    return {"ok": True, "tier": tier, "days": days, "amount": res.get("amount")}
+    logger.info("bn_payment_verified", sid=st.id, amount=res.get("amount"), product=product, plan=plan)
+    return {"ok": True, "product": product, "days": days, "amount": res.get("amount"), "until": until.isoformat()}
 
 
 # ═══════════════ اتصالِ حسابِ واقعیِ کاربر (LBank / MT5) #217 #218 ═══════════════
