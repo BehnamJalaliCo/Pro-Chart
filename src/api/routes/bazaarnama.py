@@ -127,13 +127,33 @@ async def bn_copytrade_status(st: AcademyStudent = Depends(current_student), db:
     now = datetime.now(timezone.utc)
     fx_sub = bool(getattr(st, "forex_copy_until", None) and st.forex_copy_until > now)
     ref_ok = bool(lbank and getattr(lbank, "referral_verified", False))
+    kyc_ok = (getattr(st, "kyc_status", None) == "approved")
+    forex = {"enabled": bool(getattr(st, "copy_forex", False)),
+             "risk_pct": float(getattr(st, "copy_forex_risk", 1.0) or 1.0),
+             "connected": bool(mt5), "subscription": fx_sub, "kyc": bool(kyc_ok),
+             "eligible": bool(mt5 and fx_sub)}
+    if mt5:
+        try:
+            import os as _os, httpx as _httpx
+            base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
+            async with _httpx.AsyncClient(timeout=6.0) as _cx:
+                _r = await _cx.get(base + "/user/copy-svc-status", params={"login": mt5.account_ref},
+                                   headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")})
+                if _r.status_code == 200:
+                    d = _r.json()
+                    if d.get("connected"):
+                        for k in ("master_ok", "dd_paused", "equity", "margin", "margin_free", "positions",
+                                  "risk_mode", "risk_value", "max_lot", "max_open_trades", "copy_sl_tp",
+                                  "max_daily_loss_pct", "symbols"):
+                            if d.get(k) is not None:
+                                forex[k] = d[k]
+        except Exception as _e:  # noqa: BLE001
+            logger.warning("copytrade_status_forex_live_failed", error=str(_e))
     return {
         "crypto": {"enabled": bool(getattr(st, "copy_crypto", False)),
                    "risk_pct": float(getattr(st, "copy_crypto_risk", 1.0) or 1.0),
                    "connected": bool(lbank), "referral_ok": ref_ok, "eligible": ref_ok},
-        "forex": {"enabled": bool(getattr(st, "copy_forex", False)),
-                  "risk_pct": float(getattr(st, "copy_forex_risk", 1.0) or 1.0),
-                  "connected": bool(mt5), "subscription": fx_sub, "eligible": bool(mt5 and fx_sub)},
+        "forex": forex,
     }
 
 
@@ -181,9 +201,12 @@ async def bn_copytrade_set(market: str, payload: dict = Body(...),
         import os as _os, httpx as _httpx
         base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
         async with _httpx.AsyncClient(timeout=6.0) as cx:
+            _cfg = {"mt5_login": mt5.account_ref, "enabled": enabled, "risk_value": risk}
+            for _k in ("risk_mode", "max_lot", "max_open_trades", "copy_sl_tp", "max_daily_loss_pct"):
+                if payload.get(_k) is not None:
+                    _cfg[_k] = payload.get(_k)
             r = await cx.post(base + "/user/copy-svc",
-                              headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")},
-                              json={"mt5_login": mt5.account_ref, "enabled": enabled, "risk_value": risk})
+                              headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")}, json=_cfg)
             fwd_ok = (r.status_code == 200)
     except Exception as e:  # noqa: BLE001
         logger.warning("bn_copy_forward_failed", error=str(e))

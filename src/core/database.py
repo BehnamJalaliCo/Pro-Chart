@@ -663,6 +663,10 @@ class AcademyStudent(Base):
     copy_crypto_risk: Mapped[float] = mapped_column(Float, default=1.0)     # ٪ریسکِ کپیِ کریپتو
     copy_forex: Mapped[bool] = mapped_column(Boolean, default=False)        # سوییچِ کپیِ فارکس
     copy_forex_risk: Mapped[float] = mapped_column(Float, default=1.0)      # ٪ریسکِ کپیِ فارکس
+    kyc_status: Mapped[str] = mapped_column(String(12), default="none", nullable=True)   # none/pending/approved/rejected
+    kyc_full_name: Mapped[str] = mapped_column(String(120), nullable=True)
+    kyc_country: Mapped[str] = mapped_column(String(60), nullable=True)
+    disclaimer_version: Mapped[str] = mapped_column(String(16), nullable=True)
 
 
 class AcademyDevice(Base):

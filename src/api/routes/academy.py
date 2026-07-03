@@ -562,6 +562,8 @@ async def me(st: AcademyStudent = Depends(current_student), db: AsyncSession = D
             "phone_number": st.phone_number,
             "phone_required": (not st.phone_number),
             "expires_at": st.expires_at.isoformat() if st.expires_at else None,
+            "prochart_until": st.prochart_until.isoformat() if getattr(st, "prochart_until", None) else None,
+            "forex_copy_until": st.forex_copy_until.isoformat() if getattr(st, "forex_copy_until", None) else None,
             "completed": len(done_ids), "total_lessons": total,
             "progress_pct": round(100 * len(done_ids) / max(1, total), 1),
             "xp": xp, "badges": badges, "by_level": by_level,

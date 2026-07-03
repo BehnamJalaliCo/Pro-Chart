@@ -407,3 +407,26 @@ async def get_image(iid: int, db: AsyncSession = Depends(get_db)):
         raise HTTPException(404, "تصویر یافت نشد.")
     return Response(content=bytes(row.data), media_type=row.content_type,
                     headers={"Cache-Control": "public, max-age=31536000"})
+
+
+# ── discover: کشفِ تریدرها/پست‌ها با سورت ──
+@router.get("/discover")
+async def discover(sort: str = "trending", limit: int = 20, cursor: int = 0,
+                   st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    limit = max(1, min(int(limit or 20), 50))
+    params = {"lim": limit}
+    where = "WHERE p.deleted=false AND p.reply_to IS NULL "
+    if cursor:
+        where += "AND p.id < :cur "; params["cur"] = int(cursor)
+    if sort == "new":
+        order = "p.id DESC"
+    elif sort == "top":
+        order = "p.likes_count DESC, p.id DESC"
+    else:  # trending: امتیازِ تازگی+تعامل (۷۲ ساعتِ اخیر وزن‌دار)
+        order = ("(p.likes_count*3 + p.replies_count*2 + "
+                 "GREATEST(0, 72 - EXTRACT(EPOCH FROM (now()-p.created_at))/3600)) DESC, p.id DESC")
+    q = ("SELECT p.*, s.username AS author_name, s.tier AS tier FROM bn_posts p "
+         "JOIN academy_students s ON s.id=p.author_id " + where + f" ORDER BY {order} LIMIT :lim")
+    rows = (await db.execute(text(q), params)).all()
+    items = [await _post_row(db, r, st.id) for r in rows]
+    return {"sort": sort, "posts": items, "next_cursor": items[-1]["id"] if items else None}

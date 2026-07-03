@@ -28,6 +28,7 @@ from src.api.routes import (
     bn_user_extra,
     bn_social,
     bn_r7,
+    bn_r8,
     admin_ig_users,
     analytics,
     articles,
@@ -223,6 +224,7 @@ app.include_router(seo_admin.router, prefix="/admin/seo", tags=["SEO داشبو�
 app.include_router(panel.router, prefix="/admin", tags=["پنل ادمین"])
 app.include_router(user_panel.router, prefix="/user", tags=["پنل کاربری VIP"])
 app.include_router(academy.router, prefix="/academy", tags=["آکادمی VIP"])
+app.include_router(bn_r8.router, prefix="/academy/bn", tags=["کپی‌تریدِ فارکسِ زنده"])
 app.include_router(bazaarnama.router, prefix="/academy/bn", tags=["بازارنما (TradingView ایرانی)"])
 app.include_router(bn_user_extra.router, prefix="/academy/bn", tags=["بازارنما — پنل کاربر"])
 app.include_router(bn_social.router, prefix="/academy/bn/social", tags=["سوشالِ سراسری"])
