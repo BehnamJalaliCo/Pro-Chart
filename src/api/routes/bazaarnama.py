@@ -1073,6 +1073,11 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
     except Exception:  # noqa: BLE001
         pass
     until = datetime.now(timezone.utc) + timedelta(days=days)
+    from sqlalchemy import text as _sqltext
+    await db.execute(_sqltext(
+        "INSERT INTO bn_payments (student_id, product, plan, tx_hash, usdt, status) "
+        "VALUES (:s,:p,:pl,:tx,:u,'confirmed')"),
+        {"s": st.id, "p": product, "pl": plan, "tx": (tx_hash or "")[:80], "u": res.get("amount")})
     if product == "prochart":
         st.prochart_until = until
     elif product == "academy_vip":
@@ -1179,6 +1184,14 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
     """سفارشِ واقعی روی حسابِ خودِ کاربر — کریپتو→LBankِ کاربر، فارکس→MT5ِ کاربر.
     ویژهٔ پرمیومِ متصل. (نه کپی‌ترید — تریدِ مستقیمِ حسابِ کاربر.)"""
     _require_premium(st)
+    try:
+        from src.core.redis_client import redis_client as _rc_ks
+        if await _rc_ks.client.get("bn:killswitch") in (b"1", "1"):
+            raise HTTPException(503, {"msg": "اجرای معاملات موقتاً توسطِ مدیر متوقف شده است.", "killswitch": True})
+    except HTTPException:
+        raise
+    except Exception:  # noqa: BLE001
+        pass
     from src.core.database import BnExchangeAccount
     from src.api.routes._crypto_feed import is_crypto, ensure_pairs
     side = (side or "").lower()
