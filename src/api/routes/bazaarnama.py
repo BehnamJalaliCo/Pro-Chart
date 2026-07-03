@@ -144,6 +144,15 @@ async def bn_copytrade_set(market: str, payload: dict = Body(...),
     from src.core.database import BnExchangeAccount
     market = market if market in ("crypto", "forex") else "crypto"
     enabled = bool(payload.get("enabled"))
+    if enabled:
+        try:
+            from src.core.redis_client import redis_client as _rc_ks
+            if await _rc_ks.client.get("bn:killswitch") in (b"1", "1"):
+                raise HTTPException(503, {"msg": "اجرای معاملات موقتاً توسطِ مدیر متوقف شده است.", "killswitch": True})
+        except HTTPException:
+            raise
+        except Exception:  # noqa: BLE001
+            pass
     try:
         risk = float(payload.get("risk_pct", 1.0) or 1.0)
     except Exception:  # noqa: BLE001

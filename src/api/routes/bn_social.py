@@ -6,9 +6,10 @@
 from __future__ import annotations
 
 import re
+import base64
 from datetime import datetime, timezone, timedelta
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Response
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -290,11 +291,45 @@ async def trader_profile(tid: int, st: AcademyStudent = Depends(current_student)
         {"me": st.id, "t": str(tid)})).first())
     recent = (await db.execute(text(_FEED_SELECT + " AND p.author_id=:t ORDER BY p.id DESC LIMIT 20"),
                                {"t": tid})).all()
+    sig_rows = (await db.execute(text(
+        "SELECT signal FROM bn_posts WHERE author_id=:t AND deleted=false AND signal IS NOT NULL LIMIT 500"),
+        {"t": tid})).all()
+    rrs = []
+    for r in sig_rows:
+        sg = r.signal or {}
+        try:
+            e = float(sg.get("entry")); tp = float(sg.get("target")); sl = float(sg.get("stop"))
+            if abs(e - sl) > 0:
+                rrs.append(abs(tp - e) / abs(e - sl))
+        except Exception:  # noqa: BLE001
+            pass
+    avg_rr = round(sum(rrs) / len(rrs), 2) if rrs else None
+    sent = (await db.execute(text(
+        "SELECT sentiment, count(*) c FROM bn_posts WHERE author_id=:t AND deleted=false GROUP BY sentiment"),
+        {"t": tid})).all()
+    bull = sum(r.c for r in sent if r.sentiment == "bull"); bear = sum(r.c for r in sent if r.sentiment == "bear")
+    bull_ratio = round(bull / (bull + bear) * 100) if (bull + bear) else None
+    if avg_rr is None:
+        risk_score = None
+    else:
+        risk_score = 2 if avg_rr >= 3 else 3 if avg_rr >= 2 else 4 if avg_rr >= 1.5 else 5 if avg_rr >= 1 else 6
+    weeks = (await db.execute(text(
+        "SELECT to_char(date_trunc('week', created_at),'YYYY-MM-DD') w, count(*) c FROM bn_posts "
+        "WHERE author_id=:t AND deleted=false AND created_at > now() - interval '84 days' GROUP BY w ORDER BY w"),
+        {"t": tid})).all()
+    stats = {
+        "copiers": followers or 0,
+        "signals_posted": len(sig_rows), "avg_rr": avg_rr, "risk_score": risk_score,
+        "bull_ratio_pct": bull_ratio,
+        "likes_per_post": round((likes or 0) / posts, 1) if posts else 0,
+        "activity_12w": [{"week": r.w, "posts": r.c} for r in weeks],
+    }
     return {
         "id": s.id, "name": _display_name(s), "tier": s.tier,
         "joined": s.created_at.isoformat() if s.created_at else None,
         "posts": posts or 0, "followers": followers or 0, "following": following or 0,
         "likes_received": int(likes or 0), "me_follows": me_follows,
+        "stats": stats,
         "recent_posts": [await _post_row(db, r, st.id) for r in recent],
     }
 
@@ -336,3 +371,39 @@ async def mute(payload: dict = Body(...),
                           "ON CONFLICT DO NOTHING"), {"s": st.id, "t": tt, "g": target})
     await db.commit()
     return {"ok": True}
+
+
+# ── آپلودِ تصویر (برای پست‌ها) ──
+_MAX_IMG = 2_000_000
+
+@router.post("/upload")
+async def upload_image(payload: dict = Body(...),
+                       st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    ct = (payload.get("content_type") or "image/jpeg").lower()[:40]
+    if not ct.startswith("image/"):
+        raise HTTPException(400, "فقط تصویر مجاز است.")
+    b64 = payload.get("data_b64") or ""
+    if isinstance(b64, str) and b64.startswith("data:") and "," in b64:
+        b64 = b64.split(",", 1)[1]
+    try:
+        raw = base64.b64decode(b64)
+    except Exception:  # noqa: BLE001
+        raise HTTPException(400, "دادهٔ تصویر نامعتبر است.")
+    if not raw or len(raw) > _MAX_IMG:
+        raise HTTPException(400, f"حجمِ تصویر باید تا {_MAX_IMG // 1000}KB باشد.")
+    if not await _rate_ok(st.id, "upload", 20, 3600):
+        raise HTTPException(429, "تعدادِ آپلود زیاد است.")
+    row = (await db.execute(text(
+        "INSERT INTO bn_images (student_id, content_type, data, bytes) VALUES (:s,:c,:d,:b) RETURNING id"),
+        {"s": st.id, "c": ct, "d": raw, "b": len(raw)})).first()
+    await db.commit()
+    return {"ok": True, "id": row.id, "url": f"/academy/bn/social/image/{row.id}", "bytes": len(raw)}
+
+
+@router.get("/image/{iid}")
+async def get_image(iid: int, db: AsyncSession = Depends(get_db)):
+    row = (await db.execute(text("SELECT content_type, data FROM bn_images WHERE id=:i"), {"i": iid})).first()
+    if not row:
+        raise HTTPException(404, "تصویر یافت نشد.")
+    return Response(content=bytes(row.data), media_type=row.content_type,
+                    headers={"Cache-Control": "public, max-age=31536000"})
