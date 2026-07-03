@@ -201,10 +201,66 @@ async def referral_link(st: AcademyStudent = Depends(current_student)):
             "min_deposit": _o.getenv("LBANK_REFERRAL_MIN_DEPOSIT", "")}
 
 
+async def _lbank_changes() -> dict:
+    """٪ تغییرِ ۲۴سِ همهٔ جفت‌های LBank — یک fetch، کشِ ۶۰ثانیه (bn:lbchg)."""
+    from src.core.redis_client import redis_client
+    import json as _json
+    try:
+        c = await redis_client.get_json("bn:lbchg")
+        if c:
+            return c
+    except Exception:  # noqa: BLE001
+        pass
+    res: dict = {}
+    try:
+        import httpx as _hx
+        async with _hx.AsyncClient(timeout=10.0) as cli:
+            r = await cli.get("https://api.lbkex.com/v2/ticker/24hr.do", params={"symbol": "all"})
+            for row in (r.json().get("data") or []):
+                sym = str(row.get("symbol", "")).replace("_", "").upper()
+                tk = row.get("ticker") or {}
+                if sym and tk.get("change") is not None:
+                    try:
+                        res[sym] = float(tk.get("change") or 0)
+                    except Exception:  # noqa: BLE001
+                        pass
+        if res:
+            await redis_client.client.set("bn:lbchg", _json.dumps(res), ex=60)
+    except Exception:  # noqa: BLE001
+        pass
+    return res
+
+
+async def _attach_change_pct(out: dict, db) -> None:
+    """٪ تغییرِ ۲۴سِ علامت‌دار: کریپتو از LBank، فارکس از بستِ روزِ قبلِ candles."""
+    from src.api.routes._crypto_feed import is_crypto
+    crypto = [x for x in out if is_crypto(x)]
+    forex = [x for x in out if not is_crypto(x)]
+    if crypto:
+        ch = await _lbank_changes()
+        for x in crypto:
+            v = ch.get(x.replace("_", "").upper())
+            if v is not None:
+                out[x]["change_pct"] = round(v, 3)
+    if forex:
+        from sqlalchemy import text as _text
+        rows = (await db.execute(_text(
+            "SELECT DISTINCT ON (symbol) symbol, close FROM candles "
+            "WHERE symbol = ANY(:syms) AND timeframe='D1' "
+            "AND time < date_trunc('day', now() at time zone 'UTC') "
+            "ORDER BY symbol, time DESC"), {"syms": forex})).all()
+        prev = {r[0]: float(r[1]) for r in rows if r[1] is not None}
+        for x in forex:
+            pc = prev.get(x); mid = out[x].get("mid")
+            if pc and mid:
+                out[x]["change_pct"] = round((float(mid) - pc) / pc * 100.0, 3)
+
+
 @router.get("/prices")
 async def live_prices(
     symbols: str = "",
     st: AcademyStudent = Depends(current_student),
+    db: AsyncSession = Depends(get_db),
 ):
     """
     قیمتِ زندهٔ لحظه‌ای از Redis (همان تیک‌هایی که data-feed منتشر می‌کند).
@@ -234,6 +290,10 @@ async def live_prices(
         crypto_syms = [s for s in syms if is_crypto(s) and s not in out]
         if crypto_syms:
             out.update(await crypto_prices(crypto_syms))
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        await _attach_change_pct(out, db)
     except Exception:  # noqa: BLE001
         pass
     return {"prices": out, "market_open": bool(out), "server_time": _now().isoformat()}
