@@ -299,6 +299,94 @@ async def live_prices(
     return {"prices": out, "market_open": bool(out), "server_time": _now().isoformat()}
 
 
+# ─────────────────── متادیتای نماد (name_fa/name_en/cat) ───────────────────
+_CCY_FA = {"USD": "دلار", "EUR": "یورو", "GBP": "پوند", "JPY": "ین ژاپن", "CHF": "فرانک سوئیس",
+           "AUD": "دلار استرالیا", "CAD": "دلار کانادا", "NZD": "دلار نیوزیلند", "CNH": "یوان چین",
+           "SEK": "کرون سوئد", "NOK": "کرون نروژ", "TRY": "لیر ترکیه", "ZAR": "رند آفریقا",
+           "MXN": "پزو مکزیک", "SGD": "دلار سنگاپور", "HKD": "دلار هنگ‌کنگ", "PLN": "زلوتی", "DKK": "کرون دانمارک"}
+_METAL_FA = {"XAU": ("طلا", "Gold"), "XAG": ("نقره", "Silver"), "XPT": ("پلاتین", "Platinum"), "XPD": ("پالادیوم", "Palladium")}
+_ENERGY_FA = {"WTI": ("نفت WTI", "Crude Oil WTI"), "BRENT": ("نفت برنت", "Brent Oil"),
+              "USOIL": ("نفت WTI", "Crude Oil"), "UKOIL": ("نفت برنت", "Brent Oil"), "NGAS": ("گازِ طبیعی", "Natural Gas")}
+_INDEX_FA = {"US30": ("داوجونز", "Dow 30"), "NAS100": ("نزدک ۱۰۰", "Nasdaq 100"), "US500": ("اس‌اند‌پی ۵۰۰", "S&P 500"),
+             "SPX500": ("اس‌اند‌پی ۵۰۰", "S&P 500"), "GER40": ("دکسِ آلمان", "DAX 40"), "DE40": ("دکسِ آلمان", "DAX 40"),
+             "UK100": ("فوتسیِ انگلیس", "FTSE 100"), "JPN225": ("نیکی ۲۲۵", "Nikkei 225"), "HK50": ("هنگ‌سنگ", "Hang Seng"),
+             "AUS200": ("ASX 200", "ASX 200"), "FRA40": ("کک ۴۰", "CAC 40"), "EU50": ("یوروستاکس ۵۰", "Euro Stoxx 50"),
+             "US2000": ("راسل ۲۰۰۰", "Russell 2000"), "USDX": ("شاخصِ دلار", "US Dollar Index")}
+_CRYPTO_FA = {"BTC": "بیت‌کوین", "ETH": "اتریوم", "BNB": "بایننس‌کوین", "SOL": "سولانا", "XRP": "ریپل",
+              "ADA": "کاردانو", "DOGE": "دوج‌کوین", "TRX": "ترون", "DOT": "پولکادات", "MATIC": "پالیگان",
+              "LTC": "لایت‌کوین", "SHIB": "شیبا", "AVAX": "آوالانچ", "LINK": "چین‌لینک", "UNI": "یونی‌سواپ",
+              "ATOM": "کازموس", "XLM": "استلار", "ETC": "اتریوم‌کلاسیک", "FIL": "فایل‌کوین", "APT": "اپتوس",
+              "ARB": "آربیتروم", "OP": "آپتیمیزم", "NEAR": "نیر", "INJ": "اینجکتیو", "SUI": "سویی",
+              "PEPE": "پپه", "WIF": "داگ‌ویف‌هت", "TON": "تون", "SEI": "سِی", "TIA": "سلستیا"}
+
+
+def _classify_symbol(raw: str, fxset: set) -> dict:
+    su = (raw or "").strip().upper()
+    if not su:
+        return {"symbol": raw, "cat": "other", "name_fa": raw, "name_en": raw}
+    # فلز
+    if su[:3] in _METAL_FA and (len(su) <= 6):
+        fa, en = _METAL_FA[su[:3]]
+        return {"symbol": su, "cat": "metal", "base": su[:3], "quote": su[3:] or "USD", "name_fa": fa, "name_en": en, "desc": fa}
+    # انرژی
+    for k, (fa, en) in _ENERGY_FA.items():
+        if su.startswith(k):
+            return {"symbol": su, "cat": "energy", "name_fa": fa, "name_en": en, "desc": fa}
+    # شاخص
+    if su in _INDEX_FA:
+        fa, en = _INDEX_FA[su]
+        return {"symbol": su, "cat": "index", "name_fa": fa, "name_en": en, "desc": fa}
+    # کریپتو
+    try:
+        from src.api.routes._crypto_feed import is_crypto
+        _isc = is_crypto(su)
+    except Exception:  # noqa: BLE001
+        _isc = su.endswith("USDT")
+    if _isc:
+        base = su.replace("_", "")
+        for q in ("USDT", "USDC", "USD"):
+            if base.endswith(q):
+                base = base[:-len(q)]; quote = q; break
+        else:
+            quote = "USDT"
+        fa = _CRYPTO_FA.get(base)
+        return {"symbol": su, "cat": "crypto", "base": base, "quote": quote,
+                "name_fa": (fa + f" ({base})") if fa else base, "name_en": base, "desc": (fa or base)}
+    # فارکس (۶ حرفیِ ارزی)
+    if len(su) == 6 and su.isalpha() and su[:3] in _CCY_FA and su[3:] in _CCY_FA:
+        a, b = su[:3], su[3:]
+        fa = f"{_CCY_FA[a]} / {_CCY_FA[b]}"
+        return {"symbol": su, "cat": "forex", "base": a, "quote": b, "name_fa": fa, "name_en": f"{a}/{b}", "desc": fa}
+    # سهام (نمادِ آلفا از فیدِ OneRoyal که فارکس/فلز/شاخص نبود)
+    if su.isalpha() and su in fxset:
+        return {"symbol": su, "cat": "stock", "name_fa": su, "name_en": su, "desc": f"سهامِ {su}"}
+    return {"symbol": su, "cat": "other", "name_fa": su, "name_en": su, "desc": su}
+
+
+@router.get("/symbol-meta")
+async def bn_symbol_meta(symbols: str = "", st: AcademyStudent = Depends(current_student)):
+    """متادیتای نماد {symbol, cat, name_fa, name_en, base, quote, desc} — برای merge در فرانت.
+    بدونِ symbols → همهٔ نمادهای کاتالوگ (کریپتو + fxsyms)."""
+    from src.core.redis_client import redis_client
+    try:
+        fxset = {str(x).upper() for x in (await redis_client.client.smembers("bn:fxsyms") or [])}
+    except Exception:  # noqa: BLE001
+        fxset = set()
+    if symbols.strip():
+        wanted = [s.strip().upper() for s in symbols.split(",") if s.strip()][:500]
+    else:
+        wanted = list(fxset)
+        try:
+            from src.api.routes._crypto_feed import ensure_pairs
+            wanted += [str(c).upper() for c in await ensure_pairs()]
+        except Exception:  # noqa: BLE001
+            pass
+    meta = {}
+    for sym in wanted:
+        meta[sym] = _classify_symbol(sym, fxset)
+    return {"meta": meta, "count": len(meta)}
+
+
 # ─────────────────── سفارش از روی چارت (trade-from-chart) ───────────────────
 # فاز ۱+۲: اعتبارسنجی + R/R + پیش‌نمایش.  فاز ۳+۴: اجرای زنده روی حسابِ اتوترِیدِ مَستر.
 # اجرای زنده دو گاردِ هم‌زمان دارد:
