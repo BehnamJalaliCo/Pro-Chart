@@ -29,6 +29,7 @@ from src.api.routes import (
     bn_social,
     bn_r7,
     bn_r8,
+    bn_bauth,
     admin_ig_users,
     analytics,
     articles,
@@ -205,6 +206,7 @@ async def metrics(admin: Admin = Depends(get_current_admin)):
 
 
 app.include_router(auth.router, prefix="/auth", tags=["احراز هویت"])
+app.include_router(bn_bauth.router, tags=["B-AUTH (ایمیلی/KYC/رفرال)"])
 app.include_router(users.router, prefix="/users", tags=["کاربران"])
 app.include_router(admin.router, prefix="/admin", tags=["مدیریت"])
 app.include_router(live_prices.router, prefix="/ws", tags=["قیمت زنده"])
