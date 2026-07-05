@@ -1212,6 +1212,7 @@ async def connect_remove(kind: str, st: AcademyStudent = Depends(current_student
 @router.post("/real-order")
 async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., embed=True),
                      amount: float = Body(..., embed=True), price: float = Body(0, embed=True),
+                     leverage: int = Body(5, embed=True),
                      st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
     """سفارشِ واقعی روی حسابِ خودِ کاربر — کریپتو→LBankِ کاربر، فارکس→MT5ِ کاربر.
     ویژهٔ پرمیومِ متصل. (نه کپی‌ترید — تریدِ مستقیمِ حسابِ کاربر.)"""
@@ -1246,7 +1247,8 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
     import os as _os
     from src.core.database import BnOrder
     if crypto:
-        from src.api.routes._lbank_exec import place_order
+        # موتورِ مستقلِ فیوچرزِ Pro-Chart (مستقیم به LBank با کلیدِ کاربر؛ مستقل از تریدیار)
+        from src.api.routes import crypto_exec
         from src.core.crypto import decrypt_secret
         key = decrypt_secret(a.enc_key or "") or ""
         sec = decrypt_secret(a.enc_secret or "") or ""
@@ -1257,18 +1259,25 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
                         amount=float(amount), price=float(price) or None, status="pending")
         db.add(order)
         await db.flush()
-        res = await place_order(key, sec, sym, side, float(amount), float(price) or None)
+        res = await crypto_exec.open_market(key, sec, sym, side, float(amount), int(leverage or 5))
+        if res.get("disabled"):
+            order.status = "failed"; order.error = "crypto_exec_disabled"
+            await db.commit()
+            raise HTTPException(status_code=503, detail={
+                "msg": "اجرای واقعیِ کریپتو در حالِ راه‌اندازیِ نهایی است؛ به‌زودی فعال می‌شود.",
+                "crypto_exec_disabled": True})
         if res.get("ok"):
             order.status = "filled"
-            order.broker_order_id = str(res.get("order_id") or "")[:64]
+            _r = res.get("resp") or {}
+            order.broker_order_id = str(_r.get("orderId") or _r.get("data") or _r.get("clientOrderId") or "")[:64]
             await db.commit()
-            logger.info("bn_real_order_lbank", sid=st.id, sym=sym, side=side)
-            return {"placed": True, "broker": "LBank", "order_id": res.get("order_id"),
-                    "symbol": sym, "side": side, "amount": amount}
+            logger.info("bn_real_order_lbank_futures", sid=st.id, sym=sym, side=side)
+            return {"placed": True, "broker": "LBank", "market": "futures",
+                    "symbol": sym, "side": side, "amount": amount, "leverage": int(leverage or 5)}
         order.status = "failed"
         order.error = str(res.get("error") or "")[:255]
         await db.commit()
-        raise HTTPException(status_code=502, detail=res.get("error", "سفارش روی LBank ناموفق بود."))
+        raise HTTPException(status_code=502, detail=res.get("error", "سفارشِ فیوچرزِ LBank ناموفق بود."))
 
     # فارکس → MT5ِ خودِ کاربر روی سرورِ اجرا (per-user؛ هرگز روی مَستر).
     # سفارش در صفِ مستقلِ pro-chart می‌نشیند؛ اجرای زنده با فلگِ BN_FOREX_LIVE + سرورِ اجرا.
