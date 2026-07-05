@@ -112,8 +112,13 @@ async def register(payload: dict = Body(...), db: AsyncSession = Depends(get_db)
     st = AcademyStudent(username=em, email=em, password_hash=hash_password(pw), tier="free", status="active")
     db.add(st)
     await db.flush()
-    tok = await _issue_rs256(st.id, em, "free")
     await db.commit()
+    try:
+        from src.api.routes.bn_gate import grant_forex_trial
+        await grant_forex_trial(st, db)
+    except Exception:  # noqa: BLE001
+        pass
+    tok = await _issue_rs256(st.id, em, "free")
     if not tok:
         raise HTTPException(503, "صدورِ توکن ناموفق بود.")
     return {"token": tok["access_token"], "refresh_token": tok.get("refresh_token"), "user": await _user_out(st)}

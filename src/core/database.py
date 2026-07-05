@@ -659,6 +659,7 @@ class AcademyStudent(Base):
     # اشتراک‌های محصولِ مجزا (گزینهٔ A — همه به یک کیفِ کانترکت واریز)
     prochart_until: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)   # اشتراکِ پرو-چارت (VIP)
     forex_copy_until: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True) # اشتراکِ کپی‌تریدِ فارکس
+    forex_signal_until: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True) # تریالِ ۴۸ساعتهٔ سیگنالِ فارکس
     copy_crypto: Mapped[bool] = mapped_column(Boolean, default=False)       # سوییچِ کپیِ کریپتو
     copy_crypto_risk: Mapped[float] = mapped_column(Float, default=1.0)     # ٪ریسکِ کپیِ کریپتو
     copy_forex: Mapped[bool] = mapped_column(Boolean, default=False)        # سوییچِ کپیِ فارکس

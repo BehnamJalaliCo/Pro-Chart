@@ -30,6 +30,7 @@ from src.api.routes import (
     bn_r7,
     bn_r8,
     bn_bauth,
+    bn_gate,
     admin_ig_users,
     analytics,
     articles,
@@ -231,6 +232,7 @@ app.include_router(bazaarnama.router, prefix="/academy/bn", tags=["بازارن�
 app.include_router(bn_user_extra.router, prefix="/academy/bn", tags=["بازارنما — پنل کاربر"])
 app.include_router(bn_social.router, prefix="/academy/bn/social", tags=["سوشالِ سراسری"])
 app.include_router(bn_r7.router, prefix="/academy/bn", tags=["مرکزِ حساب/اتاقِ کنترل"])
+app.include_router(bn_gate.router, prefix="/academy/bn", tags=["B24 گیت/تنظیمات"])
 app.include_router(admin_academy.router, prefix="/admin/academy", tags=["مدیریت آکادمی VIP"])
 app.include_router(admin_ig_users.router, prefix="/admin/ig-users", tags=["مدیریت کاربران IG"])
 app.include_router(admin_bn_core.router, prefix="/admin/bn", tags=["بازارنما — هسته"])

@@ -96,3 +96,30 @@ async def close_symbol(api_key: str, api_secret: str, symbol: str) -> dict:
         return await _run(api_key, api_secret, go)
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "error": str(e)[:200]}
+
+
+async def balance(api_key: str, api_secret: str) -> float | None:
+    """موجودیِ USDT حسابِ فیوچرزِ کاربر (SwapU). None اگر ناموفق."""
+    if not (api_key and api_secret):
+        return None
+    async def go(cl):
+        return await cl.query_account("USDT", _PG)
+    try:
+        r = await _run(api_key, api_secret, go)
+    except Exception as e:  # noqa: BLE001
+        logger.warning("crypto_balance_query_failed", error=str(e))
+        return None
+    d = r.get("data") if isinstance(r, dict) else r
+    if isinstance(d, list):
+        d = d[0] if d else {}
+    if not isinstance(d, dict):
+        return None
+    for k in ("availableBalance", "available", "accountEquity", "equity", "usdtEquity",
+              "totalEquity", "balance", "totalBalance", "marginBalance", "walletBalance"):
+        v = d.get(k)
+        if v is not None:
+            try:
+                return float(v)
+            except Exception:  # noqa: BLE001
+                continue
+    return None
