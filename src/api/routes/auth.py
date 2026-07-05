@@ -66,7 +66,10 @@ async def login(request: Request, db: AsyncSession = Depends(get_db)):
     if _raw.get("email"):
         from src.api.routes.bn_bauth import do_email_login
         return await do_email_login(_raw, db)
-    body = LoginRequest(**_raw)
+    try:
+        body = LoginRequest(**_raw)
+    except Exception:  # noqa: BLE001
+        raise HTTPException(status_code=422, detail="ورودی نامعتبر است.")
     """
     ورود ادمین به سیستم.
 

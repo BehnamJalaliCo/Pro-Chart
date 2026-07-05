@@ -3,8 +3,10 @@
 """
 from __future__ import annotations
 
+import hashlib
 import os
 import re
+import secrets
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from sqlalchemy import select, text
@@ -117,6 +119,54 @@ async def register(payload: dict = Body(...), db: AsyncSession = Depends(get_db)
     return {"token": tok["access_token"], "refresh_token": tok.get("refresh_token"), "user": await _user_out(st)}
 
 
+_RESET_TTL = 1800  # ۳۰ دقیقه
+
+
+async def _send_prochart_reset(email: str, student_id: int) -> bool:
+    """ایمیلِ بازیابیِ رمزِ اختصاصیِ Pro-Chart (جدا از قالبِ آکادمی) — برندِ Pro-Chart، فرستندهٔ Pro-Chart."""
+    from src.core.config import settings
+    from src.core.redis_client import redis_client
+    key = getattr(settings, "RESEND_API_KEY", "") or os.getenv("RESEND_API_KEY", "")
+    if not key:
+        logger.warning("prochart_reset_no_resend_key")
+        return False
+    token = secrets.token_urlsafe(32)
+    rk = "pwreset:" + hashlib.sha256(token.encode()).hexdigest()  # هم‌فرمت با consume_reset_token
+    await redis_client.client.set(rk, str(student_id), ex=_RESET_TTL)
+    link = f"{os.getenv('APP_URL', 'https://pro-chart.com')}/reset-password?token={token}"
+    html = (
+        '<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#0b0f17;padding:32px;'
+        'color:#e5e7eb;border-radius:16px;max-width:480px;margin:auto">'
+        '<h2 style="color:#2962FF;margin:0 0 8px">🔐 Pro-Chart</h2>'
+        '<p style="margin:0 0 16px;color:#9ca3af">درخواستِ بازیابیِ رمزِ حسابِ Pro-Chart دریافت شد. '
+        'برای تنظیمِ رمزِ جدید روی دکمهٔ زیر بزنید:</p>'
+        f'<a href="{link}" style="display:block;text-align:center;background:#2962FF;color:#fff;'
+        'font-weight:800;text-decoration:none;border-radius:12px;padding:14px;font-size:16px">تنظیمِ رمزِ جدید</a>'
+        '<p style="margin:16px 0 0;color:#6b7280;font-size:12px;word-break:break-all">'
+        f'اگر دکمه کار نکرد این نشانی را باز کنید:<br>{link}</p>'
+        '<p style="margin:12px 0 0;color:#6b7280;font-size:13px">این لینک تا ۳۰ دقیقه معتبر است. '
+        'اگر شما درخواست نکرده‌اید، این ایمیل را نادیده بگیرید.</p>'
+        '<hr style="border:none;border-top:1px solid #1f2937;margin:20px 0">'
+        '<p style="margin:0;color:#6b7280;font-size:12px">این یک ایمیلِ خودکارِ '
+        '<b style="color:#2962FF">Pro-Chart</b> است؛ لطفاً پاسخ ندهید.<br>'
+        '<a href="https://pro-chart.com" style="color:#6b7280;text-decoration:none">pro-chart.com</a></p></div>'
+    )
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=15) as cx:
+            r = await cx.post("https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {key}"},
+                json={"from": "Pro-Chart <noreply@trade-future.ir>", "to": [email],
+                      "reply_to": "Pro-Chart <noreply@trade-future.ir>",
+                      "subject": "بازیابیِ رمزِ Pro-Chart",
+                      "html": html,
+                      "text": f"بازیابیِ رمزِ Pro-Chart\n\nبرای تنظیمِ رمزِ جدید این نشانی را باز کنید:\n{link}\n\nتا ۳۰ دقیقه معتبر است."})
+        return r.status_code < 300
+    except Exception as e:  # noqa: BLE001
+        logger.error("prochart_reset_send_failed", error=str(e))
+        return False
+
+
 @router.post("/auth/forgot")
 async def forgot(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
     em = (payload.get("email") or "").strip().lower()
@@ -125,8 +175,7 @@ async def forgot(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
         st = (await db.execute(select(AcademyStudent).where(AcademyStudent.email == em))).scalar_one_or_none()
         if st:
             try:
-                from src.core.email_otp import send_password_reset
-                await send_password_reset(em, st.id, os.getenv("APP_URL", "https://pro-chart.com"))
+                await _send_prochart_reset(em, st.id)
             except Exception as e:  # noqa: BLE001
                 logger.warning("forgot_send_failed", error=str(e))
     return {"ok": True}
