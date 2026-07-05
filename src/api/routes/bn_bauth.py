@@ -134,8 +134,51 @@ async def _send_prochart_welcome(email: str) -> bool:
         return False
 
 
+async def _send_prochart_verify(email: str, code: str) -> bool:
+    """ایمیلِ کدِ تأییدِ ثبت‌نامِ Pro-Chart (OTP ۶رقمی)."""
+    from src.core.config import settings
+    key = getattr(settings, "RESEND_API_KEY", "") or os.getenv("RESEND_API_KEY", "")
+    if not key:
+        return False
+    html = (
+        '<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#0b0f17;padding:32px;'
+        'color:#e5e7eb;border-radius:16px;max-width:480px;margin:auto">'
+        '<h2 style="color:#2962FF;margin:0 0 8px">✅ تأییدِ ایمیل — Pro-Chart</h2>'
+        '<p style="margin:0 0 16px;color:#9ca3af">برای تکمیلِ ثبت‌نام، کدِ زیر را در اپ وارد کنید:</p>'
+        f'<div style="text-align:center;background:#111827;border:1px dashed #2962FF;border-radius:12px;'
+        'padding:16px;margin:0 0 16px"><div style="color:#9ca3af;font-size:12px">کدِ تأیید</div>'
+        f'<div style="color:#2962FF;font-size:32px;font-weight:800;letter-spacing:6px;direction:ltr">{code}</div></div>'
+        '<p style="margin:0;color:#6b7280;font-size:13px">این کد تا ۱۵ دقیقه معتبر است. اگر شما ثبت‌نام نکرده‌اید، نادیده بگیرید.</p>'
+        '<hr style="border:none;border-top:1px solid #1f2937;margin:20px 0">'
+        '<p style="margin:0;color:#6b7280;font-size:12px"><b style="color:#2962FF">Pro-Chart</b> · '
+        '<a href="https://pro-chart.com" style="color:#6b7280;text-decoration:none">pro-chart.com</a></p></div>'
+    )
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=12) as cx:
+            r = await cx.post("https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {key}"},
+                json={"from": "Pro-Chart <noreply@trade-future.ir>", "to": [email],
+                      "subject": "کدِ تأییدِ ثبت‌نامِ Pro-Chart",
+                      "html": html, "text": f"کدِ تأییدِ Pro-Chart: {code}\n\nتا ۱۵ دقیقه معتبر است."})
+        ok = r.status_code < 300
+        logger.info("prochart_verify_sent", email=email, status=r.status_code) if ok else \
+            logger.warning("prochart_verify_rejected", status=r.status_code, body=r.text[:200])
+        return ok
+    except Exception as e:  # noqa: BLE001
+        logger.warning("prochart_verify_failed", error=str(e))
+        return False
+
+
+_REG_TTL = 900  # ۱۵ دقیقه
+_REG_COOLDOWN = 60
+
+
 @router.post("/auth/register")
 async def register(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
+    """مرحلهٔ ۱: اعتبارسنجی + ارسالِ کدِ تأییدِ ایمیل. توکن در verify صادر می‌شود."""
+    import json
+    from src.core.redis_client import redis_client
     em = (payload.get("email") or "").strip().lower()
     pw = payload.get("password") or ""
     if not _EMAIL_RE.match(em):
@@ -145,10 +188,42 @@ async def register(payload: dict = Body(...), db: AsyncSession = Depends(get_db)
     src = await _email_sources(em, db)
     if src:
         raise HTTPException(409, {"exists": True, "sources": src})
-    st = AcademyStudent(username=em, email=em, password_hash=hash_password(pw), tier="free", status="active")
+    if await redis_client.client.get(f"reg_cd:{em}"):
+        raise HTTPException(429, {"reason": "cooldown", "msg": "کمی صبر کنید و دوباره تلاش کنید."})
+    code = f"{secrets.randbelow(900000) + 100000}"
+    await redis_client.client.set(f"reg_pending:{em}", json.dumps({
+        "password_hash": hash_password(pw), "code": code,
+        "device_id": payload.get("device_id"), "device_name": payload.get("device_name")}), ex=_REG_TTL)
+    await redis_client.client.set(f"reg_cd:{em}", "1", ex=_REG_COOLDOWN)
+    sent = await _send_prochart_verify(em, code)
+    logger.info("register_code_sent", email=em, sent=sent)
+    return {"verify_required": True, "email": em, "sent": bool(sent)}
+
+
+@router.post("/auth/register/verify")
+async def register_verify(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
+    """مرحلهٔ ۲: تأییدِ کد → ساختِ حساب + توکن."""
+    import json
+    from src.core.redis_client import redis_client
+    em = (payload.get("email") or "").strip().lower()
+    code = str(payload.get("code") or "").strip()
+    raw = await redis_client.client.get(f"reg_pending:{em}")
+    if not raw:
+        raise HTTPException(400, {"reason": "expired", "msg": "کدِ تأیید منقضی شده؛ دوباره ثبت‌نام کنید."})
+    data = json.loads(raw)
+    if not code or code != data.get("code"):
+        raise HTTPException(400, {"reason": "bad_code", "msg": "کدِ تأیید نادرست است."})
+    # مبادا در این فاصله ثبت شده باشد
+    src = await _email_sources(em, db)
+    if src:
+        await redis_client.client.delete(f"reg_pending:{em}")
+        raise HTTPException(409, {"exists": True, "sources": src})
+    st = AcademyStudent(username=em, email=em, password_hash=data["password_hash"],
+                        tier="free", status="active", phone_verified=True)
     db.add(st)
     await db.flush()
     await db.commit()
+    await redis_client.client.delete(f"reg_pending:{em}")
     try:
         from src.api.routes.bn_gate import grant_forex_trial
         await grant_forex_trial(st, db)
@@ -162,6 +237,28 @@ async def register(payload: dict = Body(...), db: AsyncSession = Depends(get_db)
     if not tok:
         raise HTTPException(503, "صدورِ توکن ناموفق بود.")
     return {"token": tok["access_token"], "refresh_token": tok.get("refresh_token"), "user": await _user_out(st)}
+
+
+@router.post("/auth/register/resend")
+async def register_resend(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
+    """ارسالِ مجددِ کدِ تأیید (کدِ تازه، با کول‌داون)."""
+    import json
+    from src.core.redis_client import redis_client
+    em = (payload.get("email") or "").strip().lower()
+    if not _EMAIL_RE.match(em):
+        raise HTTPException(400, "ایمیلِ معتبر.")
+    raw = await redis_client.client.get(f"reg_pending:{em}")
+    if not raw:
+        raise HTTPException(400, {"reason": "expired", "msg": "درخواستِ ثبت‌نامی یافت نشد."})
+    if await redis_client.client.get(f"reg_cd:{em}"):
+        raise HTTPException(429, {"reason": "cooldown"})
+    data = json.loads(raw)
+    code = f"{secrets.randbelow(900000) + 100000}"
+    data["code"] = code
+    await redis_client.client.set(f"reg_pending:{em}", json.dumps(data), ex=_REG_TTL)
+    await redis_client.client.set(f"reg_cd:{em}", "1", ex=_REG_COOLDOWN)
+    sent = await _send_prochart_verify(em, code)
+    return {"sent": bool(sent), "email": em}
 
 
 _RESET_TTL = 1800  # ۳۰ دقیقه
