@@ -178,13 +178,19 @@ async def _send_prochart_reset(email: str, student_id: int) -> bool:
     token = secrets.token_urlsafe(32)
     rk = "pwreset:" + hashlib.sha256(token.encode()).hexdigest()  # هم‌فرمت با consume_reset_token
     await redis_client.client.set(rk, str(student_id), ex=_RESET_TTL)
+    code = f"{secrets.randbelow(900000) + 100000}"  # کدِ ۶رقمی
+    await redis_client.client.set(f"reset_code:{code}", str(student_id), ex=_RESET_TTL)
     link = f"{os.getenv('APP_URL', 'https://pro-chart.com')}/reset-password?token={token}"
     html = (
         '<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#0b0f17;padding:32px;'
         'color:#e5e7eb;border-radius:16px;max-width:480px;margin:auto">'
         '<h2 style="color:#2962FF;margin:0 0 8px">🔐 Pro-Chart</h2>'
         '<p style="margin:0 0 16px;color:#9ca3af">درخواستِ بازیابیِ رمزِ حسابِ Pro-Chart دریافت شد. '
-        'برای تنظیمِ رمزِ جدید روی دکمهٔ زیر بزنید:</p>'
+        'کدِ بازیابیِ زیر را در اپ وارد کنید، یا روی دکمه بزنید:</p>'
+        f'<div style="text-align:center;background:#111827;border:1px dashed #2962FF;border-radius:12px;'
+        'padding:16px;margin:0 0 16px"><div style="color:#9ca3af;font-size:12px">کدِ بازیابی</div>'
+        f'<div style="color:#2962FF;font-size:32px;font-weight:800;letter-spacing:6px;direction:ltr">{code}</div></div>'
+        '<p style="margin:0 0 12px;color:#9ca3af">یا با دکمه:</p>'
         f'<a href="{link}" style="display:block;text-align:center;background:#2962FF;color:#fff;'
         'font-weight:800;text-decoration:none;border-radius:12px;padding:14px;font-size:16px">تنظیمِ رمزِ جدید</a>'
         '<p style="margin:16px 0 0;color:#6b7280;font-size:12px;word-break:break-all">'
@@ -205,7 +211,7 @@ async def _send_prochart_reset(email: str, student_id: int) -> bool:
                       "reply_to": "Pro-Chart <noreply@trade-future.ir>",
                       "subject": "بازیابیِ رمزِ Pro-Chart",
                       "html": html,
-                      "text": f"بازیابیِ رمزِ Pro-Chart\n\nبرای تنظیمِ رمزِ جدید این نشانی را باز کنید:\n{link}\n\nتا ۳۰ دقیقه معتبر است."})
+                      "text": f"بازیابیِ رمزِ Pro-Chart\n\nکدِ بازیابی: {code}\n\nیا این نشانی را باز کنید:\n{link}\n\nتا ۳۰ دقیقه معتبر است."})
         ok = r.status_code < 300
         if ok:
             logger.info("prochart_reset_sent", email=email, status=r.status_code)
@@ -223,6 +229,17 @@ async def forgot(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
     # همیشه ۲۰۰ (عدمِ نشتِ وجود)؛ فقط اگر کاربر بود ایمیلِ بازیابی می‌رود.
     if _EMAIL_RE.match(em):
         st = (await db.execute(select(AcademyStudent).where(AcademyStudent.email == em))).scalar_one_or_none()
+        if st is None:
+            # کاربرِ قدیمی (ایمیل در فارکس/کریپتو ولی نه هاب) → شِلِ هاب بساز تا با بازیابی claim کند
+            src = await _email_sources(em, db)
+            if src:
+                st = AcademyStudent(username=em, email=em,
+                                    password_hash=hash_password(secrets.token_urlsafe(16)),
+                                    tier="free", status="active", account_type="legacy")
+                db.add(st)
+                await db.flush()
+                await db.commit()
+                logger.info("forgot_legacy_claim_created", email=em, sid=st.id, sources=src)
         logger.info("forgot_lookup", email=em, found=bool(st))
         if st:
             try:
@@ -242,7 +259,17 @@ async def reset(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
     from src.core.email_otp import consume_reset_token
     sid = await consume_reset_token(token)
     if not sid:
-        raise HTTPException(400, "لینکِ بازیابی نامعتبر یا منقضی است.")
+        # کدِ ۶رقمی؟
+        try:
+            from src.core.redis_client import redis_client
+            v = await redis_client.client.get(f"reset_code:{token}")
+            if v:
+                sid = int(v)
+                await redis_client.client.delete(f"reset_code:{token}")
+        except Exception:  # noqa: BLE001
+            pass
+    if not sid:
+        raise HTTPException(400, "کد یا لینکِ بازیابی نامعتبر یا منقضی است.")
     st = (await db.execute(select(AcademyStudent).where(AcademyStudent.id == sid))).scalar_one_or_none()
     if st is None:
         raise HTTPException(404, "حساب یافت نشد.")
