@@ -98,6 +98,42 @@ async def do_email_login(raw: dict, db) -> dict:
     return {"token": tok["access_token"], "refresh_token": tok.get("refresh_token"), "user": await _user_out(st)}
 
 
+async def _send_prochart_welcome(email: str) -> bool:
+    """ایمیلِ خوش‌آمدِ Pro-Chart در ثبت‌نام (غیرمسدودکننده، best-effort)."""
+    from src.core.config import settings
+    key = getattr(settings, "RESEND_API_KEY", "") or os.getenv("RESEND_API_KEY", "")
+    if not key:
+        return False
+    html = (
+        '<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#0b0f17;padding:32px;'
+        'color:#e5e7eb;border-radius:16px;max-width:480px;margin:auto">'
+        '<h2 style="color:#2962FF;margin:0 0 8px">🎉 به Pro-Chart خوش آمدی</h2>'
+        '<p style="margin:0 0 16px;color:#9ca3af">حسابت با موفقیت ساخته شد. حالا می‌تونی وارد اپ بشی، '
+        'سیگنال‌ها رو ببینی و کیف‌پول/کپی‌ترید رو راه‌اندازی کنی.</p>'
+        '<a href="https://pro-chart.com" style="display:block;text-align:center;background:#2962FF;color:#fff;'
+        'font-weight:800;text-decoration:none;border-radius:12px;padding:14px;font-size:16px">ورود به Pro-Chart</a>'
+        '<hr style="border:none;border-top:1px solid #1f2937;margin:20px 0">'
+        '<p style="margin:0;color:#6b7280;font-size:12px">اگر این ثبت‌نام کارِ تو نبوده، این ایمیل را نادیده بگیر.<br>'
+        '<b style="color:#2962FF">Pro-Chart</b> · <a href="https://pro-chart.com" style="color:#6b7280;text-decoration:none">pro-chart.com</a></p></div>'
+    )
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=12) as cx:
+            r = await cx.post("https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {key}"},
+                json={"from": "Pro-Chart <noreply@trade-future.ir>", "to": [email],
+                      "subject": "به Pro-Chart خوش آمدی 🎉",
+                      "html": html,
+                      "text": "به Pro-Chart خوش آمدی! حسابت ساخته شد. ورود: https://pro-chart.com"})
+        ok = r.status_code < 300
+        logger.info("prochart_welcome_sent", email=email, status=r.status_code) if ok else \
+            logger.warning("prochart_welcome_rejected", status=r.status_code, body=r.text[:200])
+        return ok
+    except Exception as e:  # noqa: BLE001
+        logger.warning("prochart_welcome_failed", error=str(e))
+        return False
+
+
 @router.post("/auth/register")
 async def register(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
     em = (payload.get("email") or "").strip().lower()
@@ -116,6 +152,10 @@ async def register(payload: dict = Body(...), db: AsyncSession = Depends(get_db)
     try:
         from src.api.routes.bn_gate import grant_forex_trial
         await grant_forex_trial(st, db)
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        await _send_prochart_welcome(em)
     except Exception:  # noqa: BLE001
         pass
     tok = await _issue_rs256(st.id, em, "free")
@@ -166,7 +206,12 @@ async def _send_prochart_reset(email: str, student_id: int) -> bool:
                       "subject": "بازیابیِ رمزِ Pro-Chart",
                       "html": html,
                       "text": f"بازیابیِ رمزِ Pro-Chart\n\nبرای تنظیمِ رمزِ جدید این نشانی را باز کنید:\n{link}\n\nتا ۳۰ دقیقه معتبر است."})
-        return r.status_code < 300
+        ok = r.status_code < 300
+        if ok:
+            logger.info("prochart_reset_sent", email=email, status=r.status_code)
+        else:
+            logger.warning("prochart_reset_rejected", status=r.status_code, body=r.text[:200])
+        return ok
     except Exception as e:  # noqa: BLE001
         logger.error("prochart_reset_send_failed", error=str(e))
         return False
@@ -178,9 +223,11 @@ async def forgot(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
     # همیشه ۲۰۰ (عدمِ نشتِ وجود)؛ فقط اگر کاربر بود ایمیلِ بازیابی می‌رود.
     if _EMAIL_RE.match(em):
         st = (await db.execute(select(AcademyStudent).where(AcademyStudent.email == em))).scalar_one_or_none()
+        logger.info("forgot_lookup", email=em, found=bool(st))
         if st:
             try:
-                await _send_prochart_reset(em, st.id)
+                res = await _send_prochart_reset(em, st.id)
+                logger.info("forgot_send_result", email=em, sent=res)
             except Exception as e:  # noqa: BLE001
                 logger.warning("forgot_send_failed", error=str(e))
     return {"ok": True}
