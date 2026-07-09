@@ -2601,9 +2601,10 @@ export default function BazaarNama() {
             <ToolRail tool={tool} setTool={setTool} TH={TH} onHelp={setHelpId} />
           </div>
           <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
-          <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-4 h-4 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>
-          {/* گروهِ «ضخامت + سبکِ خط» — یک‌جا */}
-          <div className="flex flex-col items-center gap-0.5 rounded-md py-0.5" style={{ border: `1px solid ${TH.border}` }} title="ضخامت و سبکِ خطِ ترسیم">
+          {/* گروهِ «ظاهرِ ترسیم» — رنگ + ضخامت + سبکِ خط، همه یک‌جا (سبکِ TradingView، نوارِ تمیز) */}
+          <div className="flex flex-col items-center gap-1 rounded-md py-1 px-0.5" style={{ border: `1px solid ${TH.border}` }} title="ظاهرِ ترسیم: رنگ، ضخامت و سبکِ خط">
+            <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-4 h-4 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>
+            <div className="h-px w-4" style={{ background: TH.border }} />
             <Tip label="ضخامتِ ترسیم"><button onClick={() => setDrawWidth((w) => (w >= 4 ? 1 : Math.floor(w) + 1))} className="w-5 h-4 rounded text-[10px] font-bold tabular-nums opacity-70 hover:opacity-100" title="ضخامتِ خطِ ترسیم">{Math.round(drawWidth)}</button></Tip>
             <Tip label="سبکِ خطِ ترسیم: توپر → خط‌چین → نقطه‌ای"><button onClick={() => { const nx = { 0: 2, 2: 1, 1: 0 }[drawLineStyle] ?? 2; setDrawLineStyle(nx); setDrawDashed(nx === 2); }} className={`w-5 h-4 rounded text-[11px] leading-none ${drawLineStyle !== 0 ? 'text-white' : 'opacity-70 hover:opacity-100'}`} style={drawLineStyle !== 0 ? { background: TH.accent } : {}} title="سبکِ خطِ ترسیم">{{ 0: '─', 2: '┄', 1: '⋯' }[drawLineStyle]}</button></Tip>
           </div>
