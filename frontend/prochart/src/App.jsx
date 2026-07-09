@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { tokenStore } from './api/client';
 import AppShell from './app/AppShell';
+import useViewport from './bazaarnama/useViewport';
 import Onboarding, { needsOnboarding } from './app/Onboarding';
 import AppLock from './app/AppLock';
 import { hasPin } from './app/lock';
@@ -90,6 +91,12 @@ export default function App() {
   const [locked, setLocked] = useState(() => hasPin() || bioEnabled());
   const startRef = React.useRef(Date.now());
 
+  // وبِ دسکتاپ (عرض ≥ ۱۲۸۰ و غیرِ نیتیو) = تجربهٔ سایتِ کامل: بدونِ شِلِ موبایل (آنبوردینگ/نوارِ پایین).
+  // موبایل/تبلت/اپِ نیتیوِ Capacitor = شِلِ موبایل مثلِ قبل، دست‌نخورده.
+  const vp = useViewport();
+  const _native = !!(window.Capacitor && (window.Capacitor.isNativePlatform ? window.Capacitor.isNativePlatform() : window.Capacitor.isNative));
+  const desktopWeb = vp.isDesktop && !_native;
+
   useEffect(() => {
     (async () => {
       consumeTokenFromUrl();
@@ -111,8 +118,8 @@ export default function App() {
 
   return (
     <>
-      {ready && (authed ? (<><AppShell /><PremiumModal /></>) : <RetryGate />)}
-      {ready && authed && bootDone && showOb && <Onboarding onDone={() => setShowOb(false)} />}
+      {ready && (authed ? (<><AppShell desktop={desktopWeb} /><PremiumModal /></>) : <RetryGate />)}
+      {ready && authed && bootDone && showOb && !desktopWeb && <Onboarding onDone={() => setShowOb(false)} />}
       {!bootDone && <LaunchScreen fading={fadeOut} />}
       {ready && locked && <AppLock onUnlock={() => setLocked(false)} />}
     </>
