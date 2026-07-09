@@ -243,10 +243,6 @@ export default function BazaarNama() {
   // راهنمای ژستِ بارِ اول
   const [showGestureHint, setShowGestureHint] = useState(() => { try { return !localStorage.getItem('bn_gesture_hint_seen'); } catch (e) { return false; } });
   const dismissGestureHint = () => { try { localStorage.setItem('bn_gesture_hint_seen', '1'); } catch (e) { /* noop */ } setShowGestureHint(false); };
-  // جهتِ حرکتِ قیمتِ زنده (برای فلَشِ سبز/قرمزِ برچسبِ قیمت)
-  const prevLpRef = useRef(null);
-  const priceDir = (livePrice != null && prevLpRef.current != null) ? (livePrice > prevLpRef.current ? 'up' : livePrice < prevLpRef.current ? 'down' : '') : '';
-  useEffect(() => { prevLpRef.current = livePrice; }, [livePrice]);
   const [code, setCode] = useState(() => loadWS().code || ''); // کدِ نمااسکریپت با رفرش پاک نمی‌شود
   const [barMode, setBarMode] = useState(false); // اجرای بار-به-بارِ نمااسکریپت (اختیاری)
   const [scriptApplied, setScriptApplied] = useState(() => !!loadWS().scriptApplied); // آیا خروجیِ اسکریپت روی چارت اعمال شده
@@ -273,6 +269,10 @@ export default function BazaarNama() {
   const [live, setLive] = useState({});
   const [marketOpen, setMarketOpen] = useState(false);
   const [livePrice, setLivePrice] = useState(null);
+  // جهتِ حرکتِ قیمتِ زنده (برای فلَشِ سبز/قرمزِ برچسبِ قیمت) — باید بعد از تعریفِ livePrice باشد (وگرنه TDZ)
+  const prevLpRef = useRef(null);
+  const priceDir = (livePrice != null && prevLpRef.current != null) ? (livePrice > prevLpRef.current ? 'up' : livePrice < prevLpRef.current ? 'down' : '') : '';
+  useEffect(() => { prevLpRef.current = livePrice; }, [livePrice]);
   const [countdown, setCountdown] = useState(''); // شمارشِ معکوسِ بسته‌شدنِ کندل
   const [countdownColor, setCountdownColor] = useState(null); // تینتِ نزدیکِ بسته‌شدن (قرمز/کهربایی)
   const [showVP, setShowVP] = useState(false);
