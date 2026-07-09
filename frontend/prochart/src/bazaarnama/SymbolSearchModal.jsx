@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Search, X, Star } from 'lucide-react';
 import SymbolLogo from './SymbolLogo';
 import VirtualList from './VirtualList';
-import { searchSymbols } from './fuzzy';
+import { searchSymbols, highlightPositions } from './fuzzy';
 import { CATEGORIES, CAT_FA } from './symbolMeta';
 
 // #۷ رنگِ بَجِ نوعِ دارایی، هم‌خانوادهٔ پالتِ TradingView (هر کلاس یک رنگِ امضا)
@@ -11,20 +11,22 @@ const TYPE_COLOR = {
   index: '#9C56E6', energy: '#26A69A', other: '#787B86',
 };
 
-// های‌لایتِ بخشِ منطبقِ کوئری درونِ نماد (امضای جستجوی TradingView)
-function hl(text, q, T) {
+// های‌لایتِ حروفِ منطبقِ کوئری درونِ متن (امضای جستجوی TradingView — حتی تطبیقِ پراکنده).
+// positions از highlightPositions می‌آید؛ حروفِ پیوسته در یک span ادغام می‌شوند.
+function mark(text, positions, T) {
   const s = String(text || '');
-  const qq = String(q || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (!qq) return s;
-  const idx = s.toUpperCase().indexOf(qq);
-  if (idx < 0) return s;
-  return (
-    <>
-      {s.slice(0, idx)}
-      <span style={{ color: T.accent, fontWeight: 800 }}>{s.slice(idx, idx + qq.length)}</span>
-      {s.slice(idx + qq.length)}
-    </>
-  );
+  if (!positions || !positions.length) return s;
+  const set = new Set(positions);
+  const out = [];
+  let buf = '', on = false;
+  const flush = (k) => { if (!buf) return; out.push(on ? <span key={k} style={{ color: T.accent, fontWeight: 800 }}>{buf}</span> : buf); buf = ''; };
+  for (let i = 0; i < s.length; i++) {
+    const m = set.has(i);
+    if (m !== on) { flush('m' + i); on = m; }
+    buf += s[i];
+  }
+  flush('mend');
+  return <>{out}</>;
 }
 
 const RECENT_KEY = 'bn_recent_symbols';
@@ -50,6 +52,9 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
   useEffect(() => { if (open) { setQ(''); setDq(''); setCat('all'); setActive(0); setTimeout(() => inputRef.current && inputRef.current.focus(), 30); } }, [open]);
 
   const results = useMemo(() => searchSymbols(metaList, dq, cat), [metaList, dq, cat]);
+  // کوئریِ پاک‌شده برای های‌لایتِ نماد (نمادها الفبا-عددی‌اند؛ اسلش/فاصله حذف می‌شود).
+  const qSym = useMemo(() => dq.replace(/[^A-Za-z0-9]/g, ''), [dq]);
+  const qDesc = useMemo(() => dq.trim(), [dq]);
   useEffect(() => { setActive(0); }, [dq, cat]);
 
   const recent = useMemo(() => loadRecent().filter((s) => metaList.some((m) => m.symbol === s)), [metaList, open]);
@@ -57,11 +62,16 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
 
   const pick = (sym) => { pushRecent(sym); onPick && onPick(sym); onClose && onClose(); };
 
-  // کیبورد: ↑/↓ پیمایش، Enter انتخاب، Esc بستن
+  // کیبورد: ↑/↓ پیمایش، PageUp/PageDown جهش، Home/End ابتدا/انتها، Enter انتخاب، Esc بستن
   const onKey = (e) => {
     if (e.key === 'Escape') { onClose && onClose(); return; }
-    if (e.key === 'ArrowDown') { e.preventDefault(); setActive((a) => Math.min(results.length - 1, a + 1)); }
+    const last = results.length - 1;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive((a) => Math.min(last, a + 1)); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((a) => Math.max(0, a - 1)); }
+    else if (e.key === 'PageDown') { e.preventDefault(); setActive((a) => Math.min(last, a + 8)); }
+    else if (e.key === 'PageUp') { e.preventDefault(); setActive((a) => Math.max(0, a - 8)); }
+    else if (e.key === 'Home') { e.preventDefault(); setActive(0); }
+    else if (e.key === 'End') { e.preventDefault(); setActive(Math.max(0, last)); }
     else if (e.key === 'Enter') { const r = results[active]; if (r) pick(r.symbol); }
   };
 
@@ -131,12 +141,13 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
               const isCur = m.symbol === current;
               return (
                 <button onClick={() => pick(m.symbol)} onMouseEnter={() => setActive(i)}
+                  role="option" aria-selected={isActive}
                   className="flex items-center gap-3 w-full h-full px-4 text-right transition-colors duration-[120ms]"
                   style={{ background: isActive ? T.chipBgHover : 'transparent', boxShadow: isCur ? `inset 0 0 0 1px ${T.accent}` : 'none', color: T.textStrong }}>
                   <SymbolLogo symbol={m.symbol} size={coarse ? 30 : 26} />
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-bold leading-tight" dir="ltr">{hl(m.symbol, dq, T)}</div>
-                    <div className="text-[12px] opacity-60 leading-tight truncate">{m.desc}</div>
+                    <div className="text-[14px] font-bold leading-tight" dir="ltr">{mark(m.symbol, highlightPositions(m.symbol, qSym), T)}</div>
+                    <div className="text-[12px] opacity-60 leading-tight truncate">{mark(m.desc, highlightPositions(m.desc, qDesc), T)}</div>
                   </div>
                   {watchSet.has(m.symbol) && <Star size={13} className="text-amber-400 shrink-0" />}
                   {/* بَجِ نوعِ دارایی، سبکِ TradingView: نقطهٔ رنگی + برچسبِ کلاس */}

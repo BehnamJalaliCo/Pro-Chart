@@ -36,6 +36,16 @@ const FLAG_ORDER = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'gray'
 // ── نوعِ نماد (برای گروه‌بندیِ خودکار) — هم‌منطق با SymbolLogo.jsx ─────────────
 const KIND_LABEL = { forex: 'فارکس', metal: 'فلزات', index: 'شاخص‌ها', crypto: 'کریپتو' };
 const KIND_ORDER = ['forex', 'metal', 'index', 'crypto'];
+
+// ── ستون‌های قابل‌انتخابِ واچ‌لیست (سبکِ TV) — قیمت همیشه هست؛ این‌ها اختیاری‌اند ──
+// High/Low/Range از streamِ زندهٔ همین سشن ساخته می‌شوند (دادهٔ واقعی، نه ساختگی)،
+// چون payloadِ سرور فقط { mid, dir } دارد.
+const COLUMNS = [
+  ['change', 'تغییر٪'],
+  ['high', 'سقف'],
+  ['low', 'کف'],
+  ['range', 'دامنه٪'],
+];
 function symbolKind(sym = '') {
   const s = String(sym).toUpperCase();
   const a = s.replace(/[^A-Z]/g, '');
@@ -68,6 +78,7 @@ function defaultMeta() {
     sortDir: 'asc',
     groupBy: 'none',       // 'section' | 'type' | 'none'
     flagFilter: null,      // یک رنگ برای فیلتر یا null
+    columns: ['change'],   // ستون‌های عددیِ اختیاری (قیمت همیشه هست)
   };
 }
 
@@ -84,7 +95,8 @@ function loadMeta() {
       sections: Array.isArray(l.sections) ? l.sections : [],
     }));
     const activeListId = lists.some((l) => l.id === raw.activeListId) ? raw.activeListId : lists[0].id;
-    return { ...base, ...raw, lists, activeListId };
+    const columns = Array.isArray(raw.columns) ? raw.columns : base.columns;
+    return { ...base, ...raw, lists, activeListId, columns };
   } catch (e) {
     return defaultMeta();
   }
@@ -308,6 +320,8 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
 
   // baselineِ سشن برای ٪ (اولین midِ دیده‌شدهٔ هر نماد) — وقتی payload فیلدِ prevClose ندارد
   const baseRef = React.useRef({});
+  // سقف/کفِ سشن برای ستون‌های High/Low/Range — از streamِ زندهٔ همین سشن ساخته می‌شود
+  const sessRef = React.useRef({});
 
   // persist هر تغییرِ meta
   React.useEffect(() => { try { localStorage.setItem(WM_KEY, JSON.stringify(meta)); } catch (e) { /* noop */ } }, [meta]);
@@ -325,6 +339,12 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   }));
 
   const setFlag = (sym, flag) => { setItemMeta(sym, { flag }); setFlagFor(null); };
+
+  // روشن/خاموش‌کردنِ یک ستونِ عددیِ اختیاری (قیمت همیشه می‌ماند)
+  const toggleCol = (key) => setMeta((m) => {
+    const cols = (m.columns || []).includes(key) ? m.columns.filter((c) => c !== key) : [...(m.columns || []), key];
+    return { ...m, columns: cols };
+  });
 
   // ── سکشن‌ها ──
   const addSection = () => {
@@ -349,12 +369,21 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   const rows = (watch || []).map((sym) => {
     const lp = (live || {})[sym];
     const dir = lp?.dir || 0;
-    // baselineِ سشن را اولین‌بار که midِ معتبر دیدیم ثبت کن
+    // baselineِ سشن را اولین‌بار که midِ معتبر دیدیم ثبت کن + سقف/کفِ سشن را به‌روز نگه‌دار
     const mid = typeof lp?.mid === 'number' ? lp.mid : null;
-    if (mid != null && baseRef.current[sym] == null) baseRef.current[sym] = mid;
+    if (mid != null) {
+      if (baseRef.current[sym] == null) baseRef.current[sym] = mid;
+      const s = sessRef.current[sym] || (sessRef.current[sym] = { hi: mid, lo: mid });
+      if (mid > s.hi) s.hi = mid;
+      if (mid < s.lo) s.lo = mid;
+    }
     const chg = changePctOf(lp, baseRef.current[sym]);
+    const sess = sessRef.current[sym] || null;
+    const hi = sess ? sess.hi : null;
+    const lo = sess ? sess.lo : null;
+    const range = (hi != null && lo != null && lo) ? ((hi - lo) / lo) * 100 : null;
     const im = itemMeta(sym);
-    return { sym, lp, dir, chg, flag: im.flag || null, section: im.section || null, kind: symbolKind(sym) };
+    return { sym, lp, dir, chg, hi, lo, range, flag: im.flag || null, section: im.section || null, kind: symbolKind(sym) };
   });
 
   // فیلترِ رنگ
@@ -402,30 +431,40 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   const closeMenus = () => { setMenuOpen(false); setListMenuOpen(false); setFlagFor(null); };
 
   // ── رندرِ یک ردیف (list یا table) ──
+  const cols = meta.columns || [];
+  const hasExtra = cols.includes('high') || cols.includes('low') || cols.includes('range');
   const renderRow = (r) => {
     const active = symbol === r.sym;
     const col = r.dir > 0 ? TH.up : r.dir < 0 ? TH.down : TH.text;
     const chgCol = r.chg == null ? TH.text : (r.chg > 0 ? TH.up : r.chg < 0 ? TH.down : TH.text);
     const chgTxt = r.chg == null ? '' : `${r.chg > 0 ? '+' : ''}${r.chg.toFixed(2)}٪`;
+    // یک ستونِ عددیِ اختیاری → { متن، رنگ }
+    const numCell = (key) => {
+      if (key === 'change') return { txt: chgTxt || '—', col: chgCol };
+      if (key === 'high') return { txt: r.hi != null ? fmtPrice(r.sym, r.hi) : '—', col: TH.up };
+      if (key === 'low') return { txt: r.lo != null ? fmtPrice(r.sym, r.lo) : '—', col: TH.down };
+      if (key === 'range') return { txt: r.range != null ? `${r.range.toFixed(2)}٪` : '—', col: TH.text };
+      return { txt: '', col: TH.text };
+    };
 
     if (isTable) {
       return (
-        <button key={r.sym} onClick={() => setSymbol(r.sym)} className="group/row relative flex items-center gap-2 w-full px-3 h-8 transition-colors"
+        <button key={r.sym} onClick={() => setSymbol(r.sym)} className="group/row relative flex items-center gap-2 w-full px-3 h-9 transition-colors"
           style={{ background: active ? TH.subtle : 'transparent', borderRight: `2px solid ${active ? TH.accent : 'transparent'}` }}
           onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
           onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
           {r.flag && <span className="absolute right-0 top-1 bottom-1 w-[2px] rounded-full" style={{ background: FLAG_HEX[r.flag] }} />}
           {meta.showLogo && <SymbolLogo symbol={r.sym} size={logoSz} />}
           <span className="flex-1 min-w-0 text-[12px] font-semibold truncate text-left" dir="ltr" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</span>
-          <span className="tabular-nums text-[11px] w-16 text-left shrink-0" dir="ltr" style={{ color: col }}>{r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}</span>
-          <span className="tabular-nums text-[10px] w-12 text-left shrink-0" dir="ltr" style={{ color: chgCol }}>{chgTxt}</span>
+          <FlashNum value={r.lp?.mid} className="tnum text-[11px] w-16 text-left shrink-0 rounded" dir="ltr" style={{ color: col }}>{r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}</FlashNum>
+          {cols.map((key) => { const c = numCell(key); return <span key={key} className="tnum text-[10px] w-12 text-left shrink-0" dir="ltr" style={{ color: c.col }}>{c.txt}</span>; })}
           <RowActions r={r} TH={TH} flagFor={flagFor} setFlagFor={setFlagFor} setFlag={setFlag} toggleWatch={toggleWatch} compact />
         </button>
       );
     }
 
     return (
-      <button key={r.sym} onClick={() => setSymbol(r.sym)} className={`group/row relative flex items-center gap-3 w-full px-3 ${meta.logoSize === 'lg' ? 'h-11' : 'h-10'} transition-colors`}
+      <button key={r.sym} onClick={() => setSymbol(r.sym)} className={`group/row relative flex items-center gap-3 w-full px-3 ${meta.logoSize === 'lg' ? 'h-11' : 'h-9'} transition-colors`}
         style={{ background: active ? TH.subtle : 'transparent', borderRight: `2px solid ${active ? TH.accent : 'transparent'}` }}
         onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
         onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
@@ -436,11 +475,18 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           {meta.showDesc && <div className="text-[10px] opacity-50 truncate" style={{ color: TH.text }}>{KIND_LABEL[r.kind]}</div>}
         </div>
         <div className="text-left shrink-0 leading-tight" dir="ltr">
-          <div className="tabular-nums text-[12px] flex items-center gap-1 justify-end" style={{ color: col }}>
+          <FlashNum value={r.lp?.mid} className="tnum text-[12px] flex items-center gap-1 justify-end rounded" style={{ color: col }}>
             {r.dir !== 0 && <span className="text-[9px]">{r.dir > 0 ? '▲' : '▼'}</span>}
             {r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}
-          </div>
-          {chgTxt && <div className="tabular-nums text-[10px] text-left" style={{ color: chgCol }}>{chgTxt}</div>}
+          </FlashNum>
+          {cols.includes('change') && chgTxt && <div className="tnum text-[10px] text-left" style={{ color: chgCol }}>{chgTxt}</div>}
+          {hasExtra && (
+            <div className="tnum text-[9px] opacity-60 flex items-center gap-1.5 justify-end" style={{ color: TH.text }}>
+              {cols.includes('high') && <span>H {r.hi != null ? fmtPrice(r.sym, r.hi) : '—'}</span>}
+              {cols.includes('low') && <span>L {r.lo != null ? fmtPrice(r.sym, r.lo) : '—'}</span>}
+              {cols.includes('range') && <span>{r.range != null ? `${r.range.toFixed(2)}٪` : '—'}</span>}
+            </div>
+          )}
         </div>
         <RowActions r={r} TH={TH} flagFor={flagFor} setFlagFor={setFlagFor} setFlag={setFlag} toggleWatch={toggleWatch} />
       </button>
@@ -500,6 +546,25 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
             {meta.sortBy !== 'manual' && (
               <Seg TH={TH} label="جهت" value={meta.sortDir} onChange={(v) => patch({ sortDir: v })} options={[['asc', 'صعودی'], ['desc', 'نزولی']]} />
             )}
+            {/* ستون‌های عددیِ اختیاری — قیمت همیشه هست */}
+            <div className="border-t pt-2" style={{ borderColor: TH.border }}>
+              <div className="flex items-center justify-between gap-2">
+                <span className="shrink-0">ستون‌ها</span>
+                <div className="flex items-center gap-1 flex-wrap justify-end">
+                  {COLUMNS.map(([key, label]) => {
+                    const on = (meta.columns || []).includes(key);
+                    return (
+                      <button key={key} onClick={() => toggleCol(key)} title={`ستونِ ${label}`} className="px-1.5 h-6 rounded text-[11px] transition-colors duration-[120ms]"
+                        style={on ? { background: TH.accent, color: '#fff' } : { background: TH.subtle, color: TH.text }}
+                        onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
+                        onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = TH.subtle; }}>
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
             {meta.groupBy === 'section' && (
               <button onClick={addSection} className="flex items-center gap-1.5 w-full text-right px-1 py-1 rounded" style={{ color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><FolderPlus size={13} /> افزودنِ سکشن</button>
             )}
@@ -600,6 +665,21 @@ function RowActions({ r, TH, flagFor, setFlagFor, setFlag, toggleWatch, compact 
       )}
     </span>
   );
+}
+
+// فلَشِ سبز/قرمزِ سلولِ قیمت روی هر تیک (حسِ زنده‌بودنِ TV) — از کلاس‌های سراسریِ
+// .flash-up/.flash-down استفاده می‌کند. برای ری‌استارتِ انیمیشن روی هر تغییر، عنصرِ
+// خروجی با یک key نو ری‌مونت می‌شود (هوک‌های خودِ کامپوننت پایدار می‌مانند).
+function FlashNum({ value, className = '', style, dir, children }) {
+  const prev = React.useRef(value);
+  const [st, setSt] = React.useState({ cls: '', n: 0 });
+  React.useEffect(() => {
+    if (value != null && prev.current != null && value !== prev.current) {
+      setSt((s) => ({ cls: value > prev.current ? 'flash-up' : 'flash-down', n: s.n + 1 }));
+    }
+    prev.current = value;
+  }, [value]);
+  return <span key={st.n} dir={dir} className={`${className} ${st.cls}`} style={style}>{children}</span>;
 }
 
 // سگمنتِ ساده برای منوی شخصی‌سازی

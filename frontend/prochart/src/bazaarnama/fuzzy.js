@@ -29,6 +29,23 @@ export function matchSymbol(meta, q) {
   return s;
 }
 
+// موقعیتِ حروفِ منطبقِ کوئری درونِ متن — برای های‌لایتِ TradingView-style.
+// همان رتبه‌بندیِ scoreOne: زیررشتهٔ پیوسته (exact/prefix شاملِ آن) وگرنه subsequence.
+// خروجی: آرایهٔ ایندکس‌های منطبق در `text` (خالی اگر تطبیق نبود).
+export function highlightPositions(text, q) {
+  const H = String(text || ''), N = String(q || '').trim();
+  if (!N) return [];
+  const hl = H.toLowerCase(), nl = N.toLowerCase();
+  const idx = hl.indexOf(nl);
+  if (idx >= 0) { const out = []; for (let k = 0; k < nl.length; k++) out.push(idx + k); return out; }
+  const out = [];
+  let j = 0;
+  for (let i = 0; i < hl.length && j < nl.length; i++) {
+    if (hl[i] === nl[j]) { out.push(i); j++; }
+  }
+  return j === nl.length ? out : [];
+}
+
 export function searchSymbols(metaList, q, cat) {
   const filtered = cat && cat !== 'all' ? metaList.filter((m) => m.cat === cat) : metaList;
   if (!q) {

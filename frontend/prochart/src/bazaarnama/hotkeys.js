@@ -77,6 +77,9 @@ export const SHORTCUTS = [
   { id: 'redo',      group: 'ویرایش', combo: 'Ctrl+Y', label: 'ازنو',   allowInInput: false, match: (e) => (ctrlOnly(e) && k(e) === 'y') || ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && k(e) === 'z') },
   { id: 'deleteSel', group: 'ویرایش', combo: 'Delete', label: 'حذفِ آبجکتِ انتخابی', match: (e) => noMods(e) && (k(e) === 'delete' || k(e) === 'backspace') },
   { id: 'cloneSel',  group: 'ویرایش', combo: 'Ctrl+D', label: 'تکثیرِ آبجکتِ انتخابی', match: (e) => ctrlOnly(e) && k(e) === 'd' },
+  { id: 'copySel',   group: 'ویرایش', combo: 'Ctrl+C', label: 'کپیِ آبجکتِ انتخابی', match: (e) => ctrlOnly(e) && k(e) === 'c' },
+  { id: 'pasteSel',  group: 'ویرایش', combo: 'Ctrl+V', label: 'چسباندنِ آبجکت', match: (e) => ctrlOnly(e) && k(e) === 'v' },
+  { id: 'selectAll', group: 'ویرایش', combo: 'Ctrl+A', label: 'انتخابِ همهٔ ترسیم‌ها', match: (e) => ctrlOnly(e) && k(e) === 'a' },
   { id: 'removeAll', group: 'ویرایش', combo: 'Ctrl+Alt+Backspace', label: 'حذفِ همهٔ ترسیم‌ها', match: (e) => ctrlAlt(e) && k(e) === 'backspace' },
   { id: 'clearChart',group: 'ویرایش', combo: 'Ctrl+Alt+R', label: 'پاکِ صفحه (خروجی‌ها)', match: (e) => ctrlAlt(e) && k(e) === 'r' },
   { id: 'lockSel',   group: 'ویرایش', combo: 'Ctrl+L', label: 'قفل/بازکردنِ انتخابی', match: (e) => ctrlOnly(e) && k(e) === 'l' },
@@ -107,6 +110,7 @@ export const SHORTCUTS = [
   { id: 'scrollHome', group: 'ناوبری', combo: 'Home', label: 'پرش به قدیمی‌ترین', match: (e) => noMods(e) && k(e) === 'home' },
   { id: 'fit',        group: 'ناوبری', combo: 'Ctrl+Alt+0', label: 'هم‌اندازه‌سازیِ چارت', match: (e) => ctrlAlt(e) && (e.code === 'Digit0' || e.key === '0') },
   { id: 'resetScale', group: 'ناوبری', combo: 'Ctrl+Alt+S', label: 'بازنشانیِ مقیاسِ قیمت', match: (e) => ctrlAlt(e) && k(e) === 's' },
+  { id: 'invertScale', group: 'ناوبری', combo: 'Alt+I', label: 'وارونه‌سازیِ محورِ قیمت', match: (e) => altOnly(e) && k(e) === 'i' },
 
   // ── پنل‌ها / نما ──
   { id: 'toggleRight', group: 'نما', combo: 'Ctrl+R', label: 'نمایش/پنهانِ نوارِ کناری', match: (e) => ctrlOnly(e) && k(e) === 'r' },
@@ -130,7 +134,8 @@ export const SHORTCUTS = [
   // ── بازپخش (Bar Replay) ──
   { id: 'replayToggle', group: 'بازپخش', combo: 'Ctrl+Alt+P', label: 'ورود/خروجِ بازپخش', match: (e) => ctrlAlt(e) && k(e) === 'p' },
   { id: 'replayPlay',   group: 'بازپخش', combo: 'Space', label: 'پخش/مکث', match: (e) => noMods(e) && (e.key === ' ' || e.code === 'Space') },
-  { id: 'replayStep',   group: 'بازپخش', combo: 'Shift+→', label: 'گامِ بعدیِ بازپخش', match: (e) => shiftOnly(e) && k(e) === 'arrowright' },
+  { id: 'replayStep',    group: 'بازپخش', combo: 'Shift+→', label: 'گامِ بعدیِ بازپخش', match: (e) => shiftOnly(e) && k(e) === 'arrowright' },
+  { id: 'replayStepBack', group: 'بازپخش', combo: 'Shift+←', label: 'گامِ قبلیِ بازپخش', match: (e) => shiftOnly(e) && k(e) === 'arrowleft' },
 
   // ── اسکریپت ──
   { id: 'screenshot', group: 'دیگر', combo: 'S', label: 'اسکرین‌شاتِ چارت', match: (e) => noMods(e) && k(e) === 's' },

@@ -238,3 +238,49 @@ button, [role="button"], a, summary, .pc-btn {
     transition-duration: 0.01ms !important; scroll-behavior: auto !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   فاز ۰ — پایهٔ «لاکچریِ TV»: توکن‌های پیوستِ TRADINGVIEW_PARITY_ROADMAP.
+   افزایشی و بدونِ شکستنِ سلکتورهای موجود. نگاشتِ تمِ موجود:
+   دارک = :root (پیش‌فرض) ، روشن = .light — دقیقاً مثلِ بقیهٔ فایل.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* توکن‌های رنگِ TV (دارک، پیش‌فرض) — نام‌های canonical پیوست */
+:root {
+  --pc-bg: #131722; --pc-surface: #1e222d; --pc-hover: #2a2e39; --pc-pressed: #363a45;
+  --pc-border: #2a2e39; --pc-border-strong: #363a45;
+  --pc-text: #d1d4dc; --pc-text-2: #b2b5be; --pc-text-muted: #787b86;
+  --pc-accent: #2962ff; --pc-accent-hover: #1e53e5; --pc-accent-tint: rgba(41,98,255,.14);
+  /* جفت‌رنگِ کندل/UI: کندل teal ، UI emerald (سبز-قرمزِ متمایز) */
+  --pc-up: #26a69a; --pc-up-ui: #089981; --pc-down: #ef5350; --pc-down-ui: #f23645;
+  --pc-grid: rgba(255,255,255,.06); --pc-crosshair: #9598a1;
+  --pc-shadow: 0 2px 4px rgba(0,0,0,.2), 0 2px 12px rgba(0,0,0,.4);
+  /* دیسیپلینِ شعاع: کنترل 4px · popup 6px · dialog 8px (به‌صورتِ var) */
+  --pc-radius-control: 4px; --pc-radius-popup: 6px; --pc-radius-dialog: 8px;
+  /* استانداردِ ترانزیشن 120–200ms ease-out */
+  --pc-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --pc-transition-micro: 120ms var(--pc-ease-out);
+  --pc-transition-menu: 150ms var(--pc-ease-out);
+  --pc-transition-dialog: 180ms var(--pc-ease-out);
+  --pc-transition-panel: 200ms var(--pc-ease-out);
+}
+
+/* توکن‌های رنگِ TV (روشن) — override روی .light */
+.light {
+  --pc-bg: #ffffff; --pc-surface: #f8f9fd; --pc-hover: #f0f3fa; --pc-pressed: #e0e3eb;
+  --pc-border: #e0e3eb; --pc-border-strong: #d1d4dc;
+  --pc-text: #131722; --pc-text-2: #5d606b; --pc-text-muted: #787b86;
+  --pc-accent: #2962ff; --pc-accent-hover: #1e53e5; --pc-accent-tint: rgba(41,98,255,.08);
+  --pc-up: #26a69a; --pc-up-ui: #089981; --pc-down: #ef5350; --pc-down-ui: #f23645;
+  --pc-grid: rgba(0,0,0,.06); --pc-crosshair: #9598a1;
+  --pc-shadow: 0 2px 4px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.1);
+}
+
+/* اعداد هم‌عرضِ TV — قیمت/درصد/محور هرگز نلرزد؛ در RTL با dir="ltr" روی خودِ عدد */
+.tnum { font-variant-numeric: tabular-nums lining-nums; font-feature-settings: "tnum" 1, "lnum" 1; }
+
+/* فلَشِ سبز/قرمزِ سلول روی تیکِ قیمت (نامِ canonicalِ نقشه‌راه) — حسِ زنده‌بودن */
+@keyframes flashUp   { from { background: color-mix(in srgb, var(--pc-up) 28%, transparent); }   to { background: transparent; } }
+@keyframes flashDown { from { background: color-mix(in srgb, var(--pc-down) 28%, transparent); } to { background: transparent; } }
+.flash-up   { animation: flashUp   .3s var(--pc-ease-out); }
+.flash-down { animation: flashDown .3s var(--pc-ease-out); }

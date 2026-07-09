@@ -1,5 +1,6 @@
 import React from 'react';
-import { X, HelpCircle } from 'lucide-react';
+import { X, HelpCircle, Keyboard } from 'lucide-react';
+import { SHORTCUT_GROUPS } from './hotkeys';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // موتورِ رندرِ دیاگرامِ شماتیک به SVG — همهٔ kindها را پوشش می‌دهد، با مختصاتِ نسبی،
@@ -512,5 +513,55 @@ export function HelpDot({ onClick, TH, size = 13 }) {
     <button onClick={(e) => { e.stopPropagation(); onClick(); }} title="راهنمای این ابزار" className="inline-flex items-center justify-center rounded-full hover:opacity-100 opacity-50" style={{ width: size + 4, height: size + 4, color: TH ? TH.text : '#888' }}>
       <HelpCircle size={size} />
     </button>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// چیت‌شیتِ کیبورد — جدولِ گروه‌بندی‌شدهٔ همهٔ میان‌بُرها (هم‌ترازِ TradingView).
+// SHORTCUT_GROUPS از hotkeys.js می‌آید (تک‌منبعِ حقیقت)، پس هر میان‌بُری که آنجا
+// اضافه شود خودکار اینجا هم نمایش داده می‌شود. RTL؛ کلیدها LTR و tabular-nums.
+// دو خروجی: HotkeyCheatSheet (شبکهٔ توکار برای جاسازی) + HotkeyCheatSheetModal (مودالِ کامل).
+// ─────────────────────────────────────────────────────────────────────────────
+export function HotkeyCheatSheet({ TH = {}, groups = SHORTCUT_GROUPS }) {
+  return (
+    <div dir="rtl" className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+      {groups.map((g) => (
+        <div key={g.group}>
+          <div className="text-[11px] font-bold mb-1.5 pb-1 border-b" style={{ color: TH.accent, borderColor: TH.border }}>{g.group}</div>
+          <div className="space-y-1">
+            {g.items.map((s) => (
+              <div key={s.id} className="flex items-center justify-between gap-2 text-xs">
+                <span className="opacity-80 truncate" style={{ color: TH.text }}>{s.label}</span>
+                <kbd className="shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-mono tabular-nums border whitespace-nowrap" dir="ltr" style={{ background: TH.chipBg, borderColor: TH.border, color: TH.textStrong }}>{s.combo}</kbd>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// مودالِ کاملِ چیت‌شیت (خودبسنده: بستن با کلیکِ بیرون یا Esc). اگر open نباشد چیزی رندر نمی‌شود.
+export function HotkeyCheatSheetModal({ open, onClose, TH = {} }) {
+  React.useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') { e.preventDefault(); onClose && onClose(); } };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+  if (!open) return null;
+  return (
+    <div dir="rtl" className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: TH.overlayMask || 'rgba(0,0,0,.5)', backdropFilter: 'blur(2px)' }} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose && onClose(); }}>
+      <div className="rounded-xl border shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col pc-pop" style={{ background: TH.popoverBg || TH.panel, borderColor: TH.border, color: TH.text }}>
+        <div className="flex items-center justify-between px-4 py-2.5 border-b sticky top-0" style={{ borderColor: TH.border, background: TH.popoverBg || TH.panel }}>
+          <h3 className="font-bold text-sm flex items-center gap-2" style={{ color: TH.textStrong }}><Keyboard size={16} style={{ color: TH.accent }} /> چیت‌شیتِ کیبورد</h3>
+          <button onClick={onClose} aria-label="بستن" className="pc-iconbtn w-7 h-7"><X size={16} /></button>
+        </div>
+        <div className="overflow-auto p-4 bn-thin-scroll">
+          <HotkeyCheatSheet TH={TH} />
+        </div>
+      </div>
+    </div>
   );
 }

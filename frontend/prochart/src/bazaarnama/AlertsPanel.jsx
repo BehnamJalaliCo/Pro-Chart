@@ -22,7 +22,8 @@
 //   indicators  : array   — اندیکاتورهای فعالِ روی چارت [{ id, key, inputs, color }]
 // ─────────────────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Bell, BellOff, Plus, X, Pencil, Check, Send, MessageSquare, Clock, Repeat, ChevronDown } from 'lucide-react';
+import { Bell, BellOff, Plus, X, Pencil, Check, Send, MessageSquare, Clock, Repeat, ChevronDown,
+  Mail, Smartphone, Volume2, Webhook, MessageCircle, History, ListChecks } from 'lucide-react';
 import { api } from '../api/client';
 import { REGISTRY } from './indicators';
 
@@ -31,6 +32,17 @@ const SOURCES = [
   { id: 'price', label: 'قیمتِ نماد' },
   { id: 'indicator', label: 'اندیکاتور' },
   { id: 'drawing', label: 'خطِ ترسیم‌شده' },
+  { id: 'watchlist', label: 'کلِ واچ‌لیست' },
+];
+
+// فراوانیِ تریگر — همتراز با TradingView (Only Once / Once Per Bar / Once Per Bar Close / Per Minute).
+//  trigger (پس‌رو): once | recurring؛ frequency (جدید) دانه‌بندیِ دقیق را نگه می‌دارد.
+const FREQS = [
+  { id: 'once', label: 'فقط یک‌بار', trigger: 'once' },
+  { id: 'per_bar', label: 'هر کندل', trigger: 'recurring' },
+  { id: 'per_bar_close', label: 'هر بستهٔ کندل', trigger: 'recurring' },
+  { id: 'per_minute', label: 'هر دقیقه', trigger: 'recurring' },
+  { id: 'cooldown', label: 'هربار (با کول‌داون)', trigger: 'recurring' },
 ];
 
 // عملگرها با برچسبِ فارسی، نوعِ عملوندِ راست و آیا مقدارِ درصدی است.
@@ -71,6 +83,20 @@ function indicatorFields(key) {
 
 const DEFAULT_TF = 'H1';
 
+// زمانِ نسبیِ فارسی برای لاگِ آلارم.
+function timeAgo(ts) {
+  const t = new Date(ts).getTime();
+  if (Number.isNaN(t)) return '';
+  const s = Math.max(0, Math.round((Date.now() - t) / 1000));
+  if (s < 60) return 'همین حالا';
+  const m = Math.round(s / 60);
+  if (m < 60) return `${m} دقیقه پیش`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `${h} ساعت پیش`;
+  const d = Math.round(h / 24);
+  return `${d} روز پیش`;
+}
+
 // مقادیرِ اولیهٔ فرم.
 const blankForm = (symbol) => ({
   id: null,                 // پُر می‌شود هنگامِ ویرایش
@@ -82,12 +108,19 @@ const blankForm = (symbol) => ({
   value: '',
   and2: false, op2: 'below', value2: '', // شرطِ دومِ AND (آلارمِ چندشرطی)
   lo: '', hi: '',
-  trigger: 'recurring',
+  trigger: 'recurring',        // پس‌رو — از freq مشتق می‌شود
+  freq: 'cooldown',            // جدید: دانه‌بندیِ فراوانیِ TV
   cooldownMin: 60,
   expiryH: '',
   message: '',
+  // کانال‌های تحویل (همتراز با TV: popup/push/email/sms/sound/telegram/webhook)
   popup: true,
   telegram: false,
+  push: false,
+  email: false,
+  sms: false,
+  sound: false,
+  webhook: '',
 });
 
 // ── کامپوننتِ اصلی ───────────────────────────────────────────────────────────
@@ -97,10 +130,12 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [tab, setTab] = useState('alerts'); // 'alerts' | 'log' — تبِ فهرست/لاگ
   const mounted = useRef(true);
 
   const set = useCallback((patch) => setForm((f) => ({ ...f, ...patch })), []);
 
+  const freqMeta = useMemo(() => FREQS.find((f) => f.id === form.freq) || FREQS[4], [form.freq]);
   const opMeta = useMemo(() => OPS.find((o) => o.id === form.op) || OPS[0], [form.op]);
   const isPct = !!opMeta.pct;
   const isChannel = opMeta.rhs === 'channel';
@@ -136,7 +171,8 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
   const autoName = useCallback(() => {
     const src = form.source === 'indicator'
       ? (REGISTRY[(indicators.find((i) => i.id === form.indId) || {}).key]?.label || 'اندیکاتور')
-      : form.source === 'drawing' ? 'خطِ ترسیم' : symbol;
+      : form.source === 'drawing' ? 'خطِ ترسیم'
+      : form.source === 'watchlist' ? 'واچ‌لیست' : symbol;
     const opl = OP_NAME[form.op] || OP_SHORT[form.op] || '';
     if (isChannel) return `${src} ${opl}[${form.lo}، ${form.hi}]`;
     return `${src} ${opl} ${form.value}`.trim();
@@ -146,13 +182,21 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
   const buildCondition = useCallback(() => {
     const cond = {
       type: 'price',                 // پس‌رو — سرورِ فعلی این را می‌خواند
-      source: form.source,           // جدید: price | indicator | drawing
+      source: form.source,           // جدید: price | indicator | drawing | watchlist
       op: form.op,
-      trigger: form.trigger,
+      trigger: freqMeta.trigger,     // پس‌رو: once | recurring
+      frequency: form.freq,          // جدید: دانه‌بندیِ TV (per_bar/per_bar_close/…)
       telegram: !!form.telegram,
       in_app: true,
       popup: !!form.popup,
+      // کانال‌های تحویلِ افزوده (graceful — سرور کلیدهای ناشناخته را نگه می‌دارد)
+      push: !!form.push,
+      email: !!form.email,
+      sms: !!form.sms,
+      sound: !!form.sound,
     };
+    if (form.webhook && form.webhook.trim()) cond.webhook = form.webhook.trim();
+    if (form.source === 'watchlist') cond.scope = 'watchlist';
     // عملوندِ راست
     if (isChannel) { cond.lo = Number(form.lo); cond.hi = Number(form.hi); cond.value = Number(form.lo); }
     else { cond.value = Number(form.value); }
@@ -161,21 +205,21 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       cond.conditions = [{ op: form.op, value: Number(form.value) }, { op: form.op2, value: Number(form.value2) }];
     }
     // منبع
-    if (form.source === 'price') { cond.price_field = form.price_field; }
+    if (form.source === 'price' || form.source === 'watchlist') { cond.price_field = form.price_field; }
     else if (form.source === 'indicator') {
       const it = indicators.find((i) => i.id === form.indId);
       if (it) cond.indicator = { id: it.key, params: it.inputs || {}, field: form.indField };
     } else if (form.source === 'drawing') {
       cond.line = { note: 'انتخاب از منوی ترسیم' }; // geometry سمتِ چارت پر می‌شود
     }
-    // تریگر/کول‌داون
-    if (form.trigger === 'recurring') cond.cooldown_s = Math.max(0, Math.round(Number(form.cooldownMin) || 60) * 60);
+    // تریگر/کول‌داون — کول‌داون فقط در حالتِ «هربار با کول‌داون»
+    if (form.freq === 'cooldown') cond.cooldown_s = Math.max(0, Math.round(Number(form.cooldownMin) || 60) * 60);
     // انقضا
     if (form.expiryH) cond.expiry = new Date(Date.now() + Number(form.expiryH) * 3600 * 1000).toISOString();
     // پیام
     if (form.message) cond.message = form.message;
     return cond;
-  }, [form, indicators, isChannel]);
+  }, [form, indicators, isChannel, freqMeta]);
 
   // ── اعتبارسنجیِ کمینهٔ فرم ──────────────────────────────────────────────────
   const valid = useMemo(() => {
@@ -234,18 +278,35 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       indField: (c.indicator && c.indicator.field) || 'line',
       op,
       value: meta.rhs === 'channel' ? (c.lo ?? '') : (c.value ?? ''),
+      and2: Array.isArray(c.conditions) && c.conditions.length > 1,
+      op2: (Array.isArray(c.conditions) && c.conditions[1] && c.conditions[1].op) || 'below',
+      value2: (Array.isArray(c.conditions) && c.conditions[1] && c.conditions[1].value != null) ? c.conditions[1].value : '',
       lo: c.lo ?? '', hi: c.hi ?? '',
       trigger: c.trigger || 'recurring',
+      // پس‌رو: اگر frequency ذخیره نشده باشد از trigger مشتق کن.
+      freq: c.frequency || (c.trigger === 'once' ? 'once' : 'cooldown'),
       cooldownMin: c.cooldown_s ? Math.round(c.cooldown_s / 60) : 60,
       expiryH: c.expiry ? Math.max(0, Math.round((new Date(c.expiry).getTime() - Date.now()) / 3600000)) : '',
       message: c.message || '',
       popup: c.popup !== false,
       telegram: !!c.telegram,
+      push: !!c.push,
+      email: !!c.email,
+      sms: !!c.sms,
+      sound: !!c.sound,
+      webhook: c.webhook || '',
     });
     setShowAdvanced(true);
   }, []);
 
   const cancelEdit = useCallback(() => setForm(blankForm(symbol)), [symbol]);
+
+  // ── لاگِ آلارم — تاریخچهٔ رخدادها از فیلدِ last_triggered_at (نزولی) ─────────
+  const logEntries = useMemo(() => (
+    list
+      .filter((a) => a.last_triggered_at)
+      .sort((a, b) => new Date(b.last_triggered_at) - new Date(a.last_triggered_at))
+  ), [list]);
 
   // اندیکاتورهای فعالِ قابل‌انتخاب.
   const liveInds = useMemo(() => indicators.filter((i) => REGISTRY[i.key]), [indicators]);
@@ -274,7 +335,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
           <select value={form.source} onChange={(e) => set({ source: e.target.value })} title="منبعِ شرط" className={`${inputCls} flex-1`} style={selStyle}>
             {SOURCES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
           </select>
-          {form.source === 'price' && (
+          {(form.source === 'price' || form.source === 'watchlist') && (
             <select value={form.price_field} onChange={(e) => set({ price_field: e.target.value })} title="فیلدِ قیمت" className={`${inputCls} w-20`} style={selStyle}>
               <option value="mid">میانه</option><option value="bid">خرید</option><option value="ask">فروش</option>
               <option value="close">بسته</option><option value="high">بیشینه</option><option value="low">کمینه</option>
@@ -301,6 +362,13 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
         {form.source === 'drawing' && (
           <div className="text-[9px] opacity-50 rounded px-2 py-1" style={{ background: TH.subtle }}>
             از منوی راست‌کلیکِ یک خطِ ترسیم‌شده «آلارم روی این خط» را انتخاب کنید؛ آستانه متحرک می‌شود.
+          </div>
+        )}
+
+        {form.source === 'watchlist' && (
+          <div className="flex items-center gap-1 text-[9px] opacity-50 rounded px-2 py-1" style={{ background: TH.subtle }}>
+            <ListChecks size={11} className="shrink-0" />
+            همین شرط روی همهٔ نمادهای واچ‌لیست اعمال می‌شود؛ برای هر نماد جداگانه اعلان می‌گیرید.
           </div>
         )}
 
@@ -343,13 +411,12 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
           </div>
         )}
 
-        {/* تریگر + کول‌داون */}
+        {/* فراوانیِ تریگر + کول‌داون */}
         <div className="flex gap-1">
-          <select value={form.trigger} onChange={(e) => set({ trigger: e.target.value })} title="تریگر" className={`${inputCls} flex-1`} style={selStyle}>
-            <option value="recurring">هربار (با کول‌داون)</option>
-            <option value="once">فقط یک‌بار</option>
+          <select value={form.freq} onChange={(e) => set({ freq: e.target.value })} title="فراوانی" className={`${inputCls} flex-1`} style={selStyle}>
+            {FREQS.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
           </select>
-          {form.trigger === 'recurring' && (
+          {form.freq === 'cooldown' && (
             <div className="flex items-center gap-1 rounded-md px-2 h-[26px]" style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
               <Repeat size={11} className="opacity-50" />
               <input value={form.cooldownMin} onChange={(e) => set({ cooldownMin: e.target.value })} title="کول‌داون (دقیقه)" dir="ltr" className="w-10 bg-transparent outline-none tabular-nums" />
@@ -371,25 +438,47 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
         </button>
         {showAdvanced && (
           <div className="space-y-1.5 pt-0.5">
-            <input value={form.message} onChange={(e) => set({ message: e.target.value })} placeholder="پیامِ سفارشی (متغیرها: {symbol} {price} {value} {tf})" className={`${inputCls} w-full`} style={inputStyle} />
-            {/* پالتِ متغیرها */}
+            <input value={form.message} onChange={(e) => set({ message: e.target.value })} placeholder="پیامِ سفارشی (روی متغیرها بزنید)" className={`${inputCls} w-full`} style={inputStyle} />
+            {/* پالتِ متغیرها — همتراز با placeholderهای TV */}
             <div className="flex gap-1 flex-wrap">
-              {['{symbol}', '{price}', '{value}', '{tf}'].map((ph) => (
+              {['{symbol}', '{price}', '{value}', '{tf}', '{exchange}', '{open}', '{high}', '{low}', '{close}', '{volume}', '{time}'].map((ph) => (
                 <button key={ph} onClick={() => set({ message: (form.message || '') + ph })} className="text-[9px] rounded-md px-1.5 py-0.5 transition-colors" style={{ background: TH.chipBg, color: TH.text }} dir="ltr"
                   onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
                   onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{ph}</button>
               ))}
             </div>
-            {/* کانال‌های تحویل */}
-            <div className="flex items-center gap-3">
+            {/* کانال‌های تحویل — popup/push/email/sms/sound/telegram/webhook */}
+            <div className="text-[9px] opacity-50 pt-0.5">کانال‌های تحویل</div>
+            <div className="flex items-center gap-x-3 gap-y-1 flex-wrap">
               <label className="flex items-center gap-1 cursor-pointer">
                 <input type="checkbox" checked={form.popup} onChange={(e) => set({ popup: e.target.checked })} />
                 <MessageSquare size={11} className="opacity-60" /> پاپ‌آپ
               </label>
               <label className="flex items-center gap-1 cursor-pointer">
+                <input type="checkbox" checked={form.push} onChange={(e) => set({ push: e.target.checked })} />
+                <Smartphone size={11} className="opacity-60" /> پوش
+              </label>
+              <label className="flex items-center gap-1 cursor-pointer">
+                <input type="checkbox" checked={form.sound} onChange={(e) => set({ sound: e.target.checked })} />
+                <Volume2 size={11} className="opacity-60" /> صدا
+              </label>
+              <label className="flex items-center gap-1 cursor-pointer">
+                <input type="checkbox" checked={form.email} onChange={(e) => set({ email: e.target.checked })} />
+                <Mail size={11} className="opacity-60" /> ایمیل
+              </label>
+              <label className="flex items-center gap-1 cursor-pointer">
+                <input type="checkbox" checked={form.sms} onChange={(e) => set({ sms: e.target.checked })} />
+                <MessageCircle size={11} className="opacity-60" /> پیامک
+              </label>
+              <label className="flex items-center gap-1 cursor-pointer">
                 <input type="checkbox" checked={form.telegram} onChange={(e) => set({ telegram: e.target.checked })} />
                 <Send size={11} className="opacity-60" /> تلگرام
               </label>
+            </div>
+            {/* وبهوک */}
+            <div className="flex gap-1 items-center">
+              <Webhook size={11} className="opacity-50 shrink-0" />
+              <input value={form.webhook} onChange={(e) => set({ webhook: e.target.value })} placeholder="آدرسِ وبهوک (اختیاری) — https://…" dir="ltr" className={`${inputCls} flex-1`} style={inputStyle} />
             </div>
           </div>
         )}
@@ -410,8 +499,48 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
         </div>
       </div>
 
-      {/* ───────────────── فهرستِ آلارم‌ها ───────────────── */}
-      {list.length === 0 ? (
+      {/* ───────────────── تب‌های فهرست/لاگ ───────────────── */}
+      <div className="flex items-center gap-1 mb-1.5">
+        <button onClick={() => setTab('alerts')} className="flex items-center gap-1 text-[10px] rounded-md px-2 h-[24px] transition-colors"
+          style={{ background: tab === 'alerts' ? TH.chipBg : 'transparent', color: tab === 'alerts' ? TH.textStrong : TH.text, opacity: tab === 'alerts' ? 1 : 0.6 }}>
+          <ListChecks size={11} /> آلارم‌ها {list.length > 0 && <span className="opacity-60">({list.length})</span>}
+        </button>
+        <button onClick={() => setTab('log')} className="flex items-center gap-1 text-[10px] rounded-md px-2 h-[24px] transition-colors"
+          style={{ background: tab === 'log' ? TH.chipBg : 'transparent', color: tab === 'log' ? TH.textStrong : TH.text, opacity: tab === 'log' ? 1 : 0.6 }}>
+          <History size={11} /> لاگ {logEntries.length > 0 && <span className="opacity-60">({logEntries.length})</span>}
+        </button>
+      </div>
+
+      {/* ───────────────── لاگِ آلارم ───────────────── */}
+      {tab === 'log' ? (
+        logEntries.length === 0 ? (
+          <div className="text-[10px] opacity-40 text-center py-8">هنوز آلارمی رخ نداده.</div>
+        ) : (
+          <div>
+            {logEntries.map((a) => {
+              const c = a.condition || {};
+              return (
+                <div key={`log-${a.id}-${a.last_triggered_at}`} className="flex items-center justify-between px-1 -mx-1 rounded-md py-1.5 border-b" style={{ borderColor: TH.border }}>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <Bell size={12} style={{ color: TH.up }} className="shrink-0" />
+                    <div className="min-w-0">
+                      <div className="truncate" title={a.name}>{a.name}</div>
+                      <div className="flex items-center gap-1 text-[9px] opacity-50" dir="ltr">
+                        <span>{a.symbol || symbol}</span>
+                        <span>·</span>
+                        <span>{OP_SHORT[c.op] || c.op}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-[9px] opacity-50 shrink-0 tabular-nums">{timeAgo(a.last_triggered_at)}</span>
+                </div>
+              );
+            })}
+          </div>
+        )
+      ) : (
+      /* ───────────────── فهرستِ آلارم‌ها ───────────────── */
+      list.length === 0 ? (
         <div className="text-[10px] opacity-40 text-center py-8">هنوز آلارمی ساخته نشده.</div>
       ) : (
         <div>
@@ -452,6 +581,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
             );
           })}
         </div>
+      )
       )}
     </div>
   );
