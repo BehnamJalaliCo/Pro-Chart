@@ -1,17 +1,88 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Settings2, Trash2, MoreHorizontal, ChevronDown, ChevronUp, HelpCircle, Copy, Rows3, X } from 'lucide-react';
 import { SPEED_LADDER } from '../ReplayController';
+import SymbolLogo from '../SymbolLogo';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// اجزای مشترکِ سرِ لجند (سبکِ TradingView) — لوگو + نامِ نماد + بازار/تایم‌فریمِ
+//   کم‌رنگ + O/H/L/C با لیبلِ کوچک و مقدارِ رنگیِ up/down + چیپِ تغییر. همه رندرِ خالص.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// حدسِ ساده‌یِ نامِ بازار از روی نماد (مثلِ نمایشِ صرافی/دسته در TV). اختیاری؛ اگر
+//   caller مقدارِ `market` بدهد همان استفاده می‌شود.
+function marketOf(sym = '') {
+  const s = String(sym).toUpperCase();
+  const clean = s.replace(/[^A-Z]/g, '');
+  const CCYS = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'NZD'];
+  if (/^(XAU|XAG|XPT|XPD)/.test(s)) return 'فلزات';
+  if (/US30|US500|NAS100|NAS|SPX|DJI|NDX|UK100|DE40|JP225|US100|FRA40|HK50/.test(s)) return 'شاخص';
+  if (/OIL|WTI|BRENT|^XTI|^XBR|^XNG/.test(s)) return 'انرژی';
+  if (clean.length >= 6 && CCYS.includes(clean.slice(0, 3)) && CCYS.includes(clean.slice(3, 6))) return 'فارکس';
+  if (/USDT$|USD$/.test(s)) return 'کریپتو';
+  return '';
+}
+
+// افزودنِ آلفا به رنگِ hexِ ۶رقمی برای پس‌زمینه‌یِ کم‌رنگِ چیپ.
+function tint(col, a = '22') {
+  return typeof col === 'string' && /^#[0-9a-fA-F]{6}$/.test(col) ? col + a : col;
+}
+
+// لوگو + نامِ نماد (پررنگ) + بازار/تایم‌فریمِ کم‌رنگ. فرگمنت (بدونِ wrapper) تا در
+//   هر دو Legend و ChartLegend داخلِ ردیفِ موجود بنشیند.
+function SymbolHead({ TH, symbol, tf, market }) {
+  const mk = market != null ? market : marketOf(symbol);
+  return (
+    <>
+      <SymbolLogo symbol={symbol} size={18} />
+      <span className="text-[12px] font-bold whitespace-nowrap" dir="ltr" style={{ color: TH.textStrong }}>{symbol}</span>
+      {(mk || tf) && (
+        <span className="text-[10px] tnum whitespace-nowrap" dir="ltr" style={{ color: TH.text, opacity: 0.6 }}>
+          {mk}{mk && tf ? ' · ' : ''}{tf}
+        </span>
+      )}
+    </>
+  );
+}
+
+// O/H/L/C با لیبلِ کوچکِ کم‌رنگ و مقدارِ رنگیِ جهت (up/down).
+function OhlcTape({ legend, col, TH }) {
+  if (!legend) return null;
+  const cells = legend.open != null
+    ? [['O', legend.open], ['H', legend.high], ['L', legend.low], ['C', legend.close]]
+    : [['C', legend.close]];
+  return (
+    <span className="flex items-center gap-1.5 text-[11px] tnum whitespace-nowrap" dir="ltr">
+      {cells.map(([k, v]) => (
+        <span key={k} className="flex items-center gap-0.5">
+          <span style={{ color: TH.text, opacity: 0.55 }}>{k}</span>
+          <span style={{ color: col }}>{v}</span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
+// چیپِ تغییرِ درصدی، پس‌زمینه‌یِ کم‌رنگ و متنِ رنگیِ up/down.
+function ChangeChip({ ch, col }) {
+  if (ch == null) return null;
+  return (
+    <span className="tnum rounded px-1 py-px text-[10px] font-semibold shrink-0 whitespace-nowrap" dir="ltr"
+      style={{ background: tint(col), color: col }}>
+      {ch >= 0 ? '+' : ''}{ch.toFixed(2)}%
+    </span>
+  );
+}
 
 // چیپِ Legend (OHLC) روی چارت — رندرِ خالص؛ همهٔ ورودی‌ها از props.
-export function Legend({ legend, TH, symbol, tf }) {
+export function Legend({ legend, TH, symbol, tf, market }) {
   if (!legend) return null;
   const ch = legend.open != null ? ((legend.close - legend.open) / legend.open) * 100 : null;
   const col = ch == null ? TH.text : ch >= 0 ? TH.up : TH.down;
   return (
-    <div className="absolute top-2 right-2 z-20 text-[11px] rounded-md px-2 py-1 font-mono tabular-nums flex items-center gap-2 border" dir="ltr" style={{ background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(2px)' }}>
-      <span className="font-bold" style={{ color: TH.textStrong }}>{symbol} · {tf}</span>
-      {legend.open != null ? <span style={{ color: col }}>O {legend.open}  H {legend.high}  L {legend.low}  C {legend.close}</span> : <span style={{ color: col }}>C {legend.close}</span>}
-      {ch != null && <span style={{ color: col }}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>}
+    <div className="absolute top-2 right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 border" dir="rtl" style={{ background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(2px)' }}>
+      <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} />
+      <OhlcTape legend={legend} col={col} TH={TH} />
+      <ChangeChip ch={ch} col={col} />
     </div>
   );
 }
@@ -100,7 +171,7 @@ function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, on
 
 // items: [{id, key, label, color, visible, scope}]، indVals: {id: 'value-string'}
 export function ChartLegend({
-  items = [], legend, TH, symbol, tf, indVals = {},
+  items = [], legend, TH, symbol, tf, market, indVals = {},
   collapsed = false, onCollapse, viewMode = 'normal', onToggleViewMode,
   onToggleVisible, onSettings, onRemove, onDuplicate, onHelp, hasHelp, onClearAll, coarse = false,
 }) {
@@ -115,7 +186,7 @@ export function ChartLegend({
       style={{ background: TH.overlayMask, backdropFilter: 'blur(2px)', border: `1px solid ${TH.border}`, borderRadius: 8, padding: '4px 6px' }}>
       <style>{`.bn-leg-ctrls{opacity:0;transition:opacity 120ms ease}.group\\/leg:hover .bn-leg-ctrls{opacity:1}.bn-leg-ctrl{opacity:0}.group\\/leg:hover .bn-leg-ctrl{opacity:1}`}</style>
       {/* ردیفِ نماد (OHLC) */}
-      <div className="flex items-center gap-2 px-1.5 h-7">
+      <div className="flex items-center gap-1.5 px-1.5 h-7">
         {hasInds && (
           <button type="button" onClick={() => onCollapse && onCollapse(!collapsed)} title={collapsed ? 'بازکردنِ اندیکاتورها' : 'جمع‌کردنِ اندیکاتورها'} aria-label="جمع/باز"
             className="flex items-center justify-center rounded shrink-0" style={{ width: 18, height: 18, color: TH.text }}
@@ -123,13 +194,9 @@ export function ChartLegend({
             {collapsed ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
         )}
-        <span className="text-[12px] font-bold tabular-nums whitespace-nowrap" dir="ltr" style={{ color: TH.textStrong }}>{symbol} · {tf}</span>
-        {legend && (
-          <span className="text-[11px] font-mono tabular-nums whitespace-nowrap" dir="ltr" style={{ color: col }}>
-            {legend.open != null ? `O ${legend.open}  H ${legend.high}  L ${legend.low}  C ${legend.close}` : `C ${legend.close}`}
-            {ch != null ? `  ${ch >= 0 ? '+' : ''}${ch.toFixed(2)}%` : ''}
-          </span>
-        )}
+        <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} />
+        <OhlcTape legend={legend} col={col} TH={TH} />
+        <ChangeChip ch={ch} col={col} />
         {hasInds && (
           <>
             <span className="flex-1" />

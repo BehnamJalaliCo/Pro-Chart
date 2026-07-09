@@ -35,6 +35,8 @@ const FLAG_ORDER = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'gray'
 
 // ── نوعِ نماد (برای گروه‌بندیِ خودکار) — هم‌منطق با SymbolLogo.jsx ─────────────
 const KIND_LABEL = { forex: 'فارکس', metal: 'فلزات', index: 'شاخص‌ها', crypto: 'کریپتو' };
+// برچسبِ انگلیسیِ خاکستریِ سکشن‌ها (سبکِ TV: INDICES/STOCKS/FUTURES)
+const KIND_EN = { forex: 'FOREX', metal: 'METALS', index: 'INDICES', crypto: 'CRYPTO' };
 const KIND_ORDER = ['forex', 'metal', 'index', 'crypto'];
 
 // ── ستون‌های قابل‌انتخابِ واچ‌لیست (سبکِ TV) — قیمت همیشه هست؛ این‌ها اختیاری‌اند ──
@@ -78,10 +80,11 @@ function defaultMeta() {
     logoSize: 'lg',        // 'md' | 'lg'
     sortBy: 'manual',      // 'manual' | 'name' | 'price' | 'changePct'
     sortDir: 'asc',
-    groupBy: 'none',       // 'section' | 'type' | 'none'
+    groupBy: 'type',       // 'section' | 'type' | 'none' — پیش‌فرض: سکشنِ نوع همیشه دیده شود (سبکِ TV)
     flagFilter: null,      // یک رنگ برای فیلتر یا null
     columns: ['change'],   // ستون‌های عددیِ اختیاری (قیمت همیشه هست)
     typeCollapsed: {},     // جمع‌شدنِ سکشن‌های خودکارِ نوع (kind → bool)
+    showDetails: true,     // پنلِ جزئیاتِ نمادِ فعال زیرِ لیست (سبکِ TV)
   };
 }
 
@@ -423,7 +426,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
       return out.filter((g) => g.rows.length > 0 || g.sectionId);
     }
     if (meta.groupBy === 'type') {
-      return KIND_ORDER.map((k) => ({ key: k, name: KIND_LABEL[k], collapsed: !!(meta.typeCollapsed || {})[k], sectionId: null, typeKey: k, rows: sorted.filter((r) => r.kind === k) })).filter((g) => g.rows.length > 0);
+      return KIND_ORDER.map((k) => ({ key: k, name: KIND_LABEL[k], en: KIND_EN[k], collapsed: !!(meta.typeCollapsed || {})[k], sectionId: null, typeKey: k, rows: sorted.filter((r) => r.kind === k) })).filter((g) => g.rows.length > 0);
     }
     return [{ key: '__flat', name: null, collapsed: false, sectionId: null, typeKey: null, rows: sorted }];
   })();
@@ -442,7 +445,8 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
 
   // ── رندرِ یک ردیف (list یا table) ──
   const cols = meta.columns || [];
-  const hasExtra = cols.includes('high') || cols.includes('low') || cols.includes('range');
+  // پس‌زمینهٔ نرمِ تیره/روشنِ سلولِ تغییر٪ (سبکِ TV) — رنگِ up/down هگز است پس آلفا الحاق می‌شود
+  const chgBg = (chg) => (chg == null || chg === 0) ? 'transparent' : (chg > 0 ? TH.up + '1f' : TH.down + '1f');
   const renderRow = (r) => {
     const active = symbol === r.sym;
     const col = r.dir > 0 ? TH.up : r.dir < 0 ? TH.down : TH.text;
@@ -467,14 +471,14 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           {meta.showLogo && <SymbolLogo symbol={r.sym} size={logoSz} />}
           <span className="flex-1 min-w-0 text-[12px] font-semibold truncate text-left" dir="ltr" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</span>
           <FlashNum value={r.lp?.mid} className="tnum text-[11px] w-16 text-left shrink-0 rounded" dir="ltr" style={{ color: col }}>{r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}</FlashNum>
-          {cols.map((key) => { const c = numCell(key); return <span key={key} className="tnum text-[10px] w-12 text-left shrink-0" dir="ltr" style={{ color: c.col }}>{c.txt}</span>; })}
+          {cols.map((key) => { const c = numCell(key); return <span key={key} className="tnum text-[10px] w-12 text-left shrink-0 rounded px-0.5" dir="ltr" style={{ color: c.col, background: key === 'change' ? chgBg(r.chg) : 'transparent' }}>{c.txt}</span>; })}
           <RowActions r={r} TH={TH} flagFor={flagFor} setFlagFor={setFlagFor} setFlag={setFlag} toggleWatch={toggleWatch} compact />
         </button>
       );
     }
 
     return (
-      <button key={r.sym} onClick={() => setSymbol(r.sym)} className={`group/row relative flex items-center gap-3 w-full px-3 ${meta.logoSize === 'lg' ? 'h-11' : 'h-9'} transition-colors`}
+      <button key={r.sym} onClick={() => setSymbol(r.sym)} className={`group/row relative flex items-center gap-1.5 w-full px-3 ${meta.logoSize === 'lg' ? 'h-11' : 'h-9'} transition-colors`}
         style={{ background: active ? TH.subtle : 'transparent', borderRight: `2px solid ${active ? TH.accent : 'transparent'}` }}
         onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
         onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
@@ -484,20 +488,15 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           <div className="text-[13px] font-bold leading-tight truncate" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</div>
           {meta.showDesc && <div className="text-[10px] opacity-50 truncate" style={{ color: TH.text }}>{KIND_LABEL[r.kind]}</div>}
         </div>
-        <div className="text-left shrink-0 leading-tight" dir="ltr">
-          <FlashNum value={r.lp?.mid} className="tnum text-[12px] flex items-center gap-1 justify-end rounded" style={{ color: col }}>
-            {r.dir !== 0 && <span className="text-[9px]">{r.dir > 0 ? '▲' : '▼'}</span>}
-            {r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}
-          </FlashNum>
-          {cols.includes('change') && chgTxt && <div className="tnum text-[10px] text-left" style={{ color: chgCol }}>{chgTxt}</div>}
-          {hasExtra && (
-            <div className="tnum text-[9px] opacity-60 flex items-center gap-1.5 justify-end" style={{ color: TH.text }}>
-              {cols.includes('high') && <span>H {r.hi != null ? fmtPrice(r.sym, r.hi) : '—'}</span>}
-              {cols.includes('low') && <span>L {r.lo != null ? fmtPrice(r.sym, r.lo) : '—'}</span>}
-              {cols.includes('range') && <span>{r.range != null ? `${r.range.toFixed(2)}٪` : '—'}</span>}
-            </div>
-          )}
-        </div>
+        {/* ستون‌های هم‌ترازِ سبکِ TV: آخرین | تغییر٪ | ستون‌های اختیاری */}
+        <FlashNum value={r.lp?.mid} className="tnum text-[12px] w-14 shrink-0 flex items-center gap-1 justify-end rounded" dir="ltr" style={{ color: col }}>
+          {r.dir !== 0 && <span className="text-[9px]">{r.dir > 0 ? '▲' : '▼'}</span>}
+          {r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}
+        </FlashNum>
+        {cols.includes('change') && (
+          <span className="tnum text-[10px] w-12 text-left shrink-0 rounded px-1 leading-5" dir="ltr" style={{ color: chgCol, background: chgBg(r.chg) }}>{chgTxt || '—'}</span>
+        )}
+        {cols.filter((k) => k !== 'change').map((key) => { const c = numCell(key); return <span key={key} className="tnum text-[10px] w-12 text-left shrink-0" dir="ltr" style={{ color: c.col }}>{c.txt}</span>; })}
         <RowActions r={r} TH={TH} flagFor={flagFor} setFlagFor={setFlagFor} setFlag={setFlag} toggleWatch={toggleWatch} />
       </button>
     );
@@ -604,10 +603,12 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
             <span className="shrink-0" style={{ width: 22 }} />
           </div>
         ) : (
-          <div className={`flex items-center gap-3 w-full px-3 h-6 text-[9px] font-semibold tracking-wide select-none border-b`} style={{ color: TH.text, opacity: 0.5, borderColor: TH.border }}>
+          <div className={`flex items-center gap-1.5 w-full px-3 h-6 text-[9px] font-semibold tracking-wide select-none border-b`} style={{ color: TH.text, opacity: 0.5, borderColor: TH.border }}>
             {meta.showLogo && <span className="shrink-0" style={{ width: logoSz }} />}
             <span className="flex-1 min-w-0 text-left" dir="ltr">نماد</span>
-            <span className="text-left shrink-0" dir="ltr">{cols.includes('change') ? 'آخرین · تغییر٪' : 'آخرین'}</span>
+            <span className="w-14 text-left shrink-0" dir="ltr">آخرین</span>
+            {cols.includes('change') && <span className="w-12 text-left shrink-0" dir="ltr">تغییر٪</span>}
+            {cols.filter((k) => k !== 'change').map((key) => <span key={key} className="w-12 text-left shrink-0" dir="ltr">{COL_LABEL[key] || key}</span>)}
             <span className="shrink-0" style={{ width: 26 }} />
           </div>
         )
@@ -621,6 +622,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
               <button onClick={() => { if (g.sectionId) toggleSection(g.sectionId); else if (g.typeKey) toggleTypeCollapse(g.typeKey); }} className="flex items-center gap-1 min-w-0" style={{ color: TH.text, opacity: 0.7, cursor: (g.sectionId || g.typeKey) ? 'pointer' : 'default' }}>
                 {(g.sectionId != null || g.typeKey != null) && <ChevronDown size={12} className={`transition-transform duration-[120ms] ${g.collapsed ? '-rotate-90' : ''}`} />}
                 <span className="truncate">{g.name}</span>
+                {g.en && <span className="text-[8px] uppercase tracking-wider opacity-50 shrink-0" dir="ltr">{g.en}</span>}
               </button>
               <span className="flex items-center gap-1">
                 <span className="tabular-nums opacity-50">{g.rows.length}</span>
@@ -666,6 +668,23 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           </div>
         </div>
       )}
+
+      {/* پنلِ جزئیاتِ نمادِ فعال (سبکِ TV) — زیرِ لیست mount می‌شود تا مشخصاتِ نمادِ فعال دیده شود */}
+      <div className="mt-2 border-t" style={{ borderColor: TH.border }}>
+        <button onClick={() => patch({ showDetails: meta.showDetails === false })} className="flex items-center justify-between w-full px-3 py-2 select-none" style={{ color: TH.text }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+          <span className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wide" style={{ opacity: 0.7 }}>
+            <Info size={12} /> جزئیاتِ نماد
+            <span className="text-[8px] uppercase tracking-wider opacity-50" dir="ltr">DETAILS</span>
+          </span>
+          <ChevronDown size={13} className={`transition-transform duration-[120ms] ${meta.showDetails === false ? '-rotate-90' : ''}`} />
+        </button>
+        {meta.showDetails !== false && (
+          <div className="border-t" style={{ borderColor: TH.border }}>
+            <Details symbol={symbol} TH={TH} symbols={symbols} prices={live} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

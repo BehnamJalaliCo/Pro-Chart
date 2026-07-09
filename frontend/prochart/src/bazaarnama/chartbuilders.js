@@ -100,6 +100,53 @@ export function pnf(cs, box, reversal = 3) {
   return pts;
 }
 
+// ── Volume (هیستوگرامِ حجم، سبک TradingView) ──
+// overlay روی مقیاسِ قیمتِ مستقل ('' → جدا از مقیاسِ اصلی) و چسبیده به کفِ چارت،
+// نیمه‌شفاف، رنگِ هر میله سبز/قرمز بر پایهٔ جهتِ کندل (close≥open). پیش‌فرض روشن.
+export const VOL_UP = 'rgba(38,166,154,.5)';   // سبزِ teal مثلِ TV (نیمه‌شفاف)
+export const VOL_DOWN = 'rgba(239,83,80,.5)';  // قرمزِ TV (نیمه‌شفاف)
+
+// دادهٔ هیستوگرامِ حجم: هر نقطه {time,value,color} — رنگ بر پایهٔ up/down.
+export function volumeData(cs, opts = {}) {
+  if (!cs || !cs.length) return [];
+  const up = opts.up || VOL_UP, down = opts.down || VOL_DOWN;
+  return cs.map((c) => ({ time: c.t, value: c.v || 0, color: (c.c >= c.o) ? up : down }));
+}
+
+// یک نقطهٔ حجم برای live-update (HistogramSeries.update).
+export function volumePoint(c, opts = {}) {
+  const up = opts.up || VOL_UP, down = opts.down || VOL_DOWN;
+  return { time: c.t, value: (c && c.v) || 0, color: ((c && c.c >= c.o) ? up : down) };
+}
+
+// گزینه‌های سریِ هیستوگرامِ حجم (priceScaleId جدا، فرمتِ حجم، بدونِ خط/برچسبِ قیمت).
+export function volumeOptions(opts = {}) {
+  return {
+    priceScaleId: opts.priceScaleId != null ? opts.priceScaleId : '',
+    priceFormat: { type: 'volume' },
+    lastValueVisible: false,
+    priceLineVisible: false,
+  };
+}
+
+// حاشیهٔ مقیاس تا حجم فقط ~۱۵٪ پایینِ چارت را بگیرد و مقیاسِ اصلی را فشرده نکند.
+// top بزرگ‌تر ⇒ نوارِ حجمِ کوتاه‌تر (0.85 ≈ ۱۵٪ پایین).
+export function volumeScaleMargins(opts = {}) {
+  return { top: opts.top != null ? opts.top : 0.85, bottom: opts.bottom != null ? opts.bottom : 0 };
+}
+
+// spec کامل برای فراخواننده: chart.addSeries(HistogramSeries, spec.options)،
+// سپس priceScale().applyOptions({ scaleMargins: spec.scaleMargins })، و s.setData(spec.data).
+export function buildVolume(cs, opts = {}) {
+  return {
+    kind: 'histogram',
+    options: volumeOptions(opts),
+    scaleMargins: volumeScaleMargins(opts),
+    data: volumeData(cs, opts),
+    on: true, // پیش‌فرض روشن (مثلِ TradingView)
+  };
+}
+
 export const NONSTANDARD = ['renko', 'range', 'linebreak', 'kagi', 'pnf'];
 export function buildNonStandard(type, cs) {
   if (type === 'renko') return { kind: 'candle', data: renko(cs) };

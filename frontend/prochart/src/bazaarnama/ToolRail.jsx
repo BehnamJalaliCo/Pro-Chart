@@ -243,9 +243,9 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
     hoverTimer.current = setTimeout(() => setOpenKey(null), 180);
   }, []);
 
-  // نازک‌ترین جداکننده بینِ بخش‌های ریل.
+  // جداکنندهٔ گروه‌ها (سبکِ TV): خطِ نازکِ تمام‌عرض با فاصلهٔ عمودیِ اندک.
   const Divider = () => (
-    <div className="shrink-0 my-0.5" style={{ width: 22, height: 1, background: TH.border, opacity: 0.7 }} />
+    <div className="shrink-0 my-1" style={{ width: 26, height: 1, background: TH.border, opacity: 0.7 }} />
   );
 
   return (
@@ -265,7 +265,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
             onClick={() => onToggleMagnet(!magnet)}
             className="relative flex items-center justify-center rounded"
             style={{
-              width: 38, height: 38,
+              width: 40, height: 40,
               background: magnet ? accentTint : 'transparent',
               color: magnet ? TH.accent : TH.text,
               transition: 'background-color 120ms ease, color 120ms ease',
@@ -273,7 +273,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
             onMouseOver={(e) => { if (!magnet) e.currentTarget.style.background = TH.chipBgHover; }}
             onMouseOut={(e) => { if (!magnet) e.currentTarget.style.background = 'transparent'; }}
           >
-            <Magnet size={18} />
+            <Magnet size={20} />
           </button>
           <Divider />
         </>
@@ -296,7 +296,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
                 onClick={() => setTool(id)}
                 className="relative flex items-center justify-center rounded"
                 style={{
-                  width: 38, height: 38,
+                  width: 40, height: 40,
                   background: active ? accentTint : 'transparent',
                   color: active ? TH.accent : TH.text,
                   transition: 'background-color 120ms ease, color 120ms ease',
@@ -304,7 +304,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
                 onMouseOver={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
                 onMouseOut={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}
               >
-                <FavIcon size={18} />
+                <FavIcon size={20} />
                 {/* نشانهٔ ریزِ منتخب: ستارهٔ کوچک در گوشهٔ بالا-چپ */}
                 <Star size={8} className="absolute top-1 left-1 pointer-events-none" fill="currentColor"
                   style={{ color: TH.accent, opacity: active ? 0.9 : 0.55 }} />
@@ -337,7 +337,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
               onClick={() => (isOpen ? setOpenKey(null) : openOn(g.key))}
               className="relative flex items-center justify-center rounded"
               style={{
-                width: 38, height: 38,
+                width: 40, height: 40,
                 // اکتیوِ tinted (accent با شفافیت) به‌جای پُرکردنِ سختِ آبی — پریتیِ TV.
                 background: isActiveGroup ? accentTint : (isOpen ? TH.chipBgHover : 'transparent'),
                 color: isActiveGroup ? TH.accent : TH.text,
@@ -353,7 +353,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
                 if (!isActiveGroup && !isOpen) e.currentTarget.style.background = 'transparent';
               }}
             >
-              <Icon size={18} />
+              <Icon size={20} />
               {/* نشانهٔ ریزِ کارت: مثلثِ ظریف در گوشهٔ پایین‌راست */}
               <span
                 className="absolute bottom-1 right-1 w-0 h-0 pointer-events-none"

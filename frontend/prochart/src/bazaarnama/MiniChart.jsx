@@ -11,6 +11,36 @@ const PAL = {
 };
 const TH = PAL.dark; // سازگاریِ عقب‌رو (پیش‌فرضِ تیره)
 
+// ── اسپارک‌لاینِ ردیفِ واچ‌لیست (سبکِ TradingView) ──────────────────────────
+// خطِ کوچکِ روند به‌صورتِ ستونِ اختیاری در واچ‌لیست: SVG سبک، بی‌لرزش، تم‌آگاه.
+// رنگِ سبز/قرمز از همان پالتِ کندلِ این چارت گرفته می‌شود تا هم‌خانواده بماند.
+//   data: آرایهٔ اعداد (بسته‌شدن‌ها).  up: اختیاری؛ اگر نیامد از خودِ داده استنتاج می‌شود.
+//   stroke: بازنویسیِ رنگ.  fill: پرکردنِ کم‌رنگِ زیرِ خط (حسِ TV).  radius: نرمیِ گوشه‌ها.
+export function Sparkline({ data, up, width = 56, height = 22, stroke, fill = true }) {
+  const theme = useApp((s) => s.theme) || 'light';
+  const th = PAL[theme] || PAL.dark;
+  // فضای ثابت رزرو می‌شود حتی وقتی داده نیست → بی‌جهش/بی‌لرزش در ردیف.
+  if (!data || data.length < 2) return <svg width={width} height={height} style={{ display: 'block', flex: '0 0 auto' }} aria-hidden="true" />;
+  const rise = up != null ? up : data[data.length - 1] >= data[0]; // روندِ کلی: آخر vs اول
+  const col = stroke || (rise ? th.up : th.down);
+  const pad = 2, lastI = data.length - 1;
+  let min = data[0], max = data[0];
+  for (let i = 1; i < data.length; i++) { const v = data[i]; if (v < min) min = v; else if (v > max) max = v; }
+  const rng = (max - min) || 1;
+  const stepX = (width - pad * 2) / lastI;
+  const yOf = (v) => (height - pad - ((v - min) / rng) * (height - pad * 2));
+  const pts = data.map((v, i) => `${(pad + i * stepX).toFixed(1)},${yOf(v).toFixed(1)}`);
+  const line = pts.join(' ');
+  const base = (height - pad).toFixed(1);
+  const area = `${pad.toFixed(1)},${base} ${line} ${(pad + lastI * stepX).toFixed(1)},${base}`;
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none" style={{ display: 'block', flex: '0 0 auto' }} aria-hidden="true">
+      {fill && <polygon points={area} fill={col} fillOpacity={theme === 'dark' ? 0.12 : 0.09} stroke="none" />}
+      <polyline points={line} stroke={col} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 // چارتِ کوچکِ مستقل برای حالتِ چند-چارت (هر کدام نماد + تایم‌فریمِ خود)
 export default function MiniChart({ symbols = [], tf, initial, syncBus = null }) {
   const elRef = useRef(null);

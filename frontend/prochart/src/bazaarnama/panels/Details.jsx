@@ -5,6 +5,7 @@
 // بازهٔ روز/تغییر از کندلِ روزانه (api.chart) خوانده می‌شود؛ نبودِ داده ⇐ حالتِ خالیِ تمیز.
 import React, { useEffect, useMemo, useState } from 'react';
 import { api } from '../../api/client';
+import SymbolLogo from '../SymbolLogo';
 
 const num = (v) => { const n = typeof v === 'number' ? v : parseFloat(v); return Number.isFinite(n) ? n : null; };
 
@@ -33,6 +34,31 @@ function metaFor(symbol = '') {
 
 // شمارشِ ارقامِ اعشار برای نمایشِ هم‌ترازِ بید/اَسک
 function decimals(mid) { const s = String(mid ?? ''); return s.includes('.') ? s.split('.')[1].length : 2; }
+
+// نامِ کاملِ فارسیِ نماد (سبکِ سرتیترِ TV: «یورو / دلار آمریکا»). نبودِ نگاشت ⇐ null.
+const CCY_FA = { USD: 'دلار آمریکا', EUR: 'یورو', GBP: 'پوند', JPY: 'ین ژاپن', CHF: 'فرانک سوئیس', CAD: 'دلار کانادا', AUD: 'دلار استرالیا', NZD: 'دلار نیوزیلند', XAU: 'طلا', XAG: 'نقره', XPT: 'پلاتین', XPD: 'پالادیوم' };
+const CRYPTO_FA = { BTC: 'بیت‌کوین', ETH: 'اتریوم', BNB: 'بایننس‌کوین', SOL: 'سولانا', XRP: 'ریپل', ADA: 'کاردانو', DOGE: 'دوج‌کوین', TRX: 'ترون', LTC: 'لایت‌کوین', DOT: 'پولکادات', LINK: 'چین‌لینک', AVAX: 'آوالانچ', MATIC: 'پالیگان', TON: 'تون‌کوین', SHIB: 'شیبا اینو', PEPE: 'پپه', BCH: 'بیت‌کوین‌کش', ATOM: 'کازموس', UNI: 'یونی‌سواپ', NEAR: 'نیر', APT: 'اپتاس', ARB: 'آربیتروم', OP: 'اپتیمیزم' };
+const IDX_FA = { US30: 'داوجونز ۳۰', US500: 'اس‌اند‌پی ۵۰۰', SPX: 'اس‌اند‌پی ۵۰۰', NAS100: 'نزدک ۱۰۰', US100: 'نزدک ۱۰۰', NAS: 'نزدک', UK100: 'فوتسی ۱۰۰', DE40: 'دکسِ آلمان', JP225: 'نیکی ۲۲۵', HK50: 'هنگ‌سنگ', FRA40: 'کَکِ فرانسه' };
+function nameFor(symbol = '') {
+  const s = String(symbol).toUpperCase();
+  const clean = s.replace(/[^A-Z0-9]/g, '');
+  const a = clean.slice(0, 3), b = clean.slice(3, 6);
+  if (clean.length >= 6 && CCY_FA[a] && CCY_FA[b]) return `${CCY_FA[a]} / ${CCY_FA[b]}`;
+  for (const k of Object.keys(IDX_FA)) if (s.includes(k)) return IDX_FA[k];
+  if (/OIL|WTI|USOIL|XTI/.test(s)) return 'نفتِ خامِ WTI';
+  if (/BRENT|UKOIL|XBR/.test(s)) return 'نفتِ برنت';
+  const base = clean.replace(/USDT$|USD$/, '');
+  if (CRYPTO_FA[base]) return `${CRYPTO_FA[base]} / دلار`;
+  if (CCY_FA[base]) return CCY_FA[base];
+  return null;
+}
+
+// تبدیلِ رنگِ hexِ ۶رقمی به rgba برای پس‌زمینهٔ کم‌رنگِ پیلِ تغییر (سبکِ TV).
+function tint(hex, a) {
+  const h = String(hex || '').replace('#', '');
+  if (h.length !== 6) return 'transparent';
+  return `rgba(${parseInt(h.slice(0, 2), 16)},${parseInt(h.slice(2, 4), 16)},${parseInt(h.slice(4, 6), 16)},${a})`;
+}
 
 export default function Details({ symbol, TH, prices = {} }) {
   const [day, setDay] = useState(null); // {o,h,l,c,v} کندلِ روز
@@ -87,6 +113,7 @@ export default function Details({ symbol, TH, prices = {} }) {
   }, [symbol]);
 
   const meta = useMemo(() => metaFor(symbol), [symbol]);
+  const name = useMemo(() => nameFor(symbol), [symbol]);
   const dec = decimals(lp?.mid);
   const fmt = (v) => (v == null ? '—' : Number(v).toFixed(dec));
 
@@ -136,19 +163,27 @@ export default function Details({ symbol, TH, prices = {} }) {
 
   return (
     <div className="p-3 text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
-      {/* سربرگ: نماد + قیمتِ زنده + تغییرِ روز */}
+      {/* سربرگ: آیکون + نماد + نامِ کامل + دسته (سبکِ سرتیترِ نمادِ TV) */}
       <div className="mb-3">
-        <div className="flex items-baseline justify-between">
-          <span className="font-bold text-sm" style={{ color: TH.textStrong }} dir="ltr">{symbol}</span>
-          <span className="text-[10px] opacity-50">{meta.type}</span>
+        <div className="flex items-center gap-2">
+          <SymbolLogo symbol={symbol} size={30} />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-bold text-sm" style={{ color: TH.textStrong }} dir="ltr">{symbol}</span>
+              <span className="text-[9px] uppercase tracking-wide opacity-40 shrink-0" dir="ltr">{meta.type}</span>
+            </div>
+            {name && <div className="text-[11px] opacity-60 truncate leading-tight">{name}</div>}
+          </div>
         </div>
-        <div className="flex items-baseline gap-2 mt-1" dir="ltr">
-          <span className="text-lg font-bold tabular-nums" style={{ color: dir > 0 ? TH.up : dir < 0 ? TH.down : TH.textStrong }}>
+
+        {/* قیمتِ بزرگ + تغییرِ روزِ رنگی (پیلِ کم‌رنگ + فلش) */}
+        <div className="flex items-center gap-2 mt-2" dir="ltr">
+          <span className="text-2xl font-bold tabular-nums leading-none" style={{ color: dir > 0 ? TH.up : dir < 0 ? TH.down : TH.textStrong }}>
             {mid != null ? fmt(mid) : '—'}
           </span>
           {chgPct != null && (
-            <span className="text-[11px] tabular-nums" style={{ color: chgCol }}>
-              {chgAbs >= 0 ? '+' : ''}{fmt(chgAbs)} ({chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%)
+            <span className="text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded" style={{ color: chgCol, background: tint(chgCol, 0.12) }}>
+              {chgPct >= 0 ? '▲' : '▼'} {chgAbs >= 0 ? '+' : ''}{fmt(chgAbs)} ({chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%)
             </span>
           )}
         </div>

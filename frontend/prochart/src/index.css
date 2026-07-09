@@ -284,3 +284,103 @@ button, [role="button"], a, summary, .pc-btn {
 @keyframes flashDown { from { background: color-mix(in srgb, var(--pc-down) 28%, transparent); } to { background: transparent; } }
 .flash-up   { animation: flashUp   .3s var(--pc-ease-out); }
 .flash-down { animation: flashDown .3s var(--pc-ease-out); }
+
+/* ════════════════════════════════════════════════════════════════════
+   راند ۴ — پولیشِ chromeِ عینِ TV (تراکم / hairline / تایپوگرافیِ chrome)
+   افزایشی و بدونِ شکستنِ سلکتورهای موجود؛ فقط توکن + کلاسِ کمکیِ جدید.
+   مرجع: TRADINGVIEW_PARITY_ROADMAP §فاز۰ (تولبار ۳۸–۴۰ · واچ‌لیست ۳۶ ·
+   ردیف/سکشن ۲۸ · hairline ۱px با --pc-border · محور/لجند ۱۱px · اعدادِ tabular).
+   همهٔ ارجاع‌ها به توکن‌های تعریف‌شدهٔ بالا (--pc-border/-subtle، --pc-surface،
+   --pc-hover، --pc-accent-tint، --pc-text-2/-muted، --pc-transition-micro).
+   ════════════════════════════════════════════════════════════════════ */
+
+/* توکن‌های تراکمِ chrome — ارتفاعِ ثابتِ ردیف‌ها عینِ TV تا هیچ‌جا نلغزد */
+:root {
+  --pc-h-toolbar: 40px;   /* نوارِ ابزارِ بالا (۳۸–۴۰) */
+  --pc-h-subbar: 36px;    /* نوارِ فرعی/فیلتر/تب‌ها */
+  --pc-h-watchrow: 36px;  /* ردیفِ واچ‌لیست */
+  --pc-h-row: 28px;       /* ردیفِ منو/لیست */
+  --pc-h-section: 28px;   /* هدرِ سکشن */
+  --pc-hairline: 1px;     /* حاشیهٔ نازک */
+  --pc-font-chrome: 12px; /* متنِ chrome */
+  --pc-font-axis: 11px;   /* محور/لجند */
+  --pc-chrome-pad-x: 8px; /* پدینگِ افقیِ ردیف‌ها */
+}
+
+/* نوارِ ابزارِ بالا — ارتفاعِ قطعیِ ۴۰px، hairlineِ پایین، ترازِ عمودیِ دقیق */
+.pc-toolbar {
+  display: flex; align-items: center; gap: var(--pc-space-3, 6px);
+  height: var(--pc-h-toolbar); min-height: var(--pc-h-toolbar);
+  padding-inline: var(--pc-chrome-pad-x);
+  border-bottom: var(--pc-hairline) solid var(--pc-border);
+  background: var(--pc-surface);
+  box-sizing: border-box;
+}
+/* نوارِ فرعیِ ۳۶px (فیلتر/تب/بازهٔ ثانویه) */
+.pc-subbar {
+  display: flex; align-items: center; gap: var(--pc-space-2, 4px);
+  height: var(--pc-h-subbar); min-height: var(--pc-h-subbar);
+  padding-inline: var(--pc-chrome-pad-x);
+  border-bottom: var(--pc-hairline) solid var(--pc-border);
+  background: var(--pc-surface);
+  box-sizing: border-box;
+}
+/* جداکنندهٔ عمودیِ نازکِ بینِ گروه‌های تولبار (عینِ TV) */
+.pc-toolbar-sep {
+  align-self: stretch; width: var(--pc-hairline);
+  margin-block: 7px; margin-inline: 3px;
+  background: var(--pc-border);
+}
+
+/* ردیفِ واچ‌لیست — ارتفاعِ ثابتِ ۳۶px، hairlineِ زیر، هاورِ نرم، انتخابِ tinted */
+.pc-watchrow {
+  display: flex; align-items: center; gap: var(--pc-space-4, 8px);
+  height: var(--pc-h-watchrow); min-height: var(--pc-h-watchrow);
+  padding-inline: var(--pc-chrome-pad-x);
+  border-bottom: var(--pc-hairline) solid var(--pc-border-subtle, var(--pc-border));
+  cursor: pointer; box-sizing: border-box;
+  transition: background-color var(--pc-transition-micro, 120ms ease-out);
+}
+.pc-watchrow:hover { background: var(--pc-hover); }
+.pc-watchrow[aria-selected="true"], .pc-watchrow.active { background: var(--pc-accent-tint); }
+
+/* هدرِ سکشن — ۲۸px، برچسبِ کوچکِ mutedِ uppercase با وزنِ ۶۰۰ */
+.pc-section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--pc-h-section); min-height: var(--pc-h-section);
+  padding-inline: var(--pc-chrome-pad-x);
+  font-size: var(--pc-font-axis); font-weight: 600;
+  letter-spacing: .3px; text-transform: uppercase;
+  color: var(--pc-text-muted);
+  border-bottom: var(--pc-hairline) solid var(--pc-border);
+  background: var(--pc-surface);
+  box-sizing: border-box;
+}
+
+/* ردیفِ عمومیِ منو/لیست — ۲۸px */
+.pc-row {
+  display: flex; align-items: center; gap: var(--pc-space-4, 8px);
+  height: var(--pc-h-row); min-height: var(--pc-h-row);
+  padding-inline: var(--pc-chrome-pad-x);
+  box-sizing: border-box;
+}
+.pc-row:hover { background: var(--pc-hover); }
+
+/* hairlineهای کمکیِ ۱px با --pc-border (تم‌آگاه، دقیقاً مثلِ TV) */
+.pc-hairline   { border: 0; border-top: var(--pc-hairline) solid var(--pc-border); margin: 0; }
+.pc-hairline-b { border-bottom: var(--pc-hairline) solid var(--pc-border); }
+.pc-hairline-t { border-top: var(--pc-hairline) solid var(--pc-border); }
+.pc-hairline-s { border-inline-start: var(--pc-hairline) solid var(--pc-border); }
+.pc-hairline-e { border-inline-end: var(--pc-hairline) solid var(--pc-border); }
+
+/* تایپوگرافیِ chrome — متنِ ۱۲px و محور/لجندِ ۱۱px با اعدادِ tabular */
+.pc-chrome-text { font-size: var(--pc-font-chrome); color: var(--pc-text-2); }
+.pc-axis, .pc-legend {
+  font-size: var(--pc-font-axis);
+  color: var(--pc-text-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+.pc-legend { color: var(--pc-text-2); }
+/* عددِ chrome — همیشه tabular (در RTL خودِ عنصر dir="ltr" بگیرد) */
+.pc-num { font-variant-numeric: tabular-nums lining-nums; font-feature-settings: "tnum" 1, "lnum" 1; }

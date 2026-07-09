@@ -20,6 +20,37 @@ const BADGE = {
   OIL: ['#2b2b2b', 'OIL'], WTI: ['#2b2b2b', 'WTI'], BRENT: ['#2b2b2b', 'BR'],
 };
 
+// فلزاتِ گران‌بها → شمشِ فلزی (مثلِ TradingView): پس‌زمینهٔ فلزی + گلیفِ شمش.
+const METAL = {
+  XAU: { bg: '#a67c1a', bar: '#f2cf6b', top: '#ffe6a3', edge: '#7a5a12' }, // طلا
+  XAG: { bg: '#8b95a1', bar: '#dfe5ec', top: '#f4f7fb', edge: '#6a727d' }, // نقره
+  XPT: { bg: '#93a0a3', bar: '#dbe3e5', top: '#eef3f4', edge: '#6f797b' }, // پلاتین
+  XPD: { bg: '#8b9698', bar: '#d4dcdd', top: '#eaeeef', edge: '#69716f' }, // پالادیوم
+};
+
+// گلیفِ شمش در فضای ۲۴×۲۴ (بدونِ پس‌زمینه — بالادست پر می‌شود).
+function ingotPaint(kind) {
+  const m = METAL[kind] || METAL.XAU;
+  return (
+    <g strokeLinejoin="round">
+      <path d="M6 15.6L18 15.6L15.7 10.1L8.3 10.1Z" fill={m.bar} stroke={m.edge} strokeWidth="0.6" />
+      <path d="M8.3 10.1L15.7 10.1L14.4 8.3L9.6 8.3Z" fill={m.top} stroke={m.edge} strokeWidth="0.6" />
+      <line x1="8.9" y1="13.7" x2="15.1" y2="13.7" stroke={m.top} strokeWidth="0.7" opacity="0.55" />
+    </g>
+  );
+}
+
+// شمشِ فلزی به‌صورتِ svgِ مستقل (نمادِ تک، مثلِ XAU بدونِ جفت).
+function metalSvg(kind, s) {
+  const m = METAL[kind] || METAL.XAU;
+  return (
+    <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0" aria-hidden>
+      <circle cx={s / 2} cy={s / 2} r={s / 2 - 0.5} fill={m.bg} />
+      <g transform={`scale(${s / 24})`}>{ingotPaint(kind)}</g>
+    </svg>
+  );
+}
+
 // کریپتو — رنگِ برندِ هر کوین + نمادِ نمایشی (تیکر یا glyph). تطبیق با کوینِ پایه (بدونِ USDT/USD).
 const CRYPTO = {
   BTC: ['#f7931a', '₿'], ETH: ['#627eea', 'Ξ'], BNB: ['#f3ba2f', 'BNB'], SOL: ['#14f195', 'SOL'],
@@ -68,12 +99,15 @@ function badgeFor(sym = '') {
 function Disc({ ccy, cx, cy, r, ring }) {
   const id = `clip_${ccy}_${cx}_${cy}`.replace(/\./g, '');
   const flag = FLAG[ccy];
+  const metal = METAL[ccy];
   return (
     <g>
       {ring && <circle cx={cx} cy={cy} r={r + 0.6} fill={ring} />}
       <clipPath id={id}><circle cx={cx} cy={cy} r={r} /></clipPath>
       <g clipPath={`url(#${id})`} transform={`translate(${cx - r} ${cy - r}) scale(${(2 * r) / 24})`}>
-        {flag || <rect width="24" height="24" fill="#64748b" />}
+        {metal
+          ? (<g><rect width="24" height="24" fill={metal.bg} />{ingotPaint(ccy)}</g>)
+          : (flag || <rect width="24" height="24" fill="#64748b" />)}
       </g>
     </g>
   );
@@ -92,6 +126,7 @@ function cryptoTicker(sym = '') {
 // بَجِ رنگیِ fallback (وقتی لوگوی واقعی نبود).
 function badgeSvg(sym, s) {
   const bd = badgeFor(sym);
+  if (bd.key && METAL[bd.key]) return metalSvg(bd.key, s);
   const fs = bd.txt.length > 2 ? s * 0.30 : s * 0.46;
   return (
     <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0" aria-hidden>

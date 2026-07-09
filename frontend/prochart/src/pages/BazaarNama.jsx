@@ -169,6 +169,7 @@ export default function BazaarNama() {
   const chartRef = useRef(null);
   const priceSeriesRef = useRef(null);
   const auxSeriesRef = useRef([]); // سری‌های فرعیِ انواعِ چندسری (HLC Area / Kagi yang-yin / P&F)
+  const volSeriesRef = useRef(null); // سریِ حجمِ هیستوگرام پایینِ چارت (overlay، مثلِ TradingView)
   const drawRef = useRef(null);
   const overlaySeries = useRef({});
   const subChartsRef = useRef({});
@@ -276,6 +277,8 @@ export default function BazaarNama() {
   const [countdown, setCountdown] = useState(''); // شمارشِ معکوسِ بسته‌شدنِ کندل
   const [countdownColor, setCountdownColor] = useState(null); // تینتِ نزدیکِ بسته‌شدن (قرمز/کهربایی)
   const [showVP, setShowVP] = useState(false);
+  const [showVolume, setShowVolume] = useState(loadWS().showVolume ?? true); // حجم (هیستوگرامِ پایینِ چارت) — پیش‌فرض روشن مثلِ TradingView
+  const showVolumeRef = useRef(loadWS().showVolume ?? true); // گیتِ پایدار برای applyVolume (بدونِ وابستگی → پایدار)
   const [quickRange, setQuickRange] = useState(null); // بازهٔ سریعِ نمایشِ فعال (1D/5D/…/All) — سطحِ چارت
   const [magnet, setMagnet] = useState(loadWS().magnet ?? false);
   const [order, setOrder] = useState(null); // {side, entry, sl, tp} — #D: پیش‌فرض هیچ پوزیشنی باز نیست (از localStorage بازیابی نمی‌شود)
@@ -536,6 +539,31 @@ export default function BazaarNama() {
     try { chart.applyOptions({ leftPriceScale: { visible: anyLeft, borderColor: TH.grid } }); } catch (e) {}
   }, [overlays, TH]);
 
+  // ── سریِ حجم (هیستوگرامِ پایینِ چارت، مثلِ TradingView) ──
+  // overlay روی مقیاسِ قیمتِ مستقل (priceScaleId '') با scaleMargins پایین ⇒ فقط ~۱۸٪ پایینِ پِین را می‌گیرد
+  // و مقیاسِ قیمتِ اصلی را فشرده نمی‌کند. رنگِ هر میله سبز/قرمز برحسبِ جهتِ کندل. پایدار (بدونِ وابستگیِ state).
+  const applyVolume = useCallback((cs) => {
+    const chart = chartRef.current; if (!chart) return;
+    if (!volSeriesRef.current) {
+      if (!showVolumeRef.current) return; // خاموش و هنوز ساخته نشده ⇒ هیچ سری‌ای نساز
+      try {
+        const v = chart.addSeries(HistogramSeries, { priceScaleId: '', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
+        try { v.priceScale().applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } }); } catch (e) {}
+        volSeriesRef.current = v;
+      } catch (e) { return; }
+    }
+    try { volSeriesRef.current.applyOptions({ visible: !!showVolumeRef.current }); } catch (e) {}
+    if (!showVolumeRef.current) return; // خاموش ⇒ فقط پنهان (بدونِ حذف)، دادهٔ قبلی می‌ماند
+    try {
+      volSeriesRef.current.setData((cs || []).map((c) => ({
+        time: c.t, value: c.v || 0,
+        color: (c.c >= c.o) ? 'rgba(38,166,154,.5)' : 'rgba(239,83,80,.5)',
+      })));
+    } catch (e) { /* */ }
+  }, []);
+  // توگلِ حجم: ماندگاری + همگام‌سازیِ ref + اعمال/حذفِ فوری بدونِ رفرشِ داده
+  useEffect(() => { showVolumeRef.current = showVolume; saveWS({ showVolume }); applyVolume(candlesRef.current); }, [showVolume, applyVolume]);
+
   const applySubs = useCallback((cs) => {
     const chart = chartRef.current; if (!chart) return;
     // حذفِ سری‌های ساب قبلی (pane نیتیوِ v5 — روی همان چارت)
@@ -585,10 +613,10 @@ export default function BazaarNama() {
       const merged = older.concat(cs); candlesRef.current = merged;
       const s = priceSeriesRef.current;
       if (s) { const data = chartType === 'heikin' ? heikin(merged) : merged; s.setData((['line', 'area', 'baseline', 'step'].includes(chartType) || EXT_VALUE_TYPES.includes(chartType)) ? valSeries(data) : ohlc(data)); }
-      applyOverlays(merged); applySubs(merged);
+      applyOverlays(merged); applySubs(merged); applyVolume(merged);
       if (drawRef.current) drawRef.current.setCandles(merged);
     } catch (e) { /* */ } finally { lz.loading = false; }
-  }, [symbol, tf, chartType, applyOverlays, applySubs]);
+  }, [symbol, tf, chartType, applyOverlays, applySubs, applyVolume]);
   useEffect(() => { loadMoreRef.current = loadMoreHistory; }, [loadMoreHistory]);
 
   const load = useCallback(async () => {
@@ -621,7 +649,7 @@ export default function BazaarNama() {
       }
       if (factor > 1) cs = resampleCandles(cs, factor);
       candlesRef.current = cs;
-      buildPriceSeries(cs); applyOverlays(cs); applySubs(cs);
+      buildPriceSeries(cs); applyOverlays(cs); applySubs(cs); applyVolume(cs);
       if (drawRef.current) drawRef.current.setCandles(cs);
       chartRef.current && chartRef.current.timeScale().fitContent();
       if (showVP) applyVP(cs);
@@ -901,6 +929,7 @@ export default function BazaarNama() {
   // یک گامِ رو به جلو روی برشِ موجود (نسخهٔ ضد-رگرسیون از کدِ قبلی).
   const replayApplyStep = useCallback((c, slice) => {
     candlesRef.current = slice;
+    if (volSeriesRef.current && showVolumeRef.current) { try { volSeriesRef.current.update({ time: c.t, value: c.v || 0, color: (c.c >= c.o) ? 'rgba(38,166,154,.5)' : 'rgba(239,83,80,.5)' }); } catch (e) {} }
     if (EXT_HISTOGRAM_TYPES.includes(chartType)) { // ستونی: رنگِ live لازم دارد — فقط در بارگذاریِ کاملِ بازپخش به‌روز می‌شود
       try { priceSeriesRef.current.update(columnsLivePoint(candlesRef.current, { up: TH.up, down: TH.down })); } catch (e) {}
       return;
@@ -910,8 +939,8 @@ export default function BazaarNama() {
   // بازساختِ کاملِ سری از یک برش (برای seek/step-back/scrub — همان مسیرِ enterReplay).
   const replayApplySlice = useCallback((slice) => {
     candlesRef.current = slice;
-    buildPriceSeries(slice); applyOverlays(slice); applySubs(slice);
-  }, [buildPriceSeries, applyOverlays, applySubs]);
+    buildPriceSeries(slice); applyOverlays(slice); applySubs(slice); applyVolume(slice);
+  }, [buildPriceSeries, applyOverlays, applySubs, applyVolume]);
 
   const enterReplay = () => {
     const full = candlesRef.current.slice();
@@ -1347,6 +1376,11 @@ export default function BazaarNama() {
   const _spreadPts = (_bidPx != null && _askPx != null) ? Math.abs(_askPx - _bidPx) * Math.pow(10, priceDigits(symbol)) : null;
   const _csNow = candlesRef.current;
   const _lastCandle = _csNow.length ? _csNow[_csNow.length - 1] : null;
+  // لجندِ همیشه‌نمای نماد (سبکِ TradingView): وقتی کراس‌هیر فعال نیست، O/H/L/C آخرین کندل با close=قیمتِ زنده نمایش می‌شود
+  const _legRnd = (x) => (x == null || !Number.isFinite(x) ? x : Number(Number(x).toFixed(priceDigits(symbol))));
+  const _legendShown = legend || (_lastCandle
+    ? { open: _legRnd(_lastCandle.o), high: _legRnd(_lastCandle.h), low: _legRnd(_lastCandle.l), close: _legRnd(livePrice != null ? livePrice : _lastCandle.c) }
+    : null);
   // تغییرِ کندلِ جاری (زیرِ کراس‌هیر → همان کندل؛ وگرنه آخرین کندل با قیمتِ زنده) — سبز/قرمز مثلِ TV
   const _barOpen = (legend && legend.open != null) ? legend.open : (_lastCandle ? _lastCandle.o : null);
   const _barClose = legend ? (legend.close != null ? legend.close : legend.value) : (livePrice != null ? livePrice : (_lastCandle ? _lastCandle.c : null));
@@ -1522,6 +1556,7 @@ export default function BazaarNama() {
               <div className="my-1 border-t" style={{ borderColor: TH.border }} />
               {[
                 { on: magnet, set: () => setMagnet((v) => !v), label: 'مگنت (چسبیدن به قیمت)', Icon: Magnet },
+                { on: showVolume, set: () => setShowVolume((v) => !v), label: 'حجم (هیستوگرامِ پایین)', Icon: BarChart3 },
                 { on: showDataWin, set: () => setShowDataWin((v) => !v), label: 'پنجرهٔ داده', Icon: Table2 },
                 { on: showVP, set: () => setShowVP((v) => !v), label: 'پروفایلِ حجم', Icon: BarChart3 },
                 { on: sessionsOn, set: () => setSessionsOn((v) => !v), label: 'باندهای سشن', Icon: Activity },
@@ -1589,7 +1624,7 @@ export default function BazaarNama() {
           {legendItems.length > 0 ? (
             <div dir="rtl">
               <ChartLegend
-                items={legendItems} legend={legend} TH={TH} symbol={symbol} tf={tf}
+                items={legendItems} legend={_legendShown} TH={TH} symbol={symbol} tf={tf}
                 indVals={legendVals} coarse={bp.coarse}
                 collapsed={legCollapsed} onCollapse={setLegCollapsed}
                 viewMode={legView} onToggleViewMode={() => setLegView((v) => (v === 'compact' ? 'normal' : 'compact'))}
@@ -1602,7 +1637,7 @@ export default function BazaarNama() {
               />
             </div>
           ) : (
-            <Legend legend={legend} TH={TH} symbol={symbol} tf={tf} />
+            <Legend legend={_legendShown} TH={TH} symbol={symbol} tf={tf} />
           )}
           <div className="relative flex-1 min-h-0"
                style={compact ? { touchAction: 'none', overscrollBehavior: 'none' } : undefined}
@@ -1725,6 +1760,13 @@ export default function BazaarNama() {
             )}
             {/* شمارشِ معکوسِ بسته‌شدنِ کندل + وضعیتِ بازار */}
             <CountdownChip countdown={countdown} countdownColor={countdownColor} TH={TH} marketOpen={marketOpen} />
+            {/* برچسبِ سریِ حجم — لبهٔ بالای باندِ حجم (مثلِ TradingView: «Vol») */}
+            {showVolume && (
+              <div className="absolute left-2 z-20 pointer-events-none text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center gap-1"
+                   style={{ bottom: '18%', color: TH.text, background: TH.overlayMask, backdropFilter: 'blur(2px)', border: `1px solid ${TH.border}` }} dir="ltr">
+                <BarChart3 size={11} style={{ opacity: 0.7 }} /><span>حجم · Vol</span>
+              </div>
+            )}
             <Watermark src={bnLogo} theme={theme} />
             {/* Data Window — کامپوننتِ ChartOverlays: O/H/L/C + تغییر (مطلق/درصد) + حجم + زمان + اندیکاتورهای زیرِ کراس‌هیر */}
             {showDataWin && (

@@ -131,18 +131,33 @@ export const PRICE_SCALE_MODES = [
   { value: PRICE_SCALE_MODE.IndexedTo100, label: 'پایه ۱۰۰' },
 ];
 
+// ظاهرِ TV-مانندِ محورِ قیمت (افزایشی؛ روی chart.priceScale('right').applyOptions اعمال می‌شود).
+//  • ticksVisible   → خطِ تیکِ کوچک کنارِ هر برچسب مثلِ TradingView.
+//  • entireTextOnly → فقط برچسب‌های کاملِ جا-شده (بدونِ نصفهٔ بریده در لبه‌ها).
+//  • alignLabels    → چیدنِ برچسب‌ها بدونِ همپوشانی (فاصله‌گذاریِ تیکِ منظم مثلِ TV).
+//  • minimumWidth   → پهنای پایدارِ محور تا اعدادِ .tnum با تغییرِ قیمت نپرند.
+export const PRICE_SCALE_APPEARANCE = {
+  ticksVisible: true,
+  entireTextOnly: true,
+  alignLabels: true,
+  minimumWidth: 56,
+};
+
 /**
  * payloadِ آمادهٔ chart.priceScale(id).applyOptions({...}) برای حالت/قفل/وارونگیِ مقیاس.
  * @param {object} opt
  * @param {number}  opt.mode        یکی از PRICE_SCALE_MODE (پیش‌فرض Normal)
  * @param {boolean} opt.locked      true → autoScale خاموش (قفلِ بازهٔ دستی)
  * @param {boolean} opt.invert      true → محور عمودی وارونه
+ * @param {boolean} opt.appearance  true (پیش‌فرض) → ظاهرِ TV-مانند (PRICE_SCALE_APPEARANCE)
+ *                                   را هم می‌چسباند؛ false → فقط حالت/قفل/وارونگی (رفتارِ قدیمی).
  * @returns {object} payloadِ applyOptions
  */
-export const priceScaleOptions = ({ mode = PRICE_SCALE_MODE.Normal, locked = false, invert = false } = {}) => ({
+export const priceScaleOptions = ({ mode = PRICE_SCALE_MODE.Normal, locked = false, invert = false, appearance = true } = {}) => ({
   mode,
   autoScale: !locked,
   invertScale: !!invert,
+  ...(appearance ? PRICE_SCALE_APPEARANCE : {}),
 });
 
 // payloadِ «بازنشانیِ مقیاس» (دابل‌کلیکِ روی محور) — autoScale را دوباره روشن می‌کند.
@@ -153,6 +168,68 @@ export const resetPriceScaleOptions = () => ({ autoScale: true, invertScale: fal
 // نگه می‌دارد (برخلافِ reset). معادلِ دکمهٔ «Fit» / «Auto» در TradingView.
 // میزبان برای برازشِ افقی هم chart.timeScale().fitContent() را صدا می‌زند.
 export const fitPriceScaleOptions = () => ({ autoScale: true });
+
+// اندازهٔ فونتِ برچسب‌های محور (قیمت + زمان) مثلِ TradingView.
+export const PRICE_AXIS_FONT_PX = 11;
+
+/**
+ * payloadِ آمادهٔ chart.applyOptions({ layout }) برای فونتِ ۱۱px محورها (مثلِ TV).
+ * افزایشی و اختیاری؛ میزبان یک‌بار پس از ساختِ چارت اعمال می‌کند.
+ * @param {string} [fontFamily] در صورتِ نیاز فونتِ خانوادهٔ سفارشی (پیش‌فرض: دست‌نخورده)
+ * @returns {{layout:{fontSize:number, fontFamily?:string}}}
+ */
+export const priceAxisLayoutOptions = (fontFamily) => ({
+  layout: { fontSize: PRICE_AXIS_FONT_PX, ...(fontFamily ? { fontFamily } : {}) },
+});
+
+// رنگ‌های پیش‌فرضِ سبز/قرمزِ برچسبِ قیمت (fallback وقتی تم رنگ نمی‌دهد).
+const LIVE_UP = '#26a69a';
+const LIVE_DOWN = '#ef5350';
+const LIVE_FLAT = '#2962FF';
+
+/**
+ * گزینه‌های خطِ قیمتِ زندهٔ «LIVE» با برچسبِ محورِ رنگیِ up/down (مثلِ TradingView).
+ * افزایشی: میزبان می‌تواند این را جایگزینِ آبجکتِ ثابتِ createPriceLine کند تا
+ * برچسبِ آخرین قیمت روی محور، پس‌زمینهٔ سبز/قرمزِ جهت‌دار و متنِ سفید بگیرد.
+ * سازگاریِ عقب‌رو: بدونِ dir/up/down همان رنگِ آبیِ قبلی ('#2962FF') برمی‌گردد.
+ * @param {object} opt
+ * @param {number}  [opt.price]  قیمتِ خط (اگر داده شود در خروجی می‌آید)
+ * @param {number}  [opt.dir]    جهت: >0 صعودی، <0 نزولی، 0/undefined خنثی
+ * @param {string}  [opt.up]     رنگِ صعودی (معمولاً TH.up)
+ * @param {string}  [opt.down]   رنگِ نزولی (معمولاً TH.down)
+ * @param {string}  [opt.accent] رنگِ حالتِ خنثی (پیش‌فرض آبیِ TV)
+ * @param {string}  [opt.title]  متنِ تگ (پیش‌فرض 'LIVE')
+ * @returns {object} payloadِ آمادهٔ series.createPriceLine / priceLine.applyOptions
+ */
+export const livePriceLineOptions = ({ price, dir = 0, up, down, accent = LIVE_FLAT, title = 'LIVE' } = {}) => {
+  const color = dir > 0 ? (up || LIVE_UP) : dir < 0 ? (down || LIVE_DOWN) : accent;
+  const o = {
+    color,
+    lineWidth: 1,
+    lineStyle: 1,          // LineStyle.Dotted
+    axisLabelVisible: true,
+    title,
+    axisLabelColor: color,   // پس‌زمینهٔ برچسبِ محور = رنگِ جهت
+    axisLabelTextColor: '#ffffff',
+  };
+  if (price != null) o.price = price;
+  return o;
+};
+
+/**
+ * گزینه‌های سریِ قیمتِ اصلی برای «برچسبِ آخرین قیمت» روی محور (مثلِ TV).
+ * افزایشی و اختیاری. توجه: در کندلِ استاندارد، پس‌زمینهٔ برچسبِ آخرین مقدار به‌طورِ
+ * خودکار رنگِ up/downِ همان کندل را می‌گیرد (کارِ خودِ lightweight-charts)؛ این helper
+ * فقط دیده‌شدنِ برچسب + خطِ قیمت را روشن می‌کند تا آن رنگِ خودکار ظاهر شود.
+ * برای سری‌های value-محور (line/area) می‌توان priceLineColor داد.
+ * @param {object} [opt] { priceLineColor?:string }
+ * @returns {{lastValueVisible:boolean, priceLineVisible:boolean, priceLineColor?:string}}
+ */
+export const lastPriceLabelOptions = ({ priceLineColor } = {}) => ({
+  lastValueVisible: true,
+  priceLineVisible: true,
+  ...(priceLineColor ? { priceLineColor } : {}),
+});
 
 /* ──────────────────────────────────────────────────────────────────────────
  * (پ) سشن‌ها — باندهای London / NY / Tokyo (TZ-aware با Intl، DST خودکار)
