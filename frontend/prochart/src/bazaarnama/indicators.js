@@ -387,6 +387,34 @@ export const pivots = (highs, lows, closes) => {
   return { p, r1, r2, s1, s2 };
 };
 
+// ALMA — میانگینِ گاوسیِ آرنو لِگو (offset 0..1 محلِ قله، sigma هموارسازی)
+export const alma = (src, p = 9, offset = 0.85, sigma = 6) => {
+  const n = src.length, out = new Array(n).fill(null);
+  const m = offset * (p - 1), s = p / sigma || 1e-9;
+  const w = new Array(p); let wsum = 0;
+  for (let j = 0; j < p; j++) { w[j] = Math.exp(-((j - m) * (j - m)) / (2 * s * s)); wsum += w[j]; }
+  for (let i = p - 1; i < n; i++) {
+    let acc = 0, ok = true;
+    for (let j = 0; j < p; j++) { const v = src[i - (p - 1) + j]; if (v == null) { ok = false; break; } acc += v * w[j]; }
+    out[i] = ok && wsum ? acc / wsum : null;
+  }
+  return out;
+};
+
+// MA Ribbon — نوارِ چند میانگینِ متحرک (base، گام step، تعداد count؛ SMA یا EMA)
+export const maRibbon = (src, base = 20, step = 10, count = 6, type = 'sma') => {
+  const fn = type === 'ema' ? ema : sma;
+  const out = [];
+  for (let k = 0; k < count; k++) out.push(fn(src, Math.max(1, base + k * step)));
+  return out;
+};
+
+// GMMA — گاپیِ چندمیانگینِ متحرک: گروهِ کوتاه‌مدت {3,5,8,10,12,15} + بلندمدت {30,35,40,45,50,60}
+export const gmma = (src) => {
+  const shortL = [3, 5, 8, 10, 12, 15], longL = [30, 35, 40, 45, 50, 60];
+  return { short: shortL.map((p) => ema(src, p)), long: longL.map((p) => ema(src, p)) };
+};
+
 // رجیستریِ اندیکاتورها (برای UI). pane: 'main' (اورلی) یا 'sub'.
 export const REGISTRY = {
   ma:   { label: 'میانگین متحرک (MA)', pane: 'main', inputs: { period: 20 }, color: '#60a5fa', calc: (c, i) => ({ line: sma(c.close, i.period) }) },
@@ -440,6 +468,10 @@ export const REGISTRY = {
   ao: { label: 'اسیلاتورِ شگفت‌انگیز (AO)', pane: 'sub', inputs: {}, color: '#60a5fa', calc: (c) => ({ line: ao(c.high, c.low), guides: [0] }) },
   tsi: { label: 'TSI (قدرتِ واقعی)', pane: 'sub', inputs: { short: 13, long: 25 }, color: '#f472b6', calc: (c, i) => ({ line: tsi(c.close, i.short, i.long), guides: [0] }) },
   cmo: { label: 'CMO (مومنتومِ چاند)', pane: 'sub', inputs: { period: 9 }, color: '#fbbf24', calc: (c, i) => ({ line: cmo(c.close, i.period), guides: [-50, 50] }) },
+  alma: { label: 'ALMA (آرنو لِگو)', pane: 'main', inputs: { period: 9, offset: 0.85, sigma: 6 }, color: '#2dd4bf', calc: (c, i) => ({ line: alma(c.close, i.period, i.offset, i.sigma) }) },
+  maRibbon: { label: 'نوارِ میانگین‌ها (MA Ribbon)', pane: 'main', inputs: { base: 20, step: 10, count: 6 }, color: '#60a5fa', calc: (c, i) => { const rs = maRibbon(c.close, i.base, i.step, i.count, 'sma'); const pal = ['#60a5fa', '#38bdf8', '#22d3ee', '#2dd4bf', '#34d399', '#4ade80', '#a3e635', '#facc15']; return { lines: rs.map((data, k) => ({ data, color: pal[k % pal.length] })) }; } },
+  gmma: { label: 'گاپی (GMMA)', pane: 'main', inputs: {}, color: '#3b82f6', calc: (c) => { const g = gmma(c.close); return { lines: [...g.short.map((data) => ({ data, color: '#3b82f6' })), ...g.long.map((data) => ({ data, color: '#ef4444' }))] }; } },
+  maCross: { label: 'تقاطعِ میانگین‌ها (MA Cross)', pane: 'main', inputs: { fast: 10, slow: 30 }, color: '#22c55e', calc: (c, i) => ({ lines: [{ data: sma(c.close, i.fast), color: '#22c55e' }, { data: sma(c.close, i.slow), color: '#ef4444' }] }) },
 };
 
 // ادغامِ افزونه‌های فصل ۵ (۳۷ اندیکاتورِ جدید: روند/MA/نوسان + مومنتوم/حجم/پیوت).

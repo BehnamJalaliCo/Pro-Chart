@@ -395,6 +395,169 @@ bgcolor(gt(close, htfEma), color.new(color.green, 92))
 bgcolor(lt(close, htfEma), color.new(color.red, 92))`,
 
   },
+  {
+    name: 'آرون (قدرت و جهتِ روند)', kind: 'indicator',
+    code: `// آرون — بر پایهٔ فاصله تا سقف/کفِ اخیر؛ عبورِ خطوط = تغییرِ روند
+len = input.int(14, "دورهٔ آرون")
+ar = ta.aroon(len)
+plot(ar.up,   "آرونِ صعودی", color.green, 2)
+plot(ar.down, "آرونِ نزولی", color.red, 2)
+hline(70, "قوی", color.gray)
+hline(30, "ضعیف", color.gray)
+buy  = crossover(ar.up, ar.down)
+sell = crossunder(ar.up, ar.down)
+plotshape(buy,  "خرید", shape.up,   color.green)
+plotshape(sell, "فروش", shape.down, color.red)
+alertcondition(buy, "روندِ صعودیِ آرون")`,
+  },
+  {
+    name: 'استوکاستیک RSI (اشباعِ حساس)', kind: 'indicator',
+    code: `// استوکاستیک RSI — اسیلاتورِ سریع برای نواحیِ اشباع
+len = input.int(14, "دوره")
+sr = ta.stochrsi(close, len, 3, 3)
+plot(sr.k, "K", color.aqua)
+plot(sr.d, "D", color.orange)
+hline(80, "اشباعِ خرید", color.red)
+hline(20, "اشباعِ فروش", color.green)
+buy  = and(crossover(sr.k, sr.d), lt(sr.k, 20))
+sell = and(crossunder(sr.k, sr.d), gt(sr.k, 80))
+plotshape(buy,  "خرید", shape.up,   color.green)
+plotshape(sell, "فروش", shape.down, color.red)`,
+  },
+  {
+    name: 'کراسِ DEMA/TEMA (کم‌تأخیر)', kind: 'strategy',
+    code: `// میانگین‌های دوگانه/سه‌گانهٔ نمایی — ورودِ سریع با تأخیرِ کم
+fast = ta.dema(close, input.int(10, "DEMA سریع"))
+slow = ta.tema(close, input.int(30, "TEMA کند"))
+plot(fast, "DEMA10", color.aqua)
+plot(slow, "TEMA30", color.orange)
+long  = crossover(fast, slow)
+short = crossunder(fast, slow)
+plotshape(long,  "خرید", shape.up,   color.green)
+plotshape(short, "فروش", shape.down, color.red)
+a = ta.atr(14)
+// حد ضرر/هدف بر پایهٔ ATR (جعبهٔ سبز = هدف تا TP3، قرمز = حد ضرر)
+riskreward(close, sub(close, mul(a, 1.5)), add(close, mul(a, 3)), add(close, mul(a, 4.5)), add(close, mul(a, 6)))
+strategy.entry("long",  long)
+strategy.entry("short", short)`,
+  },
+  {
+    name: 'شاخصِ قدرتِ واقعی (TSI) + سیگنال', kind: 'indicator',
+    code: `// TSI — مومنتومِ دوبار هموارشده با خطِ سیگنال
+t = ta.tsi(close, 13, 25)
+sig = ta.ema(t, 13)
+plot(t,   "TSI", color.blue, 2)
+plot(sig, "سیگنال", color.orange)
+hline(0, "صفر", color.gray)
+buy  = crossover(t, sig)
+sell = crossunder(t, sig)
+plotshape(buy,  "خرید", shape.up,   color.green)
+plotshape(sell, "فروش", shape.down, color.red)
+bgcolor(gt(t, 0), color.new(color.green, 92))
+bgcolor(lt(t, 0), color.new(color.red, 92))`,
+  },
+  {
+    name: 'جریانِ پول: OBV + CMF + واگراییِ مخفی', kind: 'indicator',
+    code: `// حجمِ هوشمند: OBV (تجمعی) و CMF (فشارِ خرید/فروش)
+o = ta.obv()
+c = ta.cmf(20)
+plot(o, "OBV", color.aqua, 2)
+plot(mul(c, 100000), "CMF×", color.purple)
+// واگراییِ مخفی: قیمتِ پایین‌تر ولی OBV بالاتر = فشارِ پنهانِ خرید
+hidBull = and(lt(close, close[5]), gt(o, o[5]))
+plotshape(hidBull, "واگراییِ مخفی", shape.up, color.green)
+alertcondition(and(gt(c, 0.1), gt(o, o[1])), "ورودِ پولِ هوشمند")`,
+  },
+  {
+    name: 'فشردگیِ کلتنر/بولینگر (Squeeze)', kind: 'strategy',
+    code: `// وقتی بولینگر داخلِ کلتنر می‌رود بازار فشرده است؛ خروج = انفجار
+b = ta.bb(close, 20, 2)
+k = ta.kc(close, 20, 1.5)
+squeeze = and(gt(b.lower, k.lower), lt(b.upper, k.upper))
+fired = and(squeeze[1], and(gt(b.upper, k.upper), gt(close, b.mid)))
+plot(b.upper, "بولینگر بالا", color.blue)
+plot(b.lower, "بولینگر پایین", color.blue)
+plot(k.upper, "کلتنر بالا", color.gray)
+plot(k.lower, "کلتنر پایین", color.gray)
+// پس‌زمینهٔ زرد = بازارِ فشرده (آمادهٔ حرکت)
+bgcolor(squeeze, color.new(color.yellow, 85))
+long = and(fired, gt(close, k.upper))
+plotshape(long, "شکستِ فشردگی", shape.up, color.green)
+strategy.entry("long", long)
+alertcondition(fired, "خروج از فشردگی (Squeeze)")`,
+  },
+  {
+    name: 'پیووتِ سقف/کف (ساختارِ بازار)', kind: 'indicator',
+    code: `// نقاطِ چرخشِ بازار + حمایت/مقاومتِ پویا با valuewhen
+ph = ta.pivothigh(5, 5)
+pl = ta.pivotlow(5, 5)
+plot(close, "قیمت", color.gray)
+plotshape(ph, "سقفِ چرخش", shape.down, color.red)
+plotshape(pl, "کفِ چرخش", shape.up,   color.green)
+// آخرین سقف/کفِ معتبر = خطوطِ مقاومت/حمایت
+res = ta.valuewhen(ph, high, 0)
+sup = ta.valuewhen(pl, low, 0)
+plot(res, "مقاومت", color.red, 1, 2)
+plot(sup, "حمایت", color.green, 1, 2)`,
+  },
+  {
+    name: 'اسیلاتورِ شگفت‌انگیز (AO)', kind: 'indicator',
+    code: `// AO — تفاضلِ دو میانگینِ میانهٔ قیمت؛ شتابِ مومنتوم
+a = ta.ao()
+plot(a, "AO", color.blue, 2)
+hline(0, "صفر", color.gray)
+// رنگِ کندل: سبز اگر AO صعودی، قرمز اگر نزولی
+barcolor(color.green, gt(a, a[1]))
+barcolor(color.red,   lt(a, a[1]))
+plotshape(crossover(a, 0),  "مثبت شد", shape.up,   color.green)
+plotshape(crossunder(a, 0), "منفی شد", shape.down, color.red)`,
+  },
+  {
+    name: 'کانالِ رگرسیونِ خطی (LinReg)', kind: 'strategy',
+    code: `// خطِ روندِ رگرسیون + باندِ انحرافِ معیار برای بازگشت به میانگین
+len = input.int(50, "دورهٔ رگرسیون")
+mid = ta.linreg(close, len, 0)
+dev = ta.stdev(close, len)
+upper = add(mid, mul(dev, 2))
+lower = sub(mid, mul(dev, 2))
+plot(mid,   "خطِ رگرسیون", color.orange, 2)
+plot(upper, "بالا", color.gray)
+plot(lower, "پایین", color.gray)
+fill(upper, lower, color.new(color.blue, 92))
+long  = crossover(close, lower)
+short = crossunder(close, upper)
+plotshape(long,  "بازگشت خرید", shape.up,   color.green)
+plotshape(short, "بازگشت فروش", shape.down, color.red)
+strategy.entry("long",  long)
+strategy.entry("short", short)`,
+  },
+  {
+    name: '📚 کتابخانه: توابعِ کمکیِ روند', kind: 'library',
+    code: `// کتابخانه — این توابع را کپی کن و در اسکریپت‌های خود استفاده کن.
+// هر تابع یک سری برمی‌گرداند تا مستقیم در شرط‌ها به‌کار رود.
+function isUpTrend(fast, slow){ return gt(ta.ema(close, fast), ta.ema(close, slow)); }
+function momentumOk(len){ return gt(ta.rsi(close, len), 50); }
+function volatile(len){ return gt(ta.atr(len), ta.sma(ta.atr(len), 50)); }
+// نمونهٔ استفاده: ترکیبِ سه تابعِ کتابخانه در یک ستاپ
+setup = and(and(isUpTrend(21, 55), momentumOk(14)), volatile(14))
+plot(ta.ema(close, 21), "EMA21", color.aqua)
+plotshape(setup, "ستاپِ کتابخانه", shape.up, color.green)
+alertcondition(setup, "ستاپِ کتابخانه فعال شد")`,
+  },
+  {
+    name: '📚 کتابخانه: مدیریتِ ریسکِ ATR', kind: 'library',
+    code: `// کتابخانه — توابعِ آمادهٔ حد ضرر/هدف بر پایهٔ ATR (قابلِ استفادهٔ مجدد).
+function slLong(mult){ return sub(close, mul(ta.atr(14), mult)); }
+function tpAt(r){ return add(close, mul(ta.atr(14), r)); }
+// نمونهٔ استفاده: ورودِ ساده با نسبتِ ریسک‌به‌ریوارد ۱:۲:۳
+long = crossover(ta.ema(close, 20), ta.ema(close, 50))
+plot(ta.ema(close, 20), "EMA20", color.aqua)
+plot(ta.ema(close, 50), "EMA50", color.orange)
+plotshape(long, "خرید", shape.up, color.green)
+// جعبهٔ سبزِ کم‌رنگ = هدف‌ها تا TP3، جعبهٔ قرمزِ کم‌رنگ = حد ضرر
+riskreward(close, slLong(1.5), tpAt(3), tpAt(4.5), tpAt(6))
+strategy.entry("long", long)`,
+  },
 ];
 
 // مرجعِ توابع برای اتوکامپلیت + پنلِ مستندات

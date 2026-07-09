@@ -10,6 +10,8 @@ export default defineConfig({
       apply: 'build',
       exclude: [/node_modules/],
       options: {
+        // seedِ ثابت → خروجیِ مبهم‌ساز قطعی/reproducible (رفعِ TDZِ رَندومِ «Cannot access X before initialization»)
+        seed: 20260709,
         compact: true,
         simplify: true,
         identifierNamesGenerator: 'mangled',
@@ -36,7 +38,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
-    minify: process.env.NO_OBF ? false : 'esbuild',
+    minify: 'esbuild',
     // تک‌چانک: چون اپ داخلِ WebView از دیسکِ محلی لود می‌شود، تقسیمِ چانک سودی ندارد و
     // چانک‌های dynamicِ مبهم‌سازی‌شده گاهی در APK جا نمی‌افتند. همه‌چیز در یک فایل = مطمئن.
     rollupOptions: { output: { manualChunks: () => 'index', inlineDynamicImports: false } },

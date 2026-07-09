@@ -236,6 +236,39 @@ const _chaikinVol = (highs, lows, p = 10, roc = 10) => {
   return e.map((v, i) => (v != null && e[i - roc] != null && e[i - roc] ? 100 * (v - e[i - roc]) / e[i - roc] : null));
 };
 
+// PPO — نوسان‌سازِ درصدیِ قیمت: 100·(EMA_fast−EMA_slow)/EMA_slow ؛ سیگنال = EMA(PPO, sig)
+const _ppo = (src, fast = 12, slow = 26, sig = 9) => {
+  const ef = _ema(src, fast), es = _ema(src, slow);
+  const line = src.map((_, i) => (ef[i] != null && es[i] != null && es[i] ? 100 * (ef[i] - es[i]) / es[i] : null));
+  const signal = _ema(line, sig);
+  const hist = line.map((v, i) => (v != null && signal[i] != null ? v - signal[i] : null));
+  return { line, signal, hist };
+};
+
+// DMI — حرکتِ جهت‌دارِ وایلدر: +DI / −DI (+ ADX)؛ مکملِ مدخلِ adx (§5.1)
+const _dmi = (highs, lows, closes, p = 14) => {
+  const n = closes.length, tr = new Array(n).fill(0), pdm = new Array(n).fill(0), ndm = new Array(n).fill(0);
+  for (let i = 1; i < n; i++) {
+    tr[i] = Math.max(highs[i] - lows[i], Math.abs(highs[i] - closes[i - 1]), Math.abs(lows[i] - closes[i - 1]));
+    const up = highs[i] - highs[i - 1], dn = lows[i - 1] - lows[i];
+    pdm[i] = up > dn && up > 0 ? up : 0; ndm[i] = dn > up && dn > 0 ? dn : 0;
+  }
+  const sm = (a) => { const o = new Array(n).fill(null); let s = 0; for (let i = 1; i <= p; i++) s += a[i]; o[p] = s; for (let i = p + 1; i < n; i++) { s = s - s / p + a[i]; o[i] = s; } return o; };
+  const str = sm(tr), spd = sm(pdm), snd = sm(ndm);
+  const plus = new Array(n).fill(null), minus = new Array(n).fill(null), adxOut = new Array(n).fill(null);
+  let adxPrev = null; const dxs = [];
+  for (let i = p; i < n; i++) {
+    if (str[i] == null || !str[i]) continue;
+    const pdi = 100 * spd[i] / str[i], ndi = 100 * snd[i] / str[i];
+    plus[i] = pdi; minus[i] = ndi;
+    const dx = (pdi + ndi) ? 100 * Math.abs(pdi - ndi) / (pdi + ndi) : 0;
+    dxs.push(dx);
+    if (dxs.length === p) { adxPrev = dxs.reduce((x, y) => x + y, 0) / p; adxOut[i] = adxPrev; }
+    else if (adxPrev != null) { adxPrev = (adxPrev * (p - 1) + dx) / p; adxOut[i] = adxPrev; }
+  }
+  return { plus, minus, adx: adxOut };
+};
+
 // منبعِ پیش‌فرض (هماهنگ با §5.7؛ اگر i.source از قبل آرایه باشد همان استفاده می‌شود)
 const _src = (c, i) => (Array.isArray(i && i.source) ? i.source : c.close);
 
@@ -315,6 +348,16 @@ export const EXT_REGISTRY_A = {
   chaikinVol: {
     label: 'نوسانِ چایکین', pane: 'sub', inputs: { period: 10, roc: 10 }, color: '#0ea5e9',
     calc: (c, i) => ({ line: _chaikinVol(c.high, c.low, i.period, i.roc), guides: [0] }),
+  },
+
+  // ===== §5.2 مومنتوم / اسیلاتور =====
+  dmi: {
+    label: 'DMI (جهت‌دارِ +DI/−DI)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e',
+    calc: (c, i) => { const r = _dmi(c.high, c.low, c.close, i.period); return { line: r.plus, signal: r.minus, guides: [25], range: [0, 100] }; },
+  },
+  ppo: {
+    label: 'PPO (درصدیِ قیمت)', pane: 'sub', inputs: { fast: 12, slow: 26, sig: 9 }, color: '#60a5fa',
+    calc: (c, i) => { const p = _ppo(_src(c, i), i.fast, i.slow, i.sig); return { line: p.line, signal: p.signal, hist: p.hist, macd: true }; },
   },
 };
 

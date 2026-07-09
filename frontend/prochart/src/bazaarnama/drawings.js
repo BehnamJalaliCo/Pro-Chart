@@ -62,6 +62,23 @@ export class DrawingLayer {
   lockAll(on) { this._pushUndo(); this.drawings.forEach((d) => { d.locked = on; }); this._changed(); }
   hideAll(on) { this._pushUndo(); this.drawings.forEach((d) => { d.visible = !on; }); this._changed(); }
 
+  // #کلون: کپیِ عمیقِ آبجکت با آفستِ کوچک (≈۱۴px) تا کپی دیده شود؛ انتخاب روی کپیِ تازه
+  clone(i) {
+    const d = this.drawings[i]; if (!d) return -1;
+    this._pushUndo();
+    const c = JSON.parse(JSON.stringify(d)); c.locked = false;
+    const h = this._handlePoints(d).find((p) => p.x != null && p.y != null);
+    if (h) { const ot = this._t(h.x), op = this._p(h.y), nt = this._t(h.x + 14), np = this._p(h.y + 14); if (ot != null && op != null && nt != null && np != null) this._moveBy(c, nt - ot, np - op); }
+    this.drawings.push(c); this.selected = this.drawings.length - 1; this._changed(); this.onSelect && this.onSelect(this.selected);
+    return this.selected;
+  }
+
+  // ── ترتیبِ Z (آرایه به ترتیبِ رسم است؛ انتهای آرایه = روی همه) ──
+  bringToFront(i) { if (i < 0 || i >= this.drawings.length) return; this._pushUndo(); const [d] = this.drawings.splice(i, 1); this.drawings.push(d); this.selected = this.drawings.length - 1; this._changed(); this.onSelect && this.onSelect(this.selected); }
+  sendToBack(i) { if (i < 0 || i >= this.drawings.length) return; this._pushUndo(); const [d] = this.drawings.splice(i, 1); this.drawings.unshift(d); this.selected = 0; this._changed(); this.onSelect && this.onSelect(this.selected); }
+  bringForward(i) { if (i < 0 || i >= this.drawings.length - 1) return; this._pushUndo(); const d = this.drawings[i]; this.drawings[i] = this.drawings[i + 1]; this.drawings[i + 1] = d; if (this.selected === i) this.selected = i + 1; else if (this.selected === i + 1) this.selected = i; this._changed(); this.onSelect && this.onSelect(this.selected); }
+  sendBackward(i) { if (i <= 0 || i >= this.drawings.length) return; this._pushUndo(); const d = this.drawings[i]; this.drawings[i] = this.drawings[i - 1]; this.drawings[i - 1] = d; if (this.selected === i) this.selected = i - 1; else if (this.selected === i - 1) this.selected = i; this._changed(); this.onSelect && this.onSelect(this.selected); }
+
   setOrder(o) { this.order = o; this.render(); }
 
   setProfile(buckets) { this.profile = buckets; this.render(); }
@@ -190,6 +207,7 @@ export class DrawingLayer {
       const tag = e.target && e.target.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
       if ((e.key === 'Delete' || e.key === 'Backspace') && this.selected >= 0) { this.removeAt(this.selected); return; }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd' && this.selected >= 0) { e.preventDefault(); this.clone(this.selected); return; }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); this.undo(); return; }
       if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); this.redo(); return; }
       if (e.key === 'Escape') { this.selected = -1; this.pending = null; this.render(); this.onSelect && this.onSelect(-1); }
@@ -307,8 +325,8 @@ export class DrawingLayer {
   }
 
   _draw(ctx, d) {
-    if (isExt(d.type)) { extDraw(ctx, d, this); return; }
     if (d.visible === false) return;
+    if (isExt(d.type)) { extDraw(ctx, d, this); return; }
     const W = this.canvas.width, H = this.canvas.height;
     ctx.lineWidth = d.width || 1.5; ctx.strokeStyle = d.color; ctx.fillStyle = d.color; ctx.font = '12px Ravagh, Vazirmatn, sans-serif';
     ctx.setLineDash(d.dashed ? [6, 4] : []);

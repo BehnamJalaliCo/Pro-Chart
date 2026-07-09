@@ -3,8 +3,9 @@
 // (فصل ۱۰.۱ و ۱۰.۳ از اسپک).
 //
 // دو بخش:
-//  ۱) GRID_LAYOUTS — جدولِ پریست‌های شبکه (۱، ۲ افقی/عمودی، ۳، ۴، ۶) با
-//     templateِ CSS-grid آماده برای استفاده در state و استایلِ موجود.
+//  ۱) GRID_LAYOUTS — جدولِ پریست‌های شبکه (۱، ۲ افقی/عمودی، ۳، ۴، ۶، ۸) با
+//     templateِ CSS-grid آماده برای استفاده در state و استایلِ موجود، به‌همراه
+//     متادیتای sync (نماد/فاصله/کراسهر/زمان/ترسیم) و ذخیرهٔ چیدمانِ نام‌دار.
 //  ۲) قالبِ چارت/اندیکاتور — ذخیره/بارگیری از localStorage (پورتابل، بدونِ
 //     نماد/تایم‌فریم) برای اعمالِ مجددِ سریعِ یک «دسته‌اندیکاتور» یا «استایل».
 //
@@ -21,10 +22,11 @@ export const GRID_LAYOUTS = {
   '3':  { id: '3',  cells: 3, cols: '1fr 1fr 1fr', rows: '1fr',     label: 'سه‌تایی',      legacyGrid: 4 },
   '4':  { id: '4',  cells: 4, cols: '1fr 1fr',     rows: '1fr 1fr', label: 'چهارتایی',     legacyGrid: 4 },
   '6':  { id: '6',  cells: 6, cols: '1fr 1fr 1fr', rows: '1fr 1fr', label: 'شش‌تایی',      legacyGrid: 4 },
+  '8':  { id: '8',  cells: 8, cols: '1fr 1fr 1fr 1fr', rows: '1fr 1fr', label: 'هشت‌تایی', legacyGrid: 4 },
 };
 
 // ترتیبِ نمایش در انتخابگرِ پریست (سبکِ TradingView)
-export const GRID_PRESET_ORDER = ['1', '2h', '2v', '3', '4', '6'];
+export const GRID_PRESET_ORDER = ['1', '2h', '2v', '3', '4', '6', '8'];
 
 // گرفتنِ پریست با fallbackِ امن
 export function getGridLayout(id) {
@@ -55,6 +57,53 @@ export function legacyGridToPreset(grid) {
   if (grid <= 1) return '1';
   if (grid === 2) return '2h';
   return '4';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// متادیتای Sync — همگام‌سازیِ بینِ سلول‌های چند-چارت (سبکِ TradingView)
+//
+// پنج بُعدِ همگام‌سازی مطابقِ TradingView: نماد/فاصله(تایم‌فریم)/کراسهر/زمان/ترسیم.
+// هر بُعد یک toggleِ مستقل است؛ caller state را نگه می‌دارد و این ماژول فقط
+// شکلِ داده + کمک‌کننده‌های خالص را می‌دهد (هیچ سایداِفکتی ندارد).
+// ─────────────────────────────────────────────────────────────────────────────
+export const SYNC_DIMENSIONS = {
+  symbol:    { id: 'symbol',    label: 'نماد',   default: false },
+  interval:  { id: 'interval',  label: 'فاصله',  default: false },
+  crosshair: { id: 'crosshair', label: 'کراسهر', default: true  },
+  time:      { id: 'time',      label: 'زمان',   default: true  },
+  drawings:  { id: 'drawings',  label: 'ترسیم',  default: false },
+};
+
+// ترتیبِ نمایشِ toggleهای sync در نوارِ چند-چارت.
+export const SYNC_ORDER = ['symbol', 'interval', 'crosshair', 'time', 'drawings'];
+
+// stateِ پیش‌فرضِ sync از روی defaultِ هر بُعد ساخته می‌شود.
+export const DEFAULT_SYNC = SYNC_ORDER.reduce((acc, id) => {
+  acc[id] = SYNC_DIMENSIONS[id].default;
+  return acc;
+}, {});
+
+// ساختِ یک شیءِ syncِ نرمال‌شده: هر بُعدِ ناموجود از default پر می‌شود،
+// کلیدهای ناشناخته دور ریخته می‌شوند و همه به boolean تبدیل می‌شوند.
+export function makeSync(partial) {
+  const p = partial && typeof partial === 'object' ? partial : {};
+  const out = {};
+  for (const id of SYNC_ORDER) {
+    out[id] = Object.prototype.hasOwnProperty.call(p, id) ? !!p[id] : SYNC_DIMENSIONS[id].default;
+  }
+  return out;
+}
+
+// خواندنِ یک بُعد به‌صورتِ امن.
+export function isSyncOn(sync, id) {
+  return !!(sync && sync[id]);
+}
+
+// برگرداندنِ یک شیءِ syncِ تازه با toggleِ یک بُعد (immutable).
+export function toggleSync(sync, id) {
+  const base = makeSync(sync);
+  if (Object.prototype.hasOwnProperty.call(base, id)) base[id] = !base[id];
+  return base;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -159,9 +208,59 @@ export function deleteChartTemplate(id) {
   return list;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// چیدمانِ ذخیره‌شدهٔ چند-چارت (saved multi-chart layouts) — localStorage
+//
+// یک چیدمانِ نام‌دار = پریستِ شبکه + وضعیتِ sync + سلول‌ها (هر سلول: نماد/تایم‌فریم/…
+// پورتابل، بدونِ id). این جدا از layoutِ سروریِ موجود (`bnLayoutSave`) است و
+// صرفاً برای بازچینشِ سریعِ گریدِ چند-چارت به‌کار می‌رود. همه sync و defensive.
+// ─────────────────────────────────────────────────────────────────────────────
+const LAYOUT_KEY = 'bn_multichart_layouts';
+
+// نرمال‌سازیِ یک چیدمان پیش از ذخیره/اعمال (preset معتبر + sync کامل + آرایهٔ cells).
+function _normLayout(input) {
+  const src = input && typeof input === 'object' ? input : {};
+  const preset = GRID_LAYOUTS[src.preset] ? src.preset : '1';
+  const cells = Array.isArray(src.cells) ? src.cells.map((c) => ({ ...c })) : [];
+  return { preset, sync: makeSync(src.sync), cells };
+}
+
+export function listSavedLayouts() {
+  return _read(LAYOUT_KEY);
+}
+// ذخیره: name + { preset, sync, cells } → آیتمِ ذخیره‌شده { id, name, ..., ts }
+export function saveSavedLayout(name, layout) {
+  const norm = _normLayout(layout);
+  const list = _read(LAYOUT_KEY);
+  const item = {
+    id: tplId(),
+    name: String(name || 'چیدمانِ چند-چارت').trim() || 'چیدمانِ چند-چارت',
+    preset: norm.preset,
+    sync: norm.sync,
+    cells: norm.cells,
+    ts: Date.now(),
+  };
+  list.unshift(item);
+  _write(LAYOUT_KEY, list);
+  return item;
+}
+// بارگیریِ یک چیدمان → { preset, sync, cells } آمادهٔ اعمال؛ null اگر نبود.
+export function applySavedLayout(id) {
+  const item = _read(LAYOUT_KEY).find((t) => t.id === id);
+  if (!item) return null;
+  return _normLayout(item);
+}
+export function deleteSavedLayout(id) {
+  const list = _read(LAYOUT_KEY).filter((t) => t.id !== id);
+  _write(LAYOUT_KEY, list);
+  return list;
+}
+
 export default {
   GRID_LAYOUTS, GRID_PRESET_ORDER, getGridLayout, gridStyle,
   presetToLegacyGrid, legacyGridToPreset,
+  SYNC_DIMENSIONS, SYNC_ORDER, DEFAULT_SYNC, makeSync, isSyncOn, toggleSync,
   listIndicatorTemplates, saveIndicatorTemplate, applyIndicatorTemplate, deleteIndicatorTemplate,
   listChartTemplates, saveChartTemplate, applyChartTemplate, deleteChartTemplate, CHART_TEMPLATE_KEYS,
+  listSavedLayouts, saveSavedLayout, applySavedLayout, deleteSavedLayout,
 };

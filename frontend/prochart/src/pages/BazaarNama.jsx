@@ -30,7 +30,7 @@ import { attachHotkeys, SHORTCUT_GROUPS } from '../bazaarnama/hotkeys';
 import { useBreakpoint, MobileToolSheet, CompactTopBar, BREAKPOINTS } from '../bazaarnama/mobile';
 import { useViewport } from '../bazaarnama/useViewport';
 import { GRID_PRESET_ORDER, getGridLayout, presetToLegacyGrid, legacyGridToPreset } from '../bazaarnama/layoutPresets';
-import { Legend, ChartLegend, CountdownChip, Watermark, ReplayBar } from '../bazaarnama/overlays/ChartOverlays';
+import { Legend, ChartLegend, CountdownChip, Watermark, ReplayBar, DataWindow, CrosshairAxisTag } from '../bazaarnama/overlays/ChartOverlays';
 import SymbolLogo from '../bazaarnama/SymbolLogo';
 import SymbolSearchModal from '../bazaarnama/SymbolSearchModal';
 import { buildMeta } from '../bazaarnama/symbolMeta';
@@ -111,7 +111,7 @@ const THEMES = {
     chipBg: 'rgba(255,255,255,.06)', chipBgHover: 'rgba(255,255,255,.10)',
     subtle: 'rgba(255,255,255,.04)', popoverBg: 'rgba(30,34,45,.98)',
     overlayMask: 'rgba(0,0,0,.42)', accent: '#2962FF', accentAi: '#8b5cf6',
-    tpColor: '#22c55e', slColor: '#ef4444',
+    tpColor: '#22c55e', slColor: '#ef4444', crosshairLabelBg: '#2962FF',
   },
   light: {
     bg: '#ffffff', panel: '#f0f3fa', border: '#e0e3eb', grid: '#e0e3eb',
@@ -120,7 +120,7 @@ const THEMES = {
     chipBg: 'rgba(0,0,0,.04)', chipBgHover: 'rgba(0,0,0,.07)',
     subtle: 'rgba(0,0,0,.03)', popoverBg: 'rgba(255,255,255,.98)',
     overlayMask: 'rgba(255,255,255,.8)', accent: '#2962FF', accentAi: '#7c3aed',
-    tpColor: '#22c55e', slColor: '#ef4444',
+    tpColor: '#22c55e', slColor: '#ef4444', crosshairLabelBg: '#2962FF',
   },
 };
 
@@ -287,6 +287,8 @@ export default function BazaarNama() {
   const aiZonesRef = useRef([]); // سری‌های ناحیهٔ سبز/قرمزِ سیگنالِ AI (پروجکشنِ رو به جلو)
   const [grid, setGrid] = useState(1); // 1/2/4 چند-چارت
   const [gridMenu, setGridMenu] = useState(false); // منوی پریستِ چیدمانِ چند-چارت (layoutPresets)
+  const [cfgMenu, setCfgMenu] = useState(false); // منوی چرخ‌دندهٔ «تنظیماتِ چارت» (ظاهر/مقیاس/کراس‌هیر)
+  const [layoutMenu, setLayoutMenu] = useState(false); // منوی «چیدمان/لایوت» (ذخیره/بارگذاری)
   const [showShortcuts, setShowShortcuts] = useState(false); // دیالوگِ راهنمای میان‌بُرها
   const [symModal, setSymModal] = useState(false); // #7 مدالِ جستجوی نماد
   const [sheet, setSheet] = useState('none'); // #4 شیتِ موبایلِ فعال: none|tf|sym|type|draw|ind|tabs
@@ -311,10 +313,13 @@ export default function BazaarNama() {
   const [showTree, setShowTree] = useState(false);     // نمایشِ Object Tree
   const [showDataWin, setShowDataWin] = useState(loadWS().showDataWin ?? false); // Data Window (مقادیرِ زیرِ کراس‌هیر)
   const [dataWin, setDataWin] = useState(null);        // {ohlc, vol, time, inds:[{label,vals,color}]}
+  const [crossTag, setCrossTag] = useState(null);      // #9 تگِ محورِ قیمت/زمانِ زیرِ کراس‌هیر {price:{y,text}, time:{x,text}}
   const [ctxMenu, setCtxMenu] = useState(null);        // منوی راست‌کلیکِ چارت {x,y,price}
   const indLabelRef = useRef({});                       // id → {label,color} برای Data Window
   const lastIndValRef = useRef({});                     // id → [last values] برای Legend بیرون از کراس‌هیر
   const showDataWinRef = useRef(loadWS().showDataWin ?? false); // گیتِ محاسبهٔ Data Window در هندلرِ کراس‌هیر
+  const crossTagOnRef = useRef((loadWS().crosshairId ?? 'cross') !== 'hidden'); // آیا تگِ محور رسم شود (خاموش در حالتِ «بدون»)
+  const crossTimeFmtRef = useRef(null);                 // قالب‌بندِ زمانِ TZ-aware برای تگِ محور + پنجرهٔ داده
   const [drawVer, setDrawVer] = useState(0);           // نسخه برای رفرشِ دکمه‌های undo/redo
   const treeRefresh = useCallback(() => { const dl = drawRef.current; setDrawList(dl ? dl.getDrawings().slice() : []); setDrawVer((v) => v + 1); }, []);
   const rootRef = useRef(null);
@@ -390,7 +395,7 @@ export default function BazaarNama() {
       const ctx = overlayRef.current && overlayRef.current.getContext('2d');
       if (ctx && sessionsRef.current) paintSessions(ctx, chart, sessionsRef.current, overlayRef.current.height);
       if (ctx && p && p.point) paintCrosshairGlyph(ctx, crosshairGlyphRef.current, p.point.x, p.point.y, TH);
-      if (!p || !p.time || !priceSeriesRef.current) { setLegend(null); setIndVals({}); if (showDataWinRef.current) setDataWin(null); return; }
+      if (!p || !p.time || !priceSeriesRef.current) { setLegend(null); setIndVals({}); setCrossTag(null); if (showDataWinRef.current) setDataWin(null); return; }
       const d = p.seriesData.get(priceSeriesRef.current);
       if (d) setLegend(d.close != null ? d : { close: d.value });
       // مقدارِ زندهٔ هر اندیکاتور زیرِ کراس‌هیر — هم برای Legend (#3) هم Data Window
@@ -403,7 +408,20 @@ export default function BazaarNama() {
       });
       collect(overlaySeries.current); collect(subChartsRef.current);
       setIndVals(lv);
-      if (showDataWinRef.current) setDataWin({ time: p.time, ohlc: d && d.close != null ? d : null, inds });
+      // #9 تگِ محورِ قیمت (راست) + زمان (پایین) زیرِ کراس‌هیر — جایگزینِ برچسبِ نیتیو با دقتِ نماد + TZ.
+      if (crossTagOnRef.current && p.point) {
+        let py = null; try { py = priceSeriesRef.current.coordinateToPrice(p.point.y); } catch (e) { py = null; }
+        const tfmt = crossTimeFmtRef.current;
+        setCrossTag({
+          price: (py != null && Number.isFinite(py)) ? { y: p.point.y, text: fmtPrice(symbolRef.current, py) } : null,
+          time: (p.point.x != null) ? { x: p.point.x, text: (tfmt ? tfmt(p.time) : String(p.time)) } : null,
+        });
+      } else setCrossTag(null);
+      if (showDataWinRef.current) {
+        const cc = candlesRef.current;
+        const bar = cc && cc.length ? cc.find((c) => c.t === p.time) : null;
+        setDataWin({ time: p.time, ohlc: d && d.close != null ? d : null, inds, vol: bar && bar.v ? bar.v : null });
+      }
     });
     return () => { ro.disconnect(); dl.destroy(); chart.remove(); chartRef.current = null; };
     // eslint-disable-next-line
@@ -418,6 +436,8 @@ export default function BazaarNama() {
 
   // Data Window: همگام‌سازیِ گیتِ ref + ماندگاری
   useEffect(() => { showDataWinRef.current = showDataWin; saveWS({ showDataWin }); if (!showDataWin) setDataWin(null); }, [showDataWin]);
+  // قالب‌بندِ زمانِ پنجرهٔ داده (TZ-aware، از ref که در افکتِ tz ست می‌شود) — پایدار برای پاس‌دادن به DataWindow
+  const winTimeFmt = useCallback((t) => { const f = crossTimeFmtRef.current; if (f) { try { return f(t); } catch (e) { /* */ } } return (typeof t === 'number' ? new Date(t * 1000).toLocaleString() : String(t)); }, []);
 
   useEffect(() => { if (drawRef.current) drawRef.current.setTool(tool, drawColor); }, [tool, drawColor]);
   useEffect(() => { try { chartRef.current && chartRef.current.priceScale('right').applyOptions(priceScaleOptions({ mode: scaleMode, locked: scaleLocked, invert: scaleInvert })); saveWS({ scaleMode, scaleLocked, scaleInvert }); } catch (e) {} }, [scaleMode, scaleLocked, scaleInvert]);
@@ -664,12 +684,18 @@ export default function BazaarNama() {
   useEffect(() => {
     const ch = chartRef.current; if (!ch) return;
     const { crosshair, _ui } = crosshairOptions(crosshairId, magnet, TH);
-    ch.applyOptions({ crosshair });
+    // تگِ محورِ سفارشی فقط وقتی تکِ-پنل است (بدونِ ساب‌پنل) و کراس‌هیر «بدون» نیست فعال می‌شود؛ آنگاه
+    // برچسبِ نیتیو خاموش می‌شود تا تکراری نشود. با ساب‌پنل، نیتیو روشن می‌ماند (درستیِ هر پنل حفظ شود).
+    const visibleSubs = subs.filter((s) => { const d = REGISTRY[s.key]; return d && d.pane === 'sub' && s.visible !== false; }).length;
+    const useAxisTag = crosshairId !== 'hidden' && visibleSubs === 0;
+    ch.applyOptions({ crosshair: { ...crosshair, vertLine: { ...crosshair.vertLine, labelVisible: !useAxisTag && crosshair.vertLine.labelVisible }, horzLine: { ...crosshair.horzLine, labelVisible: !useAxisTag && crosshair.horzLine.labelVisible } } });
     crosshairGlyphRef.current = _ui.glyph;
+    crossTagOnRef.current = useAxisTag;
+    if (!useAxisTag) setCrossTag(null);
     if (mainRef.current) mainRef.current.style.cursor = _ui.cursor;
     saveWS({ crosshairId, magnet });
     // eslint-disable-next-line
-  }, [crosshairId, magnet, theme]);
+  }, [crosshairId, magnet, theme, subs]);
   // باندهای سشن (فصل ۳): محاسبهٔ بازه‌ها در منطقهٔ زمانیِ نمایش و رسمِ آن‌ها روی overlay
   useEffect(() => {
     const ch = chartRef.current;
@@ -687,7 +713,7 @@ export default function BazaarNama() {
     saveWS({ sessionsOn, sessionSel });
   }, [sessionsOn, tz, tf, symbol, sessionSel]);
   // منطقهٔ زمانی (فصل ۳): قالب‌بندیِ محورِ زمان و برچسبِ کراس‌هیر
-  useEffect(() => { const ch = chartRef.current; if (!ch) return; try { ch.applyOptions(timeZoneOptions(tz)); } catch (e) {} saveWS({ tz }); }, [tz]);
+  useEffect(() => { const tzo = timeZoneOptions(tz); crossTimeFmtRef.current = tzo.localization.timeFormatter; const ch = chartRef.current; if (!ch) return; try { ch.applyOptions(tzo); } catch (e) {} saveWS({ tz }); }, [tz]);
   useEffect(() => { if (drawRef.current) drawRef.current.setStayInMode(stayDraw); }, [stayDraw]);
   // شمارشِ معکوسِ بسته‌شدنِ کندلِ جاری
   useEffect(() => {
@@ -1278,14 +1304,14 @@ export default function BazaarNama() {
 
   // §۱۶ منوها: بستن با کلیکِ بیرون یا Escape (رفتارِ استانداردِ Dropdown)
   useEffect(() => {
-    if (!ctMenu && !indMenu && !gridMenu && !search && !sessMenu) return undefined;
-    const closeAll = () => { setCtMenu(false); setIndMenu(false); setGridMenu(false); setSearch(''); setSessMenu(false); };
+    if (!ctMenu && !indMenu && !gridMenu && !search && !sessMenu && !cfgMenu && !layoutMenu) return undefined;
+    const closeAll = () => { setCtMenu(false); setIndMenu(false); setGridMenu(false); setSearch(''); setSessMenu(false); setCfgMenu(false); setLayoutMenu(false); };
     const onDown = (e) => { if (!e.target.closest('[data-menu]')) closeAll(); };
     const onEsc = (e) => { if (e.key === 'Escape') closeAll(); };
     document.addEventListener('mousedown', onDown);
     window.addEventListener('keydown', onEsc);
     return () => { document.removeEventListener('mousedown', onDown); window.removeEventListener('keydown', onEsc); };
-  }, [ctMenu, indMenu, gridMenu, search, sessMenu]);
+  }, [ctMenu, indMenu, gridMenu, search, sessMenu, cfgMenu, layoutMenu]);
 
   const filteredSymbols = symbols.filter((s) => s.toLowerCase().includes(search.toLowerCase()));
   const txt = theme === 'dark' ? 'text-gray-200' : 'text-gray-800';
@@ -1471,11 +1497,60 @@ export default function BazaarNama() {
           <button onClick={() => setHelpId(tool)} title="راهنمای ابزارِ فعال" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg, color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><HelpCircle size={16} /></button>
         )}
         <div className="flex-1" />
-        <button onClick={saveLayout} className="p-1.5 rounded-md transition-colors duration-[120ms]" title="ذخیرهٔ چیدمانِ فعلی (نماد + تایم‌فریم + اندیکاتورها + ترسیم‌ها)" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Save size={18} /></button>
-        <div className="relative">
-          <select onChange={(e) => e.target.value && loadLayout(e.target.value)} title="بارگذاریِ یک چیدمانِ ذخیره‌شده (نماد/تایم‌فریم/اندیکاتور/ترسیم را یک‌جا برمی‌گرداند)" className="text-xs rounded px-2 py-1 outline-none" style={{ background: TH.chipBg, color: TH.text }}>
-            <option value="">📁 چیدمان‌های ذخیره‌شده…</option>{layouts.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
-          </select>
+        {/* چرخ‌دندهٔ «تنظیماتِ چارت» — ظاهر/مقیاس/کراس‌هیر و توگل‌ها یک‌جا (فقط UI؛ وصل به stateهای موجود) */}
+        <div data-menu className="relative">
+          <button onClick={() => setCfgMenu((v) => !v)} title="تنظیماتِ چارت (ظاهر، مقیاس، کراس‌هیر)" aria-label="تنظیماتِ چارت" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={cfgMenu ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!cfgMenu) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!cfgMenu) e.currentTarget.style.background = TH.chipBg; }}><Settings2 size={18} /></button>
+          {cfgMenu && (
+            <div className="absolute z-[60] top-full mt-1 right-0 rounded-xl w-60 p-2 shadow-2xl" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+              <div className="px-1 pb-1.5 text-[11px] font-bold" style={{ color: TH.textStrong }}>تنظیماتِ چارت</div>
+              <div className="flex items-center justify-between px-1 py-1">
+                <span className="text-[12px]" style={{ color: TH.text }}>تمِ نمایش</span>
+                <button onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))} className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[12px]" style={{ background: TH.chipBg, color: TH.textStrong }}>{theme === 'dark' ? <Moon size={13} /> : <Sun size={13} />} {theme === 'dark' ? 'تیره' : 'روشن'}</button>
+              </div>
+              <div className="px-1 pt-1.5 pb-0.5 text-[11px] opacity-60" style={{ color: TH.text }}>مقیاسِ قیمت</div>
+              <div className="flex flex-wrap gap-1 px-1 pb-1">
+                {PRICE_SCALE_MODES.map((m) => { const on = scaleMode === m.value; return (
+                  <button key={m.value} onClick={() => setScaleMode(m.value)} className="px-2 py-1 rounded-md text-[11px] transition-colors duration-[120ms]" style={on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg, color: TH.text }}>{m.label}</button>
+                ); })}
+              </div>
+              <div className="px-1 pt-1 pb-0.5 text-[11px] opacity-60" style={{ color: TH.text }}>کراس‌هیر</div>
+              <div className="flex flex-wrap gap-1 px-1 pb-1">
+                {CROSSHAIR_MODES.map((m) => { const on = crosshairId === m.id; return (
+                  <button key={m.id} onClick={() => setCrosshairId(m.id)} className="px-2 py-1 rounded-md text-[11px] transition-colors duration-[120ms]" style={on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg, color: TH.text }}>{m.label}</button>
+                ); })}
+              </div>
+              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
+              {[
+                { on: magnet, set: () => setMagnet((v) => !v), label: 'مگنت (چسبیدن به قیمت)', Icon: Magnet },
+                { on: showDataWin, set: () => setShowDataWin((v) => !v), label: 'پنجرهٔ داده', Icon: Table2 },
+                { on: showVP, set: () => setShowVP((v) => !v), label: 'پروفایلِ حجم', Icon: BarChart3 },
+                { on: sessionsOn, set: () => setSessionsOn((v) => !v), label: 'باندهای سشن', Icon: Activity },
+              ].map((row, i) => (
+                <button key={i} onClick={row.set} className="flex items-center gap-2 w-full text-right px-1.5 py-1.5 rounded-md text-[12px]" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                  <row.Icon size={14} style={{ color: row.on ? TH.accent : TH.text }} />
+                  <span className="flex-1">{row.label}</span>
+                  <span className="relative inline-block w-7 h-4 rounded-full transition-colors shrink-0" style={{ background: row.on ? TH.accent : TH.border }}>
+                    <span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" style={{ [row.on ? 'left' : 'right']: '2px' }} />
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        {/* منوی «چیدمان/لایوت» — ذخیره + بارگذاریِ چیدمان‌های نام‌دار (ارتقای selectِ قبلی به منوی سبکِ TradingView) */}
+        <div data-menu className="relative">
+          <button onClick={() => setLayoutMenu((v) => !v)} title="چیدمان‌ها (ذخیره/بارگذاری نماد + تایم‌فریم + اندیکاتورها + ترسیم‌ها)" className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs transition-colors duration-[120ms]" style={layoutMenu ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!layoutMenu) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!layoutMenu) e.currentTarget.style.background = TH.chipBg; }}><FolderOpen size={16} /> چیدمان <ChevronDown size={12} /></button>
+          {layoutMenu && (
+            <div className="absolute z-[60] top-full mt-1 right-0 rounded-lg w-56 p-1 pc-pop" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+              <button onClick={() => { saveLayout(); setLayoutMenu(false); }} className="flex items-center gap-1.5 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><Save size={13} /> ذخیرهٔ چیدمانِ فعلی</button>
+              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
+              {layouts.length === 0 ? (
+                <div className="px-2 py-1.5 text-[11px] opacity-50" style={{ color: TH.text }}>چیدمانی ذخیره نشده</div>
+              ) : layouts.map((l) => (
+                <button key={l.id} onClick={() => { loadLayout(l.id); setLayoutMenu(false); }} className="flex items-center gap-1.5 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><FolderOpen size={12} className="opacity-60" /> <span className="flex-1 truncate">{l.name}</span></button>
+              ))}
+            </div>
+          )}
         </div>
         <button onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))} className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}</button>
         <button onClick={() => setShowRight((v) => !v)} title="نمایش/پنهان‌کردنِ نوارِ کناری (واچ‌لیست، سیگنال AI، اسکنر، ترید، آلارم)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={showRight ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!showRight) e.currentTarget.style.background = TH.chipBg; }}><Star size={18} /></button>
@@ -1651,33 +1726,17 @@ export default function BazaarNama() {
             {/* شمارشِ معکوسِ بسته‌شدنِ کندل + وضعیتِ بازار */}
             <CountdownChip countdown={countdown} countdownColor={countdownColor} TH={TH} marketOpen={marketOpen} />
             <Watermark src={bnLogo} theme={theme} />
-            {/* Data Window — مقادیرِ زیرِ کراس‌هیر (مثلِ TradingView) */}
+            {/* Data Window — کامپوننتِ ChartOverlays: O/H/L/C + تغییر (مطلق/درصد) + حجم + زمان + اندیکاتورهای زیرِ کراس‌هیر */}
             {showDataWin && (
-              <div className="absolute top-12 left-3 z-30 w-52 rounded-lg pc-pop text-[11px] overflow-hidden" dir="rtl"
-                   style={{ background: TH.panel, border: `1px solid ${TH.border}` }}>
-                <div className="flex items-center justify-between px-2.5 py-1.5 border-b" style={{ borderColor: TH.border }}>
-                  <span className="font-semibold" style={{ color: TH.textStrong }}>پنجرهٔ داده</span>
-                  <button onClick={() => setShowDataWin(false)} className="pc-iconbtn w-5 h-5" title="بستن"><X size={12} /></button>
-                </div>
-                <div className="px-2.5 py-1.5 tabular-nums" style={{ color: TH.text }}>
-                  {dataWin && dataWin.ohlc ? (
-                    <>
-                      {['open', 'high', 'low', 'close'].map((k) => (
-                        <div key={k} className="flex justify-between"><span>{({ open: 'O', high: 'H', low: 'L', close: 'C' })[k]}</span>
-                          <span dir="ltr" style={{ color: dataWin.ohlc.close >= dataWin.ohlc.open ? TH.up : TH.down }}>{fmtPrice(symbol, dataWin.ohlc[k])}</span></div>
-                      ))}
-                      {dataWin.inds && dataWin.inds.length > 0 && <div className="my-1 border-t" style={{ borderColor: TH.border }} />}
-                      {(dataWin.inds || []).map((ind, i) => (
-                        <div key={i} className="flex justify-between gap-2">
-                          <span className="truncate" style={{ color: ind.color }}>{ind.label}</span>
-                          <span dir="ltr" style={{ color: TH.textStrong }}>{ind.vals.map((v) => fmtPrice(symbol, v)).join(' / ')}</span>
-                        </div>
-                      ))}
-                    </>
-                  ) : <div className="opacity-50 text-center py-1">نشانگر را روی چارت ببر</div>}
-                </div>
-              </div>
+              <DataWindow
+                dataWin={dataWin} TH={TH} symbol={symbol} tf={tf}
+                fmt={fmtPrice} fmtTime={winTimeFmt}
+                onClose={() => setShowDataWin(false)}
+                pos={{ top: 48, left: 12 }}
+              />
             )}
+            {/* #9 تگِ محورِ قیمت (راست) و زمان (پایین) زیرِ کراس‌هیر — از دادهٔ زندهٔ subscribeCrosshairMove */}
+            <CrosshairAxisTag price={crossTag && crossTag.price} time={crossTag && crossTag.time} TH={TH} />
             {/* منوی راست‌کلیکِ چارت (مثلِ TradingView) */}
             {ctxMenu && (
               <>
