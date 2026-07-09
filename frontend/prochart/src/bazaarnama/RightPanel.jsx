@@ -46,6 +46,8 @@ const COLUMNS = [
   ['low', 'کف'],
   ['range', 'دامنه٪'],
 ];
+// برچسبِ کوتاهِ ستون‌ها برای هدرِ ستون‌ها (سبکِ TV) — از همان مرجعِ COLUMNS مشتق می‌شود.
+const COL_LABEL = Object.fromEntries(COLUMNS);
 function symbolKind(sym = '') {
   const s = String(sym).toUpperCase();
   const a = s.replace(/[^A-Z]/g, '');
@@ -79,6 +81,7 @@ function defaultMeta() {
     groupBy: 'none',       // 'section' | 'type' | 'none'
     flagFilter: null,      // یک رنگ برای فیلتر یا null
     columns: ['change'],   // ستون‌های عددیِ اختیاری (قیمت همیشه هست)
+    typeCollapsed: {},     // جمع‌شدنِ سکشن‌های خودکارِ نوع (kind → bool)
   };
 }
 
@@ -346,6 +349,13 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     return { ...m, columns: cols };
   });
 
+  // جمع/باز‌کردنِ یک سکشنِ خودکارِ نوع (kind) — معادلِ toggleSection برای گروه‌بندیِ دستی
+  const toggleTypeCollapse = (kind) => setMeta((m) => {
+    const tc = { ...(m.typeCollapsed || {}) };
+    tc[kind] = !tc[kind];
+    return { ...m, typeCollapsed: tc };
+  });
+
   // ── سکشن‌ها ──
   const addSection = () => {
     const name = (window.prompt('نامِ سکشنِ جدید:') || '').trim();
@@ -413,9 +423,9 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
       return out.filter((g) => g.rows.length > 0 || g.sectionId);
     }
     if (meta.groupBy === 'type') {
-      return KIND_ORDER.map((k) => ({ key: k, name: KIND_LABEL[k], collapsed: false, sectionId: null, rows: sorted.filter((r) => r.kind === k) })).filter((g) => g.rows.length > 0);
+      return KIND_ORDER.map((k) => ({ key: k, name: KIND_LABEL[k], collapsed: !!(meta.typeCollapsed || {})[k], sectionId: null, typeKey: k, rows: sorted.filter((r) => r.kind === k) })).filter((g) => g.rows.length > 0);
     }
-    return [{ key: '__flat', name: null, collapsed: false, sectionId: null, rows: sorted }];
+    return [{ key: '__flat', name: null, collapsed: false, sectionId: null, typeKey: null, rows: sorted }];
   })();
 
   const isTable = meta.view === 'table';
@@ -583,13 +593,33 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
 
       {rows.length === 0 && <div className="px-3 py-6 text-center text-[11px] opacity-40">نمادی نیست — از پایین اضافه کن.</div>}
 
+      {/* هدرِ ستون‌ها (سبکِ TV) — هم‌ترازِ سلول‌های سطرها، متناسب با نمای لیست/جدول */}
+      {rows.length > 0 && (
+        isTable ? (
+          <div className="flex items-center gap-2 w-full px-3 h-6 text-[9px] font-semibold tracking-wide select-none border-b" style={{ color: TH.text, opacity: 0.5, borderColor: TH.border }}>
+            {meta.showLogo && <span className="shrink-0" style={{ width: logoSz }} />}
+            <span className="flex-1 min-w-0 text-left" dir="ltr">نماد</span>
+            <span className="w-16 text-left shrink-0" dir="ltr">آخرین</span>
+            {cols.map((key) => <span key={key} className="w-12 text-left shrink-0" dir="ltr">{COL_LABEL[key] || key}</span>)}
+            <span className="shrink-0" style={{ width: 22 }} />
+          </div>
+        ) : (
+          <div className={`flex items-center gap-3 w-full px-3 h-6 text-[9px] font-semibold tracking-wide select-none border-b`} style={{ color: TH.text, opacity: 0.5, borderColor: TH.border }}>
+            {meta.showLogo && <span className="shrink-0" style={{ width: logoSz }} />}
+            <span className="flex-1 min-w-0 text-left" dir="ltr">نماد</span>
+            <span className="text-left shrink-0" dir="ltr">{cols.includes('change') ? 'آخرین · تغییر٪' : 'آخرین'}</span>
+            <span className="shrink-0" style={{ width: 26 }} />
+          </div>
+        )
+      )}
+
       {/* گروه‌ها و ردیف‌ها */}
       {groups.map((g) => (
         <div key={g.key}>
           {g.name != null && (meta.groupBy === 'section' || meta.groupBy === 'type') && (
             <div className="flex items-center justify-between w-full px-3 py-1.5 text-[10px] font-semibold tracking-wide select-none sticky top-0 z-[5]" style={{ background: TH.bg }}>
-              <button onClick={() => g.sectionId && toggleSection(g.sectionId)} className="flex items-center gap-1 min-w-0" style={{ color: TH.text, opacity: 0.7, cursor: g.sectionId ? 'pointer' : 'default' }}>
-                {g.sectionId != null && <ChevronDown size={12} className={`transition-transform duration-[120ms] ${g.collapsed ? '-rotate-90' : ''}`} />}
+              <button onClick={() => { if (g.sectionId) toggleSection(g.sectionId); else if (g.typeKey) toggleTypeCollapse(g.typeKey); }} className="flex items-center gap-1 min-w-0" style={{ color: TH.text, opacity: 0.7, cursor: (g.sectionId || g.typeKey) ? 'pointer' : 'default' }}>
+                {(g.sectionId != null || g.typeKey != null) && <ChevronDown size={12} className={`transition-transform duration-[120ms] ${g.collapsed ? '-rotate-90' : ''}`} />}
                 <span className="truncate">{g.name}</span>
               </button>
               <span className="flex items-center gap-1">

@@ -64,6 +64,9 @@ const priceDigits = (sym = '') => {
   return 5;
 };
 const fmtPrice = (sym, v) => (v == null || !Number.isFinite(Number(v)) ? '—' : Number(v).toFixed(priceDigits(sym)));
+// بازه‌های سریعِ نمایش (سطحِ چارت — مثلِ TradingView): برچسب → تعدادِ روز | 'ytd' | 'all'.
+// این رنجِ *نمایش* را تنظیم می‌کند (setVisibleRange)، مستقل از اینتروال/تایم‌فریم.
+const QUICK_RANGES = [['1D', 1], ['5D', 5], ['1M', 30], ['3M', 90], ['6M', 180], ['YTD', 'ytd'], ['1Y', 365], ['5Y', 1825], ['All', 'all']];
 // تایم‌فریم‌های مشتق‌شده: از تایم‌فریمِ پایه با تجمیع ساخته می‌شوند [پایه, ضریب]
 const DERIVED_TF = { M30: ['M15', 2], H2: ['H1', 2], W1: ['D1', 5], MN: ['D1', 22] };
 // تجمیعِ کندل‌ها: هر «factor» کندل → یک کندل
@@ -273,6 +276,7 @@ export default function BazaarNama() {
   const [countdown, setCountdown] = useState(''); // شمارشِ معکوسِ بسته‌شدنِ کندل
   const [countdownColor, setCountdownColor] = useState(null); // تینتِ نزدیکِ بسته‌شدن (قرمز/کهربایی)
   const [showVP, setShowVP] = useState(false);
+  const [quickRange, setQuickRange] = useState(null); // بازهٔ سریعِ نمایشِ فعال (1D/5D/…/All) — سطحِ چارت
   const [magnet, setMagnet] = useState(loadWS().magnet ?? false);
   const [order, setOrder] = useState(null); // {side, entry, sl, tp} — #D: پیش‌فرض هیچ پوزیشنی باز نیست (از localStorage بازیابی نمی‌شود)
   const [aiSig, setAiSig] = useState(() => loadWS().aiSig || null); // سیگنالِ AI — باگ۳: با رفرش پاک نشود
@@ -729,6 +733,24 @@ export default function BazaarNama() {
     }
   };
 
+  // بازهٔ سریعِ نمایش (سطحِ چارت — مثلِ TradingView): فقط رنجِ *دیده‌شده* را تنظیم می‌کند، نه اینتروال.
+  const applyQuickRange = (r) => {
+    const ch = chartRef.current; if (!ch) return;
+    const ts = ch.timeScale();
+    try {
+      if (r === 'all') { ts.fitContent(); setQuickRange('all'); return; }
+      const cs = candlesRef.current;
+      const to = cs.length ? cs[cs.length - 1].t : Math.floor(Date.now() / 1000);
+      let from;
+      if (r === 'ytd') { const d = new Date(); from = Math.floor(new Date(d.getFullYear(), 0, 1).getTime() / 1000); }
+      else from = to - r * 86400;
+      // اگر بازهٔ خواسته‌شده از قدیمی‌ترین کندلِ موجود عقب‌تر باشد، تا ابتدای داده محدود می‌شود.
+      if (cs.length && from < cs[0].t) from = cs[0].t;
+      ts.setVisibleRange({ from, to });
+      setQuickRange(r);
+    } catch (e) { /* noop */ }
+  };
+
   // بازهٔ زمانیِ ناحیه‌ها: از کندلِ آخر «رو به جلو» (به آینده) امتداد می‌یابد — نه روی کندل‌های قبلی.
   const zoneWindow = useCallback(() => {
     const cs = candlesRef.current; const sec = tfSec(tf);
@@ -983,7 +1005,7 @@ export default function BazaarNama() {
         const lv = {};
         Object.entries(prices).forEach(([k, v]) => {
           const prev = lastMidRef.current[k];
-          lv[k] = { mid: v.mid, dir: prev == null ? 0 : (v.mid > prev ? 1 : v.mid < prev ? -1 : 0) };
+          lv[k] = { mid: v.mid, bid: v.bid, ask: v.ask, dir: prev == null ? 0 : (v.mid > prev ? 1 : v.mid < prev ? -1 : 0) };
           lastMidRef.current[k] = v.mid;
         });
         setLive(lv);
@@ -1291,6 +1313,22 @@ export default function BazaarNama() {
   const duplicateInd = (it) => { const arr = it.scope === 'main' ? overlays : subs; const src = arr.find((x) => x.id === it.id); if (!src) return; const copy = { ...src, id: uid(), inputs: { ...src.inputs } }; if (it.scope === 'main') setOverlays((o) => [...o, copy]); else setSubs((s) => [...s, copy]); };
   const indHasHelp = (it) => !!getHelp(it.key);
 
+  // ── سطحِ چارت (اختلافِ #۱ با TradingView): دکمه‌های سریعِ SELL/BUY + تغییرِ قیمتِ لجند ──
+  // Bid/Ask از فیدِ زنده (poll)؛ اگر بروکر bid/ask ندهد، به قیمتِ زنده (mid) برمی‌گردد.
+  const _quote = live[symbol] || {};
+  const _bidPx = _quote.bid != null ? _quote.bid : livePrice;
+  const _askPx = _quote.ask != null ? _quote.ask : livePrice;
+  const _spreadPts = (_bidPx != null && _askPx != null) ? Math.abs(_askPx - _bidPx) * Math.pow(10, priceDigits(symbol)) : null;
+  const _csNow = candlesRef.current;
+  const _lastCandle = _csNow.length ? _csNow[_csNow.length - 1] : null;
+  // تغییرِ کندلِ جاری (زیرِ کراس‌هیر → همان کندل؛ وگرنه آخرین کندل با قیمتِ زنده) — سبز/قرمز مثلِ TV
+  const _barOpen = (legend && legend.open != null) ? legend.open : (_lastCandle ? _lastCandle.o : null);
+  const _barClose = legend ? (legend.close != null ? legend.close : legend.value) : (livePrice != null ? livePrice : (_lastCandle ? _lastCandle.c : null));
+  const _chg = (_barOpen != null && _barClose != null) ? (_barClose - _barOpen) : null;
+  const _chgPct = (_chg != null && _barOpen) ? (_chg / _barOpen) * 100 : null;
+  const _chgCol = _chg == null ? TH.text : (_chg > 0 ? TH.up : _chg < 0 ? TH.down : TH.text);
+  const _showQuickTrade = grid <= 1 && (_bidPx != null || livePrice != null);
+
   return (
     <div ref={rootRef} dir="rtl" className={`flex flex-col h-full overflow-hidden ${txt}`} style={{ background: TH.bg }}>
       <style>{`.bn-thin-scroll{scrollbar-width:thin}.bn-thin-scroll::-webkit-scrollbar{height:4px;width:4px}.bn-thin-scroll::-webkit-scrollbar-thumb{background:${TH.border};border-radius:4px}.bn-thin-scroll::-webkit-scrollbar-track{background:transparent}`}</style>
@@ -1502,6 +1540,37 @@ export default function BazaarNama() {
                }}>
             <div ref={mainRef} className="absolute inset-0" />
             <canvas ref={overlayRef} className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }} />
+            {/* سطحِ چارت: دکمه‌های سریعِ SELL/BUY (Bid/Ask) + تغییرِ قیمت — گوشهٔ بالا-چپ مثلِ TradingView.
+                کلیک → همان تیکتِ سفارشِ موجود (startTrade: پنلِ ترید + خطوطِ Entry/SL/TP روی چارت). */}
+            {_showQuickTrade && (
+              <div className="absolute top-2 left-2 z-20 flex flex-col gap-1 items-start" dir="ltr" style={{ pointerEvents: 'none' }}>
+                <div className="flex items-stretch rounded-md overflow-hidden shadow-lg" style={{ border: `1px solid ${TH.border}`, pointerEvents: 'auto' }}>
+                  <button type="button" onClick={() => startTrade('sell')} title="فروش (Sell) — بازکردنِ تیکتِ سفارش"
+                    className="flex flex-col items-center justify-center px-2.5 py-1 text-white transition-opacity duration-[120ms] hover:opacity-90"
+                    style={{ background: TH.down, minWidth: 74 }}>
+                    <span className="text-[9px] font-bold leading-none tracking-wide opacity-90">SELL</span>
+                    <span className="text-[12px] font-bold leading-tight tabular-nums mt-0.5">{fmtPrice(symbol, _bidPx)}</span>
+                  </button>
+                  <div className="flex flex-col items-center justify-center px-1.5" style={{ background: TH.panel, color: TH.text }}>
+                    <span className="text-[8px] leading-none opacity-55">اسپرد</span>
+                    <span className="text-[11px] tabular-nums leading-tight mt-0.5">{_spreadPts != null ? Math.round(_spreadPts) : '—'}</span>
+                  </div>
+                  <button type="button" onClick={() => startTrade('buy')} title="خرید (Buy) — بازکردنِ تیکتِ سفارش"
+                    className="flex flex-col items-center justify-center px-2.5 py-1 text-white transition-opacity duration-[120ms] hover:opacity-90"
+                    style={{ background: TH.accent, minWidth: 74 }}>
+                    <span className="text-[9px] font-bold leading-none tracking-wide opacity-90">BUY</span>
+                    <span className="text-[12px] font-bold leading-tight tabular-nums mt-0.5">{fmtPrice(symbol, _askPx)}</span>
+                  </button>
+                </div>
+                {_chg != null && (
+                  <div className="flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-semibold tabular-nums shadow-sm"
+                    dir="ltr" style={{ background: TH.overlayMask, border: `1px solid ${TH.border}`, color: _chgCol, backdropFilter: 'blur(2px)', pointerEvents: 'auto' }}>
+                    <span>{_chg >= 0 ? '+' : ''}{Number(_chg).toFixed(priceDigits(symbol))}</span>
+                    {_chgPct != null && <span>({_chgPct >= 0 ? '+' : ''}{_chgPct.toFixed(2)}%)</span>}
+                  </div>
+                )}
+              </div>
+            )}
             {/* فاز۲: پردهٔ محوِ سینمایی هنگامِ تعویضِ تایم‌فریم/نوعِ چارت */}
             {swapKey > 0 && (
               <div key={swapKey} className="absolute inset-0 z-[15] pointer-events-none pc-chart-swap" style={{ background: TH.bg }} />
@@ -1668,6 +1737,21 @@ export default function BazaarNama() {
             )}
             <ReplayBar replay={replay} TH={TH} replayStepBack={replayStepBack} replayToggle={replayToggle} replayStep={replayStep} replaySeek={replaySeek} replaySetSpeed={replaySetSpeed} exitReplay={exitReplay} />
           </div>
+          {/* ردیفِ «بازهٔ سریع» پایینِ چارت (سطحِ چارت — مثلِ TradingView): رنجِ نمایش را تنظیم می‌کند، جدا از اینترval. */}
+          {grid <= 1 && !replay.on && (
+            <div className="flex items-center gap-1 px-2 py-1 border-t overflow-x-auto bn-thin-scroll shrink-0" dir="ltr" style={{ borderColor: TH.border, background: TH.bg }}>
+              {QUICK_RANGES.map(([lbl, r]) => {
+                const active = quickRange === r;
+                return (
+                  <button key={lbl} type="button" onClick={() => applyQuickRange(r)} title={`بازهٔ نمایش: ${lbl}`}
+                    className="px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]"
+                    style={active ? { background: TH.accent, color: '#fff' } : { color: TH.text }}
+                    onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBg; }}
+                    onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>{lbl}</button>
+                );
+              })}
+            </div>
+          )}
           <div ref={subWrapRef} />
         </div>
 

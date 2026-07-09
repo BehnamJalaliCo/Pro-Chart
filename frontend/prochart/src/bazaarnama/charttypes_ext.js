@@ -15,8 +15,12 @@
 //   ۱۱ — Columns (هیستوگرامِ close با رنگِ جهت)
 //   ۱۲ — High-Low (تنها بازهٔ high–low هر بار، بدونِ open/close)
 //   به‌علاوه ارتقای رندرِ Kagi (ضخامتِ yang/yin) و P&F (ستون‌های X/O) طبقِ §2.13/§2.14
+//
+//   فاز۳ (تعمیقِ انواعِ غیرِزمانی هم‌ترازِ TV — additive، انتهای فایل):
+//     Heikin-Ashi (heikinAshi) · Hollow Candles (hollowCandles) · Renko رنگی+ATR/wick (renkoBricks)
+//     · Range رنگی (rangeBarsColored) · Line-Break رنگی+n (lineBreakColored) + dispatcher buildExtNonStandard.
 
-import { avgRange, kagi } from './chartbuilders';
+import { avgRange, kagi, rangeBars, lineBreak } from './chartbuilders';
 
 // ────────────────────────────────────────────────────────────────────────────
 //  ابزارهای کوچک
@@ -313,6 +317,193 @@ export function buildExtType(type, cs, opts = {}) {
       return { kind: 'line-markers', options: lineMarkerOptions(opts), data: lineMarkersData(cs) };
     case 'hlcarea':
       return { kind: 'hlc-area', spec: hlcAreaSpec(cs, opts) };
+    default:
+      return null;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  فاز ۳ — تعمیقِ انواعِ چارتِ «غیرِزمانی» هم‌ترازِ TradingView (§۲ مرجع).
+//  همه additive: توابعِ خالصِ جدید که رنگ/گزینه/بازنویسیِ داده را غنی‌تر می‌کنند و
+//  در کنارِ سازنده‌های پایهٔ chartbuilders.js (renko/rangeBars/lineBreak/kagi/pnf)
+//  می‌نشینند. هیچ export یا امضای موجودی تغییر نمی‌کند.
+// ════════════════════════════════════════════════════════════════════════════
+
+// تخصیصِ زمانِ صعودیِ یکتا (این چارت‌ها مستقل از زمان‌اند) — کپیِ محلیِ الگوی chartbuilders.
+function extTimer() { let last = 0; return (t) => { const v = Math.max(t || 0, last + 1); last = v; return v; }; }
+
+// ────────────────────────────────────────────────────────────────────────────
+//  Heikin-Ashi  (§2.13 / نوعِ «کندلِ هموارشده») — تأیید/تعمیق
+//  HA_close = (o+h+l+c)/4 ؛ HA_open = میانگینِ HA_open/HA_close قبلی (بارِ اول (o+c)/2) ؛
+//  HA_high = max(h, HAo, HAc) ؛ HA_low = min(l, HAo, HAc). رنگ بر پایهٔ HAc≥HAo.
+//  خروجی سازگار با CandlestickSeries (هر نقطه رنگِ اختصاصی دارد ⇒ رنگ در همان setData).
+//  مصرف: chart.addSeries(CandlestickSeries, heikinAshiOptions()); s.setData(heikinAshi(cs, {up,down}));
+// ────────────────────────────────────────────────────────────────────────────
+export function heikinAshi(cs, opts = {}) {
+  const up = opts.up || DEF.up, down = opts.down || DEF.down;
+  if (!cs.length) return [];
+  const out = [];
+  let prevO = (cs[0].o + cs[0].c) / 2, prevC = (cs[0].o + cs[0].h + cs[0].l + cs[0].c) / 4;
+  for (let i = 0; i < cs.length; i++) {
+    const c = cs[i];
+    const haC = (c.o + c.h + c.l + c.c) / 4;
+    const haO = i === 0 ? (c.o + c.c) / 2 : (prevO + prevC) / 2;
+    const haH = Math.max(c.h, haO, haC);
+    const haL = Math.min(c.l, haO, haC);
+    const col = haC >= haO ? up : down;
+    out.push({ time: c.t, open: haO, high: haH, low: haL, close: haC, color: col, borderColor: col, wickColor: col });
+    prevO = haO; prevC = haC;
+  }
+  return out;
+}
+export function heikinAshiOptions() {
+  return { borderVisible: true, priceLineVisible: false };
+}
+// آخرین نقطهٔ HA برای live-update (نیازمندِ HA قبلی؛ فراخواننده باید حالت را نگه دارد یا کلِ سری را باز-سازد).
+export function heikinAshiLivePoint(cs, opts = {}) {
+  const arr = heikinAshi(cs, opts);
+  return arr.length ? arr[arr.length - 1] : null;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+//  Hollow Candles  (§2 ردیفِ ۳) — تأیید/تعمیق
+//  رفتارِ TradingView: رنگِ خط/ویک بر پایهٔ close-vs-prevClose (روند)؛ بدنه «توخالی»
+//  (fillِ شفاف) وقتی صعودی است (close≥open) و «توپُر» با رنگِ روند وقتی نزولی (close<open).
+//  ⇒ چهار حالت: up-hollow / up-filled / down-hollow / down-filled.
+//  مصرف: chart.addSeries(CandlestickSeries, hollowOptions()); s.setData(hollowCandles(cs, {up,down}));
+// ────────────────────────────────────────────────────────────────────────────
+export function hollowCandles(cs, opts = {}) {
+  const up = opts.up || DEF.up, down = opts.down || DEF.down;
+  if (!cs.length) return [];
+  let prevC = cs[0].c;
+  return cs.map((c) => {
+    const rising = c.c >= prevC; prevC = c.c;   // روند ⇒ رنگِ خط/ویک
+    const trend = rising ? up : down;
+    const bull = c.c >= c.o;                     // شکلِ بدنه ⇒ توخالی/توپُر
+    return {
+      time: c.t, open: c.o, high: c.h, low: c.l, close: c.c,
+      color: bull ? 'rgba(0,0,0,0)' : trend,     // بدنهٔ صعودی توخالی، نزولی توپُر
+      borderColor: trend, wickColor: trend,
+    };
+  });
+}
+export function hollowOptions() {
+  return { borderVisible: true, priceLineVisible: false };
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+//  Renko — تعمیق: اندازهٔ آجرِ ATR/Traditional + رنگِ جهت + ویکِ اختیاری  (§2 ردیفِ ۱۴)
+//  خروجی سازگار با CandlestickSeries؛ هر آجر رنگ/بوردرِ اختصاصی دارد.
+//  opts: { brick, method:'atr'|'traditional', atrPeriod, wicks:Boolean, up, down }
+//    - method='atr' (پیش‌فرض): brick = avgRange(cs, atrPeriod)
+//    - method='traditional': brick = opts.brick (یا avgRange به‌عنوانِ fallback)
+//    - wicks: سایهٔ آجر تا اکسترمِ همان کندلِ سازنده کشیده می‌شود (تقریبِ رفتارِ TV).
+// ────────────────────────────────────────────────────────────────────────────
+export function renkoBrickSize(cs, opts = {}) {
+  if (opts.brick && opts.brick > 0) return opts.brick;
+  return avgRange(cs, opts.atrPeriod || 14) || 1;
+}
+export function renkoBricks(cs, opts = {}) {
+  const up = opts.up || DEF.up, down = opts.down || DEF.down;
+  if (!cs.length) return [];
+  const brick = renkoBrickSize(cs, opts);
+  const wicks = !!opts.wicks;
+  const nt = extTimer();
+  const out = [];
+  let base = cs[0].c;
+  for (const c of cs) {
+    const price = c.c;
+    let firstUp = true, firstDown = true;
+    while (price >= base + brick) {
+      const o = base, cl = base + brick;
+      const lo = wicks && firstUp ? Math.min(o, c.l) : o; firstUp = false;
+      out.push({ time: nt(c.t), open: o, high: cl, low: lo, close: cl, color: up, borderColor: up, wickColor: up });
+      base += brick;
+    }
+    while (price <= base - brick) {
+      const o = base, cl = base - brick;
+      const hi = wicks && firstDown ? Math.max(o, c.h) : o; firstDown = false;
+      out.push({ time: nt(c.t), open: o, high: hi, low: cl, close: cl, color: down, borderColor: down, wickColor: down });
+      base -= brick;
+    }
+  }
+  return out;
+}
+export function renkoOptions(opts = {}) {
+  // بدون ویک ⇒ ویک‌ها شفاف تا فقط بدنهٔ آجر دیده شود؛ با ویک ⇒ رنگِ آجر.
+  if (opts.wicks) return { borderVisible: true, priceLineVisible: false };
+  return { borderVisible: true, wickUpColor: 'rgba(0,0,0,0)', wickDownColor: 'rgba(0,0,0,0)', priceLineVisible: false };
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+//  Range bars — تعمیق: رنگِ جهت روی سازندهٔ پایهٔ rangeBars()  (§2 ردیفِ ۱۸)
+//  از rangeBars(chartbuilders) استفاده می‌کند (بازنویسیِ داده) و فقط رنگِ up/down می‌افزاید.
+//  opts: { range, up, down }
+// ────────────────────────────────────────────────────────────────────────────
+export function rangeBarsColored(cs, opts = {}) {
+  const up = opts.up || DEF.up, down = opts.down || DEF.down;
+  const bars = rangeBars(cs, opts.range);
+  return bars.map((b) => {
+    const col = b.c >= b.o ? up : down;
+    return { time: b.t, open: b.o, high: b.h, low: b.l, close: b.c, color: col, borderColor: col, wickColor: col };
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+//  Line Break — تعمیق: تعدادِ خطِ تنظیم‌پذیر + رنگِ جهت  (§2 ردیفِ ۱۵)
+//  از lineBreak(chartbuilders) با nِ دلخواه (پیش‌فرضِ TV = ۳) استفاده و رنگ می‌افزاید.
+//  opts: { lines, up, down }
+// ────────────────────────────────────────────────────────────────────────────
+export function lineBreakColored(cs, opts = {}) {
+  const up = opts.up || DEF.up, down = opts.down || DEF.down;
+  const n = opts.lines && opts.lines > 0 ? opts.lines : 3;
+  const bars = lineBreak(cs, n);
+  return bars.map((b) => {
+    const col = b.c >= b.o ? up : down;
+    return { time: b.t, open: b.o, high: b.h, low: b.l, close: b.c, color: col, borderColor: col, wickColor: col };
+  });
+}
+// گزینه‌های مشترکِ سریِ کندلیِ آجر/بازه/شکست‌خط (بوردرِ واضح، بدونِ خطِ قیمت).
+export function brickBarOptions() {
+  return { borderVisible: true, priceLineVisible: false };
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+//  فهرست/متادیتای تعمیقِ فاز۳ (additive؛ جدا از EXT_CHART_TYPES تا مدخلِ منویِ تکراری نسازد).
+//  این‌ها انواعی‌اند که سازندهٔ پایه‌شان از قبل ثبت شده؛ این‌جا فقط «نسخهٔ رنگی/غنی» ارائه می‌شود.
+// ────────────────────────────────────────────────────────────────────────────
+export const EXT_NONSTANDARD_DEEP = ['heikinashi', 'hollow', 'renko', 'range', 'linebreak'];
+// پیش‌فرض‌های تنظیماتِ هر نوع (هم‌ترازِ دیالوگِ تنظیماتِ TV) — فراخواننده می‌تواند override کند.
+export const EXT_NONSTANDARD_DEFAULTS = {
+  renko:     { method: 'atr', atrPeriod: 14, wicks: false },
+  range:     { }, // range از avgRange به‌عنوانِ پیش‌فرض استفاده می‌کند
+  linebreak: { lines: 3 },
+};
+
+// ────────────────────────────────────────────────────────────────────────────
+//  Dispatcher تکمیلی برای انواعِ غیرِزمانیِ «رنگی/عمیق».
+//  خروجیِ candle: { kind:'candle', options, data } — سازگار با همان مسیرِ buildExtType.
+//  kagi/pnf از spec‌های موجود (kagiSpec/pnfColumns) استفاده می‌کنند.
+//  فراخواننده می‌تواند این را به‌عنوانِ مسیرِ ارتقایافتهٔ buildNonStandard صدا بزند؛ اگر نوع
+//  پوشش داده نشود null برمی‌گرداند تا مسیرِ پایه دست‌نخورده بماند.
+// ────────────────────────────────────────────────────────────────────────────
+export function buildExtNonStandard(type, cs, opts = {}) {
+  const o = { ...(EXT_NONSTANDARD_DEFAULTS[type] || {}), ...opts };
+  switch (type) {
+    case 'heikinashi':
+      return { kind: 'candle', options: heikinAshiOptions(), data: heikinAshi(cs, o) };
+    case 'hollow':
+      return { kind: 'candle', options: hollowOptions(), data: hollowCandles(cs, o) };
+    case 'renko':
+      return { kind: 'candle', options: renkoOptions(o), data: renkoBricks(cs, o) };
+    case 'range':
+      return { kind: 'candle', options: brickBarOptions(), data: rangeBarsColored(cs, o) };
+    case 'linebreak':
+      return { kind: 'candle', options: brickBarOptions(), data: lineBreakColored(cs, o) };
+    case 'kagi':
+      return { kind: 'kagi', spec: kagiSpec(cs, o) };
+    case 'pnf':
+      return { kind: 'pnf', spec: pnfColumns(cs, o) };
     default:
       return null;
   }

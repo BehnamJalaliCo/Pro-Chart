@@ -49,6 +49,11 @@ export class ReplayController {
     this.onStep = opts.onStep || null;     // (candle, slice, idx) => void
     this.onChange = opts.onChange || null; // (state) => void
     this.onEnd = opts.onEnd || null;       // () => void — وقتی به انتها رسید
+    // ── آماده‌سازیِ intrabar (شکل‌گیریِ یک کندل با ریزکندل‌های تایم‌فریمِ پایین‌تر) ──
+    // onIntrabar(subCandle, parentBar, subIdx, slice) => void — هر ریزگامِ درونِ یک بار.
+    // headless می‌ماند؛ تا وقتی enableIntrabar + setIntrabarData صدا زده نشود، رفتار عیناً مثلِ قبل است.
+    this.onIntrabar = opts.onIntrabar || null;
+    this._intrabar = { enabled: false, map: null, sub: null, j: -1, targetIdx: -1 };
   }
 
   // آیا با این تعداد کندل می‌توان وارد بازپخش شد؟
@@ -59,6 +64,8 @@ export class ReplayController {
     this.onChange && this.onChange({
       on: this.isOn, playing: this.playing, speed: this.speed,
       idx: this.idx, length: this.full.length,
+      // فیلدهای افزایشی (مصرف‌کننده‌های قبلی نادیده می‌گیرند):
+      progress: this.progress, atStart: this.atStart, atEnd: this.atEnd,
     });
   }
 
@@ -156,14 +163,104 @@ export class ReplayController {
   _startTimer() {
     this._stopTimer();
     this._timer = setInterval(() => {
-      if (!this.step()) this._stopTimer(); // step خودش در انتها pause می‌کند
+      if (!this._tick()) this._stopTimer(); // step/intrabar خودش در انتها pause می‌کند
     }, speedToDelay(this.speed));
+  }
+
+  // یک تیکِ تایمر: اگر intrabar فعال و ریزکندل موجود باشد ریزگام می‌زند، وگرنه دقیقاً مثلِ قبل step().
+  _tick() {
+    if (this._intrabar.enabled && this._hasIntrabarNext()) return this._advanceIntrabar();
+    return this.step();
   }
 
   _stopTimer() { if (this._timer) { clearInterval(this._timer); this._timer = null; } }
 
+  // ── کنترلِ سرعتِ متغیر روی نردبان (سبکِ دکمه‌های +/− در TradingView) ──
+  speedUp() {
+    const i = SPEED_LADDER.indexOf(this.speed);
+    this.setSpeed(SPEED_LADDER[Math.min(SPEED_LADDER.length - 1, (i < 0 ? 3 : i) + 1)]);
+    return this.speed;
+  }
+  speedDown() {
+    const i = SPEED_LADDER.indexOf(this.speed);
+    this.setSpeed(SPEED_LADDER[Math.max(0, (i < 0 ? 3 : i) - 1)]);
+    return this.speed;
+  }
+
+  // چند گام یک‌جا (n>0 جلو، n<0 عقب) — از step/stepBack موجود استفاده می‌کند.
+  stepBy(n) {
+    n = Math.trunc(n) || 0;
+    if (!this.isOn || n === 0) return false;
+    let ok = false;
+    if (n > 0) { for (let k = 0; k < n; k++) { if (!this.step()) break; ok = true; } }
+    else { for (let k = 0; k < -n; k++) { if (!this.stepBack()) break; ok = true; } }
+    return ok;
+  }
+
+  // میان‌بُرهای seek (روی seek موجود سوارند).
+  seekToTime(t) { return this.seek({ time: t }); }
+  seekToPct(p) {
+    if (!this.isOn) return false;
+    const pct = Math.min(1, Math.max(0, Number(p) || 0));
+    return this.seek({ index: Math.round(pct * (this.full.length - 1)) });
+  }
+
+  // توقفِ پخش (نامِ آشناتر؛ معادلِ pause — snapshot را پاک نمی‌کند، برخلافِ exit).
+  stop() { this.pause(); }
+
+  // ── getterهای وضعیت (افزایشی) ──
+  get atStart() { return this.idx <= 0; }
+  get atEnd() { return this.isOn && this.idx >= this.full.length - 1; }
+  get progress() { return this.full.length > 1 ? this.idx / (this.full.length - 1) : 0; }
+  get remaining() { return this.isOn ? (this.full.length - 1 - this.idx) : 0; }
+  currentBar() { return this.isOn ? this.full[this.idx] : null; }
+  currentTime() { const b = this.currentBar(); return b ? b.t : null; }
+
+  // ── intrabar: پیکربندی (آماده‌سازی؛ opt-in و بدونِ اثر بر مسیرِ پیش‌فرض) ──
+  // map: Map یا آبجکتِ ساده از زمانِ بار (t) → آرایهٔ ریزکندل‌های مرتبِ همان بار.
+  setIntrabarData(map) { this._intrabar.map = map || null; this._intrabar.sub = null; this._intrabar.j = -1; this._intrabar.targetIdx = -1; return this; }
+  enableIntrabar(on = true) { this._intrabar.enabled = !!on; this._intrabar.sub = null; this._intrabar.j = -1; this._intrabar.targetIdx = -1; return this; }
+  disableIntrabar() { return this.enableIntrabar(false); }
+  get hasIntrabar() { return !!(this._intrabar.enabled && this._intrabar.map); }
+
+  _hasIntrabarNext() { return !!this._intrabar.map && this.isOn && this.idx < this.full.length - 1; }
+  _intrabarFor(t) {
+    const m = this._intrabar.map; if (!m) return null;
+    const arr = (typeof m.get === 'function') ? m.get(t) : m[t];
+    return (arr && arr.length) ? arr : null;
+  }
+  // یک ریزگام درونِ بارِ بعدی؛ در آخرین ریزکندل بار را با step() نهایی می‌کند.
+  // اگر برای بارِ بعدی داده‌ای نباشد، به step()ِ معمولی سقوط می‌کند (بدونِ رگرسیون).
+  _advanceIntrabar() {
+    if (!this.isOn || this.idx >= this.full.length - 1) return this.step();
+    const nextIdx = this.idx + 1;
+    const bar = this.full[nextIdx];
+    if (this._intrabar.targetIdx !== nextIdx || !this._intrabar.sub) {
+      const sub = this._intrabarFor(bar.t);
+      if (!sub) return this.step();
+      this._intrabar.sub = sub; this._intrabar.j = 0; this._intrabar.targetIdx = nextIdx;
+    }
+    const sub = this._intrabar.sub;
+    const j = this._intrabar.j;
+    this.onIntrabar && this.onIntrabar(sub[j], bar, j, this.slice());
+    if (j < sub.length - 1) { this._intrabar.j = j + 1; return true; }
+    // آخرین ریزکندل ⇒ بار را کامل commit کن و دنبالهٔ intrabar را ریست کن.
+    this._intrabar.sub = null; this._intrabar.j = -1; this._intrabar.targetIdx = -1;
+    return this.step();
+  }
+  // یک ریزگامِ عمومیِ intrabar (برای صداکردنِ دستی توسطِ caller؛ در نبودِ داده معادلِ step).
+  stepIntrabar() {
+    if (!this.isOn) return false;
+    if (this._intrabar.map && this.idx < this.full.length - 1) return this._advanceIntrabar();
+    return this.step();
+  }
+
   // برای پاک‌سازیِ امن هنگامِ unmount.
-  destroy() { this._stopTimer(); this.onSlice = this.onStep = this.onChange = this.onEnd = null; }
+  destroy() {
+    this._stopTimer();
+    this._intrabar = { enabled: false, map: null, sub: null, j: -1, targetIdx: -1 };
+    this.onSlice = this.onStep = this.onChange = this.onEnd = this.onIntrabar = null;
+  }
 }
 
 export default ReplayController;

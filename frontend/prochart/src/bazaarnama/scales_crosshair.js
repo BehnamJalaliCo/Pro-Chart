@@ -29,21 +29,41 @@ export const CROSSHAIR_MODES = [
 export const crosshairModeById = (id) =>
   CROSSHAIR_MODES.find((m) => m.id === id) || CROSSHAIR_MODES[0];
 
+// حالت‌های Magnet مثلِ TradingView. enum بومیِ lightweight-charts فقط یک Magnet دارد؛
+// تفاوتِ weak/strong یک راهنمای میزبان است (شعاعِ snap برحسبِ پیکسل):
+//  • weak  → فقط وقتی مکان‌نما نزدیکِ یک سطحِ OHLC است snap می‌کند (snapPx محدود).
+//  • strong→ همیشه به نزدیک‌ترین سطحِ OHLC می‌چسبد (snapPx نامحدود).
+// active: آیا حالتِ بومیِ Magnet روشن شود. snapPx راهنمای میزبان برای منطقِ چسبیدن است.
+export const MAGNET_MODES = [
+  { id: 'off', label: 'خاموش', active: false, snapPx: 0 },
+  { id: 'weak', label: 'ضعیف', active: true, snapPx: 12 },
+  { id: 'strong', label: 'قوی', active: true, snapPx: Infinity },
+];
+
+// نگاشتِ ورودیِ magnet به حالت. سازگاریِ عقب‌رو: boolean حفظ می‌شود
+// (true → weak = روشنِ بومی؛ false/undefined → off).
+export const magnetModeById = (id) => {
+  if (id === true) return MAGNET_MODES[1];
+  if (id === false || id == null) return MAGNET_MODES[0];
+  return MAGNET_MODES.find((m) => m.id === id) || MAGNET_MODES[0];
+};
+
 /**
  * ساختِ payloadِ آمادهٔ chart.applyOptions({...}) برای کراس‌هیر.
  * @param {string} id            یکی از 'cross'|'dot'|'arrow'|'hidden'
- * @param {boolean} magnet       اگر true → حالت روی Magnet می‌رود (snap به OHLC)
+ * @param {boolean|string} magnet  boolean (true=weak) یا یکی از 'off'|'weak'|'strong'
  * @param {object}  th           تمِ جاری (THEMES[theme]) برای رنگِ خط/برچسب
- * @returns {{crosshair:object, _ui:{glyph:string,cursor:string}}}
+ * @returns {{crosshair:object, _ui:{glyph:string,cursor:string,magnet:string,snapPx:number}}}
  *   crosshair: مستقیماً به chart.applyOptions داده می‌شود.
- *   _ui: راهنمای میزبان برای نشانگر/نشانه (نباید به applyOptions داده شود).
+ *   _ui: راهنمای میزبان برای نشانگر/نشانه + قدرتِ magnet (نباید به applyOptions داده شود).
  */
 export const crosshairOptions = (id, magnet, th) => {
   const m = crosshairModeById(id);
-  // Magnet توگلِ متعامد است: اگر روشن باشد، حالتِ پایه (وقتی پنهان نیست) به Magnet می‌رود.
+  const mag = magnetModeById(magnet);
+  // Magnet توگلِ متعامد است: اگر فعال باشد، حالتِ پایه (وقتی پنهان نیست) به Magnet می‌رود.
   const mode = m.mode === CROSSHAIR_MODE.Hidden
     ? CROSSHAIR_MODE.Hidden
-    : (magnet ? CROSSHAIR_MODE.Magnet : CROSSHAIR_MODE.Normal);
+    : (mag.active ? CROSSHAIR_MODE.Magnet : CROSSHAIR_MODE.Normal);
   const T = th || {};
   const lineColor = T.text || '#9598a1';
   const labelBg = T.accent || '#2962FF';
@@ -57,7 +77,7 @@ export const crosshairOptions = (id, magnet, th) => {
   };
   return {
     crosshair: { mode, vertLine: { ...lineCfg }, horzLine: { ...lineCfg } },
-    _ui: { glyph: m.glyph, cursor: m.cursor },
+    _ui: { glyph: m.glyph, cursor: m.cursor, magnet: mag.id, snapPx: mag.snapPx },
   };
 };
 
@@ -128,6 +148,11 @@ export const priceScaleOptions = ({ mode = PRICE_SCALE_MODE.Normal, locked = fal
 // payloadِ «بازنشانیِ مقیاس» (دابل‌کلیکِ روی محور) — autoScale را دوباره روشن می‌کند.
 // میزبان پس از این باید chart.timeScale().fitContent() را هم صدا بزند.
 export const resetPriceScaleOptions = () => ({ autoScale: true, invertScale: false });
+
+// payloadِ «برازش/Auto» — فقط autoScale را دوباره روشن می‌کند و وارونگی/حالت را دست‌نخورده
+// نگه می‌دارد (برخلافِ reset). معادلِ دکمهٔ «Fit» / «Auto» در TradingView.
+// میزبان برای برازشِ افقی هم chart.timeScale().fitContent() را صدا می‌زند.
+export const fitPriceScaleOptions = () => ({ autoScale: true });
 
 /* ──────────────────────────────────────────────────────────────────────────
  * (پ) سشن‌ها — باندهای London / NY / Tokyo (TZ-aware با Intl، DST خودکار)
@@ -367,7 +392,8 @@ export const CH3_DEFAULTS = {
   scaleLocked: false,
   scaleInvert: false,
   crosshairId: 'cross',
-  magnet: false,
+  magnet: false,        // سازگاریِ عقب‌رو (boolean) — همچنان معتبر
+  magnetMode: 'off',    // 'off'|'weak'|'strong' (ترجیح: اگر ست شد به crosshairOptions بده)
   tz: 'Asia/Tehran',
   sessionsOn: false,
 };

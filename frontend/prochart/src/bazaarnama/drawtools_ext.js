@@ -156,6 +156,74 @@ export const EXT_REGISTRY = {
     hit(d, x, y, api) { const a = px(api, d.p0); if (!ok(a)) return false; return Math.abs(y - a.y) < 7 || Math.abs(x - a.x) < 7; },
   },
 
+  // ───────── ۴.۳ کانال‌ها و چنگال‌ها ─────────
+  // کانالِ رگرسیون: خطِ رگرسیونِ خطیِ close روی بازه + باندِ ±۲σ
+  regchannel: {
+    label: 'کانالِ رگرسیون', points: 2,
+    draw(ctx, d, api) {
+      const t0 = Math.min(d.p0.t, d.p1.t), t1 = Math.max(d.p0.t, d.p1.t);
+      const cs = (api.candles || []).filter((c) => c.t >= t0 && c.t <= t1);
+      style(ctx, d);
+      if (cs.length < 2) { const a = px(api, d.p0), b = px(api, d.p1); if (ok(a) && ok(b)) seg(ctx, a.x, a.y, b.x, b.y); return; }
+      const n = cs.length; let sx = 0, sy = 0, sxy = 0, sxx = 0;
+      cs.forEach((c, i) => { sx += i; sy += c.c; sxy += i * c.c; sxx += i * i; });
+      const m = (n * sxy - sx * sy) / (n * sxx - sx * sx || 1), b0 = (sy - m * sx) / n;
+      let ss = 0; cs.forEach((c, i) => { const e = c.c - (m * i + b0); ss += e * e; }); const sd = Math.sqrt(ss / n);
+      const pv = (i) => m * i + b0, x0 = api.x(cs[0].t), x1 = api.x(cs[n - 1].t);
+      const yM0 = api.y(pv(0)), yM1 = api.y(pv(n - 1));
+      const yT0 = api.y(pv(0) + 2 * sd), yT1 = api.y(pv(n - 1) + 2 * sd);
+      const yB0 = api.y(pv(0) - 2 * sd), yB1 = api.y(pv(n - 1) - 2 * sd);
+      ctx.globalAlpha = 0.06; ctx.beginPath(); ctx.moveTo(x0, yT0); ctx.lineTo(x1, yT1); ctx.lineTo(x1, yB1); ctx.lineTo(x0, yB0); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+      seg(ctx, x0, yM0, x1, yM1);
+      ctx.globalAlpha = 0.75; dash(ctx, true); seg(ctx, x0, yT0, x1, yT1); seg(ctx, x0, yB0, x1, yB1); dash(ctx, false); ctx.globalAlpha = 1;
+    },
+    hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; return x >= Math.min(a.x, b.x) - 7 && x <= Math.max(a.x, b.x) + 7 && y >= Math.min(a.y, b.y) - 30 && y <= Math.max(a.y, b.y) + 30; },
+  },
+  // کانالِ سقف/کفِ صاف: خطِ روند (p0→p1) + خطِ افقی در p2
+  flatchannel: {
+    label: 'کانالِ سقف/کفِ صاف', points: 3,
+    draw(ctx, d, api) {
+      const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return;
+      style(ctx, d); const xL = Math.min(P[0].x, P[1].x), xR = Math.max(P[0].x, P[1].x);
+      ctx.globalAlpha = 0.06; ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.lineTo(P[1].x, P[1].y); ctx.lineTo(xR, P[2].y); ctx.lineTo(xL, P[2].y); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+      seg(ctx, P[0].x, P[0].y, P[1].x, P[1].y); seg(ctx, xL, P[2].y, xR, P[2].y);
+    },
+    hit(d, x, y, api) { const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return false; return distSeg(x, y, P[0].x, P[0].y, P[1].x, P[1].y) < 7 || (Math.abs(y - P[2].y) < 7 && x >= Math.min(P[0].x, P[1].x) - 7 && x <= Math.max(P[0].x, P[1].x) + 7); },
+  },
+  // کانالِ ناپیوسته: دو خطِ مستقلِ p0→p1 و p2→p3
+  disjointchannel: {
+    label: 'کانالِ ناپیوسته', points: 4,
+    draw(ctx, d, api) {
+      const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 4) return;
+      style(ctx, d);
+      ctx.globalAlpha = 0.06; ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.lineTo(P[1].x, P[1].y); ctx.lineTo(P[3].x, P[3].y); ctx.lineTo(P[2].x, P[2].y); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+      seg(ctx, P[0].x, P[0].y, P[1].x, P[1].y); seg(ctx, P[2].x, P[2].y, P[3].x, P[3].y);
+    },
+    hit(d, x, y, api) { const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 4) return false; return distSeg(x, y, P[0].x, P[0].y, P[1].x, P[1].y) < 7 || distSeg(x, y, P[2].x, P[2].y, P[3].x, P[3].y) < 7; },
+  },
+  // چنگالِ شیف (median از میانِ p0..mid عمودی)
+  schiff: { label: 'چنگالِ شیف', points: 3, draw: drawFork('schiff'), hit: hitFork },
+  // چنگالِ شیفِ اصلاح‌شده (median از میانِ p0..mid در هر دو محور)
+  modschiff: { label: 'چنگالِ شیفِ اصلاح‌شده', points: 3, draw: drawFork('modschiff'), hit: hitFork },
+  // چنگالِ داخلی (پرونگ‌ها از نیمه‌راهِ لنگرها)
+  insidepitchfork: { label: 'چنگالِ داخلی', points: 3, draw: drawFork('inside'), hit: hitFork },
+  // پیچ‌فنِ فیبوناچی: شعاع‌های موازی در نسبت‌های فیبوناچی بینِ دو پرونگ
+  pitchfan: {
+    label: 'پیچ‌فنِ فیبوناچی', points: 3,
+    draw(ctx, d, api) {
+      const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return;
+      const mid = { x: (P[1].x + P[2].x) / 2, y: (P[1].y + P[2].y) / 2 };
+      const O = P[0], dx = mid.x - O.x, dy = mid.y - O.y; style(ctx, d);
+      rayTo(ctx, O.x, O.y, mid.x, mid.y, api.W, api.H, false);
+      (d.levels || [0.25, 0.382, 0.5, 0.618, 0.75, 1]).forEach((r) => {
+        const bx = P[1].x + (P[2].x - P[1].x) * r, by = P[1].y + (P[2].y - P[1].y) * r;
+        ctx.globalAlpha = 0.7; rayTo(ctx, bx, by, bx + dx, by + dy, api.W, api.H, false); ctx.globalAlpha = 1;
+        ctx.fillText((r * 100).toFixed(1) + '%', bx + 3, by);
+      });
+    },
+    hit(d, x, y, api) { const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return false; const mid = { x: (P[1].x + P[2].x) / 2, y: (P[1].y + P[2].y) / 2 }; return distLine(x, y, P[0].x, P[0].y, mid.x, mid.y) < 7 || distSeg(x, y, P[1].x, P[1].y, P[2].x, P[2].y) < 7; },
+  },
+
   // ───────── ۴.۴ فیبوناچی ─────────
   // فیبوی گسترشیِ سه‌نقطه‌ای (A→B→C) با تصویرِ صحیح از C
   fib3: {
@@ -236,6 +304,35 @@ export const EXT_REGISTRY = {
     },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; const rx = Math.abs(b.x - a.x) || 1, ry = Math.abs(b.y - a.y) || 1; return (d.levels || [0.382, 0.5, 0.618, 1]).some((r) => Math.abs(Math.hypot((x - a.x) / (rx * r || 1), (y - a.y) / (ry * r || 1)) - 1) < 0.1); },
   },
+  // مارپیچِ فیبوناچی (لگاریتمیِ طلایی): p0 مرکز، p1 شعاع/زاویهٔ شروع
+  fibspiral: {
+    label: 'مارپیچِ فیبوناچی', points: 2,
+    draw(ctx, d, api) {
+      const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return;
+      const r0 = Math.hypot(b.x - a.x, b.y - a.y) || 1, a0 = Math.atan2(b.y - a.y, b.x - a.x);
+      const growth = Math.log(1.6180339887) / (Math.PI / 2), TH = Math.PI * 6;
+      style(ctx, d); ctx.beginPath(); let started = false;
+      for (let th = 0; th <= TH; th += 0.1) { const r = r0 * Math.exp(-growth * (TH - th)); const x = a.x + r * Math.cos(a0 + th), y = a.y + r * Math.sin(a0 + th); if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y); }
+      ctx.stroke();
+    },
+    hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; const r0 = Math.hypot(b.x - a.x, b.y - a.y) || 1, a0 = Math.atan2(b.y - a.y, b.x - a.x); const growth = Math.log(1.6180339887) / (Math.PI / 2), TH = Math.PI * 6; for (let th = 0; th <= TH; th += 0.1) { const r = r0 * Math.exp(-growth * (TH - th)); const xx = a.x + r * Math.cos(a0 + th), yy = a.y + r * Math.sin(a0 + th); if (Math.hypot(xx - x, yy - y) < 7) return true; } return false; },
+  },
+  // گُوِهٔ فیبوناچی (۳نقطه): قوس‌های فیبوناچی بینِ دو شعاع از رأس
+  fibwedge: {
+    label: 'گُوِهٔ فیبوناچی', points: 3,
+    draw(ctx, d, api) {
+      const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return;
+      const O = P[0], v1 = { x: P[1].x - O.x, y: P[1].y - O.y }, v2 = { x: P[2].x - O.x, y: P[2].y - O.y };
+      style(ctx, d); ctx.globalAlpha = 0.7; seg(ctx, O.x, O.y, P[1].x, P[1].y); seg(ctx, O.x, O.y, P[2].x, P[2].y); ctx.globalAlpha = 1;
+      (d.levels || [0.236, 0.382, 0.5, 0.618, 0.786, 1]).forEach((r) => {
+        const a = { x: O.x + v1.x * r, y: O.y + v1.y * r }, b = { x: O.x + v2.x * r, y: O.y + v2.y * r };
+        const cx = O.x + (v1.x + v2.x) / 2 * r * 1.15, cy = O.y + (v1.y + v2.y) / 2 * r * 1.15;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(cx, cy, b.x, b.y); ctx.stroke();
+        ctx.fillText((r * 100).toFixed(1) + '%', b.x + 3, b.y);
+      });
+    },
+    hit(d, x, y, api) { const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return false; return distSeg(x, y, P[0].x, P[0].y, P[1].x, P[1].y) < 7 || distSeg(x, y, P[0].x, P[0].y, P[2].x, P[2].y) < 7; },
+  },
 
   // ───────── ۴.۵ گان ─────────
   // جعبهٔ گان: شبکهٔ قیمت/زمان + قطرها
@@ -261,6 +358,32 @@ export const EXT_REGISTRY = {
     },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; const ux = (b.x - a.x), uy = (b.y - a.y); return GANN_FAN.some((g) => distLine(x, y, a.x, a.y, a.x + ux, a.y + uy * g.k) < 7 && (x - a.x) * ux >= 0); },
   },
+  // مربعِ گان: جعبه + شبکهٔ هشتم + قطرها + بیضی‌های هم‌مرکز از p0
+  gannsquare: {
+    label: 'مربعِ گان', points: 2,
+    draw(ctx, d, api) {
+      const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return;
+      const X = Math.min(a.x, b.x), Y = Math.min(a.y, b.y), w = Math.abs(b.x - a.x), h = Math.abs(b.y - a.y);
+      style(ctx, d); ctx.strokeRect(X, Y, w, h);
+      ctx.globalAlpha = 0.4; for (let i = 1; i < 8; i++) { seg(ctx, X + w * i / 8, Y, X + w * i / 8, Y + h); seg(ctx, X, Y + h * i / 8, X + w, Y + h * i / 8); }
+      ctx.globalAlpha = 0.85; seg(ctx, a.x, a.y, b.x, b.y); seg(ctx, a.x, b.y, b.x, a.y);
+      ctx.globalAlpha = 0.5; [0.25, 0.5, 0.75, 1].forEach((r) => { ctx.beginPath(); ctx.ellipse(a.x, a.y, w * r, h * r, 0, 0, Math.PI * 2); ctx.stroke(); }); ctx.globalAlpha = 1;
+    },
+    hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; return x >= Math.min(a.x, b.x) - 7 && x <= Math.max(a.x, b.x) + 7 && y >= Math.min(a.y, b.y) - 7 && y <= Math.max(a.y, b.y) + 7; },
+  },
+  // مربعِ ثابتِ گان: مربعِ واقعی (ضلعِ برابر) + شبکهٔ هشتم + قطرهای ۴۵°
+  gannfixed: {
+    label: 'مربعِ ثابتِ گان', points: 2,
+    draw(ctx, d, api) {
+      const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return;
+      const s = Math.max(Math.abs(b.x - a.x), Math.abs(b.y - a.y)) || 40, sx = b.x >= a.x ? 1 : -1, sy = b.y >= a.y ? 1 : -1;
+      const X = Math.min(a.x, a.x + sx * s), Y = Math.min(a.y, a.y + sy * s);
+      style(ctx, d); ctx.strokeRect(X, Y, s, s);
+      ctx.globalAlpha = 0.4; for (let i = 1; i < 8; i++) { seg(ctx, X + s * i / 8, Y, X + s * i / 8, Y + s); seg(ctx, X, Y + s * i / 8, X + s, Y + s * i / 8); }
+      ctx.globalAlpha = 0.85; seg(ctx, X, Y, X + s, Y + s); seg(ctx, X, Y + s, X + s, Y); ctx.globalAlpha = 1;
+    },
+    hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; const s = Math.max(Math.abs(b.x - a.x), Math.abs(b.y - a.y)) || 40, sx = b.x >= a.x ? 1 : -1, sy = b.y >= a.y ? 1 : -1; const X = Math.min(a.x, a.x + sx * s), Y = Math.min(a.y, a.y + sy * s); return x >= X - 7 && x <= X + s + 7 && y >= Y - 7 && y <= Y + s + 7; },
+  },
 
   // ───────── ۴.۶ الگوها ─────────
   // XABCD: پلی‌لاینِ ۵نقطه + نسبت‌های فیبوناچیِ لگ‌ها
@@ -275,6 +398,14 @@ export const EXT_REGISTRY = {
   hns: { label: 'سر و شانه', points: 5, draw: drawPattern(['LS', 'H', 'RS', '', ''], false), hit: hitPoly },
   ell_impulse: { label: 'موجِ ایمپالسِ الیوت', points: 6, draw: drawPattern(['0', '1', '2', '3', '4', '5'], false), hit: hitPoly },
   ell_abc: { label: 'موجِ اصلاحیِ الیوت', points: 4, draw: drawPattern(['0', 'A', 'B', 'C'], false), hit: hitPoly },
+  // مثلثِ الیوت (ABCDE)
+  ell_triangle: { label: 'مثلثِ الیوت', points: 6, draw: drawPattern(['0', 'A', 'B', 'C', 'D', 'E'], false), hit: hitPoly },
+  // ترکیبِ دوگانهٔ الیوت (WXY)
+  ell_wxy: { label: 'ترکیبِ دوگانهٔ الیوت', points: 4, draw: drawPattern(['0', 'W', 'X', 'Y'], false), hit: hitPoly },
+  // ترکیبِ سه‌گانهٔ الیوت (WXYXZ)
+  ell_wxyxz: { label: 'ترکیبِ سه‌گانهٔ الیوت', points: 6, draw: drawPattern(['0', 'W', 'X', 'Y', 'X', 'Z'], false), hit: hitPoly },
+  // سه‌حرکت (Three Drives): درایوها + اصلاح‌ها با نسبت‌های فیبوناچی
+  threedrives: { label: 'الگوی سه‌حرکت', points: 7, draw: drawPattern(['0', '1', 'A', '2', 'B', '3', 'C'], true), hit: hitPoly },
   // خطوطِ دوره‌ای / سیکلِ زمانی: عمودی‌های تکرارشونده با دورهٔ (t1-t0)
   cyclic: {
     label: 'خطوطِ دوره‌ای', points: 2,
@@ -294,6 +425,21 @@ export const EXT_REGISTRY = {
       ctx.stroke();
     },
     hit(d, x, y, api) { const lam = d.p1.t - d.p0.t; if (!lam) return false; const mid = (d.p0.p + d.p1.p) / 2, amp = Math.abs(d.p1.p - d.p0.p) / 2; for (let i = 0; i <= 120; i++) { const tt = d.p0.t + lam * (i / 120) * 4; const pp = mid + amp * Math.sin(2 * Math.PI * (tt - d.p0.t) / lam); const xx = api.x(tt), yy = api.y(pp); if (xx != null && yy != null && Math.hypot(xx - x, yy - y) < 7) return true; } return false; },
+  },
+  // چرخه‌های زمانی: نیم‌دایره‌های متوالی در کفِ فریم با دورهٔ (t1-t0)
+  timecycles: {
+    label: 'چرخه‌های زمانی', points: 2,
+    draw(ctx, d, api) {
+      const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return;
+      const per = d.p1.t - d.p0.t; if (!per) return; const r0 = Math.abs(b.x - a.x) / 2 || (api.barWidth() || 6), base = api.H - 2;
+      style(ctx, d);
+      for (let n = 1; n <= 24; n++) {
+        const cx = api.x(d.p0.t + (n - 0.5) * per); if (cx == null) continue; if (cx - r0 > api.W) break;
+        ctx.globalAlpha = 0.8; ctx.beginPath(); ctx.arc(cx, base, r0, Math.PI, 0, false); ctx.stroke(); ctx.globalAlpha = 1;
+        const xx = api.x(d.p0.t + n * per); if (xx != null) { ctx.globalAlpha = 0.25; seg(ctx, xx, 0, xx, api.H); ctx.globalAlpha = 1; }
+      }
+    },
+    hit(d, x, y, api) { const per = d.p1.t - d.p0.t; if (!per) return false; for (let n = 0; n <= 24; n++) { const xx = api.x(d.p0.t + n * per); if (xx != null && Math.abs(xx - x) < 7) return true; } return false; },
   },
 
   // ───────── ۴.۷ پروجکشن و اندازه‌گیری ─────────
@@ -346,6 +492,22 @@ export const EXT_REGISTRY = {
       labelBox(ctx, b.x + 4, b.y, `${pct.toFixed(2)}%`, { border: d.color });
     },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; return distSeg(x, y, a.x, a.y, b.x, b.y) < 12; },
+  },
+  // پروجکشن (۳نقطه): لگِ مرجع p0→p1 تصویر می‌شود از p2 (حرکتِ اندازه‌گیری‌شده) + Δدرصد
+  projection: {
+    label: 'پروجکشن', points: 3,
+    draw(ctx, d, api) {
+      const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return;
+      style(ctx, d); ctx.globalAlpha = 0.7; seg(ctx, P[0].x, P[0].y, P[1].x, P[1].y); ctx.globalAlpha = 1;
+      const dx = P[1].x - P[0].x, dy = P[1].y - P[0].y, tip = { x: P[2].x + dx, y: P[2].y + dy };
+      const up = (d.pts[1].p - d.pts[0].p) >= 0;
+      ctx.fillStyle = up ? 'rgba(34,197,94,.10)' : 'rgba(239,68,68,.10)';
+      ctx.beginPath(); ctx.moveTo(P[2].x, P[2].y); ctx.lineTo(tip.x, tip.y); ctx.lineTo(tip.x, P[2].y); ctx.closePath(); ctx.fill();
+      dash(ctx, true); seg(ctx, P[2].x, P[2].y, tip.x, tip.y); dash(ctx, false);
+      const pct = d.pts[0].p ? (d.pts[1].p - d.pts[0].p) / d.pts[0].p * 100 : 0;
+      labelBox(ctx, tip.x + 4, tip.y, `${pct.toFixed(2)}%`, { border: d.color });
+    },
+    hit(d, x, y, api) { const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return false; const dx = P[1].x - P[0].x, dy = P[1].y - P[0].y; return distSeg(x, y, P[0].x, P[0].y, P[1].x, P[1].y) < 8 || distSeg(x, y, P[2].x, P[2].y, P[2].x + dx, P[2].y + dy) < 8; },
   },
   // خطِ روندِ قیمت‌ـزمان (ruler/measure سریع) — مثلِ بازهٔ کامل اما با نمایشِ پیوسته
   ruler: {
@@ -485,6 +647,34 @@ function hitPoly(d, x, y, api) {
   return false;
 }
 
+// ── سازندهٔ چنگال‌های اندروزی (Schiff/Modified/Inside) ─────────────────────
+// p0 = دستهٔ چنگال، p1/p2 = دو پرونگ. خطِ میانه از O به میانهٔ p1p2؛ پرونگ‌ها موازیِ میانه.
+function drawFork(mode) {
+  return function (ctx, d, api) {
+    const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return;
+    const mid = { x: (P[1].x + P[2].x) / 2, y: (P[1].y + P[2].y) / 2 };
+    let O = P[0], A1 = P[1], A2 = P[2];
+    if (mode === 'schiff') O = { x: P[0].x, y: (P[0].y + mid.y) / 2 };
+    else if (mode === 'modschiff') O = { x: (P[0].x + mid.x) / 2, y: (P[0].y + mid.y) / 2 };
+    else if (mode === 'inside') { A1 = { x: (P[0].x + P[1].x) / 2, y: (P[0].y + P[1].y) / 2 }; A2 = { x: (P[0].x + P[2].x) / 2, y: (P[0].y + P[2].y) / 2 }; }
+    const dx = mid.x - O.x, dy = mid.y - O.y;
+    style(ctx, d);
+    rayTo(ctx, O.x, O.y, mid.x, mid.y, api.W, api.H, false);
+    ctx.globalAlpha = 0.85;
+    rayTo(ctx, A1.x, A1.y, A1.x + dx, A1.y + dy, api.W, api.H, false);
+    rayTo(ctx, A2.x, A2.y, A2.x + dx, A2.y + dy, api.W, api.H, false);
+    ctx.globalAlpha = 0.6; seg(ctx, A1.x, A1.y, A2.x, A2.y); ctx.globalAlpha = 1;
+  };
+}
+// hit-test مشترکِ چنگال‌ها
+function hitFork(d, x, y, api) {
+  const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return false;
+  const mid = { x: (P[1].x + P[2].x) / 2, y: (P[1].y + P[2].y) / 2 }, dx = mid.x - P[0].x, dy = mid.y - P[0].y;
+  return distLine(x, y, P[0].x, P[0].y, mid.x, mid.y) < 7
+    || distLine(x, y, P[1].x, P[1].y, P[1].x + dx, P[1].y + dy) < 7
+    || distLine(x, y, P[2].x, P[2].y, P[2].x + dx, P[2].y + dy) < 7;
+}
+
 // ── handlesِ پیش‌فرض برای تک‌لنگرها (p0) ────────────────────────────────────
 // ابزارهایی که فقط p0 دارند (hray/crossline/pricelabel/note/arrowdir...) یک handle می‌خواهند.
 // بقیه (p0+p1 یا pts) را خودِ DrawingLayer از مسیرِ عمومی می‌سازد.
@@ -546,6 +736,14 @@ export const EXT_TOOLS = [
   { id: 'angle', label: 'زاویهٔ روند', icon: 'TrendingUp', points: 2 },
   { id: 'hray', label: 'پرتوِ افقی', icon: 'ArrowUpRight', points: 2 },
   { id: 'crossline', label: 'خطِ صلیبی', icon: 'Crosshair', points: 2 },
+  // کانال‌ها و چنگال‌ها
+  { id: 'regchannel', label: 'کانالِ رگرسیون', icon: 'Move', points: 2 },
+  { id: 'flatchannel', label: 'کانالِ سقف/کفِ صاف (۳نقطه)', icon: 'Move', points: 3 },
+  { id: 'disjointchannel', label: 'کانالِ ناپیوسته (۴نقطه)', icon: 'Move', points: 4 },
+  { id: 'schiff', label: 'چنگالِ شیف (۳نقطه)', icon: 'GitBranch', points: 3 },
+  { id: 'modschiff', label: 'چنگالِ شیفِ اصلاح‌شده (۳نقطه)', icon: 'GitBranch', points: 3 },
+  { id: 'insidepitchfork', label: 'چنگالِ داخلی (۳نقطه)', icon: 'GitBranch', points: 3 },
+  { id: 'pitchfan', label: 'پیچ‌فنِ فیبوناچی (۳نقطه)', icon: 'GitBranch', points: 3 },
   // فیبوناچی
   { id: 'fib3', label: 'فیبوی گسترشیِ ۳نقطه (A→B→C)', icon: 'Spline', points: 3 },
   { id: 'fibfan', label: 'بادبزنِ فیبوناچی', icon: 'GitBranch', points: 2 },
@@ -554,9 +752,13 @@ export const EXT_TOOLS = [
   { id: 'fibchannel', label: 'کانالِ فیبوناچی (۳نقطه)', icon: 'Move', points: 3 },
   { id: 'fibcircles', label: 'دایره‌های فیبوناچی', icon: 'Crosshair', points: 2 },
   { id: 'fibarcs', label: 'کمان‌های فیبوناچی', icon: 'Spline', points: 2 },
+  { id: 'fibspiral', label: 'مارپیچِ فیبوناچی', icon: 'Spline', points: 2 },
+  { id: 'fibwedge', label: 'گُوِهٔ فیبوناچی (۳نقطه)', icon: 'Spline', points: 3 },
   // گان
   { id: 'gannbox', label: 'جعبهٔ گان', icon: 'Square', points: 2 },
   { id: 'gannfan', label: 'بادبزنِ گان', icon: 'GitBranch', points: 2 },
+  { id: 'gannsquare', label: 'مربعِ گان', icon: 'Square', points: 2 },
+  { id: 'gannfixed', label: 'مربعِ ثابتِ گان', icon: 'Square', points: 2 },
   // الگوها
   { id: 'xabcd', label: 'الگوی XABCD (۵نقطه)', icon: 'Spline', points: 5 },
   { id: 'abcd', label: 'الگوی ABCD (۴نقطه)', icon: 'Spline', points: 4 },
@@ -565,13 +767,19 @@ export const EXT_TOOLS = [
   { id: 'hns', label: 'سر و شانه (۵نقطه)', icon: 'Activity', points: 5 },
   { id: 'ell_impulse', label: 'موجِ ایمپالسِ الیوت (۶نقطه)', icon: 'Activity', points: 6 },
   { id: 'ell_abc', label: 'موجِ اصلاحیِ الیوت (۴نقطه)', icon: 'Activity', points: 4 },
+  { id: 'ell_triangle', label: 'مثلثِ الیوت (ABCDE، ۶نقطه)', icon: 'Activity', points: 6 },
+  { id: 'ell_wxy', label: 'ترکیبِ دوگانهٔ الیوت (WXY، ۴نقطه)', icon: 'Activity', points: 4 },
+  { id: 'ell_wxyxz', label: 'ترکیبِ سه‌گانهٔ الیوت (WXYXZ، ۶نقطه)', icon: 'Activity', points: 6 },
+  { id: 'threedrives', label: 'الگوی سه‌حرکت (۷نقطه)', icon: 'Spline', points: 7 },
   { id: 'cyclic', label: 'خطوطِ دوره‌ای', icon: 'Slash', points: 2 },
+  { id: 'timecycles', label: 'چرخه‌های زمانی', icon: 'Crosshair', points: 2 },
   { id: 'sine', label: 'خطِ سینوسی', icon: 'Activity', points: 2 },
   // پروجکشن و اندازه‌گیری
   { id: 'pricerange', label: 'بازهٔ قیمت', icon: 'Ruler', points: 2 },
   { id: 'daterange', label: 'بازهٔ زمان', icon: 'Ruler', points: 2 },
   { id: 'dprange', label: 'بازهٔ قیمت و زمان', icon: 'Square', points: 2 },
   { id: 'forecast', label: 'پیش‌بینی', icon: 'TrendingUp', points: 2 },
+  { id: 'projection', label: 'پروجکشن (۳نقطه)', icon: 'TrendingUp', points: 3 },
   { id: 'ruler', label: 'خط‌کش (اندازه‌گیریِ سریع)', icon: 'Ruler', points: 2 },
   // اشکال
   { id: 'circle', label: 'دایره', icon: 'Crosshair', points: 2 },

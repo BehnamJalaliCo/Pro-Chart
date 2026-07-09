@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Settings2, Trash2, MoreHorizontal, ChevronDown, ChevronUp, HelpCircle, Copy, Rows3 } from 'lucide-react';
+import { Eye, EyeOff, Settings2, Trash2, MoreHorizontal, ChevronDown, ChevronUp, HelpCircle, Copy, Rows3, X } from 'lucide-react';
 import { SPEED_LADDER } from '../ReplayController';
 
 // چیپِ Legend (OHLC) روی چارت — رندرِ خالص؛ همهٔ ورودی‌ها از props.
@@ -167,6 +167,134 @@ export function ChartLegend({
         </button>
       )}
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DataWindow (#2) — پنجرهٔ دادهٔ شناورِ سبکِ TradingView: زیرِ crosshair مقدارِ
+//   O/H/L/C + تغییر (مطلق و درصد) + حجم + زمان + مقدارِ زندهٔ هر اندیکاتورِ فعال
+//   را نشان می‌دهد. رندرِ خالص؛ همهٔ داده از prop `dataWin` می‌آید (هم‌شکلِ همان
+//   ساختاری که BazaarNama می‌سازد: { time, ohlc, inds, vol }). اگر داده در دسترس
+//   نباشد (crosshair بیرونِ چارت) حالتِ خالی نشان داده می‌شود.
+//   propهای اختیاری‌اند و backward-compatible؛ اعداد با .tnum، جهت RTL.
+// ─────────────────────────────────────────────────────────────────────────────
+function dwFmt(fmt, symbol, v) {
+  if (v == null || Number.isNaN(v)) return '—';
+  if (typeof fmt === 'function') return fmt(symbol, v);
+  return typeof v === 'number' ? String(v) : String(v);
+}
+function dwFmtVol(fmtVol, v) {
+  if (v == null || Number.isNaN(v)) return null;
+  if (typeof fmtVol === 'function') return fmtVol(v);
+  const n = Number(v);
+  if (!Number.isFinite(n)) return String(v);
+  if (Math.abs(n) >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+  if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+  if (Math.abs(n) >= 1e3) return (n / 1e3).toFixed(2) + 'K';
+  return String(n);
+}
+function dwFmtTime(fmtTime, t) {
+  if (t == null) return null;
+  if (typeof fmtTime === 'function') return fmtTime(t);
+  // t می‌تواند epochِ ثانیه‌ای یا BusinessDay ({year,month,day}) از lightweight-charts باشد.
+  if (typeof t === 'object' && t.year != null) {
+    const p = (n) => String(n).padStart(2, '0');
+    return `${t.year}-${p(t.month)}-${p(t.day)}`;
+  }
+  if (typeof t === 'number') { try { return new Date(t * 1000).toLocaleString(); } catch (e) { return String(t); } }
+  return String(t);
+}
+
+// pos: {top,left} با پیش‌فرضِ گوشهٔ بالا-چپ (هم‌راستا با پیاده‌سازیِ inlineِ قبلی).
+export function DataWindow({
+  dataWin, TH, symbol, tf, fmt, fmtVol, fmtTime, onClose,
+  pos = { top: 48, left: 12 }, title = 'پنجرهٔ داده',
+}) {
+  const ohlc = dataWin && dataWin.ohlc;
+  const inds = (dataWin && dataWin.inds) || [];
+  const up = ohlc && ohlc.close >= ohlc.open;
+  const dirCol = up ? TH.up : TH.down;
+  const chAbs = ohlc && ohlc.open != null ? ohlc.close - ohlc.open : null;
+  const chPct = ohlc && ohlc.open ? (chAbs / ohlc.open) * 100 : null;
+  const vol = dataWin ? (dataWin.vol != null ? dataWin.vol : (ohlc && ohlc.volume != null ? ohlc.volume : null)) : null;
+  const volStr = dwFmtVol(fmtVol, vol);
+  const timeStr = dataWin ? dwFmtTime(fmtTime, dataWin.time) : null;
+
+  return (
+    <div className="absolute z-30 w-52 rounded-lg pc-pop text-[11px] overflow-hidden" dir="rtl"
+         style={{ top: pos.top, left: pos.left, background: TH.panel, border: `1px solid ${TH.border}` }}>
+      <div className="flex items-center justify-between px-2.5 py-1.5 border-b" style={{ borderColor: TH.border }}>
+        <span className="font-semibold whitespace-nowrap" style={{ color: TH.textStrong }}>{title}</span>
+        <span className="flex items-center gap-1.5">
+          {(symbol || tf) && <span className="tnum whitespace-nowrap opacity-60" dir="ltr" style={{ color: TH.text }}>{symbol}{symbol && tf ? ' · ' : ''}{tf}</span>}
+          {onClose && <button onClick={onClose} className="pc-iconbtn w-5 h-5" title="بستن" aria-label="بستن"><X size={12} /></button>}
+        </span>
+      </div>
+      <div className="px-2.5 py-1.5 tnum" style={{ color: TH.text }}>
+        {ohlc ? (
+          <>
+            {timeStr && (
+              <div className="flex justify-between gap-2 mb-0.5">
+                <span className="opacity-60">زمان</span>
+                <span className="truncate" dir="ltr" style={{ color: TH.textStrong }}>{timeStr}</span>
+              </div>
+            )}
+            {['open', 'high', 'low', 'close'].map((k) => (
+              <div key={k} className="flex justify-between"><span>{({ open: 'O', high: 'H', low: 'L', close: 'C' })[k]}</span>
+                <span dir="ltr" style={{ color: dirCol }}>{dwFmt(fmt, symbol, ohlc[k])}</span></div>
+            ))}
+            {chAbs != null && (
+              <div className="flex justify-between"><span>تغییر</span>
+                <span dir="ltr" style={{ color: dirCol }}>
+                  {chAbs >= 0 ? '+' : ''}{dwFmt(fmt, symbol, chAbs)}
+                  {chPct != null ? `  (${chPct >= 0 ? '+' : ''}${chPct.toFixed(2)}%)` : ''}
+                </span>
+              </div>
+            )}
+            {volStr != null && (
+              <div className="flex justify-between"><span>حجم</span>
+                <span dir="ltr" style={{ color: TH.textStrong }}>{volStr}</span></div>
+            )}
+            {inds.length > 0 && <div className="my-1 border-t" style={{ borderColor: TH.border }} />}
+            {inds.map((ind, i) => (
+              <div key={i} className="flex justify-between gap-2">
+                <span className="truncate" style={{ color: ind.color }}>{ind.label}</span>
+                <span dir="ltr" style={{ color: TH.textStrong }}>{(ind.vals || []).map((v) => dwFmt(fmt, symbol, v)).join(' / ')}</span>
+              </div>
+            ))}
+          </>
+        ) : <div className="opacity-50 text-center py-1">نشانگر را روی چارت ببر</div>}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CrosshairAxisTag (#9) — تگِ محورِ قیمت (راست) و زمان (پایین) زیرِ crosshair.
+//   lightweight-charts خودش این لیبل‌ها را وقتی crosshair فعال است رسم می‌کند؛ این
+//   کامپوننت یک fallbackِ خالصِ اختیاری است برای وقتی که نیستند. اگر مختصات/متنی
+//   داده نشود، چیزی رسم نمی‌کند. price:{y,text} روی لبهٔ راست، time:{x,text} روی لبهٔ پایین.
+// ─────────────────────────────────────────────────────────────────────────────
+export function CrosshairAxisTag({ price, time, TH }) {
+  if ((!price || price.text == null) && (!time || time.text == null)) return null;
+  const chipBg = (TH && (TH.crosshairLabelBg || TH.popoverBg)) || 'rgba(30,34,45,.98)';
+  const chipFg = (TH && TH.textStrong) || '#d1d4dc';
+  const chipBorder = (TH && TH.border) || 'transparent';
+  return (
+    <>
+      {price && price.text != null && price.y != null && (
+        <div className="absolute right-0 z-30 pointer-events-none tnum text-[11px] px-1.5 py-0.5 rounded-sm whitespace-nowrap"
+             dir="ltr" style={{ top: price.y, transform: 'translateY(-50%)', background: chipBg, color: chipFg, border: `1px solid ${chipBorder}` }}>
+          {price.text}
+        </div>
+      )}
+      {time && time.text != null && time.x != null && (
+        <div className="absolute bottom-0 z-30 pointer-events-none tnum text-[11px] px-1.5 py-0.5 rounded-sm whitespace-nowrap"
+             dir="ltr" style={{ left: time.x, transform: 'translateX(-50%)', background: chipBg, color: chipFg, border: `1px solid ${chipBorder}` }}>
+          {time.text}
+        </div>
+      )}
+    </>
   );
 }
 

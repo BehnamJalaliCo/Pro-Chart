@@ -1,29 +1,39 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createChart, CandlestickSeries } from 'lightweight-charts';
 import { api } from '../api/client';
+import { useApp } from '../appStore';
 
-const TH = { bg: '#0e1117', grid: '#1c2230', text: '#9aa0b5', up: '#26a69a', down: '#ef5350' };
+// پالتِ روشن/تیره هم‌ترازِ TradingView (توکن‌های --pc-* از نقشهٔ راه).
+// سبز/قرمزِ کندل teal/red؛ متنِ off-white در تیره، #131722 در روشن؛ گریدِ بسیار کم‌رنگ.
+const PAL = {
+  dark:  { bg: '#131722', grid: 'rgba(255,255,255,.06)', text: '#d1d4dc', border: '#2a2e39', cross: '#9598a1', up: '#26a69a', down: '#ef5350' },
+  light: { bg: '#ffffff', grid: 'rgba(0,0,0,.06)',       text: '#131722', border: '#e0e3eb', cross: '#9598a1', up: '#26a69a', down: '#ef5350' },
+};
+const TH = PAL.dark; // سازگاریِ عقب‌رو (پیش‌فرضِ تیره)
 
 // چارتِ کوچکِ مستقل برای حالتِ چند-چارت (هر کدام نماد + تایم‌فریمِ خود)
 export default function MiniChart({ symbols = [], tf, initial, syncBus = null }) {
   const elRef = useRef(null);
   const chartRef = useRef(null);
   const seriesRef = useRef(null);
+  const theme = useApp((s) => s.theme) || 'light';
+  const th = PAL[theme] || PAL.dark;
   const [symbol, setSymbol] = useState(initial || 'EURUSD');
   const [last, setLast] = useState(null);
+  const [dir, setDir] = useState(null); // 'up' | 'down' | null — رنگِ برچسبِ قیمت بر اساسِ روند
 
   useEffect(() => {
     if (!elRef.current) return;
     const chart = createChart(elRef.current, {
-      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'Ravagh, AnjomanMax, Vazirmatn' },
-      grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } },
-      timeScale: { timeVisible: true, borderColor: TH.grid },
-      rightPriceScale: { borderColor: TH.grid },
+      layout: { background: { color: th.bg }, textColor: th.text, fontFamily: 'Ravagh, AnjomanMax, Vazirmatn, sans-serif', fontSize: 11, attributionLogo: false },
+      grid: { vertLines: { color: th.grid }, horzLines: { color: th.grid } },
+      timeScale: { timeVisible: true, borderColor: th.border },
+      rightPriceScale: { borderColor: th.border },
       width: elRef.current.clientWidth, height: elRef.current.clientHeight,
-      crosshair: { mode: 0 },
+      crosshair: { mode: 0, vertLine: { color: th.cross, width: 1, style: 3 }, horzLine: { color: th.cross, width: 1, style: 3 } },
     });
     chartRef.current = chart;
-    seriesRef.current = chart.addSeries(CandlestickSeries, { upColor: TH.up, downColor: TH.down, borderUpColor: TH.up, borderDownColor: TH.down, wickUpColor: TH.up, wickDownColor: TH.down });
+    seriesRef.current = chart.addSeries(CandlestickSeries, { upColor: th.up, downColor: th.down, borderUpColor: th.up, borderDownColor: th.down, wickUpColor: th.up, wickDownColor: th.down });
     const ro = new ResizeObserver(() => { if (elRef.current && chartRef.current) chartRef.current.applyOptions({ width: elRef.current.clientWidth, height: elRef.current.clientHeight }); });
     ro.observe(elRef.current);
     // ── همگام‌سازیِ چندچارتی (زمان + کراس‌هیر) مثلِ TradingView ──
@@ -44,6 +54,19 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null })
     return () => { ro.disconnect(); if (unsub) unsub(); chart.remove(); };
   }, [syncBus]);
 
+  // اعمالِ تمِ روشن/تیره بدونِ بازسازیِ چارت (بی‌لرزش، هم‌گام با تغییرِ تمِ اپ)
+  useEffect(() => {
+    if (!chartRef.current) return;
+    chartRef.current.applyOptions({
+      layout: { background: { color: th.bg }, textColor: th.text },
+      grid: { vertLines: { color: th.grid }, horzLines: { color: th.grid } },
+      timeScale: { borderColor: th.border },
+      rightPriceScale: { borderColor: th.border },
+      crosshair: { vertLine: { color: th.cross }, horzLine: { color: th.cross } },
+    });
+    if (seriesRef.current) seriesRef.current.applyOptions({ upColor: th.up, downColor: th.down, borderUpColor: th.up, borderDownColor: th.down, wickUpColor: th.up, wickDownColor: th.down });
+  }, [theme]);
+
   useEffect(() => {
     let stop = false;
     api.chart(symbol, tf, '', 400).then((r) => {
@@ -51,18 +74,25 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null })
       const cs = (r.candles || []).map((c) => ({ time: c.t, open: c.o, high: c.h, low: c.l, close: c.c }));
       seriesRef.current.setData(cs);
       chartRef.current && chartRef.current.timeScale().fitContent();
-      if (cs.length) setLast(cs[cs.length - 1].close);
+      if (cs.length) {
+        const n = cs[cs.length - 1];
+        const prev = cs.length > 1 ? cs[cs.length - 2].close : n.open;
+        setLast(n.close);
+        setDir(n.close >= prev ? 'up' : 'down'); // رنگِ سبز/قرمز بر اساسِ روند
+      }
     }).catch(() => {});
     return () => { stop = true; };
   }, [symbol, tf]);
 
+  const isDark = theme === 'dark';
+  const priceColor = dir === 'up' ? th.up : dir === 'down' ? th.down : th.text;
   return (
-    <div className="relative w-full h-full border border-white/10 rounded overflow-hidden">
+    <div className="relative w-full h-full rounded overflow-hidden" style={{ border: `1px solid ${th.border}` }}>
       <div className="absolute top-1 right-1 z-10 flex items-center gap-1">
-        <select value={symbol} onChange={(e) => setSymbol(e.target.value)} className="text-[11px] rounded px-1 py-0.5 outline-none bg-black/40 text-gray-200 border border-white/10">
+        <select value={symbol} onChange={(e) => setSymbol(e.target.value)} className="text-[11px] rounded px-1 py-0.5 outline-none transition-colors duration-[120ms]" style={{ background: isDark ? 'rgba(0,0,0,.4)' : 'rgba(255,255,255,.72)', color: th.text, border: `1px solid ${th.border}` }}>
           {symbols.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        {last != null && <span className="text-[11px] font-mono text-gray-300" dir="ltr">{last}</span>}
+        {last != null && <span className="tnum text-[11px] font-semibold" dir="ltr" style={{ color: priceColor }}>{last}</span>}
       </div>
       <div ref={elRef} className="w-full h-full" />
     </div>
