@@ -33,7 +33,7 @@ function style(ctx, d) {
   ctx.lineWidth = d.width || 1.5;
   ctx.strokeStyle = d.color || '#2962FF';
   ctx.fillStyle = d.color || '#2962FF';
-  ctx.font = '12px Ravagh, Vazirmatn, sans-serif';
+  ctx.font = '12px IRANYekanX, Ravagh, Vazirmatn, sans-serif';
   dash(ctx, d.dashed);
 }
 // پاره‌خط
@@ -73,7 +73,7 @@ function arrowHead(ctx, x0, y0, x1, y1, size) {
 function labelBox(ctx, x, y, text, opts) {
   opts = opts || {};
   const lines = String(text).split('\n');
-  ctx.font = (opts.font || '11px Ravagh, Vazirmatn, sans-serif');
+  ctx.font = (opts.font || '11px IRANYekanX, Ravagh, Vazirmatn, sans-serif');
   let w = 0; lines.forEach((ln) => { w = Math.max(w, ctx.measureText(ln).width); });
   const padX = 6, padY = 4, lh = 14, bw = w + padX * 2, bh = lines.length * lh + padY * 2;
   let bx = x, by = y;
@@ -589,7 +589,7 @@ export const EXT_REGISTRY = {
     draw(ctx, d, api) {
       const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d); dash(ctx, true); seg(ctx, 0, a.y, api.W, a.y); dash(ctx, false);
       const txt = (d.text ? d.text + '  ' : '') + d.p0.p.toFixed(5);
-      ctx.font = '11px Ravagh, Vazirmatn, sans-serif'; const w = ctx.measureText(txt).width + 12;
+      ctx.font = '11px IRANYekanX, Ravagh, Vazirmatn, sans-serif'; const w = ctx.measureText(txt).width + 12;
       ctx.fillStyle = d.color || '#2962FF'; ctx.fillRect(api.W - w, a.y - 9, w, 18);
       ctx.fillStyle = '#fff'; ctx.textBaseline = 'middle'; ctx.fillText(txt, api.W - w + 6, a.y); ctx.textBaseline = 'alphabetic';
     },
@@ -628,14 +628,14 @@ function drawPattern(labels, ratios) {
     for (let i = 0; i + 2 < P.length; i++) { ctx.beginPath(); ctx.moveTo(P[i].x, P[i].y); ctx.lineTo(P[i + 1].x, P[i + 1].y); ctx.lineTo(P[i + 2].x, P[i + 2].y); ctx.closePath(); ctx.fill(); }
     ctx.globalAlpha = 1;
     // برچسبِ رأس‌ها
-    P.forEach((p, i) => { const lb = labels[i]; if (!lb) return; ctx.fillStyle = '#fff'; ctx.strokeStyle = d.color; ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, Math.PI * 2); ctx.fill(); ctx.lineWidth = 1.5; ctx.stroke(); ctx.fillStyle = d.color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'bold 10px Ravagh, Vazirmatn, sans-serif'; ctx.fillText(lb, p.x, p.y + 1); ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; });
+    P.forEach((p, i) => { const lb = labels[i]; if (!lb) return; ctx.fillStyle = '#fff'; ctx.strokeStyle = d.color; ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, Math.PI * 2); ctx.fill(); ctx.lineWidth = 1.5; ctx.stroke(); ctx.fillStyle = d.color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'bold 10px IRANYekanX, Ravagh, Vazirmatn, sans-serif'; ctx.fillText(lb, p.x, p.y + 1); ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; });
     // نسبت‌های فیبوناچیِ لگ‌ها (price-space)
     if (ratios) {
       for (let i = 1; i + 1 < d.pts.length; i++) {
         const leg1 = Math.abs(d.pts[i].p - d.pts[i - 1].p), leg2 = Math.abs(d.pts[i + 1].p - d.pts[i].p);
         const r = leg1 ? (leg2 / leg1) : 0;
         const mx = (P[i].x + P[i + 1].x) / 2, my = (P[i].y + P[i + 1].y) / 2;
-        ctx.fillStyle = d.color; ctx.font = '10px Ravagh, Vazirmatn, sans-serif'; ctx.fillText(r.toFixed(3), mx + 4, my);
+        ctx.fillStyle = d.color; ctx.font = '10px IRANYekanX, Ravagh, Vazirmatn, sans-serif'; ctx.fillText(r.toFixed(3), mx + 4, my);
       }
     }
   };

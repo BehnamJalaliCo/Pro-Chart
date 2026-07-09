@@ -347,7 +347,7 @@ export default function BazaarNama() {
     const el = mainRef.current;
     const chart = createChart(el, {
       // #۱۰/#۱۸ فیدلیتیِ TradingView: لوگوی پیش‌فرضِ کتابخانه پنهان (لوگوی خودِ بازارنما پایین‌چپ هست)
-      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'Ravagh, AnjomanMax, Vazirmatn, sans-serif', fontSize: 11, attributionLogo: false },
+      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif', fontSize: 11, attributionLogo: false },
       grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } },
       // مقیاسِ زمان سبکِ TV: قفلِ رِنج روی resize، آخرین کندل ثابت هنگام اسکرول، فاصلهٔ پایهٔ میله، بدونِ tickِ ریز
       timeScale: {

@@ -61,7 +61,7 @@ export async function captureChart(o) {
     const y0 = bh;
     ctx.fillStyle = caption.bg || bg; ctx.fillRect(0, y0, bw, capH);
     ctx.fillStyle = caption.text || '#d1d4dc';
-    ctx.font = '600 13px Ravagh, AnjomanMax, Vazirmatn, sans-serif';
+    ctx.font = '600 13px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif';
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'left';
     const left = `${caption.symbol || ''}  ·  ${caption.tf || ''}` + (caption.price ? `  ·  ${caption.price}` : '');
@@ -90,7 +90,7 @@ export async function captureChart(o) {
       if (wantText && watermark.text) {
         ctx.save(); ctx.globalAlpha = Math.min(1, op + 0.15);
         ctx.fillStyle = watermark.invert ? '#000' : '#fff';
-        ctx.font = '700 13px Ravagh, Vazirmatn, sans-serif'; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+        ctx.font = '700 13px IRANYekanX, Ravagh, Vazirmatn, sans-serif'; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
         ctx.fillText(watermark.text, x, y + h + 2);
         ctx.restore();
       }
@@ -98,7 +98,7 @@ export async function captureChart(o) {
       const [x, y] = wmPos(watermark.position || 'bottom-left', bw, bh, 120, 18, pad);
       ctx.save(); ctx.globalAlpha = op;
       ctx.fillStyle = watermark.invert ? '#000' : '#fff';
-      ctx.font = '700 15px Ravagh, Vazirmatn, sans-serif'; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+      ctx.font = '700 15px IRANYekanX, Ravagh, Vazirmatn, sans-serif'; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
       ctx.fillText(watermark.text, x, y);
       ctx.restore();
     }

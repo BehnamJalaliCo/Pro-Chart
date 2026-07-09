@@ -10,7 +10,7 @@ import { useAuth } from '../store';
 function Watermark() {
   const { me } = useAuth();
   const tag = (me?.username || 'CoinePro') + ' · CoinePro FX';
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='340' height='150'><text x='0' y='80' transform='rotate(-24 0 80)' fill='rgba(150,160,180,0.10)' font-size='15' font-family='Ravagh,Vazirmatn,sans-serif'>${tag}</text></svg>`;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='340' height='150'><text x='0' y='80' transform='rotate(-24 0 80)' fill='rgba(150,160,180,0.10)' font-size='15' font-family='IRANYekanX, Ravagh,Vazirmatn,sans-serif'>${tag}</text></svg>`;
   return <div aria-hidden className="pointer-events-none select-none absolute inset-0 z-10" style={{ backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`, backgroundRepeat: 'repeat' }} />;
 }
 

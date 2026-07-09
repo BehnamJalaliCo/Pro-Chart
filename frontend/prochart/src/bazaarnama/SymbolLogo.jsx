@@ -131,7 +131,7 @@ function badgeSvg(sym, s) {
   return (
     <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0" aria-hidden>
       <circle cx={s / 2} cy={s / 2} r={s / 2 - 0.5} fill={bd.color} />
-      <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fill="#fff" fontSize={fs} fontWeight="700" fontFamily="Ravagh, Vazirmatn, sans-serif">{bd.txt}</text>
+      <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fill="#fff" fontSize={fs} fontWeight="700" fontFamily="IRANYekanX, Ravagh, Vazirmatn, sans-serif">{bd.txt}</text>
     </svg>
   );
 }
