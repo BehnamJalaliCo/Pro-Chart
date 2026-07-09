@@ -57,39 +57,39 @@ export default function Calendar({ symbol, TH }) {
   }, [items, onlyHigh, onlyRelevant, curs]);
 
   const Toggle = ({ on, set, children }) => (
-    <button onClick={() => set((v) => !v)} className="px-2 h-[26px] rounded-md text-[10px] transition-colors"
-      style={{ background: on ? TH.accent : TH.chipBg, color: on ? '#fff' : TH.text }}
+    <button onClick={() => set((v) => !v)} className="px-2.5 h-[26px] rounded-md text-[10px] font-medium border transition-colors"
+      style={{ background: on ? TH.accent : TH.chipBg, color: on ? '#fff' : TH.text, borderColor: on ? TH.accent : TH.border }}
       onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
       onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }}>{children}</button>
   );
 
   return (
     <div className="flex flex-col text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
-      <div className="flex items-center gap-1.5 px-3 h-8 border-b shrink-0" style={{ borderColor: TH.border }}>
-        <span className="opacity-50 text-[10px] flex-1">تقویمِ اقتصادی</span>
+      <div className="flex items-center gap-1.5 px-3 h-9 border-b shrink-0" style={{ borderColor: TH.border, background: TH.panel }}>
+        <span className="text-[11px] font-semibold flex-1" style={{ color: TH.textStrong }}>تقویمِ اقتصادی</span>
         <Toggle on={onlyHigh} set={setOnlyHigh}>اهمیتِ بالا</Toggle>
         <Toggle on={onlyRelevant} set={setOnlyRelevant}>مرتبط با <span dir="ltr">{symbol}</span></Toggle>
       </div>
 
       <div className="overflow-auto">
-        {items === null && <div className="px-3 py-8 text-center opacity-40 text-[11px]">در حالِ دریافتِ تقویم…</div>}
+        {items === null && <div className="px-3 py-10 text-center opacity-40 text-[11px]">در حالِ دریافتِ تقویم…</div>}
         {items !== null && groups.length === 0 && (
-          <div className="px-3 py-8 text-center opacity-40 text-[11px]">رویدادی برای نمایش نیست.</div>
+          <div className="px-3 py-10 text-center opacity-40 text-[11px]">رویدادی برای نمایش نیست.</div>
         )}
         {groups.map(([day, evs]) => (
           <div key={day}>
-            <div className="sticky top-0 z-10 px-3 py-1 text-[10px] font-semibold border-b" style={{ background: TH.panel, color: TH.textStrong, borderColor: TH.border }}>{day}</div>
+            <div className="sticky top-0 z-10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide border-b" style={{ background: TH.panel, color: TH.textStrong, borderColor: TH.border }}>{day}</div>
             {evs.map((e, i) => (
-              <div key={i} className="flex items-center gap-2 px-3 py-1.5 border-b transition-colors" style={{ borderColor: TH.border }}
+              <div key={i} className="flex items-center gap-2.5 px-3 py-2 border-b transition-colors" style={{ borderColor: `${TH.border}80` }}
                 onMouseEnter={(ev) => (ev.currentTarget.style.background = TH.chipBgHover)}
                 onMouseLeave={(ev) => (ev.currentTarget.style.background = 'transparent')}>
-                <span className="text-[10px] opacity-60 w-10 shrink-0" dir="ltr">{fmtTime(e.date)}</span>
-                <span className="text-[10px] font-semibold w-8 shrink-0" dir="ltr" style={{ color: TH.textStrong }}>{e.country}</span>
+                <span className="text-[10px] opacity-55 w-10 shrink-0 tabular-nums" dir="ltr">{fmtTime(e.date)}</span>
+                <span className="text-[10px] font-semibold w-8 shrink-0 text-center rounded px-1 py-0.5" dir="ltr" style={{ color: TH.textStrong, background: TH.chipBg }}>{e.country}</span>
                 <Dots imp={e.impact} />
                 <span className="text-[11px] leading-4 flex-1 min-w-0">{e.title}</span>
                 {(e.forecast || e.previous) && (
-                  <span className="text-[9px] opacity-60 shrink-0 text-left" dir="ltr">
-                    {e.forecast && <span>پ:{e.forecast} </span>}{e.previous && <span>ق:{e.previous}</span>}
+                  <span className="text-[9px] opacity-60 shrink-0 text-left flex items-center gap-1.5" dir="ltr">
+                    {e.forecast && <span>پ:{e.forecast}</span>}{e.previous && <span>ق:{e.previous}</span>}
                   </span>
                 )}
               </div>

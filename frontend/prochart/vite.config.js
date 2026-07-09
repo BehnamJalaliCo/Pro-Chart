@@ -10,24 +10,24 @@ export default defineConfig({
       apply: 'build',
       exclude: [/node_modules/],
       options: {
+        // ⚠️ مبهم‌سازیِ سبک و امن. گزینه‌های تهاجمی (selfDefending / debugProtection /
+        // disableConsoleOutput / numbersToExpressions / splitStrings) خاموش‌اند چون
+        // کدِ محافظتی/خودتغییرده تزریق می‌کنند که پشتِ Cloudflare یا در بعضی مرورگرها
+        // می‌شکند و «s is not a function» / صفحهٔ مشکی می‌ساخت (۲۰۲۶-۰۷-۰۹).
+        // controlFlowFlattening هم از قبل به‌خاطرِ خطای TDZ خاموش بود.
         compact: true,
         simplify: true,
         identifierNamesGenerator: 'mangled',
         stringArray: true,
         stringArrayEncoding: ['base64'],
-        stringArrayThreshold: 1,
+        stringArrayThreshold: 0.75,
         rotateStringArray: true,
         shuffleStringArray: true,
-        splitStrings: true,
-        splitStringsChunkLength: 6,
-        selfDefending: true,
-        disableConsoleOutput: true,
-        numbersToExpressions: true,
-        // قفلِ DevTools: با باز شدنِ کنسول، حلقهٔ debugger تب را عملاً فریز می‌کند
-        debugProtection: true,
-        debugProtectionInterval: 2000,
-        // غیرفعال: روی برخی الگوهای کد declarationها را جابه‌جا و خطای TDZ
-        // («Cannot access X before initialization» = صفحهٔ مشکی) می‌ساختند.
+        splitStrings: false,
+        selfDefending: false,
+        disableConsoleOutput: false,
+        numbersToExpressions: false,
+        debugProtection: false,
         controlFlowFlattening: false,
         deadCodeInjection: false,
       },

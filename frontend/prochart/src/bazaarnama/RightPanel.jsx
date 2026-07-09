@@ -7,6 +7,21 @@ import NewsTab from './panels/NewsTab';
 import Calendar from './panels/Calendar';
 import SymbolLogo from './SymbolLogo';
 
+// mini-sparkline سبک (SVG خالص، بدونِ کتابخانه) — از آرایهٔ قیمت‌های اخیرِ کلاینت‌ساید.
+// رنگ بر اساسِ جهتِ کلیِ بازه (آخرین در برابر اولین). بدونِ داده کافی چیزی نمی‌کشد.
+function MiniSpark({ data, up, down, w = 46, h = 18 }) {
+  if (!Array.isArray(data) || data.length < 2) return <span style={{ display: 'inline-block', width: w, height: h }} />;
+  const min = Math.min(...data), max = Math.max(...data), span = max - min || 1;
+  const stepX = w / (data.length - 1);
+  const pts = data.map((v, i) => `${(i * stepX).toFixed(1)},${(h - 1 - ((v - min) / span) * (h - 2)).toFixed(1)}`).join(' ');
+  const col = data[data.length - 1] >= data[0] ? up : down;
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="shrink-0" aria-hidden="true" style={{ opacity: 0.9 }}>
+      <polyline points={pts} fill="none" stroke={col} strokeWidth="1.25" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 // پنلِ راست — نوارِ تب + بدنه‌های inline (watch/ai/trade) و واگذاری به پنل‌های جدا
 // (Screener/Details/NewsTab/Calendar/AlertsPanel). همهٔ state/handlerها از props می‌آیند؛
 // رفتارِ max-md drawer عیناً حفظ شده است.
@@ -128,7 +143,17 @@ export default function RightPanel({
   // #9 — حالتِ کشویی (drawer). پراپِ اختیاریِ جدید؛ نبودش = رفتارِ قبلیِ کاملاً سازگارِ عقب‌رو.
   // drawer=true: یک دستگیرهٔ همیشه‌مرئی کنارِ پنل می‌گذارد و پنل را باز/بسته می‌کند.
   drawer = false, drawerOpen, onDrawerToggle,
+  width, onWidthChange, // #resize — عرضِ قابل‌تنظیمِ پنل (اختیاری؛ نبودش = عرضِ پیش‌فرض)
+  alertCount = 0, // نشانِ تعدادِ آلارم‌های فعال روی تبِ آلارم (مثلِ TradingView)
 }) {
+  // #resize — درگِ لبهٔ چپِ پنل برای تغییرِ عرض
+  const startResize = React.useCallback((e) => {
+    if (!onWidthChange) return; e.preventDefault();
+    const startX = e.clientX; const startW = width || 256;
+    const onMove = (ev) => onWidthChange(Math.max(200, Math.min(560, startW + (startX - ev.clientX))));
+    const onUp = () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+    window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp);
+  }, [width, onWidthChange]);
   // اگر والد حالتِ باز/بسته را کنترل نکند، خودمان نگه می‌داریم (uncontrolled).
   const [openSelf, setOpenSelf] = React.useState(true);
   const isOpen = drawer ? (drawerOpen != null ? drawerOpen : openSelf) : true;
@@ -180,18 +205,24 @@ export default function RightPanel({
   }
 
   const panel = (
-    <div dir="rtl" className="w-64 border-l overflow-hidden shrink-0 flex flex-col max-md:absolute max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-40 max-md:shadow-2xl" style={{ borderColor: TH.border, background: TH.bg }}>
+    <div dir="rtl" className="relative w-64 border-l overflow-hidden shrink-0 flex flex-col max-md:absolute max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-40 max-md:shadow-2xl" style={{ borderColor: TH.border, background: TH.bg, width: width || undefined }}>
+      {onWidthChange && <div onMouseDown={startResize} onDoubleClick={() => onWidthChange(256)} title="کشیدن برای تغییرِ عرض · دابل‌کلیک برای بازنشانی" className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-20 hover:bg-blue-500/40" style={{ background: 'transparent' }} />}
       {/* نوارِ تب — آیکن‌دار، با اندیکاتورِ پایینِ نرم و حالتِ AI متمایز */}
-      <div className="flex border-b overflow-x-auto bn-thin-scroll shrink-0" style={{ borderColor: TH.border, background: TH.bg }}>
+      <div className="flex border-b overflow-x-auto bn-thin-scroll shrink-0 px-1" style={{ borderColor: TH.border, background: TH.bg }}>
         {TABS.map(([k, l, Icon]) => {
           const active = rightTab === k;
           const acc = k === 'ai' ? TH.accentAi : TH.accent;
           return (
             <button key={k} onClick={() => setRightTab(k)} title={l}
-              className={`group/tab relative shrink-0 whitespace-nowrap flex items-center gap-1 px-2.5 py-2 text-[11px] transition-colors duration-[120ms] ${active ? '' : 'opacity-55 hover:opacity-100'}`}
-              style={active ? { color: acc } : { color: TH.text }}>
+              className={`group/tab relative shrink-0 whitespace-nowrap flex items-center gap-1.5 px-2.5 py-2.5 text-[11px] font-medium transition-colors duration-[120ms] ${active ? 'font-semibold' : 'opacity-55 hover:opacity-100'}`}
+              style={active ? { color: acc, background: TH.subtle } : { color: TH.text, background: 'transparent' }}
+              onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
+              onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
               <Icon size={13} className="shrink-0" />
               <span>{l}</span>
+              {k === 'alerts' && alertCount > 0 && (
+                <span className="shrink-0 min-w-[15px] h-[15px] px-1 rounded-full text-[9px] font-bold flex items-center justify-center tabular-nums" style={{ background: acc, color: '#fff' }}>{alertCount}</span>
+              )}
               <span className="absolute left-1.5 right-1.5 -bottom-px h-[2px] rounded-full transition-all duration-150"
                 style={{ background: acc, opacity: active ? 1 : 0, transform: active ? 'scaleX(1)' : 'scaleX(0.4)' }} />
             </button>
@@ -269,9 +300,9 @@ export default function RightPanel({
         <Screener symbol={symbol} TH={TH} symbols={symbols} prices={live} setSymbol={setSymbol} />
       ) : rightTab === 'trade' ? (
         <div className="p-2 text-xs space-y-2">
-          <div className="flex gap-1">
-            <button onClick={() => startTrade('buy')} className="flex-1 py-1.5 rounded bg-green-600 text-white font-bold">خرید</button>
-            <button onClick={() => startTrade('sell')} className="flex-1 py-1.5 rounded bg-red-600 text-white font-bold">فروش</button>
+          <div className="flex gap-1.5">
+            <button onClick={() => startTrade('buy')} className="flex-1 py-2 rounded-md bg-green-600 hover:bg-green-500 text-white font-bold transition-colors">خرید</button>
+            <button onClick={() => startTrade('sell')} className="flex-1 py-2 rounded-md bg-red-600 hover:bg-red-500 text-white font-bold transition-colors">فروش</button>
           </div>
           {order ? (() => {
             const risk = Math.abs(order.entry - order.sl), reward = Math.abs(order.tp - order.entry);
@@ -292,7 +323,7 @@ export default function RightPanel({
       ) : (
         <div className="p-2 text-xs">
           <AlertsPanel symbol={symbol} price={curPrice() || livePrice} TH={TH} indicators={[...overlays, ...subs]} />
-          <div className="mt-3 flex gap-1"><button onClick={() => quickTrade('buy')} className="flex-1 py-1 rounded bg-green-600 text-white flex items-center justify-center gap-1"><ShoppingCart size={12} /> خرید</button><button onClick={() => quickTrade('sell')} className="flex-1 py-1 rounded bg-red-600 text-white">فروش</button></div>
+          <div className="mt-3 flex gap-1.5"><button onClick={() => quickTrade('buy')} className="flex-1 py-1.5 rounded-md bg-green-600 hover:bg-green-500 text-white font-bold flex items-center justify-center gap-1 transition-colors"><ShoppingCart size={12} /> خرید</button><button onClick={() => quickTrade('sell')} className="flex-1 py-1.5 rounded-md bg-red-600 hover:bg-red-500 text-white font-bold transition-colors">فروش</button></div>
         </div>
       )}
       </div>
@@ -323,6 +354,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
 
   // baselineِ سشن برای ٪ (اولین midِ دیده‌شدهٔ هر نماد) — وقتی payload فیلدِ prevClose ندارد
   const baseRef = React.useRef({});
+  const sparkRef = React.useRef({}); // تاریخچهٔ کوتاهِ قیمتِ زندهٔ هر نماد (کلاینت‌ساید) برای mini-sparkline
 
   // persist هر تغییرِ meta
   React.useEffect(() => { try { localStorage.setItem(WM_KEY, JSON.stringify(meta)); } catch (e) { /* noop */ } }, [meta]);
@@ -368,8 +400,10 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     const mid = typeof lp?.mid === 'number' ? lp.mid : null;
     if (mid != null && baseRef.current[sym] == null) baseRef.current[sym] = mid;
     const chg = changePctOf(lp, baseRef.current[sym]);
+    // انباشتِ تاریخچهٔ کوتاه (تا ۲۴ نقطه) فقط وقتی قیمت واقعاً تغییر کرد — برای mini-sparkline
+    if (mid != null) { const h = sparkRef.current[sym] || (sparkRef.current[sym] = []); if (h.length === 0 || h[h.length - 1] !== mid) { h.push(mid); if (h.length > 24) h.shift(); } }
     const im = itemMeta(sym);
-    return { sym, lp, dir, chg, flag: im.flag || null, section: im.section || null, kind: symbolKind(sym) };
+    return { sym, lp, dir, chg, spark: sparkRef.current[sym], flag: im.flag || null, section: im.section || null, kind: symbolKind(sym) };
   });
 
   // فیلترِ رنگ
@@ -450,6 +484,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           <div className="text-[13px] font-bold leading-tight truncate" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</div>
           {meta.showDesc && <div className="text-[10px] opacity-50 truncate" style={{ color: TH.text }}>{KIND_LABEL[r.kind]}</div>}
         </div>
+        <MiniSpark data={r.spark} up={TH.up} down={TH.down} />
         <div className="text-left shrink-0 leading-tight" dir="ltr">
           <div className="tabular-nums text-[12px] flex items-center gap-1 justify-end" style={{ color: col }}>
             {r.dir !== 0 && <span className="text-[9px]">{r.dir > 0 ? '▲' : '▼'}</span>}
@@ -465,14 +500,14 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   return (
     <div className="overflow-auto flex flex-col" onClick={(e) => { if (e.target === e.currentTarget) closeMenus(); }}>
       {/* هدر: تیتر + سویچرِ لیست + منوی شخصی‌سازی */}
-      <div className="px-3 pt-2 pb-1 flex items-center justify-between select-none relative">
+      <div className="px-3 pt-2.5 pb-2 flex items-center justify-between select-none relative border-b" style={{ borderColor: TH.border }}>
         <button onClick={() => { setListMenuOpen((v) => !v); setMenuOpen(false); }} className="flex items-center gap-1 text-[11px] font-semibold tracking-wide" style={{ color: TH.textStrong }}>
           <span className="truncate max-w-[110px]">{list.name}</span>
           <ChevronDown size={12} className={`transition-transform duration-[120ms] ${listMenuOpen ? 'rotate-180' : ''}`} style={{ color: TH.text }} />
         </button>
         <div className="flex items-center gap-1.5">
-          <span className="tabular-nums text-[10px] opacity-50" style={{ color: TH.text }}>{rows.length}</span>
-          <button onClick={() => { setMenuOpen((v) => !v); setListMenuOpen(false); }} title="شخصی‌سازی" className="p-0.5 rounded transition-colors" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+          <span className="tabular-nums text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ color: TH.text, background: TH.chipBg }}>{rows.length}</span>
+          <button onClick={() => { setMenuOpen((v) => !v); setListMenuOpen(false); }} title="شخصی‌سازی" className="p-1 rounded-md transition-colors" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
             <MoreVertical size={14} />
           </button>
         </div>
@@ -523,7 +558,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
       </div>
 
       {/* فیلترِ رنگ (chipهای ۷ رنگ) */}
-      <div className="px-3 pb-1 flex items-center gap-1.5 flex-wrap">
+      <div className="px-3 py-2 flex items-center gap-1.5 flex-wrap">
         {FLAG_ORDER.map((c) => {
           const on = meta.flagFilter === c;
           return <button key={c} title={`فیلترِ رنگِ ${c}`} onClick={() => patch({ flagFilter: on ? null : c })} className="w-3.5 h-3.5 rounded-full transition-transform duration-[120ms]" style={{ background: FLAG_HEX[c], outline: on ? `2px solid ${TH.accent}` : 'none', outlineOffset: 1, transform: on ? 'scale(1.15)' : 'scale(1)', opacity: meta.flagFilter && !on ? 0.4 : 1 }} />;
@@ -531,13 +566,35 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
         {meta.flagFilter && <button onClick={() => patch({ flagFilter: null })} className="text-[10px] opacity-60 hover:opacity-100" style={{ color: TH.text }}>پاک</button>}
       </div>
 
-      {rows.length === 0 && <div className="px-3 py-6 text-center text-[11px] opacity-40">نمادی نیست — از پایین اضافه کن.</div>}
+      {rows.length === 0 && (
+        <div className="px-3 py-6 flex flex-col items-center text-center gap-3">
+          <div className="w-11 h-11 rounded-2xl flex items-center justify-center" style={{ background: TH.chipBg }}>
+            <Star size={20} style={{ color: TH.accent }} />
+          </div>
+          <div>
+            <div className="text-[12px] font-bold" style={{ color: TH.textStrong }}>واچ‌لیستت خالیه</div>
+            <div className="text-[10.5px] mt-0.5 opacity-55" style={{ color: TH.text }}>یکی از پرطرفدارها را اضافه کن یا از پایین جستجو کن</div>
+          </div>
+          <div className="w-full grid grid-cols-2 gap-1.5 mt-0.5">
+            {['EURUSD', 'XAUUSD', 'BTCUSDT', 'ETHUSDT', 'GBPUSD', 'US30', 'NAS100', 'USDJPY'].map((s) => (
+              <button key={s} onClick={() => toggleWatch(s)} title={`افزودنِ ${prettySym(s)}`}
+                className="flex items-center gap-2 px-2 h-9 rounded-lg transition-colors" style={{ background: TH.chipBg }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = TH.chipBg; }}>
+                <SymbolLogo symbol={s} size={20} />
+                <span className="flex-1 text-[11px] font-semibold truncate text-left" dir="ltr" style={{ color: TH.textStrong }}>{prettySym(s)}</span>
+                <Plus size={12} className="opacity-60 shrink-0" style={{ color: TH.accent }} />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* گروه‌ها و ردیف‌ها */}
       {groups.map((g) => (
         <div key={g.key}>
           {g.name != null && (meta.groupBy === 'section' || meta.groupBy === 'type') && (
-            <div className="flex items-center justify-between w-full px-3 py-1.5 text-[10px] font-semibold tracking-wide select-none sticky top-0 z-[5]" style={{ background: TH.bg }}>
+            <div className="flex items-center justify-between w-full px-3 py-1.5 text-[10px] font-semibold tracking-wide select-none sticky top-0 z-[5] border-b" style={{ background: TH.bg, borderColor: TH.border }}>
               <button onClick={() => g.sectionId && toggleSection(g.sectionId)} className="flex items-center gap-1 min-w-0" style={{ color: TH.text, opacity: 0.7, cursor: g.sectionId ? 'pointer' : 'default' }}>
                 {g.sectionId != null && <ChevronDown size={12} className={`transition-transform duration-[120ms] ${g.collapsed ? '-rotate-90' : ''}`} />}
                 <span className="truncate">{g.name}</span>
@@ -558,9 +615,9 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
       ))}
 
       {/* افزودنِ نماد — با جستجوی واقعی */}
-      <div className="px-3 pt-3 pb-1 flex items-center justify-between select-none">
+      <div className="px-3 pt-3 pb-1.5 mt-1 flex items-center justify-between select-none border-t" style={{ borderColor: TH.border }}>
         <span className="text-[10px] font-semibold tracking-wide" style={{ color: TH.text, opacity: 0.55 }}>افزودنِ نماد</span>
-        <button onClick={() => setAdding((v) => !v)} className="p-0.5 rounded" style={{ color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+        <button onClick={() => setAdding((v) => !v)} className="p-1 rounded-md" style={{ color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
           <Plus size={14} className={`transition-transform duration-[120ms] ${adding ? 'rotate-45' : ''}`} />
         </button>
       </div>

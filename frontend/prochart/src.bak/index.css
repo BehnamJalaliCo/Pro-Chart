@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* تمِ تاریک (پیش‌فرض) — رنگ‌های دقیقِ TradingView (navy-charcoal) برای حسِ لاکچری */
+:root {
+  color-scheme: dark;
+  --bg-body: #131722;
+  --surface-default: #131722;
+  --surface-card: #1e222d;
+  --surface-elevated: #2a2e39;
+  --surface-border: #2a2e39;
+  --surface-hover: #2a2e39;
+  --text-primary: #d1d4dc;
+  --text-secondary: #b2b5be;
+  --text-muted: #787b86;
+  --scroll-thumb: #363a45;
+  --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.2), 0 2px 12px rgba(0,0,0,.4);
+}
+
+/* تمِ روشن — رنگ‌های دقیقِ TradingView light */
+.light {
+  color-scheme: light;
+  --bg-body: #ffffff;
+  --surface-default: #ffffff;
+  --surface-card: #f8f9fd;
+  --surface-elevated: #f0f3fa;
+  --surface-border: #e0e3eb;
+  --surface-hover: #f0f3fa;
+  --text-primary: #131722;
+  --text-secondary: #5d606b;
+  --text-muted: #787b86;
+  --scroll-thumb: #d1d4dc;
+  --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.1);
+}
+
+* { font-family: 'AnjomanMax', 'Vazirmatn', sans-serif; }
+
+body {
+  margin: 0;
+  background: var(--bg-body);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+@layer components {
+  /* شعاعِ منضبطِ TradingView: کنترل 6px، کارت 8px (نه pill) + وزنِ 600 (نه 700) */
+  .card { @apply bg-surface-card border border-surface-border rounded-lg; }
+  .btn-primary { @apply bg-brand-blue text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
+  .btn-success { @apply bg-brand-green text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
+  .btn-danger  { @apply bg-brand-red text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
+  .btn-ghost   { @apply bg-surface-elevated text-text-secondary font-medium rounded-md px-4 py-2 hover:bg-surface-hover transition; }
+  .input { @apply w-full bg-surface-elevated border border-surface-border text-text-primary rounded-md px-3 py-2 focus:border-brand-blue focus:outline-none; }
+  .label { @apply block text-sm text-text-secondary mb-1.5; }
+  /* لایهٔ شناور (منو/دیالوگ): border + یک سایه (نه روشن‌ترکردن) */
+  .pc-pop { background: var(--surface-card); border: 1px solid var(--surface-border); box-shadow: var(--pc-shadow-pop); }
+}
+
+/* اسکرول‌بار */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 8px; }
+
+input[type=number]::-webkit-inner-spin-button { opacity: 0.4; }
+
+/* مخفی‌کردنِ لوگوی پیش‌فرضِ کتابخانهٔ چارت (برندِ بازارنما جایگزین می‌شود) */
+#tv-attr-logo, a#tv-attr-logo, a[href*="tradingview.com"] { display: none !important; }
+
+/* ════════════════════════════════════════════════════════════════════
+   ProChart UI Master Spec — لایهٔ بنیادی (Design Tokens + Polish)
+   افزایشی و بدونِ تغییرِ ساختار؛ مطابقِ §۲ Tokens، §۴ رنگ، §۵ تایپوگرافی،
+   §۲۲ اسکرول‌بار، §۲۳/۲۴ انیمیشن/سایه، §۳۲ دسترس‌پذیری.
+   ════════════════════════════════════════════════════════════════════ */
+:root {
+  /* §۲ فاصله‌گذاری (Grid 2/4/8) */
+  --pc-space-0: 0px;  --pc-space-1: 2px;  --pc-space-2: 4px;  --pc-space-3: 6px;
+  --pc-space-4: 8px;  --pc-space-5: 10px; --pc-space-6: 12px; --pc-space-8: 16px;
+  --pc-space-10: 20px; --pc-space-12: 24px;
+  /* §۲ شعاع */
+  --pc-radius-xs: 2px; --pc-radius-sm: 4px; --pc-radius-md: 6px; --pc-radius-lg: 8px; --pc-radius-xl: 12px;
+  /* §۵ فونت + line-height */
+  --pc-font-xs: 11px; --pc-font-sm: 12px; --pc-font-md: 13px; --pc-font-lg: 14px; --pc-font-xl: 16px;
+  --pc-line-xs: 14px; --pc-line-sm: 16px; --pc-line-md: 18px; --pc-line-lg: 20px;
+  /* §۲۳ مدت/easing */
+  --pc-duration-fast: 80ms; --pc-duration-normal: 120ms; --pc-duration-slow: 180ms;
+  --pc-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  /* §۴ رنگ‌های توکن (نگاشت به متغیرهای تمِ موجود تا تک‌منبع بماند) */
+  --pc-bg-page: var(--bg-body);
+  --pc-bg-chart: var(--surface-default);
+  --pc-bg-panel: var(--surface-card);
+  --pc-bg-panel-elevated: var(--surface-elevated);
+  --pc-bg-hover: var(--surface-hover);
+  --pc-bg-active: var(--surface-elevated);
+  --pc-border-subtle: color-mix(in srgb, var(--surface-border) 55%, transparent);
+  --pc-border-default: var(--surface-border);
+  --pc-text-primary: var(--text-primary);
+  --pc-text-secondary: var(--text-secondary);
+  --pc-text-muted: var(--text-muted);
+  --pc-candle-up: #26a69a;
+  --pc-candle-down: #ef5350;
+}
+
+/* §۵ اعداد هم‌عرض (tabular) — ترازِ دقیقِ قیمت‌ها بدونِ پرشِ بصری */
+body, .pc-ui, input, button, table {
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+body { text-rendering: optimizeLegibility; -moz-osx-font-smoothing: grayscale; }
+
+/* §۲۲ اسکرول‌بارِ باریک‌تر و هماهنگ‌تر */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--surface-border); }
+* { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) transparent; }
+
+/* §۳۲ focus-visible برای دسترس‌پذیریِ کیبورد (بدونِ نمایش روی کلیکِ موس) */
+:focus-visible { outline: 2px solid var(--brand-blue, #2962ff); outline-offset: 1px; }
+
+/* میکرو‌اینتراکشنِ یکدست — همهٔ کنترل‌ها snappy و native (120ms ease-out، بدون scale) */
+button, [role="button"], a, summary, .pc-btn {
+  transition: background-color var(--pc-duration-normal) var(--pc-ease-standard),
+              color var(--pc-duration-normal) var(--pc-ease-standard),
+              border-color var(--pc-duration-normal) var(--pc-ease-standard),
+              box-shadow var(--pc-duration-slow) var(--pc-ease-standard);
+}
+
+/* دکمهٔ آیکونیِ سبکِ TradingView (hover = fill، active = tintِ آبی، بدون scale) */
+.pc-iconbtn { display:inline-flex; align-items:center; justify-content:center; border-radius: var(--pc-radius-sm);
+  color: var(--text-secondary); background: transparent; }
+.pc-iconbtn:hover { background: var(--surface-hover); color: var(--text-primary); }
+.pc-iconbtn[data-active="true"], .pc-iconbtn.active {
+  color: var(--brand-blue, #2962ff); background: rgba(41,98,255,.14); }
+
+/* flashِ سبز/قرمزِ سلول روی تیکِ قیمت (حسِ زنده‌بودن) */
+@keyframes pcFlashUp   { from { background: rgba(38,166,154,.28); } to { background: transparent; } }
+@keyframes pcFlashDown { from { background: rgba(239,83,80,.28);  } to { background: transparent; } }
+.pc-flash-up   { animation: pcFlashUp   .3s var(--pc-ease-standard); }
+.pc-flash-down { animation: pcFlashDown .3s var(--pc-ease-standard); }
+
+/* §۲۳/۳۲ احترام به prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+  }
+}

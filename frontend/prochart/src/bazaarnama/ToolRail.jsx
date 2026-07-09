@@ -10,9 +10,14 @@
 // (در drawtools_ext.js) هستند؛ پس setTool(id) مستقیماً کار می‌کند.
 // ─────────────────────────────────────────────────────────────────────────────
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Star } from 'lucide-react';
 import { GLYPH, GROUP_GLYPH } from './glyphs';
 import { getHelp } from './help';
+
+// ماندگاریِ ابزارهای منتخبِ ترسیم (Drawing Favorites — مثلِ نوارِ منتخبِ تریدینگ‌ویو)
+const FAV_KEY = 'bn_toolfavs';
+const loadFavs = () => { try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]') || []; } catch (e) { return []; } };
+const saveFavs = (arr) => { try { localStorage.setItem(FAV_KEY, JSON.stringify(arr)); } catch (e) { /* noop */ } };
 
 // چِورونِ کوچکِ درون‌خطی (جایگزینِ lucide ChevronRight) برای نشانهٔ ابزارِ فعال.
 function MiniChevron({ size = 13, ...props }) {
@@ -134,6 +139,8 @@ const TOOL_GROUP = (() => {
 
 // گلیفِ یک ابزار؛ در نبودِ آن به گلیفِ گروهش یا «نشانگر» برمی‌گردد.
 const ICON_FOR = (id) => GLYPH[id] || GROUP_GLYPH[TOOL_GROUP[id]] || GLYPH.cursor;
+// idِ ابزار → برچسبِ فارسی (برای tooltipِ نوارِ منتخب).
+const TOOL_LABEL = (() => { const m = {}; GROUPS.forEach((g) => g.tools.forEach((t) => { m[t.id] = t.label; })); return m; })();
 
 export default function ToolRail({ tool, setTool, TH, onHelp }) {
   // ابزارِ «به‌خاطرسپرده‌شده» برای هر گروه (پیش‌فرض: اولین ابزارِ گروه).
@@ -142,6 +149,11 @@ export default function ToolRail({ tool, setTool, TH, onHelp }) {
     GROUPS.forEach((g) => { m[g.key] = g.tools[0].id; });
     return m;
   });
+  // ابزارهای منتخب (ستاره‌دار) — بالای نوار به‌صورتِ دسترسیِ سریع نمایش داده می‌شوند.
+  const [favs, setFavs] = useState(loadFavs);
+  const toggleFav = useCallback((id) => {
+    setFavs((prev) => { const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]; saveFavs(next); return next; });
+  }, []);
   // کلیدِ گروهی که فلای‌اوتش باز است (یا null).
   const [openKey, setOpenKey] = useState(null);
   const rootRef = useRef(null);
@@ -187,10 +199,41 @@ export default function ToolRail({ tool, setTool, TH, onHelp }) {
     <div
       ref={rootRef}
       dir="ltr"
-      className="relative flex flex-col items-center justify-start gap-1 w-full h-full overflow-visible py-2"
+      className="relative flex flex-col items-center justify-start gap-0.5 w-full h-full overflow-visible py-2 px-1"
     >
+      {/* نوارِ منتخب (Drawing Favorites) — دسترسیِ سریع به ابزارهای ستاره‌دار */}
+      {favs.length > 0 && (
+        <>
+          <div
+            className="flex flex-col items-center gap-0.5 p-1 rounded-lg shrink-0"
+            style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}
+          >
+            {favs.map((id) => {
+              const FavIcon = ICON_FOR(id);
+              const active = tool === id;
+              return (
+                <button
+                  key={'fav-' + id}
+                  type="button"
+                  title={`منتخب · ${TOOL_LABEL[id] || id}`}
+                  onClick={() => setTool(id)}
+                  className="relative flex items-center justify-center w-8 h-8 rounded-md shrink-0"
+                  style={{ background: active ? TH.accent : 'transparent', color: active ? '#fff' : TH.text, opacity: active ? 1 : 0.8, transition: 'background-color 120ms ease, opacity 120ms ease' }}
+                  onMouseOver={(e) => { e.currentTarget.style.opacity = '1'; if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
+                  onMouseOut={(e) => { if (!active) { e.currentTarget.style.opacity = '0.8'; e.currentTarget.style.background = 'transparent'; } }}
+                >
+                  <FavIcon size={18} />
+                  <Star size={7} className="absolute top-1 right-1 pointer-events-none" style={{ fill: TH.accent, color: TH.accent }} />
+                </button>
+              );
+            })}
+          </div>
+          <span className="w-6 h-px my-1 shrink-0" style={{ background: TH.border }} aria-hidden="true" />
+        </>
+      )}
       {GROUPS.map((g) => {
         const shownId = remembered[g.key] || g.tools[0].id;
+        const shownTool = g.tools.find((t) => t.id === shownId);
         const Icon = ICON_FOR(shownId);
         const isActiveGroup = activeGroup === g.key;
         const isOpen = openKey === g.key;
@@ -206,14 +249,16 @@ export default function ToolRail({ tool, setTool, TH, onHelp }) {
             <button
               type="button"
               aria-label={g.label}
+              title={shownTool ? `${g.label} · ${shownTool.label}` : g.label}
               aria-pressed={isActiveGroup}
               onClick={() => (isOpen ? setOpenKey(null) : openOn(g.key))}
-              className="relative flex items-center justify-center w-8 h-8 rounded-md"
+              className="relative flex items-center justify-center w-9 h-9 rounded-lg"
               style={{
                 background: isActiveGroup ? TH.accent : (isOpen ? TH.chipBgHover : 'transparent'),
                 color: isActiveGroup ? '#fff' : TH.text,
                 opacity: inactiveDim ? 0.7 : 1,
-                transition: 'background-color 120ms ease, opacity 120ms ease, color 120ms ease',
+                boxShadow: isActiveGroup ? `inset 0 0 0 1px rgba(255,255,255,.18)` : 'none',
+                transition: 'background-color 120ms ease, opacity 120ms ease, color 120ms ease, box-shadow 120ms ease',
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.opacity = '1';
@@ -239,12 +284,12 @@ export default function ToolRail({ tool, setTool, TH, onHelp }) {
             {isOpen && (
               <div
                 dir="rtl"
-                className="absolute top-0 left-full ml-1.5 z-50 rounded-md overflow-hidden py-1 origin-left"
+                className="absolute top-0 left-full ml-2 z-50 rounded-lg overflow-hidden p-1.5 origin-left"
                 style={{
                   background: TH.popoverBg,
                   border: `1px solid ${TH.border}`,
-                  boxShadow: '0 6px 22px -6px rgba(0,0,0,.45), 0 2px 6px -2px rgba(0,0,0,.30)',
-                  minWidth: 196,
+                  boxShadow: '0 8px 26px -6px rgba(0,0,0,.50), 0 2px 6px -2px rgba(0,0,0,.30)',
+                  minWidth: 200,
                   animation: 'brn-flyout-in 120ms ease-out both',
                 }}
                 onMouseEnter={() => openOn(g.key)}
@@ -253,8 +298,8 @@ export default function ToolRail({ tool, setTool, TH, onHelp }) {
                 <style>{`@keyframes brn-flyout-in{from{opacity:0;transform:translateX(-4px) scale(.98)}to{opacity:1;transform:none}}`}</style>
                 {/* سرتیترِ کم‌رنگِ گروه (TH.text با ۵۰٪ شفافیت). */}
                 <div
-                  className="px-3 pt-1 pb-1.5 text-[10px] font-semibold tracking-wider select-none"
-                  style={{ color: TH.text, opacity: 0.5 }}
+                  className="px-2 pt-1 pb-2 mb-1 text-[10px] font-semibold tracking-wider select-none uppercase"
+                  style={{ color: TH.text, opacity: 0.5, borderBottom: `1px solid ${TH.border}` }}
                 >
                   {g.label}
                 </div>
@@ -266,9 +311,9 @@ export default function ToolRail({ tool, setTool, TH, onHelp }) {
                       key={t.id}
                       type="button"
                       onClick={() => pick(g.key, t.id)}
-                      className="w-full flex items-center gap-2.5 px-3 text-[12px] text-right"
+                      className="w-full flex items-center gap-2.5 px-2 rounded-md text-[12px] text-right"
                       style={{
-                        height: 28,
+                        height: 30,
                         background: active ? TH.accent : 'transparent',
                         color: active ? '#fff' : TH.textStrong,
                         transition: 'background-color 120ms ease, color 120ms ease',
@@ -279,6 +324,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp }) {
                       <RowIcon size={16} className="shrink-0" style={{ opacity: active ? 1 : 0.8 }} />
                       <span className="flex-1 whitespace-nowrap leading-none">{t.label}</span>
                       {active && <MiniChevron size={13} className="shrink-0 opacity-80" />}
+                      <span role="button" title={favs.includes(t.id) ? 'حذف از منتخب' : 'افزودن به منتخب'} onClick={(e) => { e.stopPropagation(); toggleFav(t.id); }} className="shrink-0" style={{ cursor: 'pointer', opacity: favs.includes(t.id) ? 1 : 0.35 }}><Star size={12} style={favs.includes(t.id) ? { fill: TH.accent, color: TH.accent } : {}} /></span>
                       {onHelp && getHelp(t.id) && (
                         <span role="button" title="راهنمای این ابزار" onClick={(e) => { e.stopPropagation(); onHelp(t.id); }} className="shrink-0 opacity-40 hover:opacity-100" style={{ cursor: 'pointer' }}><HelpCircle size={12} /></span>
                       )}

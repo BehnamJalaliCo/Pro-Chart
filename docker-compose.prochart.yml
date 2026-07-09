@@ -104,6 +104,13 @@ services:
     environment:
       BN_STANDALONE_AUTH: "1"
       CENTRAL_AUTH_ENABLED: "1"
+      # SEO — دامنهٔ canonical و ثبت در موتورهای جستجو (pro-chart.com)
+      WEBSITE_DOMAIN: "pro-chart.com"
+      SEO_GSC_SITE: "sc-domain:pro-chart.com"
+      INDEXNOW_KEY: "b64067bef00e5006645434d5ec6bd0ed"
+      # اتصالِ DB — کاهشِ pool تا با max_connections=50 و سرویس‌های دیگر headroom بماند
+      DB_POOL_SIZE: "20"
+      DB_MAX_OVERFLOW: "10"
     ports:
       - "127.0.0.1:8000:8000"
     volumes:

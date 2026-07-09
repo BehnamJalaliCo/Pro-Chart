@@ -37,21 +37,13 @@ BASE = f"https://{settings.WEBSITE_DOMAIN}".lower().rstrip("/")
 _CACHE_TTL = 600  # ۱۰ دقیقه
 
 # صفحاتِ ایستا قابلِ ایندکس: (path, changefreq, priority)
+# فقط صفحاتی که prerender محتوای مجزا تولید می‌کند (بدونِ محتوای تکراری/thin).
+# بقیهٔ محتوای ایندکس‌شونده از sitemap-articles.xml (مقالات) می‌آید.
 _STATIC_PAGES: list[tuple[str, str, str]] = [
     ("/", "daily", "1.0"),
-    ("/academy", "weekly", "0.95"),
-    ("/signals", "hourly", "0.9"),
     ("/news", "daily", "0.9"),
-    ("/performance", "daily", "0.8"),
-    ("/live-prices", "always", "0.8"),
-    ("/copy-trade", "weekly", "0.8"),
     ("/analysis", "daily", "0.8"),
-    ("/broker", "monthly", "0.8"),
     ("/blog", "daily", "0.7"),
-    ("/education", "weekly", "0.7"),
-    ("/backtest", "weekly", "0.5"),
-    ("/about", "monthly", "0.5"),
-    ("/contact", "monthly", "0.5"),
 ]
 
 # دستهٔ مقاله → (changefreq, priority)
@@ -224,9 +216,9 @@ async def rss_feed(db: AsyncSession = Depends(get_db)) -> Response:
     body = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<rss version="2.0"><channel>'
-        f'<title>کوین پرو FX — فارکس، طلا و تحلیل بازار</title>'
+        f'<title>بازارنما — چارت آنلاین و ترید حرفه‌ای بازارهای مالی</title>'
         f'<link>{BASE}/</link>'
-        f'<description>تازه‌ترین مقالات، آموزش‌ها و تحلیل‌های فارکس و طلا</description>'
+        f'<description>تازه‌ترین اخبار، تحلیل‌ها و آموزش‌های بازار ارز دیجیتال، فارکس و طلا در بازارنما</description>'
         f'<language>fa-IR</language><lastBuildDate>{_now_iso()}</lastBuildDate>'
         + "".join(items) + "</channel></rss>"
     )
@@ -237,7 +229,7 @@ async def rss_feed(db: AsyncSession = Depends(get_db)) -> Response:
 @router.get("/robots.txt", include_in_schema=False)
 async def robots() -> Response:
     body = (
-        "# robots.txt — کوین پرو FX\n"
+        "# robots.txt — بازارنما\n"
         "User-agent: *\n"
         "Allow: /\n"
         "\n"
@@ -255,22 +247,22 @@ async def robots() -> Response:
 # nginx درخواستِ bot/شبکهٔ اجتماعی را به /seo/render پراکسی می‌کند؛ کاربرِ انسانی همان SPA را می‌گیرد.
 # خروجی HTMLِ کاملِ با‌متا‌و‌محتوا + لینک‌های داخلی است؛ مقالهٔ نبوده ۴۰۴ واقعی می‌دهد (رفعِ soft-404).
 
-SITE_NAME = "کوین پرو FX"
+SITE_NAME = "بازارنما"
 AUTHOR_NAME = "بهنام جلالی"
 _SECTION = {
-    "news": ("اخبار فارکس", "/news"), "analysis": ("تحلیل بازار", "/analysis"),
-    "blog": ("بلاگ آموزشی", "/blog"), "beginner": ("آموزش فارکس", "/education"),
-    "intermediate": ("آموزش فارکس", "/education"), "advanced": ("آموزش فارکس", "/education"),
+    "news": ("اخبار بازار", "/news"), "analysis": ("تحلیل بازار", "/analysis"),
+    "blog": ("وبلاگ بازارنما", "/blog"), "beginner": ("آموزش ترید", "/education"),
+    "intermediate": ("آموزش ترید", "/education"), "advanced": ("آموزش ترید", "/education"),
 }
 _LIST_PAGES = {
-    "news": ("اخبار فارکس و طلا", "آخرین اخبار لحظه‌ای فارکس، طلا، نفت و شاخص‌های جهانی"),
-    "analysis": ("تحلیل بازار فارکس", "تحلیل تکنیکال و بنیادی روزانهٔ جفت‌ارزها، طلا و شاخص‌ها"),
-    "blog": ("بلاگ آموزشی فارکس", "مقالات آموزشی فارکس، استراتژی معاملاتی و مدیریت سرمایه"),
-    "education": ("آموزش فارکس از صفر", "دورهٔ کامل آموزش فارکس؛ مقدماتی تا حرفه‌ای"),
+    "news": ("اخبار بازارهای مالی", "آخرین اخبار لحظه‌ای ارز دیجیتال، فارکس، طلا و شاخص‌های جهانی"),
+    "analysis": ("تحلیل بازار", "تحلیل تکنیکال و بنیادی روزانهٔ ارز دیجیتال، جفت‌ارزها، طلا و شاخص‌ها"),
+    "blog": ("وبلاگ بازارنما", "مقالات آموزشی چارت‌خوانی، تحلیل تکنیکال، استراتژی معاملاتی و مدیریت سرمایه"),
+    "education": ("آموزش ترید از صفر", "راهنمای کامل کار با چارت آنلاین، اندیکاتورها و ترید حرفه‌ای؛ مقدماتی تا پیشرفته"),
 }
-_NAV = [("/", "خانه"), ("/signals", "سیگنال‌ها"), ("/news", "اخبار"), ("/analysis", "تحلیل"),
-        ("/blog", "بلاگ"), ("/education", "آموزش"), ("/academy", "آکادمی"), ("/performance", "عملکرد"),
-        ("/broker", "بروکر"), ("/about", "دربارهٔ ما"), ("/contact", "تماس")]
+_NAV = [("/", "خانه"), ("/chart", "چارت / ترمینال"), ("/market", "بازار"), ("/news", "اخبار"),
+        ("/calendar", "تقویم اقتصادی"), ("/analysis", "تحلیل"), ("/pricing", "تعرفه‌ها"),
+        ("/blog", "وبلاگ"), ("/about", "دربارهٔ ما"), ("/contact", "تماس")]
 
 
 def _e(s: object) -> str:
@@ -366,7 +358,7 @@ def _article_doc(a: Article, related: list[Article]) -> Response:
 def _tag_doc(tag: str, articles: list[Article]) -> Response:
     canonical = f"{BASE}/tag/{_e(tag)}"
     title = f"مطالب با برچسب «{tag}» | {SITE_NAME}"
-    desc = f"جدیدترین مقالات، تحلیل‌ها و آموزش‌های فارکس با موضوع {tag}."
+    desc = f"جدیدترین مقالات، اخبار و تحلیل‌های بازارهای مالی با موضوع {tag} در بازارنما."
     items, ld = "", []
     for i, a in enumerate(articles, 1):
         items += f'<li><a href="{BASE}/article/{_e(a.slug)}"><h2>{_e(a.title)}</h2></a></li>'
@@ -391,30 +383,41 @@ def _list_doc(seg: str, articles: list[Article]) -> Response:
 
 
 _HOME_FAQ = [
-    ("سیگنال‌های کوین پرو FX چگونه تولید می‌شوند؟", "با ترکیب الگوریتم‌های تحلیل تکنیکال پیشرفته، پرایس اکشن، اندیکاتورها و هوش مصنوعی؛ هر سیگنال پیش از ارسال با اعتبارسنجی چندلایه بررسی می‌شود."),
-    ("آیا استفاده از سیگنال‌ها رایگان است؟", "بخشی از سیگنال‌ها در کانال عمومی تلگرام رایگان است؛ برای دسترسی کامل با جزئیات و تحلیل اختصاصی، اشتراک ویژه تهیه می‌شود."),
-    ("نرخ موفقیت سیگنال‌ها چقدر است؟", "تمام آمار عملکرد (نرخ برد، سود/زیان خالص پیپ و جزئیات هر سیگنال) کاملاً واقعی و لحظه‌ای از دیتابیس خوانده و در صفحهٔ عملکرد نمایش داده می‌شود."),
-    ("سیگنال‌ها برای چه جفت‌ارزهایی ارسال می‌شود؟", "جفت‌ارزهای اصلی و فرعی، طلا (XAU/USD)، نقره و شاخص‌های مهم مانند US30 و NAS100."),
-    ("حد ضرر و حد سود هر سیگنال مشخص است؟", "بله؛ هر سیگنال نقطهٔ ورود دقیق، حداقل یک حد سود و حد ضرر مشخص، درجهٔ قدرت و تحلیل مختصر دارد."),
+    ("بازارنما چیست؟", "بازارنما یک پلتفرم حرفه‌ای چارت آنلاین و ترید بازارهای مالی به‌سبک تریدینگ‌ویو و کاملاً فارسی است؛ با نمودار زنده و لحظه‌ای، بیش از ۵۰ اندیکاتور، اسکریپت‌نویسی اختصاصی (NamaScript)، واچ‌لیست، هشدار قیمت، سیگنال هوش مصنوعی و امکان ترید واقعی مستقیم از روی چارت."),
+    ("آیا می‌توانم از روی چارت ترید واقعی بزنم؟", "بله؛ با اتصال حساب واقعی صرافی LBank برای ارز دیجیتال و بروکر OneRoyal (متاتریدر ۵) برای فارکس و طلا، می‌توانید مستقیماً از روی چارت بازارنما سفارش واقعی ثبت و مدیریت کنید."),
+    ("چه بازارهایی در بازارنما پشتیبانی می‌شود؟", "ارز دیجیتال، فارکس، طلا و فلزات گران‌بها و شاخص‌های مهم جهانی؛ همه با نمودار زنده و داده‌های لحظه‌ای قیمت."),
+    ("سیگنال هوش مصنوعی بازارنما چگونه کار می‌کند؟", "موتور هوش مصنوعی بازارنما داده‌های قیمت، الگوهای نموداری و اندیکاتورها را به‌صورت لحظه‌ای تحلیل می‌کند و موقعیت‌های معاملاتی را همراه با نقطهٔ ورود، حد سود و حد ضرر پیشنهاد می‌دهد."),
+    ("آیا بازارنما رایگان است؟", "بله؛ بازارنما پلن رایگان برای شروع کار با چارت و ابزارهای پایه دارد و برای امکانات پیشرفته مانند اندیکاتورهای بیشتر، هشدارهای نامحدود و سیگنال هوش مصنوعی، پلن‌های ویژه (VIP/پرمیوم) ارائه می‌شود."),
+    ("آیا بازارنما اندیکاتور و ابزار تحلیل تکنیکال دارد؟", "بله؛ بیش از ۵۰ اندیکاتور و ابزار ترسیم، امکان نوشتن اندیکاتور و استراتژی اختصاصی با NamaScript، واچ‌لیست شخصی و هشدار قیمت برای پیگیری دقیق بازار در دسترس است."),
 ]
 
 
 def _home_doc(latest: list[Article]) -> Response:
-    title = f"{SITE_NAME} | سیگنال فارکس هوشمند با هوش مصنوعی"
-    desc = "سیگنال‌های واقعی فارکس، طلا و شاخص‌ها با هوش مصنوعی؛ آموزش فارکس، تحلیل بازار و کپی‌ترید."
+    title = f"{SITE_NAME} | چارت آنلاین و ترید حرفه‌ای بازارهای مالی"
+    desc = ("بازارنما، پلتفرم چارت زنده و تریدینگ‌ویو فارسی؛ نمودار لحظه‌ای ارز دیجیتال، فارکس و طلا "
+            "با +۵۰ اندیکاتور، واچ‌لیست، هشدار قیمت، سیگنال هوش مصنوعی و ترید واقعی از روی چارت.")
+    org_desc = ("بازارنما پلتفرم حرفه‌ای چارت آنلاین و ترید بازارهای مالی به‌سبک تریدینگ‌ویو و کاملاً فارسی است؛ "
+                "چارت زنده ارز دیجیتال، فارکس و طلا، اندیکاتور، واچ‌لیست، هشدار قیمت، سیگنال هوش مصنوعی و ترید واقعی.")
     items = "".join(f'<li><a href="{BASE}/article/{_e(a.slug)}">{_e(a.title)}</a></li>' for a in latest)
     jsonld = json.dumps({"@context": "https://schema.org", "@graph": [
         {"@type": "WebSite", "name": SITE_NAME, "url": BASE + "/", "inLanguage": "fa-IR",
-         "potentialAction": {"@type": "SearchAction", "target": f"{BASE}/education?q={{search_term_string}}", "query-input": "required name=search_term_string"}},
-        {"@type": "Organization", "name": SITE_NAME, "url": BASE + "/", "logo": f"{BASE}/favicon.svg"},
+         "potentialAction": {"@type": "SearchAction", "target": f"{BASE}/market?q={{search_term_string}}", "query-input": "required name=search_term_string"}},
+        {"@type": "Organization", "name": SITE_NAME, "url": BASE + "/",
+         "description": org_desc, "logo": f"{BASE}/logo.png",
+         # "sameAs": []  ← در صورت وجود شبکه‌های اجتماعی رسمی اینجا اضافه شود
+         },
+        {"@type": "SoftwareApplication", "name": SITE_NAME, "url": BASE + "/",
+         "applicationCategory": "FinanceApplication", "operatingSystem": "Web",
+         "description": org_desc,
+         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "IRR"}},
         {"@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in _HOME_FAQ]},
     ]}, ensure_ascii=False)
     faq_html = "".join(f'<section><h3>{_e(q)}</h3><p>{_e(a)}</p></section>' for q, a in _HOME_FAQ)
     body = (
-        f'<main><h1>{_e(SITE_NAME)} — سیگنال فارکس هوشمند با هوش مصنوعی</h1>'
+        f'<main><h1>{_e(SITE_NAME)} — چارت آنلاین و ترید حرفه‌ای بازارهای مالی</h1>'
         f'<p>{_e(desc)}</p>'
-        f'<h2>تازه‌ترین مقالات و تحلیل‌ها</h2><ul>{items}</ul>'
+        f'<h2>تازه‌ترین اخبار و تحلیل‌های بازار</h2><ul>{items}</ul>'
         f'<h2>سوالات متداول</h2>{faq_html}</main>'
     )
     return _shell(title=title, desc=desc, canonical=BASE + "/", body=body, jsonld=jsonld)

@@ -37,7 +37,7 @@ const pushRecent = (s) => {
 
 // مدالِ جستجوی نمادِ حرفه‌ای (fuzzy + دسته‌بندی + لوگو + اسکرولِ مجازی + ناوبریِ کیبورد).
 // propها backward-compatible: TH اختیاری (با fallback تیره)؛ coarse برای حالتِ لمسی.
-export default function SymbolSearchModal({ open, onClose, metaList = [], watch = [], current, onPick, TH, coarse = false }) {
+export default function SymbolSearchModal({ open, onClose, metaList = [], watch = [], current, onPick, TH, coarse = false, initialQuery = '' }) {
   const T = TH || { panel: '#131722', border: '#2a2e39', text: '#b2b5be', textStrong: '#d1d4dc', accent: '#2962FF', chipBg: 'rgba(255,255,255,.06)', chipBgHover: 'rgba(255,255,255,.10)' };
   const [q, setQ] = useState('');
   const [dq, setDq] = useState('');       // debounced
@@ -47,7 +47,7 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
 
   // debounce ۸۰ms (معادلِ symbol_search_request_delay در TradingView)
   useEffect(() => { const t = setTimeout(() => setDq(q), 80); return () => clearTimeout(t); }, [q]);
-  useEffect(() => { if (open) { setQ(''); setDq(''); setCat('all'); setActive(0); setTimeout(() => inputRef.current && inputRef.current.focus(), 30); } }, [open]);
+  useEffect(() => { if (open) { const iq = initialQuery || ''; setQ(iq); setDq(iq); setCat('all'); setActive(0); setTimeout(() => { const el = inputRef.current; if (el) { el.focus(); const n = el.value.length; try { el.setSelectionRange(n, n); } catch (e) {} } }, 30); } }, [open]);
 
   const results = useMemo(() => searchSymbols(metaList, dq, cat), [metaList, dq, cat]);
   useEffect(() => { setActive(0); }, [dq, cat]);
@@ -75,26 +75,27 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
         onClick={(e) => e.stopPropagation()} onKeyDown={onKey}>
 
         {/* نوارِ جستجو */}
-        <div className="flex items-center gap-2 px-4 shrink-0" style={{ height: 56, borderBottom: `1px solid ${T.border}` }}>
-          <Search size={18} className="opacity-60" style={{ color: T.text }} />
+        <div className="flex items-center gap-2.5 px-4 shrink-0" style={{ height: 58, borderBottom: `1px solid ${T.border}` }}>
+          <Search size={18} className="opacity-55 shrink-0" style={{ color: T.text }} />
           <input ref={inputRef} dir="ltr" value={q} onChange={(e) => setQ(e.target.value)}
             placeholder="جستجوی نماد… (EURUSD، طلا، BTC)"
-            className="flex-1 bg-transparent outline-none text-base tabular-nums placeholder:opacity-50"
+            className="flex-1 bg-transparent outline-none text-base tabular-nums placeholder:opacity-45"
             style={{ color: T.textStrong }} />
-          <kbd className="text-[11px] opacity-50 px-1.5 py-0.5 rounded border" style={{ borderColor: T.border, color: T.text }}>Esc</kbd>
-          <button onClick={onClose} aria-label="بستن" className="opacity-60 hover:opacity-100" style={{ color: T.text }}><X size={18} /></button>
+          <kbd className="text-[11px] font-medium opacity-50 px-1.5 py-0.5 rounded-md border shrink-0" style={{ borderColor: T.border, color: T.text }}>Esc</kbd>
+          <button onClick={onClose} aria-label="بستن" className="grid place-items-center rounded-md w-7 h-7 opacity-60 hover:opacity-100 transition-colors duration-[120ms] shrink-0" style={{ color: T.text }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = T.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><X size={18} /></button>
         </div>
 
         {/* تب‌های دسته‌بندی */}
-        <div className="flex gap-1 px-3 py-2 overflow-x-auto bn-thin-scroll shrink-0" style={{ borderBottom: `1px solid ${T.border}` }}>
+        <div className="flex gap-1.5 px-3 py-2.5 overflow-x-auto bn-thin-scroll shrink-0" style={{ borderBottom: `1px solid ${T.border}` }}>
           {CATEGORIES.map((c) => {
             const on = cat === c.id;
             return (
               <button key={c.id} onClick={() => setCat(c.id)}
-                className="px-3 rounded-full text-[13px] whitespace-nowrap transition-colors duration-[120ms]"
-                style={{ height: 30, background: on ? T.accent : 'transparent', color: on ? '#fff' : T.text, opacity: on ? 1 : 0.75 }}
+                className="px-3.5 rounded-full text-[13px] font-medium whitespace-nowrap transition-colors duration-[120ms]"
+                style={{ height: 30, background: on ? T.accent : T.chipBg, color: on ? '#fff' : T.text, opacity: on ? 1 : 0.85 }}
                 onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = T.chipBgHover; }}
-                onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
+                onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = T.chipBg; }}>
                 {c.label}
               </button>
             );
@@ -103,16 +104,16 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
 
         {/* میان‌بُرها: اخیر + واچ‌لیست (فقط وقتی کوئری خالی است) */}
         {!dq && (recent.length > 0 || watch.length > 0) && (
-          <div className="px-3 pt-2 pb-1.5 flex flex-wrap gap-1.5 text-[12px] shrink-0" style={{ borderBottom: `1px solid ${T.border}` }}>
+          <div className="px-3 py-2.5 flex flex-wrap gap-1.5 text-[12px] font-medium shrink-0" style={{ borderBottom: `1px solid ${T.border}` }}>
             {recent.map((s) => (
-              <button key={'r' + s} onClick={() => pick(s)} className="flex items-center gap-1 px-2 rounded-lg" dir="ltr"
+              <button key={'r' + s} onClick={() => pick(s)} className="flex items-center gap-1.5 px-2.5 rounded-lg transition-colors duration-[120ms]" dir="ltr"
                 style={{ height: 30, background: T.chipBg, color: T.textStrong }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = T.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = T.chipBg)}>
                 <SymbolLogo symbol={s} size={16} /> {s}
               </button>
             ))}
             {watch.filter((s) => !recent.includes(s)).slice(0, 6).map((s) => (
-              <button key={'w' + s} onClick={() => pick(s)} className="flex items-center gap-1 px-2 rounded-lg" dir="ltr"
+              <button key={'w' + s} onClick={() => pick(s)} className="flex items-center gap-1.5 px-2.5 rounded-lg transition-colors duration-[120ms]" dir="ltr"
                 style={{ height: 30, background: T.chipBg, color: T.textStrong }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = T.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = T.chipBg)}>
                 <Star size={11} className="text-amber-400" /> {s}
@@ -135,8 +136,8 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
                   style={{ background: isActive ? T.chipBgHover : 'transparent', boxShadow: isCur ? `inset 0 0 0 1px ${T.accent}` : 'none', color: T.textStrong }}>
                   <SymbolLogo symbol={m.symbol} size={coarse ? 30 : 26} />
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-bold leading-tight" dir="ltr">{hl(m.symbol, dq, T)}</div>
-                    <div className="text-[12px] opacity-60 leading-tight truncate">{m.desc}</div>
+                    <div className="text-[14px] font-bold leading-tight tracking-tight" dir="ltr">{hl(m.symbol, dq, T)}</div>
+                    <div className="text-[12px] opacity-55 leading-tight truncate mt-0.5">{m.desc}</div>
                   </div>
                   {watchSet.has(m.symbol) && <Star size={13} className="text-amber-400 shrink-0" />}
                   {/* بَجِ نوعِ دارایی، سبکِ TradingView: نقطهٔ رنگی + برچسبِ کلاس */}
@@ -150,8 +151,20 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
             }}
           />
         ) : (
-          <div className="py-10 text-center text-sm opacity-50" style={{ color: T.text }}>نمادی مطابقِ «{q}» پیدا نشد</div>
+          <div className="py-12 text-center text-sm opacity-50 flex flex-col items-center gap-2" style={{ color: T.text }}>
+            <Search size={22} className="opacity-40" />
+            <span>نمادی مطابقِ «{q}» پیدا نشد</span>
+          </div>
         )}
+
+        {/* پاورقی: راهنمای کیبورد + شمارِ نتایج (امضای فوترِ جستجوی TradingView) */}
+        <div className="flex items-center justify-between px-4 py-2 text-[11px] shrink-0" style={{ borderTop: `1px solid ${T.border}`, color: T.text }}>
+          <span className="flex items-center gap-3.5">
+            <span className="flex items-center gap-1.5"><kbd className="px-1 rounded border font-medium" style={{ borderColor: T.border }}>↑</kbd><kbd className="px-1 rounded border font-medium" style={{ borderColor: T.border }}>↓</kbd> پیمایش</span>
+            <span className="flex items-center gap-1.5"><kbd className="px-1.5 rounded border font-medium" style={{ borderColor: T.border }}>Enter</kbd> انتخاب</span>
+          </span>
+          <span className="opacity-60 tabular-nums" dir="ltr">{results.length} / {metaList.length}</span>
+        </div>
       </div>
     </div>
   );

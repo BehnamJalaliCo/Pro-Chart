@@ -46,11 +46,24 @@ function spreadPips(mid) {
   return pip; // مقدارِ نمایشی؛ صرفاً برای مرتب‌سازیِ نسبی
 }
 
+// دسته‌بندیِ نماد بر اساسِ الگو (برای تبِ فیلترِ دستهٔ اسکرینر — مثلِ TradingView)
+const CATS = [['all', 'همه'], ['crypto', 'کریپتو'], ['forex', 'فارکس'], ['metal', 'فلزات'], ['index', 'شاخص'], ['energy', 'انرژی']];
+function catOf(sym = '') {
+  const s = sym.toUpperCase();
+  if (/BTC|ETH|USDT|SOL|XRP|DOGE|BNB|ADA|USDC|TRX|LTC|DOT|AVAX|LINK|MATIC/.test(s)) return 'crypto';
+  if (/XAU|GOLD|XAG|SILVER|XPT|XPD/.test(s)) return 'metal';
+  if (/OIL|WTI|BRENT|USOIL|NGAS|GAS/.test(s)) return 'energy';
+  if (/US30|NAS|SPX|GER|DAX|UK100|JPN|US500|NDX/.test(s)) return 'index';
+  if (/^[A-Z]{6}$/.test(s)) return 'forex';
+  return 'other';
+}
+
 export default function Screener({ symbol, TH, symbols = [], prices = {}, setSymbol }) {
   const [sortBy, setSortBy] = useState('value');    // value | symbol | last | dir
   const [sortDir, setSortDir] = useState('asc');    // asc | desc  (value: asc = باارزش‌ترین بالا)
   const [q, setQ] = useState('');                   // فیلترِ متنیِ نماد
   const [onlyMovers, setOnlyMovers] = useState(false); // فقط نمادهای در حالِ حرکت (dir≠0)
+  const [cat, setCat] = useState('all');            // فیلترِ دستهٔ دارایی
 
   const click = (col) => {
     if (sortBy === col) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -60,6 +73,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
   const rows = useMemo(() => {
     const qq = q.trim().toUpperCase();
     let list = symbols.filter((s) => (!qq || s.toUpperCase().includes(qq)));
+    if (cat !== 'all') list = list.filter((s) => catOf(s) === cat);
     if (onlyMovers) list = list.filter((s) => (prices[s]?.dir || 0) !== 0);
     const dirOf = (s) => prices[s]?.dir || 0;
     const lastOf = (s) => num(prices[s]?.mid);
@@ -73,7 +87,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
       return sortDir === 'asc' ? r : -r;
     });
     return list;
-  }, [symbols, prices, q, onlyMovers, sortBy, sortDir]);
+  }, [symbols, prices, q, onlyMovers, cat, sortBy, sortDir]);
 
   const arrow = (col) => (sortBy === col ? (sortDir === 'asc' ? '↑' : '↓') : '');
 
@@ -96,24 +110,38 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
   return (
     <div className="flex flex-col text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
       {/* نوارِ فیلتر */}
-      <div className="flex items-center gap-1.5 px-2 h-8 border-b shrink-0" style={{ borderColor: TH.border }}>
+      <div className="flex items-center gap-2 px-2.5 h-9 border-b shrink-0" style={{ borderColor: TH.border }}>
         <input
           value={q} onChange={(e) => setQ(e.target.value)} placeholder="جستجوی نماد…"
-          dir="ltr" className="flex-1 min-w-0 rounded-md px-2 py-1 outline-none text-[11px] transition-colors"
+          dir="ltr" className="flex-1 min-w-0 rounded-md px-2.5 py-1.5 outline-none text-[11px] transition-colors focus:ring-1"
           style={{ background: TH.chipBg, color: TH.textStrong, border: `1px solid ${TH.border}` }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = TH.accent; }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = TH.border; }}
         />
         <button
           onClick={() => setOnlyMovers((v) => !v)} title="فقط نمادهای در حالِ حرکت"
-          className="px-2 h-[26px] rounded-md text-[10px] whitespace-nowrap transition-colors"
-          style={{ background: onlyMovers ? TH.accent : TH.chipBg, color: onlyMovers ? '#fff' : TH.text }}
+          className="px-2.5 h-[28px] rounded-md text-[10px] font-medium whitespace-nowrap transition-colors"
+          style={{ background: onlyMovers ? TH.accent : TH.chipBg, color: onlyMovers ? '#fff' : TH.text, border: `1px solid ${onlyMovers ? TH.accent : TH.border}` }}
           onMouseEnter={(e) => { if (!onlyMovers) e.currentTarget.style.background = TH.chipBgHover; }}
           onMouseLeave={(e) => { if (!onlyMovers) e.currentTarget.style.background = TH.chipBg; }}
         >فعال</button>
       </div>
 
+      {/* تب‌های دستهٔ دارایی */}
+      <div className="flex items-center gap-1.5 px-2.5 py-1.5 border-b overflow-x-auto shrink-0" style={{ borderColor: TH.border }}>
+        {CATS.map(([k, label]) => (
+          <button key={k} onClick={() => setCat(k)}
+            className="px-2.5 py-1 rounded-md text-[10px] font-medium whitespace-nowrap transition-colors shrink-0"
+            style={cat === k ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg, color: TH.text, border: `1px solid ${TH.border}` }}
+            onMouseEnter={(e) => { if (cat !== k) e.currentTarget.style.background = TH.chipBgHover; }}
+            onMouseLeave={(e) => { if (cat !== k) e.currentTarget.style.background = TH.chipBg; }}
+          >{label}</button>
+        ))}
+      </div>
+
       {/* سرستونِ قابلِ‌مرتب‌سازی */}
-      <div className="grid items-center gap-2 px-3 h-7 border-b text-[10px] shrink-0"
-        style={{ borderColor: TH.border, gridTemplateColumns: 'auto 1fr auto 1.25rem' }}>
+      <div className="grid items-center gap-2 px-3 h-8 border-b text-[10px] font-medium uppercase tracking-wide shrink-0"
+        style={{ borderColor: TH.border, gridTemplateColumns: 'auto 1fr auto 1.25rem', background: TH.chipBg }}>
         <span className="w-5" />
         <HCell col="symbol">نماد</HCell>
         <HCell col="last" className="justify-end" dir="ltr">قیمت</HCell>
@@ -123,7 +151,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
       {/* بدنهٔ جدول */}
       <div className="overflow-auto">
         {rows.length === 0 && (
-          <div className="px-3 py-8 text-center opacity-40 text-[11px]">نمادی مطابقِ فیلتر یافت نشد.</div>
+          <div className="px-3 py-10 text-center opacity-40 text-[11px]">نمادی مطابقِ فیلتر یافت نشد.</div>
         )}
         {rows.map((s) => {
           const lp = prices[s];
@@ -133,16 +161,16 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
           return (
             <button
               key={s} onClick={() => setSymbol && setSymbol(s)}
-              className="grid items-center gap-2 w-full px-3 h-8 transition-colors"
-              style={{ gridTemplateColumns: 'auto 1fr auto 1.25rem', background: active ? TH.subtle : 'transparent' }}
+              className="grid items-center gap-2 w-full px-3 h-9 border-b transition-colors"
+              style={{ gridTemplateColumns: 'auto 1fr auto 1.25rem', background: active ? TH.subtle : 'transparent', borderColor: TH.border, boxShadow: active ? `inset 2px 0 0 ${TH.accent}` : 'none' }}
               onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
               onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}
               dir="ltr"
             >
               <SymbolLogo symbol={s} size={20} />
-              <span className="text-left truncate" style={{ color: active ? TH.accent : TH.textStrong, fontWeight: active ? 600 : 400 }}>{s}</span>
-              <span className="text-right tabular-nums" style={{ color: col }}>{lp ? fmtP(s, lp.mid) : '—'}</span>
-              <span className="text-right" style={{ color: col }}>{dir !== 0 ? (dir > 0 ? '▲' : '▼') : ''}</span>
+              <span className="text-left truncate text-[11px]" style={{ color: active ? TH.accent : TH.textStrong, fontWeight: active ? 600 : 500 }}>{s}</span>
+              <span className="text-right tabular-nums text-[11px] font-medium" style={{ color: col }}>{lp ? fmtP(s, lp.mid) : '—'}</span>
+              <span className="text-right text-[10px]" style={{ color: col }}>{dir !== 0 ? (dir > 0 ? '▲' : '▼') : ''}</span>
             </button>
           );
         })}

@@ -25,6 +25,8 @@ function decimals(mid) { const s = String(mid ?? ''); return s.includes('.') ? s
 
 export default function Details({ symbol, TH, prices = {} }) {
   const [day, setDay] = useState(null); // {o,h,l,c} کندلِ روز
+  const [year, setYear] = useState(null); // {hi,lo} بازهٔ ۵۲ هفته
+  const [perf, setPerf] = useState(null); // {w,m} تغییرِ ۱ هفته / ۱ ماه (درصد)
   const lp = prices[symbol];
   const mid = num(lp?.mid);
   const dir = lp?.dir || 0;
@@ -32,16 +34,28 @@ export default function Details({ symbol, TH, prices = {} }) {
   // واکشیِ کندلِ روزانه برای بازهٔ روز و تغییرِ روز
   useEffect(() => {
     let on = true;
-    setDay(null);
+    setDay(null); setYear(null); setPerf(null);
     if (!symbol) return;
     (async () => {
       try {
-        const res = await api.chart(symbol, 'D1', undefined, 2);
+        // ~۵۲ هفته کندلِ روزانه — هم برای بازهٔ روز (آخرین) هم سقف/کفِ سالانه
+        const res = await api.chart(symbol, 'D1', undefined, 260);
         const cs = res?.candles || res?.data || res || [];
         const arr = Array.isArray(cs) ? cs : [];
         const last = arr[arr.length - 1];
         if (on && last && last.o != null) setDay({ o: last.o, h: last.h, l: last.l, c: last.c });
-      } catch { if (on) setDay(null); }
+        if (on && arr.length) {
+          let hi = -Infinity, lo = Infinity;
+          for (const c of arr) { if (c.h > hi) hi = c.h; if (c.l < lo) lo = c.l; }
+          if (Number.isFinite(hi)) setYear({ hi, lo });
+          // تغییرِ ۱ هفته (~۵ کندلِ روزانه) و ۱ ماه (~۲۲ کندل)
+          const lastC = last && last.c != null ? last.c : null;
+          const wAgo = arr[arr.length - 6]; const mAgo = arr[arr.length - 23];
+          const w = (lastC != null && wAgo && wAgo.c) ? ((lastC - wAgo.c) / wAgo.c) * 100 : null;
+          const m = (lastC != null && mAgo && mAgo.c) ? ((lastC - mAgo.c) / mAgo.c) * 100 : null;
+          setPerf({ w, m });
+        }
+      } catch { if (on) { setDay(null); setYear(null); } }
     })();
     return () => { on = false; };
   }, [symbol]);
@@ -70,9 +84,9 @@ export default function Details({ symbol, TH, prices = {} }) {
     ? Math.max(0, Math.min(1, (ref - lo) / (hi - lo))) : null;
 
   const Row = ({ k, v, c, last }) => (
-    <div className="flex items-center justify-between py-1" style={{ borderBottom: last ? 'none' : `1px solid ${TH.border}` }}>
-      <span className="opacity-60">{k}</span>
-      <span className="tabular-nums" dir="ltr" style={{ color: c || TH.textStrong }}>{v}</span>
+    <div className="flex items-center justify-between gap-3 py-1.5" style={{ borderBottom: last ? 'none' : `1px solid ${TH.border}` }}>
+      <span className="opacity-60 truncate">{k}</span>
+      <span className="tabular-nums font-medium whitespace-nowrap" dir="ltr" style={{ color: c || TH.textStrong }}>{v}</span>
     </div>
   );
 
@@ -81,19 +95,19 @@ export default function Details({ symbol, TH, prices = {} }) {
   );
 
   return (
-    <div className="p-3 text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
+    <div className="p-3.5 text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
       {/* سربرگ: نماد + قیمتِ زنده + تغییرِ روز */}
-      <div className="mb-3">
-        <div className="flex items-baseline justify-between">
-          <span className="font-bold text-sm" style={{ color: TH.textStrong }} dir="ltr">{symbol}</span>
-          <span className="text-[10px] opacity-50">{meta.type}</span>
+      <div className="mb-3.5 pb-3" style={{ borderBottom: `1px solid ${TH.border}` }}>
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="font-bold text-sm tracking-wide" style={{ color: TH.textStrong }} dir="ltr">{symbol}</span>
+          <span className="text-[10px] opacity-50 truncate">{meta.type}</span>
         </div>
-        <div className="flex items-baseline gap-2 mt-1" dir="ltr">
-          <span className="text-lg font-bold tabular-nums" style={{ color: dir > 0 ? TH.up : dir < 0 ? TH.down : TH.textStrong }}>
+        <div className="flex items-baseline gap-2 mt-1.5" dir="ltr">
+          <span className="text-xl font-bold tabular-nums tracking-tight" style={{ color: dir > 0 ? TH.up : dir < 0 ? TH.down : TH.textStrong }}>
             {mid != null ? fmt(mid) : '—'}
           </span>
           {chgPct != null && (
-            <span className="text-[11px] tabular-nums" style={{ color: chgCol }}>
+            <span className="text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded" style={{ color: chgCol, background: TH.chipBg }}>
               {chgAbs >= 0 ? '+' : ''}{fmt(chgAbs)} ({chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%)
             </span>
           )}
@@ -101,10 +115,10 @@ export default function Details({ symbol, TH, prices = {} }) {
       </div>
 
       {/* نوارِ بازهٔ روز */}
-      <div className="mb-3">
-        <div className="flex items-center justify-between text-[10px] opacity-60 mb-1">
-          <span>بازهٔ روز</span>
-          <span dir="ltr" className="tabular-nums">{fmt(lo)} – {fmt(hi)}</span>
+      <div className="mb-3.5">
+        <div className="flex items-center justify-between text-[10px] opacity-60 mb-1.5">
+          <span className="font-medium">بازهٔ روز</span>
+          <span dir="ltr" className="tabular-nums font-medium">{fmt(lo)} – {fmt(hi)}</span>
         </div>
         <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: TH.chipBg }}>
           {pos != null && (
@@ -118,24 +132,30 @@ export default function Details({ symbol, TH, prices = {} }) {
       </div>
 
       {/* مشخصاتِ معاملاتی */}
-      <div className="rounded-md border px-2.5 py-0.5" style={{ borderColor: TH.border, background: TH.subtle }}>
+      <div className="text-[10px] font-semibold opacity-50 mb-1.5 px-0.5">مشخصاتِ معاملاتی</div>
+      <div className="rounded-lg border px-3 py-1" style={{ borderColor: TH.border, background: TH.subtle }}>
         <Row k="بید (Bid)" v={fmt(bid)} c={TH.down} />
         <Row k="اَسک (Ask)" v={fmt(ask)} c={TH.up} />
         <Row k="اسپرد" v={spread != null ? spread.toFixed(dec) : '—'} />
         <Row k="بالاترینِ روز" v={fmt(hi)} />
         <Row k="پایین‌ترینِ روز" v={fmt(lo)} />
-        <Row k="بازشدنِ روز" v={fmt(day?.o)} last />
+        <Row k="بازشدنِ روز" v={fmt(day?.o)} />
+        <Row k="بالاترینِ ۵۲ هفته" v={fmt(year?.hi)} c={TH.up} />
+        <Row k="پایین‌ترینِ ۵۲ هفته" v={fmt(year?.lo)} c={TH.down} />
+        <Row k="تغییرِ ۱ هفته" v={perf?.w != null ? `${perf.w >= 0 ? '+' : ''}${perf.w.toFixed(2)}%` : '—'} c={perf?.w == null ? TH.text : perf.w >= 0 ? TH.up : TH.down} />
+        <Row k="تغییرِ ۱ ماه" v={perf?.m != null ? `${perf.m >= 0 ? '+' : ''}${perf.m.toFixed(2)}%` : '—'} c={perf?.m == null ? TH.text : perf.m >= 0 ? TH.up : TH.down} last />
       </div>
 
       {/* متادیتای ابزار */}
-      <div className="mt-3 rounded-md border px-2.5 py-0.5" style={{ borderColor: TH.border, background: TH.subtle }}>
+      <div className="text-[10px] font-semibold opacity-50 mt-3.5 mb-1.5 px-0.5">مشخصاتِ ابزار</div>
+      <div className="rounded-lg border px-3 py-1" style={{ borderColor: TH.border, background: TH.subtle }}>
         <Row k="نوعِ ابزار" v={meta.type} />
         <Row k="اندازهٔ قرارداد" v={meta.contract} />
         <Row k="جلسهٔ معاملاتی" v={meta.session} last />
       </div>
 
       {mid == null && (
-        <div className="mt-3 text-[10px] text-center leading-5" style={{ color: TH.down, opacity: 0.7 }}>قیمتِ زنده هنوز دریافت نشده — هنگامِ بازشدنِ بازار به‌روز می‌شود.</div>
+        <div className="mt-3.5 text-[10px] text-center leading-5 rounded-lg border px-3 py-2" style={{ color: TH.down, borderColor: TH.border, background: TH.subtle, opacity: 0.85 }}>قیمتِ زنده هنوز دریافت نشده — هنگامِ بازشدنِ بازار به‌روز می‌شود.</div>
       )}
     </div>
   );
