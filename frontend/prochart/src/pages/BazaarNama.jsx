@@ -768,7 +768,7 @@ export default function BazaarNama() {
     const chart = chartRef.current; if (!chart) return;
     Object.values(overlaySeries.current).flat().forEach((s) => { try { chart.removeSeries(s); } catch (e) {} });
     overlaySeries.current = {};
-    const c = { open: cs.map((x) => x.o), high: cs.map((x) => x.h), low: cs.map((x) => x.l), close: cs.map((x) => x.c), volume: cs.map((x) => x.v || 0) };
+    const c = { open: cs.map((x) => x.o), high: cs.map((x) => x.h), low: cs.map((x) => x.l), close: cs.map((x) => x.c), volume: cs.map((x) => x.v || 0), time: cs.map((x) => x.t) };
     let anyLeft = false; // برای روشن‌کردنِ محورِ چپ وقتی اندیکاتوری به آن تخصیص یافته
     overlays.forEach((ov) => {
       const def = REGISTRY[ov.key]; if (!def || def.pane !== 'main') return;
@@ -803,7 +803,7 @@ export default function BazaarNama() {
     Object.values(subChartsRef.current).flat().forEach((s) => { try { chart.removeSeries(s); } catch (e) {} });
     subChartsRef.current = {};
     if (subWrapRef.current) subWrapRef.current.innerHTML = '';
-    const c = { open: cs.map((x) => x.o), high: cs.map((x) => x.h), low: cs.map((x) => x.l), close: cs.map((x) => x.c), volume: cs.map((x) => x.v || 0) };
+    const c = { open: cs.map((x) => x.o), high: cs.map((x) => x.h), low: cs.map((x) => x.l), close: cs.map((x) => x.c), volume: cs.map((x) => x.v || 0), time: cs.map((x) => x.t) };
     const subList = indsHiddenRef.current ? [] : subs.filter((sub) => { const d = REGISTRY[sub.key]; return d && d.pane === 'sub' && sub.visible !== false; }); // توگلِ سراسری + تبِ Style
     subList.forEach((sub, idx) => {
       const def = REGISTRY[sub.key];

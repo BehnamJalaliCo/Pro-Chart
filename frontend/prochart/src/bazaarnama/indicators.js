@@ -110,10 +110,18 @@ export const stoch = (highs, lows, closes, p = 14, d = 3) => {
   return { k, d: dd };
 };
 
-export const vwap = (highs, lows, closes, vols) => {
+// VWAP — پیش‌فرضِ TradingView سشن‌محور است (هر سشنِ معاملاتی/روز ریست می‌شود).
+// اگر آرایهٔ times (یونیکس‌ثانیه) داده شود، با تغییرِ روزِ UTC انباشت ریست می‌گردد؛
+// بدونِ times رفتارِ تجمعیِ قبلی حفظ می‌شود (سازگاریِ عقب‌رو).
+export const vwap = (highs, lows, closes, vols, times) => {
   const out = new Array(closes.length).fill(null);
-  let pv = 0, vv = 0;
+  let pv = 0, vv = 0, prevDay = null;
   for (let i = 0; i < closes.length; i++) {
+    if (times && times[i] != null) {
+      const day = Math.floor(times[i] / 86400); // سطلِ روزِ UTC
+      if (prevDay !== null && day !== prevDay) { pv = 0; vv = 0; } // سشنِ جدید → ریست
+      prevDay = day;
+    }
     const tp = (highs[i] + lows[i] + closes[i]) / 3;
     pv += tp * (vols[i] || 0); vv += vols[i] || 0;
     out[i] = vv ? pv / vv : closes[i];
@@ -393,7 +401,7 @@ export const REGISTRY = {
   ema:  { label: 'EMA', pane: 'main', inputs: { period: 20 }, color: '#f59e0b', calc: (c, i) => ({ line: ema(c.close, i.period) }) },
   wma:  { label: 'WMA', pane: 'main', inputs: { period: 20 }, color: '#a78bfa', calc: (c, i) => ({ line: wma(c.close, i.period) }) },
   hma:  { label: 'HMA (هال)', pane: 'main', inputs: { period: 21 }, color: '#22d3ee', calc: (c, i) => ({ line: hma(c.close, i.period) }) },
-  vwap: { label: 'VWAP', pane: 'main', inputs: {}, color: '#e879f9', calc: (c) => ({ line: vwap(c.high, c.low, c.close, c.volume) }) },
+  vwap: { label: 'VWAP (سشن‌محور)', pane: 'main', inputs: {}, color: '#e879f9', calc: (c) => ({ line: vwap(c.high, c.low, c.close, c.volume, c.time) }) },
   avwap: { label: 'VWAP لنگرانداخته (±σ)', pane: 'main', inputs: { anchorBars: 100, mult: 1 }, color: '#e879f9', calc: (c, i) => { const r = avwap(c.high, c.low, c.close, c.volume, i.anchorBars, i.mult); return { lines: [{ data: r.vwap, color: '#e879f9' }, { data: r.upper, color: '#a855f7', dashed: true }, { data: r.lower, color: '#a855f7', dashed: true }] }; } },
   choppiness: { label: 'شاخصِ چاپینس', pane: 'sub', inputs: { period: 14 }, color: '#94a3b8', calc: (c, i) => ({ line: choppiness(c.high, c.low, c.close, i.period), guides: [61.8, 38.2] }) },
   vortex: { label: 'وُرتکس (VI±)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e', calc: (c, i) => { const r = vortex(c.high, c.low, c.close, i.period); return { line: r.plus, signal: r.minus }; } },
