@@ -17,9 +17,12 @@ const digits = (sym = '') => {
   const s = String(sym).toUpperCase();
   if (s.includes('JPY')) return 3;
   if (s.includes('XAU') || s.includes('GOLD')) return 2;
+  if (s.includes('XAG') || s.includes('SILVER')) return 3;
   if (s.includes('BTC') || s.includes('ETH')) return 1;
-  if (/XTI|USOIL|WTI|BRENT/.test(s)) return 2;
-  if (/US30|US500|NAS100|DE40|US100/.test(s)) return 2;
+  if (/XTI|USOIL|UKOIL|WTI|BRENT/.test(s)) return 2;
+  // شاخص‌ها = ۲ رقم (هم‌راستا با INDEX set در symbolMeta و priceDigitsِ صفحهٔ چارت؛
+  // قبلاً JP225/SPX/DJI/NDX/UK100/… جا افتاده بودند و به‌اشتباه ۵ رقمی می‌شدند، مثلِ 69214.70000).
+  if (/US30|US500|US100|NAS100|NAS|SPX|DJI|NDX|UK100|DE40|GER40|JP225|FRA40|HK50|AUS200|EU50/.test(s)) return 2;
   return 5;
 };
 const fmtP = (sym, v) => { const n = num(v); return n == null ? '—' : n.toFixed(digits(sym)); };
