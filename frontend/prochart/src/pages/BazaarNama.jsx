@@ -571,7 +571,9 @@ export default function BazaarNama() {
     s.setData((['line', 'area', 'baseline', 'step'].includes(chartType) || EXT_VALUE_TYPES.includes(chartType)) ? valSeries(data) : ohlc(data));
     priceSeriesRef.current = s;
     drawRef.current && drawRef.current.setSeries(s);
-  }, [chartType, TH]);
+    // symbol در depها لازم است: وگرنه این callback نمادِ کهنه را می‌گیرد و priceFormatِ محور را با
+    // دقتِ نمادِ قبلی می‌سازد (مثلاً بعد از EURUSD→BTC، محورِ بیت‌کوین ۵ رقمی می‌شد به‌جای ۱). fetch-effect از قبل symbol دارد پس رفچِ اضافه ندارد.
+  }, [chartType, TH, symbol]);
 
   // دقتِ محورِ قیمت و برچسبِ آخر بر اساسِ نماد (فارکس ۵، JPY ۳، شاخص/طلا ۲، BTC/ETH ۱) — سبکِ TV.
   // پیش‌فرضِ کتابخانه precision:2 است و برای فارکس «1.14» نشان می‌داد؛ حالا 1.14432 مثلِ لجند.
