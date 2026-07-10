@@ -61,9 +61,7 @@ async def ensure_pairs() -> List[str]:
     """لیستِ نمادهای USDTِ LBank را (با کش) برمی‌گرداند؛ خودبه‌خود آپدیت می‌شود."""
     global _pairs_set, _pairs_list, _pairs_ts
     now = time.time()
-    if _pairs_list and (now - _pairs_ts) < _PAIRS_TTL:
-        return _pairs_list
-    # فقط ۱۰۰ جفتِ برتر (که workerِ WS در Redis گذاشته) — trimِ کاتالوگ
+    # اولویت: ۱۰۰ جفتِ برتر (که workerِ WS در Redis گذاشته) — trimِ کاتالوگ
     try:
         from src.core.redis_client import redis_client
         top = await redis_client.client.smembers("bn:crypto_top100")
@@ -76,6 +74,8 @@ async def ensure_pairs() -> List[str]:
             return _pairs_list
     except Exception:  # noqa: BLE001
         pass
+    if _pairs_list and (now - _pairs_ts) < _PAIRS_TTL:
+        return _pairs_list
     try:
         async with httpx.AsyncClient(timeout=10.0) as cli:
             r = await cli.get(f"{LBANK_BASE}/currencyPairs.do")
