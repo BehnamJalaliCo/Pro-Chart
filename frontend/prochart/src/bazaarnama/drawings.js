@@ -24,6 +24,7 @@ export class DrawingLayer {
     this.selected = -1;   // ایندکسِ ترسیمِ انتخاب‌شده
     this.candles = null;  // برای مگنت (snap به OHLC)
     this.magnet = false;
+    this.magnetMode = 'strong'; // 'strong' = همیشه snap، 'weak' = فقط اگر نزدیکِ OHLC باشد (سبکِ TV)
     this.pending = null;  // ابزارِ چندنقطه‌ایِ در حالِ ساخت
     this.order = null;    // {side, entry, sl, tp} — خطوطِ سفارشِ قابلِ‌درگ
     this.onOrder = null;  // callback هنگامِ درگِ خطوطِ سفارش
@@ -84,7 +85,7 @@ export class DrawingLayer {
   setProfile(buckets) { this.profile = buckets; this.render(); }
   setScriptPaint(s) { this.script = s; this.render(); }
   setCandles(cs) { this.candles = cs; }
-  setMagnet(on) { this.magnet = on; }
+  setMagnet(on, mode) { this.magnet = on; if (mode) this.magnetMode = mode; }
 
   _snap(pt) {
     if (!this.magnet || !this.candles || !this.candles.length || pt.t == null) return pt;
@@ -95,6 +96,8 @@ export class DrawingLayer {
     const cand = [best.o, best.h, best.l, best.c];
     let bp = pt.p, bpd = Infinity;
     cand.forEach((v) => { const dd = Math.abs(v - pt.p); if (dd < bpd) { bpd = dd; bp = v; } });
+    // حالتِ ضعیف (سبکِ TV): فقط وقتی نشانگر به‌قدرِ کافی نزدیکِ OHLC است snap کن؛ وگرنه نقطهٔ آزاد.
+    if (this.magnetMode === 'weak' && pt.p && bpd / Math.abs(pt.p) > 0.0015) return pt;
     return { t: best.t, p: bp };
   }
 

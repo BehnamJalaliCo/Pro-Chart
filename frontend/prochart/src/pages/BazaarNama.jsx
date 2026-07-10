@@ -288,6 +288,9 @@ export default function BazaarNama() {
   const showVolumeRef = useRef(loadWS().showVolume ?? true); // گیتِ پایدار برای applyVolume (بدونِ وابستگی → پایدار)
   const [quickRange, setQuickRange] = useState(null); // بازهٔ سریعِ نمایشِ فعال (1D/5D/…/All) — سطحِ چارت
   const [magnet, setMagnet] = useState(loadWS().magnet ?? false);
+  const [magnetMode, setMagnetMode] = useState(loadWS().magnetMode ?? 'strong'); // قوی/ضعیف (سبکِ TV)
+  const [allLocked, setAllLocked] = useState(false); // قفلِ همهٔ ترسیم‌ها (سبکِ TV)
+  const [allHidden, setAllHidden] = useState(false); // مخفیِ همهٔ ترسیم‌ها (سبکِ TV)
   const [order, setOrder] = useState(null); // {side, entry, sl, tp} — #D: پیش‌فرض هیچ پوزیشنی باز نیست (از localStorage بازیابی نمی‌شود)
   const [aiSig, setAiSig] = useState(() => loadWS().aiSig || null); // سیگنالِ AI — باگ۳: با رفرش پاک نشود
   const [aiList, setAiList] = useState([]); // همهٔ سیگنال‌های اخیر — همیشه در ساید‌بار می‌مانند
@@ -716,7 +719,7 @@ export default function BazaarNama() {
   }, []);
 
   useEffect(() => { if (drawRef.current) { showVP ? applyVP() : drawRef.current.setProfile(null); } }, [showVP, applyVP]);
-  useEffect(() => { if (drawRef.current) drawRef.current.setMagnet(magnet); }, [magnet]);
+  useEffect(() => { if (drawRef.current) drawRef.current.setMagnet(magnet, magnetMode); saveWS({ magnetMode }); }, [magnet, magnetMode]);
   // کراس‌هیر (فصل ۳): حالتِ Cross/Dot/Arrow/Hidden + یکپارچه‌سازیِ Magnet با CrosshairMode
   useEffect(() => {
     const ch = chartRef.current; if (!ch) return;
@@ -1621,16 +1624,20 @@ export default function BazaarNama() {
         {!compact && (
         <div className="w-12 border-r flex flex-col items-center py-2 gap-1 shrink-0" style={{ borderColor: TH.border }}>
           <div className="flex-1 min-h-0 w-full">
-            <ToolRail tool={tool} setTool={setTool} TH={TH} onHelp={setHelpId} />
+            <ToolRail tool={tool} setTool={setTool} TH={TH} onHelp={setHelpId}
+              magnet={magnet} onToggleMagnet={(v) => setMagnet(v)}
+              magnetMode={magnetMode} onSetMagnetMode={(m) => setMagnetMode(m)}
+              stayInDrawing={stayDraw} onToggleStayInDrawing={(v) => setStayDraw(v)}
+              allLocked={allLocked} onLockAll={(v) => { if (drawRef.current) drawRef.current.lockAll(v); setAllLocked(v); treeRefresh(); }}
+              allHidden={allHidden} onHideAll={(v) => { if (drawRef.current) drawRef.current.hideAll(v); setAllHidden(v); treeRefresh(); }}
+              onRemoveAll={() => { if (drawRef.current) drawRef.current.clearAll(); setAllLocked(false); setAllHidden(false); treeRefresh(); }} />
           </div>
           <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
           <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-4 h-4 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>
-          <Tip label="مگنت — چسبیدنِ ترسیم به قیمتِ کندل"><button onClick={() => setMagnet((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${magnet ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={magnet ? { background: TH.accent } : {}}><Magnet size={12} /></button></Tip>
           <Tip label="پروفایلِ حجم (توزیعِ قیمت)"><button onClick={() => setShowVP((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${showVP ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showVP ? { background: TH.accent } : {}}><BarChart3 size={12} /></button></Tip>
           <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
           <Tip label="واگرد (Ctrl+Z)"><button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} className="p-1 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Undo2 size={12} /></button></Tip>
           <Tip label="ازنو (Ctrl+Y)"><button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} className="p-1 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Redo2 size={12} /></button></Tip>
-          <Tip label="ماندن در حالتِ ترسیم (پشتِ‌سرهم بکش)"><button onClick={() => setStayDraw((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${stayDraw ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={stayDraw ? { background: TH.accent } : {}}><Pencil size={12} /></button></Tip>
           <Tip label="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)"><button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} className={`p-1 rounded-md transition-colors duration-[120ms] ${showTree ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showTree ? { background: TH.accent } : {}}><List size={12} /></button></Tip>
           <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={12} /></button></Tip>
           <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
