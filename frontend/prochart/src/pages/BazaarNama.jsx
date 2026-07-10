@@ -1398,12 +1398,12 @@ export default function BazaarNama() {
     return () => window.removeEventListener('keydown', onKey);
   }, [showShortcuts, editInd]);
 
-  // #7 میان‌بُرِ سراسری: Ctrl/⌘+K یا "/" → مدالِ جستجوی نماد (مثلِ TradingView)
+  // #7 میان‌بُرِ سراسری: Ctrl/⌘+K → مدالِ جستجوی نماد (مثلِ TradingView).
+  //   نکته: «/» عمداً حذف شد — در hotkeys.js به «بازکردنِ اندیکاتورها» اختصاص دارد (طبقِ راهنمای میان‌بُرها)؛
+  //   داشتنِ هر دو باعث می‌شد «/» هم دیالوگِ اندیکاتور و هم مدالِ جستجو را باز کند (تداخل).
   useEffect(() => {
     const onKey = (e) => {
-      const tag = (e.target.tagName || '').toLowerCase();
-      const typing = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
-      if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !typing)) {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault(); setSymModal(true);
       }
     };
