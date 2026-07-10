@@ -62,7 +62,7 @@ const priceDigits = (sym = '') => {
   if (s.includes('JPY')) return 3;
   if (s.includes('XAU') || s.includes('GOLD')) return 2;
   if (s.includes('XAG')) return 3;
-  if (s.includes('BTC') || s.includes('ETH')) return 1;
+  if (s.includes('BTC') || s.includes('ETH')) return 2; // مثلِ TradingView (مثلاً 64,029.50) — قبلاً ۱ رقم بود
   // رمزارزهای میان‌قیمت (~۱۰ تا ۱۰۰۰ دلار) = ۲ رقم؛ قبلاً به پیش‌فرضِ ۵ می‌افتادند و مثلِ «۶۰۰٫۰۰۰۰۰» زشت می‌شدند.
   if (/BNB|SOL|LTC|BCH|AVAX|DOT|LINK|ATOM|NEAR|UNI|AAVE|XMR/.test(s)) return 2;
   if (/XTI|USOIL|UKOIL|WTI|BRENT/.test(s)) return 2;
