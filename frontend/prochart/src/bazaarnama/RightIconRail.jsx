@@ -18,14 +18,19 @@ import { Star, BellRing, CalendarDays, Newspaper, ScanLine, Lightbulb } from 'lu
 // آیتم‌های ریل. key دقیقاً متناظرِ کلیدهای rightTab (TABS در RightPanel.jsx) است تا
 // onSelect(key) بدونِ نگاشتِ اضافی به setRightTab وصل شود.
 //   watch=واچ‌لیست · alerts=آلارم · cal=تقویم · news=اخبار · screener=اسکنر · ai=ایده‌ها
-const ITEMS = [
+// گروه‌بندیِ سبکِ TradingView: پنل‌های «اطلاعات/پایش» بالا (واچ‌لیست، آلارم) و ابزارها/کاوش پایین
+// (اسکنر، تقویم، اخبار، ایده‌ها) با فاصلهٔ منعطف بینشان — دقیقاً مثلِ ریلِ راستِ TV که بالا/پایین جدا دارد.
+const ITEMS_TOP = [
   { key: 'watch',    label: 'واچ‌لیست', Icon: Star },
   { key: 'alerts',   label: 'آلارم‌ها', Icon: BellRing },
+];
+const ITEMS_BOTTOM = [
+  { key: 'screener', label: 'اسکنر', Icon: ScanLine },
   { key: 'cal',      label: 'تقویمِ اقتصادی', Icon: CalendarDays },
   { key: 'news',     label: 'اخبار', Icon: Newspaper },
-  { key: 'screener', label: 'اسکنر', Icon: ScanLine },
   { key: 'ai',       label: 'ایده‌ها و سیگنال', Icon: Lightbulb },
 ];
+const ITEMS = [...ITEMS_TOP, ...ITEMS_BOTTOM]; // برای lookupِ تولتیپ
 
 // هکسِ توکنِ تم → rgba با شفافیتِ دلخواه (بدونِ hard-code؛ از TH.accent مشتق می‌شود).
 // اگر رشته rgb/rgba بود دست‌نخورده برمی‌گردد؛ فقطِ #RGB/#RRGGBB را می‌شناسد.
@@ -69,42 +74,48 @@ export default function RightIconRail({ active, onSelect, TH }) {
       dir="rtl"
       role="tablist"
       aria-orientation="vertical"
-      className="relative shrink-0 flex flex-col items-center gap-0.5 py-1.5 border-l select-none"
+      className="relative shrink-0 flex flex-col items-center gap-0.5 py-1.5 border-l select-none h-full"
       style={{ width: 40, borderColor: TH.border, background: TH.bg }}
     >
       {/* کیفریمِ محلیِ تولتیپ — نامِ یکتا تا با brn-tip-in در ToolRail تداخل نکند. */}
       <style>{`@keyframes brn-rtip-in{from{opacity:0;transform:translate(-4px,-50%)}to{opacity:1;transform:translate(0,-50%)}}`}</style>
 
-      {ITEMS.map(({ key, label, Icon }) => {
-        const on = active === key;
-        return (
-          <button
-            key={key}
-            type="button"
-            role="tab"
-            aria-selected={on}
-            aria-label={label}
-            title={label}
-            onClick={() => onSelect && onSelect(key)}
-            onMouseEnter={(e) => { showTip(e, key); if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
-            onMouseLeave={(e) => { hideTip(); if (!on) e.currentTarget.style.background = 'transparent'; }}
-            onFocus={(e) => showTip(e, key)}
-            onBlur={hideTip}
-            className="relative flex items-center justify-center rounded-lg outline-none focus-visible:ring-1"
-            style={{
-              width: 32,
-              height: 32,
-              background: on ? accentTint : 'transparent',
-              color: on ? TH.accent : TH.text,
-              transition: 'background-color 120ms ease, color 120ms ease',
-            }}
-          >
-            {/* ریلِ پنل‌سوییچرِ راستِ TV اکتیو را فقط با مربعِ گِردِ tinted نشان می‌دهد
-                (برخلافِ ریلِ ابزارِ چپ، هیچ پیلِ لبه‌ای ندارد) — پس فقط بک‌گراند + رنگ. */}
-            <Icon size={20} strokeWidth={on ? 2.1 : 1.8} />
-          </button>
-        );
-      })}
+      {[ITEMS_TOP, ITEMS_BOTTOM].map((group, gi) => (
+        <React.Fragment key={gi}>
+          {/* فاصلهٔ منعطف بینِ دو گروه — گروهِ دوم را به پایینِ ریل می‌چسباند (سبکِ TV) */}
+          {gi === 1 && <div className="flex-1 min-h-[8px]" aria-hidden="true" />}
+          {group.map(({ key, label, Icon }) => {
+            const on = active === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                aria-label={label}
+                title={label}
+                onClick={() => onSelect && onSelect(key)}
+                onMouseEnter={(e) => { showTip(e, key); if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
+                onMouseLeave={(e) => { hideTip(); if (!on) e.currentTarget.style.background = 'transparent'; }}
+                onFocus={(e) => showTip(e, key)}
+                onBlur={hideTip}
+                className="relative flex items-center justify-center rounded-lg outline-none focus-visible:ring-1"
+                style={{
+                  width: 32,
+                  height: 32,
+                  background: on ? accentTint : 'transparent',
+                  color: on ? TH.accent : TH.text,
+                  transition: 'background-color 120ms ease, color 120ms ease',
+                }}
+              >
+                {/* ریلِ پنل‌سوییچرِ راستِ TV اکتیو را فقط با مربعِ گِردِ tinted نشان می‌دهد
+                    (برخلافِ ریلِ ابزارِ چپ، هیچ پیلِ لبه‌ای ندارد) — پس فقط بک‌گراند + رنگ. */}
+                <Icon size={20} strokeWidth={on ? 2.1 : 1.8} />
+              </button>
+            );
+          })}
+        </React.Fragment>
+      ))}
 
       {/* تولتیپِ فارسیِ چپ‌بازشونده — پیلِ راست‌ایستا، Y هم‌ترازِ مرکزِ دکمه. */}
       {tipItem && (
