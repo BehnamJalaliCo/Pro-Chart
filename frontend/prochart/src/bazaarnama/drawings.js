@@ -319,9 +319,9 @@ export class DrawingLayer {
     if (yE != null && yT != null) { ctx.fillStyle = 'rgba(34,197,94,.10)'; ctx.fillRect(0, Math.min(yE, yT), W, Math.abs(yE - yT)); }
     if (yE != null && yS != null) { ctx.fillStyle = 'rgba(239,68,68,.10)'; ctx.fillRect(0, Math.min(yE, yS), W, Math.abs(yE - yS)); }
     const line = (y, col, label) => { if (y == null) return; ctx.strokeStyle = col; ctx.setLineDash([5, 3]); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle = col; ctx.fillRect(4, y - 7, 14, 14); ctx.fillStyle = '#fff'; ctx.fillText('⇕', 6, y + 4); ctx.fillStyle = col; ctx.fillText(label, 22, y - 3); };
-    line(yT, '#22c55e', `هدف ${o.tp.toFixed(5)}`);
-    line(yE, '#3b82f6', `${o.side === 'buy' ? 'خرید' : 'فروش'} ${o.entry.toFixed(5)}  R:R ${rr}`);
-    line(yS, '#ef4444', `حد ضرر ${o.sl.toFixed(5)}`);
+    line(yT, '#22c55e', `هدف ${o.tp.toFixed(this.digits)}`);
+    line(yE, '#3b82f6', `${o.side === 'buy' ? 'خرید' : 'فروش'} ${o.entry.toFixed(this.digits)}  R:R ${rr}`);
+    line(yS, '#ef4444', `حد ضرر ${o.sl.toFixed(this.digits)}`);
   }
 
   _drawHandles(ctx, d) {
@@ -360,10 +360,10 @@ export class DrawingLayer {
       if (xx0 == null || xx1 == null) return;
       const lv = [0, 0.618, 1, 1.272, 1.618, 2.618]; const base = d.p0.p, diff = d.p1.p - d.p0.p;
       const xa = Math.min(xx0, xx1), xb = Math.max(xx0, xx1) + 30;
-      lv.forEach((l) => { const pr = base + diff * l; const y = this._y(pr); if (y == null) return; ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.moveTo(xa, y); ctx.lineTo(xb, y); ctx.stroke(); ctx.fillText(`${(l * 100).toFixed(1)}%  ${pr.toFixed(5)}`, xa + 4, y - 2); ctx.globalAlpha = 1; });
+      lv.forEach((l) => { const pr = base + diff * l; const y = this._y(pr); if (y == null) return; ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.moveTo(xa, y); ctx.lineTo(xb, y); ctx.stroke(); ctx.fillText(`${(l * 100).toFixed(1)}%  ${pr.toFixed(this.digits)}`, xa + 4, y - 2); ctx.globalAlpha = 1; });
       return;
     }
-    if (d.type === 'hline') { const y = this._y(d.p); if (y == null) return; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); ctx.fillText(d.p.toFixed(5), 4, y - 3); return; }
+    if (d.type === 'hline') { const y = this._y(d.p); if (y == null) return; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); ctx.fillText(d.p.toFixed(this.digits), 4, y - 3); return; }
     if (d.type === 'vline') { const x = this._x(d.t); if (x == null) return; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); return; }
     const x0 = this._x(d.p0?.t), y0 = this._y(d.p0?.p), x1 = this._x(d.p1?.t), y1 = this._y(d.p1?.p);
     if (d.type === 'text') { const x = this._x(d.t), y = this._y(d.p); if (x == null || y == null) return; ctx.fillText(d.text, x, y); return; }
@@ -374,7 +374,7 @@ export class DrawingLayer {
     else if (d.type === 'fib') {
       const top = Math.max(d.p0.p, d.p1.p), bot = Math.min(d.p0.p, d.p1.p), rng = top - bot;
       const xa = Math.min(x0, x1), xb = Math.max(x0, x1);
-      FIB.forEach((lv) => { const price = top - rng * lv; const y = this._y(price); if (y == null) return; ctx.globalAlpha = 0.8; ctx.beginPath(); ctx.moveTo(xa, y); ctx.lineTo(xb, y); ctx.stroke(); ctx.fillText(`${(lv * 100).toFixed(1)}%  ${price.toFixed(5)}`, xa + 4, y - 2); ctx.globalAlpha = 1; });
+      FIB.forEach((lv) => { const price = top - rng * lv; const y = this._y(price); if (y == null) return; ctx.globalAlpha = 0.8; ctx.beginPath(); ctx.moveTo(xa, y); ctx.lineTo(xb, y); ctx.stroke(); ctx.fillText(`${(lv * 100).toFixed(1)}%  ${price.toFixed(this.digits)}`, xa + 4, y - 2); ctx.globalAlpha = 1; });
     }
     else if (d.type === 'longshort') {
       const entry = d.p0.p, stop = d.p1.p, risk = entry - stop, target = entry + 2 * risk;
