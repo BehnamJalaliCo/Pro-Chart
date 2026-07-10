@@ -487,10 +487,14 @@ export function CrosshairAxisTag({ price, time, TH }) {
 }
 
 // شمارشِ معکوسِ بسته‌شدنِ کندل + وضعیتِ بازار — رندرِ خالص.
-export function CountdownChip({ countdown, countdownColor, TH, marketOpen }) {
+//   سبکِ TV: اگر axisY (مختصاتِ yِ قیمتِ آخر روی محور) داده شود، تگ زیرِ برچسبِ قیمتِ
+//   آخر روی محورِ راست می‌نشیند (دنبالِ قیمت)؛ وگرنه fallback به گوشهٔ پایین-راست.
+export function CountdownChip({ countdown, countdownColor, TH, marketOpen, axisY }) {
   if (!countdown) return null;
+  const onAxis = axisY != null && Number.isFinite(axisY);
+  const pos = onAxis ? { top: Math.round(axisY) + 16, right: 2 } : { bottom: 12, right: 12 };
   return (
-    <div className="absolute bottom-3 right-3 z-20 pointer-events-none rounded-md px-2 py-1 text-[11px] font-mono tabular-nums flex items-center gap-1.5 border shadow-sm" style={{ borderColor: countdownColor || TH.border, background: TH.popoverBg, color: countdownColor || undefined }} dir="ltr">
+    <div className="absolute z-20 pointer-events-none rounded-md px-2 py-1 text-[11px] font-mono tabular-nums flex items-center gap-1.5 border shadow-sm" style={{ ...pos, borderColor: countdownColor || TH.border, background: TH.popoverBg, color: countdownColor || undefined }} dir="ltr">
       <span className={`w-1.5 h-1.5 rounded-full ${marketOpen ? 'bg-green-400' : 'bg-red-400'}`} />
       <span className="opacity-60">⏱</span><b>{countdown}</b>
     </div>

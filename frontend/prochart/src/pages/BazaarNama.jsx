@@ -1826,8 +1826,9 @@ export default function BazaarNama() {
                 </div>
               </div>
             )}
-            {/* شمارشِ معکوسِ بسته‌شدنِ کندل + وضعیتِ بازار */}
-            <CountdownChip countdown={countdown} countdownColor={countdownColor} TH={TH} marketOpen={marketOpen} />
+            {/* شمارشِ معکوسِ بسته‌شدنِ کندل + وضعیتِ بازار — سبکِ TV: روی محورِ راست، زیرِ قیمتِ آخر */}
+            <CountdownChip countdown={countdown} countdownColor={countdownColor} TH={TH} marketOpen={marketOpen}
+              axisY={(() => { try { return (priceSeriesRef.current && livePrice != null) ? priceSeriesRef.current.priceToCoordinate(livePrice) : null; } catch (e) { return null; } })()} />
             {/* برچسبِ سریِ حجم — لبهٔ بالای باندِ حجم (مثلِ TradingView: «Vol») */}
             {showVolume && (
               <div className="absolute left-2 z-20 pointer-events-none text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center gap-1"
