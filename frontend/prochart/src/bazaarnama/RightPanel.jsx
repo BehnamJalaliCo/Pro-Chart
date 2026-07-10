@@ -787,7 +787,7 @@ function RowActions({ r, TH, flagFor, setFlagFor, setFlag, toggleWatch, compact,
   // در حالتِ overlay خودِ ظرف با hover ظاهر می‌شود؛ پس آیکن‌ها همیشه پیدا باشند (نه opacity-0).
   const iconCls = overlay ? 'opacity-70 hover:opacity-100 transition-opacity cursor-pointer' : 'opacity-0 group-hover/row:opacity-50 hover:!opacity-100 transition-opacity cursor-pointer';
   return (
-    <span className={`flex items-center gap-1 shrink-0 relative ${overlay ? `absolute left-0.5 top-1/2 -translate-y-1/2 z-20 h-6 px-1 rounded-md ${open ? 'opacity-100' : 'opacity-0 group-hover/row:opacity-100'}` : ''}`} dir="ltr"
+    <span className={`flex items-center gap-1 shrink-0 ${overlay ? `absolute left-0.5 top-1/2 -translate-y-1/2 z-20 h-6 px-1 rounded-md ${open ? 'opacity-100' : 'opacity-0 group-hover/row:opacity-100'}` : 'relative'}`} dir="ltr"
       style={overlay ? { background: TH.chipBg, boxShadow: `0 0 0 4px ${TH.chipBg}` } : undefined}
       onClick={(e) => e.stopPropagation()}>
       <span role="button" tabIndex={0} title="پرچمِ تفکیک" onClick={() => setFlagFor(open ? null : r.sym)}
