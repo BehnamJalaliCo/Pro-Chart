@@ -19,6 +19,7 @@ const digits = (sym = '') => {
   if (s.includes('XAU') || s.includes('GOLD')) return 2;
   if (s.includes('XAG') || s.includes('SILVER')) return 3;
   if (s.includes('BTC') || s.includes('ETH')) return 1;
+  if (/BNB|SOL|LTC|BCH|AVAX|DOT|LINK|ATOM|NEAR|UNI|AAVE|XMR/.test(s)) return 2; // رمزارزِ میان‌قیمت = ۲ رقم (نه پیش‌فرضِ ۵)
   if (/XTI|USOIL|UKOIL|WTI|BRENT/.test(s)) return 2;
   // شاخص‌ها = ۲ رقم (هم‌راستا با INDEX set در symbolMeta و priceDigitsِ صفحهٔ چارت؛
   // قبلاً JP225/SPX/DJI/NDX/UK100/… جا افتاده بودند و به‌اشتباه ۵ رقمی می‌شدند، مثلِ 69214.70000).

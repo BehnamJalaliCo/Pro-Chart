@@ -63,6 +63,8 @@ const priceDigits = (sym = '') => {
   if (s.includes('XAU') || s.includes('GOLD')) return 2;
   if (s.includes('XAG')) return 3;
   if (s.includes('BTC') || s.includes('ETH')) return 1;
+  // رمزارزهای میان‌قیمت (~۱۰ تا ۱۰۰۰ دلار) = ۲ رقم؛ قبلاً به پیش‌فرضِ ۵ می‌افتادند و مثلِ «۶۰۰٫۰۰۰۰۰» زشت می‌شدند.
+  if (/BNB|SOL|LTC|BCH|AVAX|DOT|LINK|ATOM|NEAR|UNI|AAVE|XMR/.test(s)) return 2;
   if (/XTI|USOIL|UKOIL|WTI|BRENT/.test(s)) return 2;
   if (/US30|US500|NAS100|DE40|SPX|DJI|NDX|UK100|JP225|US100/.test(s)) return 2;
   return 5;
