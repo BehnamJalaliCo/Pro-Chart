@@ -496,7 +496,10 @@ export function CountdownChip({ countdown, countdownColor, TH, marketOpen, axisY
   return (
     <div className="absolute z-20 pointer-events-none rounded-md px-2 py-1 text-[11px] font-mono tabular-nums flex items-center gap-1.5 border shadow-sm" style={{ ...pos, borderColor: countdownColor || TH.border, background: TH.popoverBg, color: countdownColor || undefined }} dir="ltr">
       <span className={`w-1.5 h-1.5 rounded-full ${marketOpen ? 'bg-green-400' : 'bg-red-400'}`} />
-      <span className="opacity-60">⏱</span><b>{countdown}</b>
+      {/* آیکونِ ساعتِ اختصاصیِ SVG (به‌جای ایموجیِ ⏱ که در فونتِ سایت رِندر نمی‌شد و به‌صورتِ □ می‌افتاد) */}
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 shrink-0" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" /><path d="M12 7.5V12l3 2" />
+      </svg><b>{countdown}</b>
     </div>
   );
 }
