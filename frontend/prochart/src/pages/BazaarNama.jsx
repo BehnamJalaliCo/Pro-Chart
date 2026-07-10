@@ -68,6 +68,13 @@ const priceDigits = (sym = '') => {
   return 5;
 };
 const fmtPrice = (sym, v) => (v == null || !Number.isFinite(Number(v)) ? '—' : Number(v).toFixed(priceDigits(sym)));
+// برچسبِ اندیکاتور با پارامترها (سبکِ TradingView: «RSI 14»، «MACD 12 26 9») — فقط ورودی‌های عددی.
+// در Legend و پنجرهٔ داده هر دو استفاده می‌شود تا یک‌دست بمانند.
+const indLbl = (key, inputs) => {
+  const base = REGISTRY[key] ? REGISTRY[key].label : key;
+  const vals = inputs ? Object.values(inputs).filter((v) => typeof v === 'number') : [];
+  return vals.length ? `${base} ${vals.join(' ')}` : base;
+};
 // بازه‌های سریعِ نمایش (سطحِ چارت — مثلِ TradingView): برچسب → تعدادِ روز | 'ytd' | 'all'.
 // این رنجِ *نمایش* را تنظیم می‌کند (setVisibleRange)، مستقل از اینتروال/تایم‌فریم.
 const QUICK_RANGES = [['1D', 1], ['5D', 5], ['1M', 30], ['3M', 90], ['6M', 180], ['YTD', 'ytd'], ['1Y', 365], ['5Y', 1825], ['All', 'all']];
@@ -593,7 +600,7 @@ export default function BazaarNama() {
       else if (r.multi) { const base = ov.color || def.color; mk(r.upper, lc[0] || base, 1, true); mk(r.basis, lc[1] || base, 1); mk(r.lower, lc[2] || base, 1, true); }
       else mk(r.line, lc[0] || ov.color || def.color);
       overlaySeries.current[ov.id] = arr;
-      indLabelRef.current[ov.id] = { label: def.label, color: lc[0] || ov.color || def.color };
+      indLabelRef.current[ov.id] = { label: indLbl(ov.key, ov.inputs), color: lc[0] || ov.color || def.color };
       // آخرین مقدار برای نمایش در Legend وقتی کراس‌هیر فعال نیست
       try { const ld = r.lines ? r.lines.map((ln) => ln.data) : (r.multi ? [r.upper, r.basis, r.lower] : [r.line]); lastIndValRef.current[ov.id] = ld.map((a) => a && a.length ? a[a.length - 1] : null).filter((v) => v != null && Number.isFinite(v)); } catch (e) { /* */ }
     });
@@ -657,7 +664,7 @@ export default function BazaarNama() {
       }
       try { const panes = chart.panes(); if (panes && panes[pane]) panes[pane].setHeight(108); } catch (e) {}
       subChartsRef.current[sub.id] = arr;
-      indLabelRef.current[sub.id] = { label: def.label, color: sub.color || def.color };
+      indLabelRef.current[sub.id] = { label: indLbl(sub.key, sub.inputs), color: sub.color || def.color };
       try { const last = r.line && r.line.length ? r.line[r.line.length - 1] : null; lastIndValRef.current[sub.id] = (last != null && Number.isFinite(last)) ? [last] : []; } catch (e) { /* */ }
     });
   }, [subs, TH]);
@@ -1429,13 +1436,6 @@ export default function BazaarNama() {
   const symbolMeta = useMemo(() => buildMeta(symbols), [symbols]);
 
   // #3 آیتم‌های Legend (overlays + subs) + مقادیرِ زنده (کراس‌هیر، وگرنه آخرین کندل)
-  // برچسبِ لِجندِ اندیکاتور با پارامترها (سبکِ TradingView: «RSI 14»، «MACD 12 26 9»).
-  // فقط ورودی‌های عددی افزوده می‌شوند تا source/رنگ در برچسب نیاید.
-  const indLbl = (key, inputs) => {
-    const base = REGISTRY[key] ? REGISTRY[key].label : key;
-    const vals = inputs ? Object.values(inputs).filter((v) => typeof v === 'number') : [];
-    return vals.length ? `${base} ${vals.join(' ')}` : base;
-  };
   const legendItems = useMemo(() => ([
     ...overlays.map((o) => ({ id: o.id, key: o.key, scope: 'main', label: indLbl(o.key, o.inputs), color: (o.lineColors && o.lineColors[0]) || o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
     ...subs.map((o) => ({ id: o.id, key: o.key, scope: 'sub', label: indLbl(o.key, o.inputs), color: o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
