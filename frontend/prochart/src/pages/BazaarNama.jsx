@@ -253,10 +253,11 @@ export default function BazaarNama() {
     const ext = (url) => () => { try { window.open(url, '_blank', 'noopener'); } catch (e) {} };
     const onSup = ext('https://t.me/CoinePro_Admin'); // #۱۳ پشتیبانِ CoinePro FX
     const onSetSym = (e) => { const s = e && e.detail; if (s && typeof s === 'string') setSymbol(s); }; // از پوستهٔ اپ (واچ‌لیست/سیگنال)
+    const onOpenSearch = () => setSymModal(true); // کلیک روی نامِ نماد در پنلِ جزئیات → مدالِ جستجو (مثلِ TradingView)
     window.addEventListener('bn:rightTab', onTab); window.addEventListener('bn:openScript', onScript); window.addEventListener('bn:help', onHelp);
     window.addEventListener('bn:support', onSup); window.addEventListener('bn:terms', onTerms); window.addEventListener('bn:toggleTheme', onThemeT);
-    window.addEventListener('bn:setSymbol', onSetSym);
-    return () => { window.removeEventListener('bn:rightTab', onTab); window.removeEventListener('bn:openScript', onScript); window.removeEventListener('bn:help', onHelp); window.removeEventListener('bn:support', onSup); window.removeEventListener('bn:terms', onTerms); window.removeEventListener('bn:toggleTheme', onThemeT); window.removeEventListener('bn:setSymbol', onSetSym); };
+    window.addEventListener('bn:setSymbol', onSetSym); window.addEventListener('bn:openSearch', onOpenSearch);
+    return () => { window.removeEventListener('bn:rightTab', onTab); window.removeEventListener('bn:openScript', onScript); window.removeEventListener('bn:help', onHelp); window.removeEventListener('bn:support', onSup); window.removeEventListener('bn:terms', onTerms); window.removeEventListener('bn:toggleTheme', onThemeT); window.removeEventListener('bn:setSymbol', onSetSym); window.removeEventListener('bn:openSearch', onOpenSearch); };
   }, [tool, openNamaScript]);
 
   // همگام‌سازیِ تم با فروشگاهِ سراسریِ اپ (پروفایل = منبعِ اصلی؛ تاگلِ داخلی هم برمی‌گرداند)

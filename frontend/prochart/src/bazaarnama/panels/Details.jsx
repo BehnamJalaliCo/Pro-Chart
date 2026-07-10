@@ -268,7 +268,9 @@ export default function Details({ symbol, TH, prices = {} }) {
           <SymbolLogo symbol={symbol} size={32} />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-[15px] leading-none tracking-tight" style={{ color: TH.textStrong }} dir="ltr">{symbol}</span>
+              <button type="button" onClick={() => { try { window.dispatchEvent(new CustomEvent('bn:openSearch')); } catch (e) {} }}
+                title="تغییرِ نماد (جستجو)" className="font-extrabold text-[15px] leading-none tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
+                style={{ color: TH.textStrong, background: 'transparent', border: 0, padding: 0 }} dir="ltr">{symbol}</button>
               <span className="text-[8.5px] font-bold uppercase tracking-[0.06em] shrink-0 px-1.5 py-0.5 rounded"
                 style={{ color: TH.text, background: TH.chipBg }} dir="ltr">{meta.type}</span>
             </div>
