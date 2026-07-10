@@ -184,6 +184,32 @@ function flagSvg(ccy, s) {
   );
 }
 
+// ── جفت‌ارز → دو پرچمِ کشور در یک دایرهٔ نصف‌شده (سبکِ TradingView؛ تخت، بدونِ سایه). ──
+// نیمهٔ راست = ارزِ پایه (اول)، نیمهٔ چپ = ارزِ مظنه (دوم). هر پرچم بدونِ کِشیدگی
+// (aspect حفظ می‌شود) و از مرکز کراپ می‌شود؛ یک درزِ سفیدِ نازک وسط + یک رینگِ ظریفِ لبه.
+// ظرفِ CSS دایره‌ای (border-radius + overflow) → دایرهٔ کاملِ تمیز، بدونِ clipPath/idِ تکراری.
+function pairFlagSvg(base, quote, s) {
+  const half = s / 2;
+  const oneHalf = (ccy) => (
+    <span style={{ width: half, height: s, overflow: 'hidden', display: 'block', position: 'relative', lineHeight: 0 }}>
+      <svg width={s} height={s} viewBox="0 0 24 24" style={{ display: 'block', position: 'absolute', top: 0, left: -half / 2 }}>
+        {FLAG[ccy] || <rect width="24" height="24" fill="#64748b" />}
+      </svg>
+    </span>
+  );
+  return (
+    <span
+      className="shrink-0"
+      aria-hidden
+      style={{ position: 'relative', display: 'inline-flex', direction: 'ltr', width: s, height: s, borderRadius: '50%', overflow: 'hidden', boxShadow: `inset 0 0 0 1px ${RING}`, verticalAlign: 'middle', lineHeight: 0 }}
+    >
+      {oneHalf(quote)}{/* نیمهٔ چپ (dir=ltr → فرزندِ اول چپ) = مظنه */}
+      {oneHalf(base)}{/* نیمهٔ راست = پایه */}
+      <span style={{ position: 'absolute', top: 0, bottom: 0, left: half - 0.5, width: 1, background: 'rgba(255,255,255,.7)' }} />
+    </span>
+  );
+}
+
 // آیا نماد کریپتو است؟ (نه جفت‌ارز، نه فلز/کالا، نه شاخص/انرژی) → تیکرِ کوینِ پایه.
 function cryptoTicker(sym = '') {
   const s = String(sym).toUpperCase();
@@ -244,10 +270,10 @@ export default function SymbolLogo({ symbol, size = 22 }) {
   const p = pair(symbol);
   const s = size;
   if (p) {
-    // سبکِ TV: یک دایرهٔ تختِ تمیزِ ارزِ پایه (نه پرچمِ دوتاییِ روی‌هم، نه سایه).
-    const base = p[0];
+    // سبکِ TV: فلز/ارز → شمشِ فلزی؛ ارز/ارز → دو پرچمِ کشور در دایرهٔ نصف‌شده (تخت، بدونِ سایه).
+    const base = p[0], quote = p[1];
     if (METAL[base]) return metalSvg(base, s);
-    return flagSvg(base, s);
+    return pairFlagSvg(base, quote, s);
   }
   const ct = cryptoTicker(symbol);
   if (ct) return <CryptoLogo symbol={symbol} ticker={ct} size={s} />;

@@ -17,7 +17,7 @@
   --scroll-thumb: #363a45;
   --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.2), 0 2px 12px rgba(0,0,0,.4);
   /* توکن‌های معنایی (تاریک) — هم‌راستا با THEMES.dark چارت */
-  --accent: #4d82ff; --accent-weak: rgba(77,130,255,.14); --accent-2: #a78bfa;
+  --accent: #2962ff; --accent-weak: rgba(41,98,255,.14); --accent-2: #a78bfa;
   --up: #26a69a; --up-weak: rgba(38,166,154,.16); --down: #ef5350; --down-weak: rgba(239,83,80,.16);
   --warn: #f0b95d; --danger: #ff6169; --success: #2db39a;
   --border-strong: #31394b; --ring: rgba(94,140,255,.45);
@@ -251,8 +251,9 @@ button, [role="button"], a, summary, .pc-btn {
   --pc-border: #2a2e39; --pc-border-strong: #363a45;
   --pc-text: #d1d4dc; --pc-text-2: #b2b5be; --pc-text-muted: #787b86;
   --pc-accent: #2962ff; --pc-accent-hover: #1e53e5; --pc-accent-tint: rgba(41,98,255,.14);
-  /* جفت‌رنگِ کندل/UI: کندل teal ، UI emerald (سبز-قرمزِ متمایز) */
-  --pc-up: #26a69a; --pc-up-ui: #089981; --pc-down: #ef5350; --pc-down-ui: #f23645;
+  /* جفت‌رنگِ کندل/UI — تم‌آگاه مثلِ --up/--down: در دارک تونِ پرجانِ #26a69a/#ef5350
+     برای متنِ تغییر روی پس‌زمینهٔ تیره (نه تونِ روشنِ #089981 که مرده دیده می‌شود). */
+  --pc-up: #26a69a; --pc-up-ui: #26a69a; --pc-down: #ef5350; --pc-down-ui: #ef5350;
   --pc-grid: rgba(255,255,255,.06); --pc-crosshair: #9598a1;
   --pc-shadow: 0 2px 4px rgba(0,0,0,.2), 0 2px 12px rgba(0,0,0,.4);
   /* دیسیپلینِ شعاع: کنترل 4px · popup 6px · dialog 8px (به‌صورتِ var) */
