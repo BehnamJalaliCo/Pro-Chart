@@ -1519,6 +1519,11 @@ export default function BazaarNama() {
         <button onClick={() => (replay.on ? exitReplay() : enterReplay())} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={replay.on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBg; }}><Play size={17} /> بازپخش</button>
         <button onClick={getAiSignal} disabled={aiBusy} className="flex items-center gap-1 px-2.5 py-1 rounded-md text-sm text-white disabled:opacity-60 transition-opacity duration-[120ms]" style={{ background: TH.accentAi }} title="ستاپِ کاملِ AI در همین نماد/تایم‌فریم"><Sparkles size={17} className={aiBusy ? 'animate-pulse' : ''} /> سیگنالِ AI {aiQuota && <span className="tabular-nums" dir="ltr">{`(${aiQuota.remaining}/${aiQuota.limit})`}</span>}</button>
         <span className="w-px h-6 self-center rounded shrink-0" style={{ background: TH.border, opacity: 0.7 }} />
+        {/* واگرد/ازنو/درختِ آبجکت — از ریلِ چپ به تولبارِ بالا منتقل شد (جای TV، audit #8) */}
+        <button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} title="واگرد (Ctrl+Z)" className="p-1.5 rounded-md transition-colors duration-[120ms] disabled:opacity-30" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Undo2 size={17} /></button>
+        <button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} title="ازنو (Ctrl+Y)" className="p-1.5 rounded-md transition-colors duration-[120ms] disabled:opacity-30" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Redo2 size={17} /></button>
+        <button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} title="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={showTree ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!showTree) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!showTree) e.currentTarget.style.background = TH.chipBg; }}><List size={17} /></button>
+        <span className="w-px h-6 self-center rounded shrink-0" style={{ background: TH.border, opacity: 0.7 }} />
         <div data-menu className="relative">
           <button onClick={() => setGridMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={grid > 1 ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBg; }} title="چند-چارت — انتخابِ چیدمان"><LayoutGrid size={17} /> {grid}× <ChevronDown size={13} /></button>
           {gridMenu && (
@@ -1669,17 +1674,10 @@ export default function BazaarNama() {
               allHidden={allHidden} onHideAll={(v) => { if (drawRef.current) drawRef.current.hideAll(v); setAllHidden(v); treeRefresh(); }}
               onRemoveAll={() => { if (drawRef.current) drawRef.current.clearAll(); setAllLocked(false); setAllHidden(false); treeRefresh(); }} />
           </div>
+          {/* تمیزسازیِ ریلِ چپ سبکِ TV: فقط ابزارهای ترسیم + خوشهٔ مگنت/قفل/چشم/سطل + رنگِ ترسیم می‌ماند.
+              undo/redo/درختِ آبجکت به تولبارِ بالا رفتند (جای TVشان)؛ VP/پنجرهٔ داده در منوی چرخ‌دنده و کلیک‌راست‌اند؛ «پاکِ آخرین» با Undo تکراری بود. */}
           <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
-          <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-4 h-4 rounded cursor-pointer bg-transparent border-0 p-0" /></Tip>
-          <Tip label="پروفایلِ حجم (توزیعِ قیمت)"><button onClick={() => setShowVP((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${showVP ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showVP ? { background: TH.accent } : {}}><BarChart3 size={12} /></button></Tip>
-          <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
-          <Tip label="واگرد (Ctrl+Z)"><button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} className="p-1 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Undo2 size={12} /></button></Tip>
-          <Tip label="ازنو (Ctrl+Y)"><button onClick={() => { drawRef.current && drawRef.current.redo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canRedo())} className="p-1 rounded opacity-60 hover:opacity-100 disabled:opacity-20"><Redo2 size={12} /></button></Tip>
-          <Tip label="درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)"><button onClick={() => { setShowTree((v) => !v); treeRefresh(); }} className={`p-1 rounded-md transition-colors duration-[120ms] ${showTree ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showTree ? { background: TH.accent } : {}}><List size={12} /></button></Tip>
-          <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={12} /></button></Tip>
-          <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
-          <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1 rounded opacity-60 hover:opacity-100"><Minus size={12} /></button></Tip>
-          {/* سطلِ «پاکِ همهٔ ترسیم‌ها»ی تکراری حذف شد — همین قابلیت در خوشهٔ پایینِ ToolRail (حذفِ همهٔ ترسیم‌ها) هست. */}
+          <Tip label="رنگِ ترسیم"><input type="color" value={drawColor} onChange={(e) => setDrawColor(e.target.value)} className="w-5 h-5 rounded-md cursor-pointer bg-transparent border p-0" style={{ borderColor: TH.border }} /></Tip>
         </div>
         )}
 
