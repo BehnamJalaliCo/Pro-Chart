@@ -1652,14 +1652,28 @@ async def chart_symbols(st: AcademyStudent = Depends(current_student), db: Async
     tfs = [r[0] for r in (await db.execute(text("SELECT DISTINCT timeframe FROM candles"))).fetchall()]
     order = {"M1": 0, "M5": 1, "M15": 2, "M30": 3, "H1": 4, "H2": 5, "H4": 6, "D1": 7, "W1": 8, "MN": 9}
     tfs.sort(key=lambda t: order.get(t, 99))
+    # فقط ۱۰۰ نمادِ برترِ فارکس/فلز/انرژی/شاخص (بقیهٔ ~۱۸۰۰ نمادِ کهنه/بی‌داده حذف)
+    FOREX_TOP = frozenset({
+        "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD","EURGBP","EURJPY","GBPJPY",
+        "AUDJPY","EURAUD","EURCHF","EURCAD","EURNZD","GBPCHF","GBPCAD","GBPAUD","GBPNZD","AUDCAD",
+        "AUDCHF","AUDNZD","CADCHF","CADJPY","CHFJPY","NZDJPY","NZDCAD","NZDCHF","USDSEK","USDNOK",
+        "USDMXN","USDZAR","USDTRY","USDSGD","USDHKD","USDPLN","USDCNH","USDDKK","EURSEK","EURNOK",
+        "EURPLN","EURTRY","GBPSEK","USDHUF","USDCZK",
+        "XAUUSD","XAGUSD","XPTUSD","XPDUSD",
+        "XTIUSD","CL","XBRUSD","NGAS","NG","HG","DX",
+        "US30","US500","NAS100","DE40","UK100","JP225","HK50","AUS200","FRA40","EU50","US2000",
+        "ESP35","NL25","CHINA50","INDIA50","SWISS20","CANADA60","ITALY40",
+    })
+    syms = [x for x in syms if x in FOREX_TOP]
     have = set(syms)
-    # نمادهای فارکسِ حسابِ مَسترِ MT5 (همهٔ نمادهای OneRoyal که اکسپورتر می‌فرستد)
+    # نمادهای زندهٔ Finnhub (price:*) که شاید هنوز کندل ندارند را هم بگنجان
     try:
         from src.core.redis_client import redis_client
-        fx = await redis_client.client.smembers("bn:fxsyms")
-        for s in sorted(x.decode() if isinstance(x, bytes) else x for x in (fx or [])):
-            if s and s not in have and not _CRYPTO_CFD.match(s):
-                syms.append(s); have.add(s)
+        pk = await redis_client.client.keys("price:*")
+        for k in (pk or []):
+            sym = (k.decode() if isinstance(k, bytes) else k).split("price:", 1)[-1]
+            if sym in FOREX_TOP and sym not in have:
+                syms.append(sym); have.add(sym)
     except Exception:  # noqa: BLE001
         pass
     # نمادهای کریپتوی LBank (دینامیک، خودبه‌خود آپدیت) را هم به دامنه اضافه کن
@@ -1693,7 +1707,7 @@ async def chart_data(symbol: str, tf: str = "H1", indicators: str = "", limit: i
     await ensure_pairs()
     if is_crypto(symbol):
         try:
-            candles = await crypto_klines(symbol, tf, limit=max(50, min(int(limit), 1000)), before=before)
+            candles = await crypto_klines(symbol, tf, limit=max(50, min(int(limit), 2000)), before=before)
         except Exception:  # noqa: BLE001
             candles = []
     else:
