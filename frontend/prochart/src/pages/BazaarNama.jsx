@@ -1863,7 +1863,10 @@ export default function BazaarNama() {
                   <span className="font-bold opacity-70">{DrawingLayer.label(d.type)}</span>
                   <input type="color" value={d.color || '#3b82f6'} onChange={(e) => { drawRef.current.setStyle(selDraw, { color: e.target.value }); treeRefresh(); }} title="رنگ" className="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0" />
                   <div className="flex items-center gap-0.5 tabular-nums" title="ضخامت">{[1, 2, 3].map((w) => (<button key={w} onClick={() => { drawRef.current.setStyle(selDraw, { width: w }); treeRefresh(); }} className={`w-5 rounded transition-colors duration-[120ms] ${Math.round(d.width || 2) === w ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={Math.round(d.width || 2) === w ? { background: TH.accent } : {}}>{w}</button>))}</div>
-                  <button onClick={() => { drawRef.current.setStyle(selDraw, { dashed: !d.dashed }); treeRefresh(); }} className={`px-1.5 py-0.5 rounded transition-colors duration-[120ms] ${d.dashed ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={d.dashed ? { background: TH.accent } : {}} title="خط‌چین">┄</button>
+                  <button onClick={() => { drawRef.current.setStyle(selDraw, { dashed: !d.dashed }); treeRefresh(); }} className={`px-1.5 py-1 rounded flex items-center transition-colors duration-[120ms] ${d.dashed ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={d.dashed ? { background: TH.accent } : {}} title="خط‌چین" aria-label="خط‌چین">
+                    {/* آیکونِ خط‌چینِ اختصاصیِ SVG (به‌جای گلیفِ ┄ که وابسته به فونت بود و می‌توانست □ شود؛ هم‌جنسِ بقیهٔ آیکون‌های این نوار) */}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeDasharray="4 3" aria-hidden="true"><path d="M3 12h18" /></svg>
+                  </button>
                   <button onClick={() => { drawRef.current.toggleLock(selDraw); treeRefresh(); }} className="opacity-60 hover:opacity-100" title="قفل">{d.locked ? <Lock size={13} /> : <Unlock size={13} />}</button>
                   <button onClick={() => { drawRef.current.removeAt(selDraw); treeRefresh(); }} className="opacity-60 hover:text-red-400" title="حذف"><Trash2 size={13} /></button>
                 </div>
