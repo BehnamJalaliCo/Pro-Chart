@@ -526,7 +526,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
         onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
         onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
         {r.flag && <span className="absolute right-0 top-1.5 bottom-1.5 w-[2px] rounded-full" style={{ background: FLAG_HEX[r.flag] }} />}
-        {meta.showLogo && <span className="shrink-0" style={{ filter: meta.logoSize === 'lg' ? 'drop-shadow(0 1px 2px rgba(0,0,0,.45))' : 'none' }}><SymbolLogo symbol={r.sym} size={logoSz} /></span>}
+        {meta.showLogo && <span className="shrink-0"><SymbolLogo symbol={r.sym} size={logoSz} /></span>}
         <div className="flex-1 min-w-0 text-left" dir="ltr">
           <div className="flex items-center gap-1.5 min-w-0">
             {dot}
