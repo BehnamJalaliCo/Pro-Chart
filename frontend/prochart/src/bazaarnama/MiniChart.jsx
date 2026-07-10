@@ -2,6 +2,7 @@ import React, { useEffect, useId, useRef, useState } from 'react';
 import { createChart, CandlestickSeries } from 'lightweight-charts';
 import { api } from '../api/client';
 import { useApp } from '../appStore';
+import { priceDigits } from './symbolMeta';
 
 // پالتِ روشن/تیره هم‌ترازِ TradingView (توکن‌های --pc-* از نقشهٔ راه).
 // سبز/قرمزِ کندل teal/red؛ متنِ off-white در تیره، #131722 در روشن؛ گریدِ بسیار کم‌رنگ.
@@ -132,6 +133,9 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null })
     let stop = false;
     api.chart(symbol, tf, '', 400).then((r) => {
       if (stop || !seriesRef.current) return;
+      // دقتِ اعشارِ محورِ قیمت per-symbol (فارکس ۵، JPY ۳، شاخص/طلا ۲…) — مثلِ چارتِ اصلی؛
+      // قبلاً MiniChart پیش‌فرضِ کتابخانه (۲ رقم) را می‌گرفت و برای فارکس «۱٫۱۴» نشان می‌داد.
+      { const d = priceDigits(symbol); try { seriesRef.current.applyOptions({ priceFormat: { type: 'price', precision: d, minMove: Math.pow(10, -d) } }); } catch (e) { /* noop */ } }
       const cs = (r.candles || []).map((c) => ({ time: c.t, open: c.o, high: c.h, low: c.l, close: c.c }));
       seriesRef.current.setData(cs);
       chartRef.current && chartRef.current.timeScale().fitContent();
