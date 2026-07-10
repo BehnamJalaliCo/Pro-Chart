@@ -63,6 +63,19 @@ async def ensure_pairs() -> List[str]:
     now = time.time()
     if _pairs_list and (now - _pairs_ts) < _PAIRS_TTL:
         return _pairs_list
+    # فقط ۱۰۰ جفتِ برتر (که workerِ WS در Redis گذاشته) — trimِ کاتالوگ
+    try:
+        from src.core.redis_client import redis_client
+        top = await redis_client.client.smembers("bn:crypto_top100")
+        top = [(x.decode() if isinstance(x, bytes) else x) for x in (top or [])]
+        if len(top) >= 50:
+            top.sort(key=lambda sym: (_MCAP_RANK.get(sym, 9999), sym))
+            _pairs_list = top
+            _pairs_set = set(top)
+            _pairs_ts = now
+            return _pairs_list
+    except Exception:  # noqa: BLE001
+        pass
     try:
         async with httpx.AsyncClient(timeout=10.0) as cli:
             r = await cli.get(f"{LBANK_BASE}/currencyPairs.do")
