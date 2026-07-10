@@ -167,18 +167,20 @@ function badgeFor(sym = '') {
 }
 
 // ── یک دایرهٔ تختِ تمیز با پرچمِ ارزِ ccy (سبکِ TV؛ بدونِ سایه، فقط یک رینگِ ظریف). ──
+// ظرفِ CSSِ دایره‌ای (border-radius + overflow:hidden) → تضمینِ دایرهٔ کاملِ تمیز،
+// بدونِ clipPath و بدونِ باگِ idِ تکراری (که قبلاً شکلِ سپری/بریده می‌ساخت).
 function flagSvg(ccy, s) {
-  const c = s / 2, r = c - 0.5;
-  const id = `fclip_${ccy}_${s}`;
   const flag = FLAG[ccy];
   return (
-    <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0" aria-hidden>
-      <clipPath id={id}><circle cx={c} cy={c} r={r} /></clipPath>
-      <g clipPath={`url(#${id})`} transform={`translate(${c - r} ${c - r}) scale(${(2 * r) / 24})`}>
+    <span
+      className="shrink-0"
+      style={{ display: 'inline-block', width: s, height: s, borderRadius: '50%', overflow: 'hidden', boxShadow: `inset 0 0 0 1px ${RING}`, lineHeight: 0, verticalAlign: 'middle' }}
+      aria-hidden
+    >
+      <svg width={s} height={s} viewBox="0 0 24 24" style={{ display: 'block' }}>
         {flag || <rect width="24" height="24" fill="#64748b" />}
-      </g>
-      <circle cx={c} cy={c} r={r} fill="none" stroke={RING} strokeWidth="1" />
-    </svg>
+      </svg>
+    </span>
   );
 }
 
