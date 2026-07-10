@@ -1429,9 +1429,16 @@ export default function BazaarNama() {
   const symbolMeta = useMemo(() => buildMeta(symbols), [symbols]);
 
   // #3 آیتم‌های Legend (overlays + subs) + مقادیرِ زنده (کراس‌هیر، وگرنه آخرین کندل)
+  // برچسبِ لِجندِ اندیکاتور با پارامترها (سبکِ TradingView: «RSI 14»، «MACD 12 26 9»).
+  // فقط ورودی‌های عددی افزوده می‌شوند تا source/رنگ در برچسب نیاید.
+  const indLbl = (key, inputs) => {
+    const base = REGISTRY[key] ? REGISTRY[key].label : key;
+    const vals = inputs ? Object.values(inputs).filter((v) => typeof v === 'number') : [];
+    return vals.length ? `${base} ${vals.join(' ')}` : base;
+  };
   const legendItems = useMemo(() => ([
-    ...overlays.map((o) => ({ id: o.id, key: o.key, scope: 'main', label: REGISTRY[o.key] ? REGISTRY[o.key].label : o.key, color: (o.lineColors && o.lineColors[0]) || o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
-    ...subs.map((o) => ({ id: o.id, key: o.key, scope: 'sub', label: REGISTRY[o.key] ? REGISTRY[o.key].label : o.key, color: o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
+    ...overlays.map((o) => ({ id: o.id, key: o.key, scope: 'main', label: indLbl(o.key, o.inputs), color: (o.lineColors && o.lineColors[0]) || o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
+    ...subs.map((o) => ({ id: o.id, key: o.key, scope: 'sub', label: indLbl(o.key, o.inputs), color: o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
   ]), [overlays, subs]);
   const legendVals = useMemo(() => {
     const out = {};
