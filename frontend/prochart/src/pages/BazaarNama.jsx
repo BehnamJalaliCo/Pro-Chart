@@ -304,6 +304,7 @@ export default function BazaarNama() {
   const prevLpRef = useRef(null);
   const priceDir = (livePrice != null && prevLpRef.current != null) ? (livePrice > prevLpRef.current ? 'up' : livePrice < prevLpRef.current ? 'down' : '') : '';
   useEffect(() => { prevLpRef.current = livePrice; }, [livePrice]);
+  const [atRealtime, setAtRealtime] = useState(true); // آیا چارت روی جدیدترین کندل است؟ (برای دکمهٔ «پرش به حال» سبکِ TV)
   const [countdown, setCountdown] = useState(''); // شمارشِ معکوسِ بسته‌شدنِ کندل
   const [countdownColor, setCountdownColor] = useState(null); // تینتِ نزدیکِ بسته‌شدن (قرمز/کهربایی)
   const [showVP, setShowVP] = useState(false);
@@ -428,6 +429,8 @@ export default function BazaarNama() {
       const ctx = overlayRef.current && overlayRef.current.getContext('2d');
       if (ctx && sessionsRef.current) paintSessions(ctx, chart, sessionsRef.current, overlayRef.current.height);
       if (rng && rng.from < 12 && loadMoreRef.current) loadMoreRef.current();
+      // «پرش به حال» (سبکِ TV): اگر آخرین کندل بیرونِ نمای فعلی باشد، دکمه ظاهر شود.
+      if (rng) { const n = candlesRef.current ? candlesRef.current.length : 0; setAtRealtime(rng.to >= n - 1); }
     });
     chart.subscribeCrosshairMove((p) => {
       dl.render();
@@ -1895,6 +1898,19 @@ export default function BazaarNama() {
             {chartSettingsOverrides.scaleCountdown !== false && (
               <CountdownChip countdown={countdown} countdownColor={countdownColor} TH={TH} marketOpen={marketOpen}
                 axisY={(() => { try { return (priceSeriesRef.current && livePrice != null) ? priceSeriesRef.current.priceToCoordinate(livePrice) : null; } catch (e) { return null; } })()} />
+            )}
+            {/* دکمهٔ «پرش به جدیدترین کندل» (سبکِ TV) — فقط وقتی از حال دور شده‌ای ظاهر می‌شود. */}
+            {grid <= 1 && !atRealtime && (
+              <button type="button" onClick={() => { try { chartRef.current.timeScale().scrollToRealTime(); setAtRealtime(true); } catch (e) {} }}
+                title="پرش به جدیدترین کندل" aria-label="پرش به جدیدترین کندل"
+                className="absolute z-30 flex items-center justify-center rounded-full border shadow-md transition-transform active:scale-90"
+                style={{ bottom: 44, right: 10, width: 30, height: 30, background: TH.popoverBg, borderColor: TH.border, color: TH.text }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; e.currentTarget.style.color = TH.accent; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = TH.popoverBg; e.currentTarget.style.color = TH.text; }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M7 6l6 6-6 6" /><path d="M14 6l4 6-4 6" />
+                </svg>
+              </button>
             )}
             {/* برچسبِ سریِ حجم — لبهٔ بالای باندِ حجم (مثلِ TradingView: «Vol») */}
             {showVolume && (
