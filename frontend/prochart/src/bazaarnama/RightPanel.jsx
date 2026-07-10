@@ -473,6 +473,16 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   // جابه‌جاییِ نماد به سکشن (فقط وقتی گروه‌بندی=سکشن معنا دارد؛ متادیتای محلی است)
   const moveToSection = (sym, sid) => { setItemMeta(sym, { section: sid }); setCtx(null); };
 
+  // مرتب‌سازی با کلیکِ سرستون (سبکِ TV): سه‌حالته manual → صعودی → نزولی → manual.
+  //   از همان زیرساختِ موجودِ meta.sortBy/sortDir استفاده می‌کند (بدونِ منطقِ جدید).
+  const toggleSort = (col) => setMeta((m) => {
+    if (m.sortBy !== col) return { ...m, sortBy: col, sortDir: 'asc' };
+    if (m.sortDir === 'asc') return { ...m, sortBy: col, sortDir: 'desc' };
+    return { ...m, sortBy: 'manual', sortDir: 'asc' };
+  });
+  // فلشِ جهتِ مرتب‌سازیِ ستونِ فعال (▲/▼) — سبکِ سرستونِ TV.
+  const sortArrow = (col) => (meta.sortBy === col ? (meta.sortDir === 'asc' ? ' ▲' : ' ▼') : '');
+
   // ── رندرِ یک ردیف (list یا table) ──
   const cols = meta.columns || [];
   // پس‌زمینهٔ نرمِ تیره/روشنِ سلولِ تغییر٪ (سبکِ TV) — رنگِ up/down هگز است پس آلفا الحاق می‌شود
@@ -676,18 +686,20 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
         isTable ? (
           <div className="flex items-center gap-2 w-full px-3 h-6 text-[9px] font-semibold tracking-wide select-none border-b" style={{ color: TH.text, opacity: 0.5, borderColor: TH.border }}>
             {meta.showLogo && <span className="shrink-0" style={{ width: logoSz }} />}
-            <span className="flex-1 min-w-0 text-left" dir="ltr">نماد</span>
-            <span className="w-16 text-left shrink-0" dir="ltr">آخرین</span>
-            {cols.map((key) => <span key={key} className="w-12 text-left shrink-0" dir="ltr">{COL_LABEL[key] || key}</span>)}
+            <button type="button" onClick={() => toggleSort('name')} title="مرتب‌سازی بر اساسِ نماد" className="flex-1 min-w-0 text-left cursor-pointer" dir="ltr" style={{ color: meta.sortBy === 'name' ? TH.accent : 'inherit', opacity: meta.sortBy === 'name' ? 1 : undefined }}>نماد{sortArrow('name')}</button>
+            <button type="button" onClick={() => toggleSort('price')} title="مرتب‌سازی بر اساسِ آخرین قیمت" className="w-16 text-left shrink-0 cursor-pointer" dir="ltr" style={{ color: meta.sortBy === 'price' ? TH.accent : 'inherit', opacity: meta.sortBy === 'price' ? 1 : undefined }}>آخرین{sortArrow('price')}</button>
+            {cols.map((key) => (key === 'change'
+              ? <button key={key} type="button" onClick={() => toggleSort('changePct')} title="مرتب‌سازی بر اساسِ درصدِ تغییر" className="w-12 text-left shrink-0 cursor-pointer" dir="ltr" style={{ color: meta.sortBy === 'changePct' ? TH.accent : 'inherit', opacity: meta.sortBy === 'changePct' ? 1 : undefined }}>{COL_LABEL[key] || key}{sortArrow('changePct')}</button>
+              : <span key={key} className="w-12 text-left shrink-0" dir="ltr">{COL_LABEL[key] || key}</span>))}
             <span className="shrink-0" style={{ width: 22 }} />
           </div>
         ) : (
           <div className={`flex items-center gap-1 w-full px-2 h-6 text-[9px] font-semibold tracking-wide select-none border-b`} style={{ color: TH.text, opacity: 0.5, borderColor: TH.border }}>
             {meta.showLogo && <span className="shrink-0" style={{ width: logoSz }} />}
-            <span className="flex-1 min-w-[52px] text-left" dir="ltr">نماد</span>
-            <span className="text-right shrink-0 w-[44px]" dir="ltr">آخرین</span>
+            <button type="button" onClick={() => toggleSort('name')} title="مرتب‌سازی بر اساسِ نماد" className="flex-1 min-w-[52px] text-left cursor-pointer hover:opacity-100 tabular-nums" dir="ltr" style={{ color: meta.sortBy === 'name' ? TH.accent : 'inherit', opacity: meta.sortBy === 'name' ? 1 : undefined }}>نماد{sortArrow('name')}</button>
+            <button type="button" onClick={() => toggleSort('price')} title="مرتب‌سازی بر اساسِ آخرین قیمت" className="text-right shrink-0 w-[44px] cursor-pointer hover:opacity-100 tabular-nums" dir="ltr" style={{ color: meta.sortBy === 'price' ? TH.accent : 'inherit', opacity: meta.sortBy === 'price' ? 1 : undefined }}>آخرین{sortArrow('price')}</button>
             <span className="text-right shrink-0 w-[40px]" dir="ltr">تغییر</span>
-            <span className="text-right shrink-0 w-[36px]" dir="ltr">تغییر٪</span>
+            <button type="button" onClick={() => toggleSort('changePct')} title="مرتب‌سازی بر اساسِ درصدِ تغییر" className="text-right shrink-0 w-[36px] cursor-pointer hover:opacity-100 tabular-nums" dir="ltr" style={{ color: meta.sortBy === 'changePct' ? TH.accent : 'inherit', opacity: meta.sortBy === 'changePct' ? 1 : undefined }}>تغییر٪{sortArrow('changePct')}</button>
             {cols.filter((k) => k !== 'change' && k !== 'chgAbs').map((key) => <span key={key} className="w-11 text-right shrink-0" dir="ltr">{COL_LABEL[key] || key}</span>)}
           </div>
         )
