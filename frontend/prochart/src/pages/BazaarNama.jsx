@@ -487,6 +487,9 @@ export default function BazaarNama() {
       wickVisible: o.symWickShown !== false, wickUpColor: o.symWickUpColor || up, wickDownColor: o.symWickDownColor || down,
     };
   };
+  // خطِ قیمتِ آخر (priceLineShown) — قبلاً در دیالوگ مرده بود. روی سریِ فعال اعمال می‌شود؛
+  // پس از هر ساختِ سری فراخوانی می‌شود تا با تعویضِ نماد/نوع‌چارت هم بماند (settingsRef آخرین مقدار).
+  const applyPriceLineVis = () => { try { const on = settingsRef.current.priceLineShown !== false; priceSeriesRef.current && priceSeriesRef.current.applyOptions({ priceLineVisible: on, lastValueVisible: on }); } catch (e) {} };
 
   const buildPriceSeries = useCallback((cs) => {
     const chart = chartRef.current; if (!chart) return;
@@ -701,7 +704,7 @@ export default function BazaarNama() {
       }
       if (factor > 1) cs = resampleCandles(cs, factor);
       candlesRef.current = cs;
-      buildPriceSeries(cs); applyOverlays(cs); applySubs(cs); applyVolume(cs);
+      buildPriceSeries(cs); applyPriceLineVis(); applyOverlays(cs); applySubs(cs); applyVolume(cs);
       if (drawRef.current) drawRef.current.setCandles(cs);
       chartRef.current && chartRef.current.timeScale().fitContent();
       if (showVP) applyVP(cs);
@@ -1001,7 +1004,7 @@ export default function BazaarNama() {
   // بازساختِ کاملِ سری از یک برش (برای seek/step-back/scrub — همان مسیرِ enterReplay).
   const replayApplySlice = useCallback((slice) => {
     candlesRef.current = slice;
-    buildPriceSeries(slice); applyOverlays(slice); applySubs(slice); applyVolume(slice);
+    buildPriceSeries(slice); applyPriceLineVis(); applyOverlays(slice); applySubs(slice); applyVolume(slice);
   }, [buildPriceSeries, applyOverlays, applySubs, applyVolume]);
 
   const enterReplay = () => {
@@ -2277,6 +2280,10 @@ export default function BazaarNama() {
               vertLines: { visible: ov.gridVert !== false, color: ov.gridVertColor || TH.gridLine },
               horzLines: { visible: ov.gridHorz !== false, color: ov.gridHorzColor || TH.gridLine },
             } }); } catch (e) {}
+          }
+          // خطِ قیمتِ آخر (قبلاً مرده) — نمایش/پنهانِ خطِ قیمتِ جاری + برچسبِ آخر روی سریِ فعال.
+          if ('priceLineShown' in patch) {
+            try { const on = patch.priceLineShown !== false; priceSeriesRef.current && priceSeriesRef.current.applyOptions({ priceLineVisible: on, lastValueVisible: on }); } catch (e) {}
           }
           // رنگِ پس‌زمینهٔ چارت (قبلاً مرده) — chart-level، پس با تعویضِ نماد/نوع‌چارت می‌ماند؛ در افکتِ تم هم لحاظ شد.
           if ('bgColor' in patch) {
