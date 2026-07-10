@@ -3,6 +3,7 @@ import { Eye, EyeOff, Settings2, Trash2, MoreHorizontal, ChevronDown, ChevronUp,
   CandlestickChart, LineChart, AreaChart, BarChart3, Activity } from 'lucide-react';
 import { SPEED_LADDER } from '../ReplayController';
 import SymbolLogo from '../SymbolLogo';
+import { classify } from '../symbolMeta';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // اجزای مشترکِ سرِ لجند (سبکِ TradingView) — لوگو + نامِ نماد + بازار/تایم‌فریمِ
@@ -26,6 +27,19 @@ function marketOf(sym = '') {
 // افزودنِ آلفا به رنگِ hexِ ۶رقمی برای پس‌زمینه‌یِ کم‌رنگِ چیپ.
 function tint(col, a = '22') {
   return typeof col === 'string' && /^#[0-9a-fA-F]{6}$/.test(col) ? col + a : col;
+}
+
+// شمارِ ارقامِ اعشارِ یک عدد — تا تغییرِ مطلق دقیقاً با اعشارِ قیمت هم‌تراز شود.
+function decimalsOf(n) {
+  if (n == null) return 0;
+  const s = String(n);
+  const i = s.indexOf('.');
+  return i < 0 ? 0 : s.length - i - 1;
+}
+// تغییرِ مطلق با علامت و اعشارِ درست، سبکِ TV: «+2.83» / «−0.00041» (مینوسِ تایپوگرافیک).
+function fmtDelta(v, decimals) {
+  if (v == null || Number.isNaN(v)) return null;
+  return (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(decimals);
 }
 
 // نگاشتِ نوعِ چارت → گلیفِ lucide (سبکِ آیکونِ نوعِ چارتِ TV در لجند، کنارِ نماد).
@@ -70,16 +84,26 @@ function FlashNum({ value, dir, className = '', style, children }) {
 // لوگو + نامِ نماد (پررنگ) + بازار/تایم‌فریمِ کم‌رنگ. فرگمنت (بدونِ wrapper) تا در
 //   هر دو Legend و ChartLegend داخلِ ردیفِ موجود بنشیند. سبکِ دقیقِ TradingView:
 //   نامِ نماد پررنگ و پرکنتراست، بازار/تایم‌فریم به‌صورتِ لیبلِ کم‌رنگِ کوچک با میان‌فاصلهٔ ·.
-function SymbolHead({ TH, symbol, tf, market, chartType }) {
+function SymbolHead({ TH, symbol, tf, market, chartType, name }) {
   const mk = market != null ? market : marketOf(symbol);
+  // نامِ کاملِ نماد (سبکِ TV: «Apple Inc») — اگر caller مقدارِ name ندهد، از symbolMeta
+  //   استخراج و memoize می‌شود تا در تیک‌های زندهٔ OHLC دوباره محاسبه نشود.
+  const full = React.useMemo(() => {
+    if (name != null) return name;
+    try { const m = classify(symbol); return m && m.name && m.name !== symbol ? m.name : ''; }
+    catch (e) { return ''; }
+  }, [name, symbol]);
   return (
     <>
       <SymbolLogo symbol={symbol} size={18} />
       <span className="text-[13px] font-bold whitespace-nowrap tracking-tight" dir="ltr"
         style={{ color: TH.textStrong, letterSpacing: '-.01em' }}>{symbol}</span>
+      {full && (
+        <span className="text-[11px] whitespace-nowrap font-medium max-w-[168px] truncate" style={{ color: TH.text, opacity: 0.74 }}>{full}</span>
+      )}
       {(mk || tf) && (
-        <span className="text-[10px] tnum whitespace-nowrap font-medium" dir="ltr" style={{ color: TH.text, opacity: 0.62 }}>
-          {mk}{mk && tf ? ' · ' : ''}{tf}
+        <span className="text-[10px] tnum whitespace-nowrap font-medium" dir="ltr" style={{ color: TH.text, opacity: 0.55 }}>
+          {tf}{tf && mk ? ' · ' : ''}{mk}
         </span>
       )}
       <ChartTypeIcon chartType={chartType} TH={TH} />
@@ -136,30 +160,33 @@ function VolumeRow({ vol, dir, TH, fmtVol, compact }) {
   );
 }
 
-// چیپِ تغییرِ درصدی، پس‌زمینه‌یِ کم‌رنگِ رنگی و متنِ پررنگِ up/down — جمع‌وجور و شارپ.
-function ChangeChip({ ch, col }) {
+// تغییرِ مطلق و درصدی به‌صورتِ متنِ رنگیِ ساده — دقیقاً سبکِ TV: «+2.83 (+0.90%)».
+//   chStr (تغییرِ مطلقِ ازپیش‌فرمت‌شده) اختیاری است؛ نبودش ⇐ فقط درصد.
+function ChangeChip({ ch, chStr, col }) {
   if (ch == null) return null;
+  const pct = `${ch >= 0 ? '+' : '−'}${Math.abs(ch).toFixed(2)}%`;
   return (
-    <span className="tnum rounded-[3px] px-1 py-px text-[10px] font-bold shrink-0 whitespace-nowrap leading-none" dir="ltr"
-      style={{ background: tint(col, '24'), color: col }}>
-      {ch >= 0 ? '+' : ''}{ch.toFixed(2)}%
+    <span className="tnum text-[11px] font-semibold shrink-0 whitespace-nowrap leading-none" dir="ltr" style={{ color: col }}>
+      {chStr != null ? `${chStr} (${pct})` : pct}
     </span>
   );
 }
 
 // چیپِ Legend (OHLC) روی چارت — رندرِ خالص؛ همهٔ ورودی‌ها از props.
 //   propهای جدید (chartType/priceDir/volume/fmtVol) اختیاری و backward-compatible‌اند.
-export function Legend({ legend, TH, symbol, tf, market, chartType, priceDir, volume, fmtVol }) {
+export function Legend({ legend, TH, symbol, tf, market, name, chartType, priceDir, volume, fmtVol }) {
   if (!legend) return null;
-  const ch = legend.open != null ? ((legend.close - legend.open) / legend.open) * 100 : null;
+  const chAbs = legend.open != null ? (legend.close - legend.open) : null;
+  const ch = chAbs != null && legend.open ? (chAbs / legend.open) * 100 : null;
   const col = ch == null ? TH.text : ch >= 0 ? TH.up : TH.down;
+  const chStr = chAbs != null ? fmtDelta(chAbs, Math.max(decimalsOf(legend.close), decimalsOf(legend.open))) : null;
   const vol = volume != null ? volume : legend.volume;
   return (
     <div className="absolute top-2 right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 border" dir="rtl"
       style={{ background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', boxShadow: '0 1px 3px rgba(0,0,0,.10)' }}>
-      <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} chartType={chartType} />
+      <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} name={name} chartType={chartType} />
       <OhlcTape legend={legend} col={col} TH={TH} dir={priceDir} />
-      <ChangeChip ch={ch} col={col} />
+      <ChangeChip ch={ch} chStr={chStr} col={col} />
       {vol != null && (
         <span className="flex items-center gap-0.5 text-[11px] tnum whitespace-nowrap" dir="ltr">
           <span className="font-medium" style={{ color: TH.text, opacity: 0.5 }}>Vol</span>
@@ -256,14 +283,16 @@ function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, on
 
 // items: [{id, key, label, color, visible, scope}]، indVals: {id: 'value-string'}
 export function ChartLegend({
-  items = [], legend, TH, symbol, tf, market, indVals = {},
+  items = [], legend, TH, symbol, tf, market, name, indVals = {},
   collapsed = false, onCollapse, viewMode = 'normal', onToggleViewMode,
   onToggleVisible, onSettings, onRemove, onDuplicate, onHelp, hasHelp, onClearAll, coarse = false,
   chartType, priceDir, volume, fmtVol, showVolume = true,
 }) {
   const [moreId, setMoreId] = useState(null);
-  const ch = legend && legend.open != null ? ((legend.close - legend.open) / legend.open) * 100 : null;
+  const chAbs = legend && legend.open != null ? (legend.close - legend.open) : null;
+  const ch = chAbs != null && legend.open ? (chAbs / legend.open) * 100 : null;
   const col = ch == null ? TH.text : ch >= 0 ? TH.up : TH.down;
+  const chStr = chAbs != null ? fmtDelta(chAbs, Math.max(decimalsOf(legend.close), decimalsOf(legend.open))) : null;
   const hasInds = items.length > 0;
   const compact = viewMode === 'compact';
   const vol = volume != null ? volume : (legend && legend.volume);
@@ -283,9 +312,9 @@ export function ChartLegend({
             {collapsed ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
         )}
-        <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} chartType={chartType} />
+        <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} name={name} chartType={chartType} />
         <OhlcTape legend={legend} col={col} TH={TH} dir={priceDir} />
-        <ChangeChip ch={ch} col={col} />
+        <ChangeChip ch={ch} chStr={chStr} col={col} />
         {hasInds && (
           <>
             <span className="flex-1" />

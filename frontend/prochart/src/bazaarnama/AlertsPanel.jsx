@@ -133,6 +133,7 @@ const blankForm = (symbol) => ({
   freq: 'cooldown',            // جدید: دانه‌بندیِ فراوانیِ TV
   cooldownMin: 60,
   expiryH: '',
+  name: '',                    // نامِ سفارشیِ آلارم (خالی → autoName)
   message: '',
   // کانال‌های تحویل (همتراز با TV: popup/push/email/sms/sound/telegram/webhook)
   popup: true,
@@ -254,7 +255,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
     if (!valid || busy) return;
     setBusy(true); setErr('');
     const condition = buildCondition();
-    const payload = { symbol, tf: DEFAULT_TF, name: autoName(), condition };
+    const payload = { symbol, tf: DEFAULT_TF, name: (form.name && form.name.trim()) || autoName(), condition };
     try {
       if (form.id) {
         // ویرایش: اگر endpoint اختصاصی نبود، حذف+ساختِ دوباره (graceful).
@@ -308,6 +309,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       freq: c.frequency || (c.trigger === 'once' ? 'once' : 'cooldown'),
       cooldownMin: c.cooldown_s ? Math.round(c.cooldown_s / 60) : 60,
       expiryH: c.expiry ? Math.max(0, Math.round((new Date(c.expiry).getTime() - Date.now()) / 3600000)) : '',
+      name: a.name || '',
       message: c.message || '',
       popup: c.popup !== false,
       telegram: !!c.telegram,
@@ -466,10 +468,14 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
         </button>
         {showAdvanced && (
           <div className="space-y-1.5 pt-0.5">
+            {/* نامِ آلارم — همتراز با فیلدِ Alert name در TV؛ خالی → نامِ خودکار */}
+            <div className="text-[9px] opacity-50">نامِ آلارم</div>
+            <input value={form.name} onChange={(e) => set({ name: e.target.value })} placeholder={autoName() || 'نامِ آلارم (خالی = خودکار)'} className={`${inputCls} w-full`} style={inputStyle} />
+            <div className="text-[9px] opacity-50 pt-0.5">پیام</div>
             <input value={form.message} onChange={(e) => set({ message: e.target.value })} placeholder="پیامِ سفارشی (روی متغیرها بزنید)" className={`${inputCls} w-full`} style={inputStyle} />
             {/* پالتِ متغیرها — همتراز با placeholderهای TV */}
             <div className="flex gap-1 flex-wrap">
-              {['{symbol}', '{price}', '{value}', '{tf}', '{exchange}', '{open}', '{high}', '{low}', '{close}', '{volume}', '{time}'].map((ph) => (
+              {['{{ticker}}', '{{exchange}}', '{{close}}', '{{open}}', '{{high}}', '{{low}}', '{{volume}}', '{{interval}}', '{{time}}', '{{timenow}}', '{{plot_0}}'].map((ph) => (
                 <button key={ph} onClick={() => set({ message: (form.message || '') + ph })} className="text-[9px] rounded-md px-1.5 py-0.5 transition-colors" style={{ background: TH.chipBg, color: TH.text }} dir="ltr"
                   onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
                   onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{ph}</button>

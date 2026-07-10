@@ -84,6 +84,21 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
   const emit = (patch) => { if (onChange) onChange(patch); };
   const set = (key, val) => emit({ [key]: val });
 
+  // اکشن‌ها پیش از افکت‌هایی که به آن‌ها ارجاع می‌دهند تعریف می‌شوند (پرهیز از TDZ / وضوحِ بیشتر).
+  const handleCancel = () => { if (snapRef.current) emit(snapRef.current); onClose && onClose(); };
+  const handleOk = () => { onClose && onClose(); };
+  const handleDefaults = () => emit({ ...DEFAULTS });
+
+  const doSaveTpl = () => {
+    const name = (typeof window !== 'undefined' ? window.prompt('نامِ تمپلیت را وارد کنید:', 'تمپلیتِ من') : '') || '';
+    const n = name.trim();
+    if (!n) return;
+    const next = { ...tpls, [n]: { ...s } };
+    setTpls(next); saveTpls(next); setTplMenu(false);
+  };
+  const doLoadTpl = (name) => { const t = tpls[name]; if (t) emit({ ...DEFAULTS, ...t }); setTplMenu(false); };
+  const doDelTpl = (name) => { const next = { ...tpls }; delete next[name]; setTpls(next); saveTpls(next); };
+
   // با هر باز‌شدن: snapshot بگیر، تبِ نماد، منوی تمپلیت بسته، تمپلیت‌ها تازه.
   useEffect(() => {
     if (!open) return;
@@ -102,20 +117,6 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const handleCancel = () => { if (snapRef.current) emit(snapRef.current); onClose && onClose(); };
-  const handleOk = () => { onClose && onClose(); };
-  const handleDefaults = () => emit({ ...DEFAULTS });
-
-  const doSaveTpl = () => {
-    const name = (typeof window !== 'undefined' ? window.prompt('نامِ تمپلیت را وارد کنید:', 'تمپلیتِ من') : '') || '';
-    const n = name.trim();
-    if (!n) return;
-    const next = { ...tpls, [n]: { ...s } };
-    setTpls(next); saveTpls(next); setTplMenu(false);
-  };
-  const doLoadTpl = (name) => { const t = tpls[name]; if (t) emit({ ...DEFAULTS, ...t }); setTplMenu(false); };
-  const doDelTpl = (name) => { const next = { ...tpls }; delete next[name]; setTpls(next); saveTpls(next); };
-
   if (!open) return null;
 
   return (
@@ -131,7 +132,7 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
           height: 'min(600px, 90vh)',
           background: TH.panel,
           border: `1px solid ${TH.border}`,
-          boxShadow: '0 12px 40px rgba(0,0,0,.35)',
+          boxShadow: '0 8px 24px rgba(0,0,0,.28)',
           color: TH.textStrong,
         }}
         onMouseDown={(e) => e.stopPropagation()}

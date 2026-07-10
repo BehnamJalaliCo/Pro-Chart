@@ -49,7 +49,9 @@ export default function RightIconRail({ active, onSelect, TH }) {
   // تولتیپِ فعال: { key, top } — top مرکزِ عمودیِ دکمهٔ اشاره‌شده برای هم‌ترازی.
   const [tip, setTip] = useState(null);
 
-  const accentTint = tint(TH.accent, 0.14);
+  // اکتیوِ TV = پس‌زمینهٔ گِردِ tinted (نه پُر). alpha کمی محسوس تا مثلِ مربعِ فعالِ TV
+  // به‌وضوح خوانده شود، ولی همچنان شفاف/برندِ accent (نه fillِ سخت).
+  const accentTint = tint(TH.accent, 0.16);
 
   const showTip = useCallback((e, key) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -97,14 +99,9 @@ export default function RightIconRail({ active, onSelect, TH }) {
               transition: 'background-color 120ms ease, color 120ms ease',
             }}
           >
+            {/* ریلِ پنل‌سوییچرِ راستِ TV اکتیو را فقط با مربعِ گِردِ tinted نشان می‌دهد
+                (برخلافِ ریلِ ابزارِ چپ، هیچ پیلِ لبه‌ای ندارد) — پس فقط بک‌گراند + رنگ. */}
             <Icon size={20} strokeWidth={on ? 2.1 : 1.8} />
-            {/* نشانگرِ لبهٔ راستِ اکتیو — پیلِ عمودیِ نازکِ رنگِ accent (مثلِ TV). */}
-            {on && (
-              <span
-                className="absolute top-1.5 bottom-1.5 rounded-full"
-                style={{ right: -6, width: 2.5, background: TH.accent }}
-              />
-            )}
           </button>
         );
       })}

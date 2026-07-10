@@ -36,11 +36,15 @@ const toNum = (v) => { if (v == null || v === '') return null; const n = parseFl
 const fmtTime = (iso, tz) => { try { const d = new Date(iso); return d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz }); } catch { return ''; } };
 const dayKey = (iso, tz) => { try { const d = new Date(iso); const wd = tz ? new Date(d.toLocaleString('en-US', { timeZone: tz })).getDay() : d.getDay(); return `${PERSIAN_DAYS[wd]} ${d.toLocaleDateString('fa-IR', { day: '2-digit', month: 'long', timeZone: tz })}`; } catch { return ''; } };
 
-function Dots({ imp }) {
+// نشانگرِ اهمیت به‌سبکِ TV: سه میلهٔ عمودیِ صعودی، پُر تا سطحِ اهمیت (impact meter)
+const IMP_BAR_H = [4, 7, 10];
+function ImpactBars({ imp }) {
   const m = IMPACT[imp] || IMPACT.low;
   return (
-    <span className="inline-flex gap-0.5 items-center shrink-0" title={`اهمیتِ ${m.label}`}>
-      {[0, 1, 2].map((i) => (<span key={i} className="w-1 h-1 rounded-full" style={{ background: i < m.dots ? m.color : 'transparent', border: i < m.dots ? 'none' : `1px solid ${m.color}55` }} />))}
+    <span className="inline-flex items-end gap-[1.5px] shrink-0" style={{ height: 10 }} title={`اهمیتِ ${m.label}`}>
+      {[0, 1, 2].map((i) => (
+        <span key={i} className="w-[3px] rounded-[1px]" style={{ height: IMP_BAR_H[i], background: i < m.dots ? m.color : `${m.color}33` }} />
+      ))}
     </span>
   );
 }
@@ -166,6 +170,8 @@ export default function Calendar({ symbol, TH }) {
   );
 
   const tzLabel = (TZONES.find((z) => z.id === tzId) || TZONES[0]).label;
+  // کلیدِ روزِ «امروز» برای علامتِ TV روی سرگروه (وابسته به منطقهٔ زمانی و ضربانِ دقیقه‌ای)
+  const todayKey = useMemo(() => dayKey(new Date().toISOString(), tz), [tz, tick]);
 
   return (
     <div ref={rootRef} className="flex flex-col text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
@@ -197,7 +203,10 @@ export default function Calendar({ symbol, TH }) {
         )}
         {groups.map(([day, evs]) => (
           <div key={day}>
-            <div className="sticky top-0 z-10 px-3 py-1 text-[10px] font-semibold border-b" style={{ background: TH.panel, color: TH.textStrong, borderColor: TH.border }}>{day}</div>
+            <div className="sticky top-0 z-10 flex items-center gap-1.5 px-3 py-1 text-[10px] font-semibold border-b" style={{ background: TH.panel, color: TH.textStrong, borderColor: TH.border }}>
+              <span>{day}</span>
+              {day === todayKey && <span className="px-1 rounded-sm text-[8px] leading-[14px] font-medium" style={{ background: `${TH.accent}1f`, color: TH.accent }}>امروز</span>}
+            </div>
             {evs.map((e, i) => {
               const actual = e.actual ?? e.act;
               const forecast = e.forecast ?? e.fc;
@@ -217,7 +226,7 @@ export default function Calendar({ symbol, TH }) {
                     {fmtTime(e.date, tz)}
                   </span>
                   <span className="text-[10px] font-semibold w-8 shrink-0" dir="ltr" style={{ color: TH.textStrong }}>{e.country}</span>
-                  <Dots imp={e.impact} />
+                  <ImpactBars imp={e.impact} />
                   <span className="text-[11px] leading-4 flex-1 min-w-0 truncate">{e.title}</span>
                   <ActualCell value={actual} color={actColor} arrow={diff ? (actUp ? 'up' : 'down') : null} TH={TH} />
                   <span className="w-11 text-left text-[10px] shrink-0 opacity-60 tnum" dir="ltr">{forecast != null && forecast !== '' ? forecast : '—'}</span>

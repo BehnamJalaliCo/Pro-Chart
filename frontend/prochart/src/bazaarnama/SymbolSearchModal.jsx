@@ -207,10 +207,9 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
                   className="flex items-center gap-3 w-full h-full px-4 text-right transition-colors duration-[120ms]"
                   style={{ background: isActive ? T.chipBgHover : 'transparent', boxShadow: isCur ? `inset 0 0 0 1px ${T.accent}` : 'none', color: T.textStrong }}>
                   <SymbolLogo symbol={m.symbol} size={coarse ? 30 : 26} />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-bold leading-tight" dir="ltr">{mark(m.symbol, highlightPositions(m.symbol, qSym), T)}</div>
-                    <div className="text-[12px] opacity-60 leading-tight truncate">{mark(m.desc, highlightPositions(m.desc, qDesc), T)}</div>
-                  </div>
+                  {/* ردیفِ تک‌خطیِ TradingView: نمادِ درشتِ ltr + توضیحِ کم‌رنگِ کنارِ آن (هم‌خط، truncate) */}
+                  <span className="text-[14px] font-bold leading-tight shrink-0" dir="ltr">{mark(m.symbol, highlightPositions(m.symbol, qSym), T)}</span>
+                  <span className="flex-1 min-w-0 text-[12.5px] opacity-55 leading-tight truncate">{mark(m.desc, highlightPositions(m.desc, qDesc), T)}</span>
                   {watchSet.has(m.symbol) && <Star size={13} className="text-amber-400 shrink-0" />}
                   {/* trailing meta سبکِ TradingView: پرچمِ کشور + برچسبِ بازار (نقطهٔ رنگیِ کلاس) */}
                   <div className="flex items-center gap-2 shrink-0">

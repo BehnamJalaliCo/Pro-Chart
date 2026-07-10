@@ -154,6 +154,13 @@ export const PRICE_SCALE_APPEARANCE = {
   minimumWidth: 56,
 };
 
+// (۴۳) حاشیه‌های عمودیِ محورِ قیمت مثلِ TradingView: بالا ~۱۰٪، پایین ~۱۰٪ (فشرده‌تر
+// از پیش‌فرضِ lightweight-charts که بالا ۲۰٪ است). اختیاری/opt-in تا چیدمانِ حجمِ
+// موجود دست‌نخورده بماند: میزبان با priceScaleOptions({..., margins: TV_SCALE_MARGINS})
+// یا مستقیماً chart.priceScale('right').applyOptions({ scaleMargins: TV_SCALE_MARGINS }).
+// نکته: همپوشانیِ حجم محورِ جدا با حاشیهٔ خودش دارد؛ این فقط محورِ قیمتِ اصلی است.
+export const TV_SCALE_MARGINS = { top: 0.1, bottom: 0.1 };
+
 /**
  * payloadِ آمادهٔ chart.priceScale(id).applyOptions({...}) برای حالت/قفل/وارونگیِ مقیاس.
  * @param {object} opt
@@ -162,13 +169,16 @@ export const PRICE_SCALE_APPEARANCE = {
  * @param {boolean} opt.invert      true → محور عمودی وارونه
  * @param {boolean} opt.appearance  true (پیش‌فرض) → ظاهرِ TV-مانند (PRICE_SCALE_APPEARANCE)
  *                                   را هم می‌چسباند؛ false → فقط حالت/قفل/وارونگی (رفتارِ قدیمی).
+ * @param {object}  [opt.margins]   { top, bottom } → scaleMargins مثلِ TV (اختیاری؛ اگر
+ *                                   داده نشود اصلاً scaleMargins نمی‌فرستد = رفتارِ قدیمی).
  * @returns {object} payloadِ applyOptions
  */
-export const priceScaleOptions = ({ mode = PRICE_SCALE_MODE.Normal, locked = false, invert = false, appearance = true } = {}) => ({
+export const priceScaleOptions = ({ mode = PRICE_SCALE_MODE.Normal, locked = false, invert = false, appearance = true, margins } = {}) => ({
   mode,
   autoScale: !locked,
   invertScale: !!invert,
   ...(appearance ? PRICE_SCALE_APPEARANCE : {}),
+  ...(margins ? { scaleMargins: margins } : {}),
 });
 
 // payloadِ «بازنشانیِ مقیاس» (دابل‌کلیکِ روی محور) — autoScale را دوباره روشن می‌کند.
@@ -187,6 +197,11 @@ export const TV_AXIS_BORDER_DARK = '#2a2e39';
 export const TV_AXIS_BORDER_LIGHT = '#e0e3eb';
 export const TV_GRID_DARK = '#1e222d';
 export const TV_GRID_LIGHT = '#eef0f4';
+
+// (۴۵) رنگِ کم‌رنگِ متنِ برچسب‌های محورِ TradingView (روشن/تیره). در lightweight-charts
+// رنگِ برچسبِ محور از layout.textColor سراسری می‌آید؛ این ثابت‌ها مقدارِ دقیقِ TV را می‌دهند.
+export const TV_AXIS_TEXT_DARK = '#b2b5be';
+export const TV_AXIS_TEXT_LIGHT = '#787b86';
 
 /**
  * payloadِ آمادهٔ chart.applyOptions({...}) برای ظاهرِ دقیقِ مرز و گریدِ محورها مثلِ TV.
@@ -210,6 +225,16 @@ export const axisAppearanceOptions = ({ light = false, borderColor, gridColor } 
     },
   };
 };
+
+/**
+ * (۴۵) payloadِ اختیاریِ رنگِ کم‌رنگِ متنِ محور مثلِ TV. جدا و opt-in است چون
+ * layout.textColor بر تمامِ متنِ چارت اثر می‌گذارد؛ میزبان در صورتِ تمایل اعمال می‌کند.
+ * @param {object} [opt] { light?:boolean, textColor?:string }
+ * @returns {{layout:{textColor:string}}}
+ */
+export const axisTextColorOptions = ({ light = false, textColor } = {}) => ({
+  layout: { textColor: textColor || (light ? TV_AXIS_TEXT_LIGHT : TV_AXIS_TEXT_DARK) },
+});
 
 // اندازهٔ فونتِ برچسب‌های محور (قیمت + زمان) مثلِ TradingView.
 export const PRICE_AXIS_FONT_PX = 11;
@@ -604,6 +629,21 @@ export const applyCornerButton = (id, state = {}) => {
   else if (id === 'auto') { next.locked = !cur.locked; if (!next.locked) fitContent = true; }
   else return null;
   return { patch: next, apply: priceScaleOptions(next), fitContent };
+};
+
+/**
+ * (۵۲/۵۳) کنترل‌های گوشهٔ پایین-راستِ محور مثلِ TradingView: دکمهٔ ADJ (تعدیلِ سودِ سهام)
+ * و چرخ‌دندهٔ تنظیماتِ محور. توصیف‌گرِ خالص؛ میزبان رندر و کلیک را هندل می‌کند.
+ * ADJ فقط برای سهام معنا دارد و پیش‌فرض (فارکس) حذف است؛ با adj=true افزوده می‌شود.
+ * @param {object} [opt] { adj?:boolean, adjActive?:boolean }
+ * @returns {Array<{id,label,title,active,action}>}
+ *   action=true یعنی اکشنِ باز کردنِ دیالوگ (چرخ‌دنده)، false یعنی توگل (ADJ).
+ */
+export const axisBottomControls = ({ adj = false, adjActive = false } = {}) => {
+  const items = [];
+  if (adj) items.push({ id: 'adj', label: 'ADJ', title: 'تعدیلِ سودِ سهام', active: !!adjActive, action: false });
+  items.push({ id: 'settings', label: '⚙', title: 'تنظیماتِ محور', active: false, action: true });
+  return items;
 };
 
 // فرمترهای کش‌شدهٔ ساعت برای axisClock (بر اساسِ tz).

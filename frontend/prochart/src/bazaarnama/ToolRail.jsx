@@ -178,6 +178,18 @@ function tint(hex, a) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
+// سبکِ پایهٔ سلولِ ریل (سبکِ TV): سلولِ ۴۰px با آیکونِ ۲۰px، اما هایلایتِ اکتیو/هاور
+// به‌صورتِ مربعِ گِردِ «اینست» رندر می‌شود (نه پُرکردنِ تمامِ سلول) — با بوردرِ شفافِ ۴px
+// و backgroundClip:padding-box، پس پس‌زمینه فقط داخلِ ۳۲px با شعاعِ ۸px دیده می‌شود.
+// آیکون همچنان دقیقاً در مرکزِ سلولِ ۴۰px می‌ماند (بوردر متقارن است).
+const CELL = {
+  width: 40,
+  height: 40,
+  border: '4px solid transparent',
+  backgroundClip: 'padding-box',
+  borderRadius: 8,
+};
+
 export default function ToolRail({
   tool, setTool, TH, onHelp,
   // آهنربا: هم روشن/خاموش، هم شدتِ weak/strong (سبکِ TV).
@@ -383,7 +395,7 @@ export default function ToolRail({
                 onClick={() => { hideTip(); setTool(id); }}
                 className="relative flex items-center justify-center rounded"
                 style={{
-                  width: 40, height: 40,
+                  ...CELL,
                   background: active ? accentTint : 'transparent',
                   color: active ? TH.accent : TH.text,
                   transition: 'background-color 120ms ease, color 120ms ease',
@@ -426,7 +438,7 @@ export default function ToolRail({
               onClick={() => (isOpen ? setOpenKey(null) : openOn(g.key))}
               className="relative flex items-center justify-center rounded"
               style={{
-                width: 40, height: 40,
+                ...CELL,
                 // اکتیوِ tinted (accent با شفافیت) به‌جای پُرکردنِ سختِ آبی — پریتیِ TV.
                 background: isActiveGroup ? accentTint : (isOpen ? TH.chipBgHover : 'transparent'),
                 color: isActiveGroup ? TH.accent : TH.text,
@@ -544,7 +556,7 @@ export default function ToolRail({
           onClick={() => { hideTip(); toggleMagnet(!magnetOn); }}
           className="relative flex items-center justify-center rounded"
           style={{
-            width: 40, height: 40,
+            ...CELL,
             background: magnetOn ? accentTint : (magMenu ? TH.chipBgHover : 'transparent'),
             color: magnetOn ? TH.accent : TH.text,
             transition: 'background-color 120ms ease, color 120ms ease',
@@ -628,7 +640,7 @@ export default function ToolRail({
         onClick={() => { hideTip(); toggleStay(!stayOn); }}
         className="relative shrink-0 flex items-center justify-center rounded"
         style={{
-          width: 40, height: 40,
+          ...CELL,
           background: stayOn ? accentTint : 'transparent',
           color: stayOn ? TH.accent : TH.text,
           transition: 'background-color 120ms ease, color 120ms ease',
@@ -653,7 +665,7 @@ export default function ToolRail({
         onClick={() => { hideTip(); toggleLockAll(!lockOn); }}
         className="relative shrink-0 flex items-center justify-center rounded"
         style={{
-          width: 40, height: 40,
+          ...CELL,
           background: lockOn ? accentTint : 'transparent',
           color: lockOn ? TH.accent : TH.text,
           transition: 'background-color 120ms ease, color 120ms ease',
@@ -676,7 +688,7 @@ export default function ToolRail({
         onClick={() => { hideTip(); toggleHideAll(!hideOn); }}
         className="relative shrink-0 flex items-center justify-center rounded"
         style={{
-          width: 40, height: 40,
+          ...CELL,
           background: hideOn ? accentTint : 'transparent',
           color: hideOn ? TH.accent : TH.text,
           transition: 'background-color 120ms ease, color 120ms ease',
@@ -698,7 +710,7 @@ export default function ToolRail({
         onClick={() => { hideTip(); removeAll(); }}
         className="relative shrink-0 flex items-center justify-center rounded"
         style={{
-          width: 40, height: 40,
+          ...CELL,
           background: 'transparent',
           color: TH.text,
           transition: 'background-color 120ms ease, color 120ms ease',

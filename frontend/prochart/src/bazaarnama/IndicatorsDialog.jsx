@@ -89,26 +89,34 @@ const BADGE = {
   smiErgodic: 'BETA', crsi: 'BETA', mtfRsi: 'BETA', mtfEma: 'BETA',
 };
 
-// ───────────────────────── دسته‌بندیِ سمتِ چپِ TV ─────────────────────────
-// همهٔ اندیکاتورهای رجیستری «تکنیکال»‌اند. سایر دسته‌ها placeholderهای پاریتیِ TV‌اند.
-const CATS = [
-  { id: 'favorites',    label: 'منتخب‌ها',        en: 'Favorites',    icon: Star },
-  { id: 'personal',     label: 'اسکریپت‌های من',   en: 'My scripts',   icon: FileCode2 },
-  { id: 'technicals',   label: 'تکنیکال',         en: 'Technicals',   icon: TrendingUp },
-  { id: 'fundamentals', label: 'بنیادی',          en: 'Fundamentals', icon: BarChart3 },
-  { id: 'community',    label: 'جامعه',           en: 'Community',    icon: Users },
+// ───────────────────────── دسته‌بندیِ سمتِ چپِ TV (گروه‌بندی‌شده) ─────────────────────────
+// TV دسته‌ها را زیرِ سرتیترهای PERSONAL / BUILT-IN / COMMUNITY می‌چیند. این‌جا همان ساختار.
+// همهٔ اندیکاتورهای رجیستری «تکنیکال»‌اند؛ سایر دسته‌ها placeholderهای پاریتیِ TV‌اند.
+const CAT_GROUPS = [
+  {
+    id: 'grp-personal', label: 'شخصی', en: 'Personal', items: [
+      { id: 'favorites', label: 'منتخب‌ها',      en: 'Favorites',  icon: Star },
+      { id: 'personal',  label: 'اسکریپت‌های من', en: 'My scripts', icon: FileCode2 },
+    ],
+  },
+  {
+    id: 'grp-builtin', label: 'داخلی', en: 'Built-in', items: [
+      { id: 'technicals',   label: 'تکنیکال', en: 'Technicals',   icon: TrendingUp },
+      { id: 'fundamentals', label: 'بنیادی',  en: 'Fundamentals', icon: BarChart3 },
+    ],
+  },
+  {
+    id: 'grp-community', label: 'جامعه', en: 'Community', items: [
+      { id: 'community', label: 'جامعه', en: 'Community', icon: Users },
+    ],
+  },
 ];
+const CATS = CAT_GROUPS.flatMap((g) => g.items);
 const TABS = [
   { id: 'indicators', label: 'اندیکاتورها',   en: 'Indicators' },
   { id: 'strategies', label: 'استراتژی‌ها',    en: 'Strategies' },
   { id: 'profiles',   label: 'پروفایل‌ها',     en: 'Profiles' },
   { id: 'patterns',   label: 'الگوها',        en: 'Patterns' },
-];
-
-// گروهِ نمایشی (سرتیترِ بخش) بر اساسِ pane — لیستِ TV مسطح ولی گروه‌بندی‌شده است.
-const GROUPS = [
-  { id: 'main', label: 'روی چارتِ اصلی', en: 'Overlays' },
-  { id: 'sub',  label: 'پنجرهٔ جداگانه', en: 'Oscillators' },
 ];
 
 // نرمال‌سازیِ متن برای سرچِ فازیِ فارسی/عربی (یِ/کِ عربی → فارسی، حذفِ اعرابِ جزئی).
@@ -172,7 +180,7 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick }) {
     hay: norm(`${def.label} ${key} ${engOf(key)}`),
   })), [TH.accent]);
 
-  // فیلترِ سرچ + دسته + تب.
+  // فیلترِ سرچ + دسته + تب، سپس مرتبِ الفباییِ فارسی (پاریتیِ لیستِ الفباییِ TV).
   const filtered = useMemo(() => {
     const nq = norm(q);
     let base = allItems;
@@ -180,14 +188,8 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick }) {
     // تب‌های Strategies/Profiles/Patterns فعلاً کاتالوگِ اندیکاتوری ندارند → خالی (empty-state).
     if (tab !== 'indicators') base = [];
     if (nq) base = base.filter((it) => it.hay.includes(nq));
-    return base;
+    return base.slice().sort((a, b) => a.label.localeCompare(b.label, 'fa'));
   }, [allItems, q, cat, tab, favs]);
-
-  // گروه‌بندیِ نتایج بر اساسِ pane (فقط وقتی سرچ خالیِ نسبی است سرتیتر مفید است، ولی همیشه نشان می‌دهیم).
-  const grouped = useMemo(() => GROUPS.map((g) => ({
-    ...g,
-    items: filtered.filter((it) => it.pane === g.id),
-  })).filter((g) => g.items.length > 0), [filtered]);
 
   if (!open) return null;
 
@@ -245,18 +247,20 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick }) {
           </button>
         </div>
 
-        {/* ───────── تب‌ها: Indicators / Strategies / Profiles / Patterns ───────── */}
-        <div className="flex items-center gap-1 px-3 shrink-0 border-b" style={{ borderColor: TH.border }}>
+        {/* ───────── تب‌ها: Indicators / Strategies / Profiles / Patterns (پیل مثلِ TV) ───────── */}
+        <div className="flex items-center gap-2 px-4 py-2.5 shrink-0 border-b" style={{ borderColor: TH.border }}>
           {TABS.map((t) => {
             const on = tab === t.id;
             return (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className="relative px-3 h-9 text-[13px] font-semibold transition-colors duration-[120ms]"
-                style={{ color: on ? TH.accent : TH.text }}
-                onMouseEnter={(e) => { if (!on) e.currentTarget.style.color = TH.textStrong; }}
-                onMouseLeave={(e) => { if (!on) e.currentTarget.style.color = TH.text; }}>
+                className="px-3.5 h-8 rounded-full text-[13px] font-semibold transition-colors duration-[120ms]"
+                style={{
+                  color: on ? (TH.panel === '#f0f3fa' ? '#fff' : TH.textStrong) : TH.text,
+                  background: on ? (TH.panel === '#f0f3fa' ? '#131722' : TH.chipBg) : 'transparent',
+                }}
+                onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.subtle; }}
+                onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
                 {t.label}
-                {on && <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full" style={{ background: TH.accent }} />}
               </button>
             );
           })}
@@ -265,39 +269,47 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick }) {
         {/* ───────── بدنه: دستهٔ کناری + لیست ───────── */}
         <div className="flex-1 flex min-h-0">
           {/* دستهٔ کناری (سمتِ شروع/راستِ RTL — همان «چپِ» TV) */}
-          <div className="w-[190px] shrink-0 border-l overflow-y-auto bn-thin-scroll py-2" style={{ borderColor: TH.border, background: TH.subtle }}>
-            {CATS.map((c) => {
-              const on = cat === c.id;
-              const Icon = c.icon;
-              const count = c.id === 'favorites' ? favs.length : (c.id === 'technicals' ? allItems.length : 0);
-              return (
-                <button key={c.id} onClick={() => setCat(c.id)}
-                  className="w-full flex items-center gap-2.5 px-4 py-2 text-[13px] text-right transition-colors duration-[120ms]"
-                  style={{
-                    color: on ? TH.textStrong : TH.text,
-                    background: on ? TH.chipBg : 'transparent',
-                    fontWeight: on ? 700 : 500,
-                    borderRight: on ? `2px solid ${TH.accent}` : '2px solid transparent',
-                  }}
-                  onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }}
-                  onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
-                  <Icon size={16} style={{ color: on ? TH.accent : TH.text, fill: c.id === 'favorites' && on ? TH.accent : 'none' }} />
-                  <span className="flex-1">{c.label}</span>
-                  {count > 0 && (
-                    <span className="text-[10px] tabular-nums opacity-60 tnum" dir="ltr">{count}</span>
-                  )}
-                </button>
-              );
-            })}
+          <div className="w-[190px] shrink-0 border-l overflow-y-auto bn-thin-scroll py-1.5" style={{ borderColor: TH.border, background: TH.subtle }}>
+            {CAT_GROUPS.map((grp) => (
+              <div key={grp.id} className="mb-1">
+                <div className="px-4 pt-2.5 pb-1 text-[10px] font-bold tracking-wider opacity-45 flex items-center gap-1.5">
+                  <span>{grp.label}</span>
+                  <span dir="ltr" className="opacity-70">{grp.en}</span>
+                </div>
+                {grp.items.map((c) => {
+                  const on = cat === c.id;
+                  const Icon = c.icon;
+                  const count = c.id === 'favorites' ? favs.length : (c.id === 'technicals' ? allItems.length : 0);
+                  return (
+                    <button key={c.id} onClick={() => setCat(c.id)}
+                      className="w-full flex items-center gap-2.5 px-4 py-1.5 text-[13px] text-right transition-colors duration-[120ms]"
+                      style={{
+                        color: on ? TH.textStrong : TH.text,
+                        background: on ? TH.chipBg : 'transparent',
+                        fontWeight: on ? 700 : 500,
+                        borderRight: on ? `2px solid ${TH.accent}` : '2px solid transparent',
+                      }}
+                      onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }}
+                      onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
+                      <Icon size={16} style={{ color: on ? TH.accent : TH.text, fill: c.id === 'favorites' && on ? TH.accent : 'none' }} />
+                      <span className="flex-1">{c.label}</span>
+                      {count > 0 && (
+                        <span className="text-[10px] tabular-nums opacity-60 tnum" dir="ltr">{count}</span>
+                      )}
+                    </button>
+                  );
+                })}
 
-            {/* زیرشاخه‌های جامعه (پاریتیِ TV) */}
-            {cat === 'community' && (
-              <div className="mt-1 pr-4 pl-2">
-                {['منتخبِ سردبیران', 'برترین‌ها', 'پرطرفدار', 'فروشگاه'].map((s) => (
-                  <div key={s} className="py-1.5 text-[12px] opacity-55 pr-6">{s}</div>
-                ))}
+                {/* زیرشاخه‌های جامعه (پاریتیِ TV) */}
+                {grp.id === 'grp-community' && cat === 'community' && (
+                  <div className="mt-0.5">
+                    {['منتخبِ سردبیران', 'برترین‌ها', 'پرطرفدار', 'فروشگاه'].map((s) => (
+                      <div key={s} className="py-1 pr-10 pl-2 text-[12px] opacity-50">{s}</div>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
 
           {/* لیستِ اصلی */}
@@ -305,74 +317,67 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick }) {
             {showEmpty ? (
               <EmptyState TH={TH} tab={tab} cat={cat} hasQuery={!!q} onOpenScripts={() => { /* یکپارچه‌ساز می‌تواند وصل کند */ }} />
             ) : (
-              <div className="py-1.5">
-                {grouped.map((g) => (
-                  <div key={g.id}>
-                    {/* سرتیترِ گروه — فقط وقتی چند گروه هست یا سرچ فعال نیست */}
-                    {(grouped.length > 1 || !q) && (
-                      <div className="sticky top-0 z-10 px-4 py-1.5 text-[10.5px] font-bold tracking-wide flex items-center gap-1.5"
-                        style={{ color: TH.text, background: TH.panel, borderBottom: `1px solid ${TH.border}` }}>
-                        <span>{g.label}</span>
-                        <span className="opacity-40" dir="ltr">· {g.en}</span>
-                        <span className="opacity-40 tabular-nums tnum mr-auto" dir="ltr">{g.items.length}</span>
-                      </div>
-                    )}
-                    {g.items.map((it) => {
-                      const isFav = favs.includes(it.key);
-                      const justAdded = added === it.key;
-                      return (
-                        <div key={it.key}
-                          className="group flex items-center gap-2.5 px-4 py-2 cursor-pointer transition-colors duration-[120ms]"
-                          title={it.desc}
-                          onClick={() => handlePick(it.key)}
-                          onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
-                          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-                          {/* ستارهٔ منتخب */}
-                          <button
-                            onClick={(e) => { e.stopPropagation(); toggleFav(it.key); }}
-                            title={isFav ? 'حذف از منتخب‌ها' : 'افزودن به منتخب‌ها'}
-                            className="shrink-0 p-0.5 rounded transition-opacity duration-[120ms]"
-                            style={{ opacity: isFav ? 1 : 0.28 }}>
-                            <Star size={15} style={isFav ? { fill: TH.accent, color: TH.accent } : { color: TH.text }} />
-                          </button>
-
-                          {/* نقطهٔ رنگیِ اندیکاتور */}
-                          <span className="shrink-0 w-2 h-2 rounded-full" style={{ background: it.color }} />
-
-                          {/* نام‌ها */}
-                          <div className="flex-1 min-w-0 flex items-center gap-2">
-                            <span className="text-[13px] font-medium truncate" style={{ color: TH.textStrong }}>{it.label}</span>
-                            <span className="text-[11.5px] truncate opacity-55" dir="ltr" style={{ color: TH.text }}>{it.eng}</span>
-                            {it.badge && (
-                              <span className="shrink-0 text-[9px] font-bold px-1.5 py-px rounded"
-                                dir="ltr"
-                                style={it.badge === 'NEW'
-                                  ? { color: '#fff', background: TH.up }
-                                  : { color: TH.accent, border: `1px solid ${TH.accent}`, background: 'transparent' }}>
-                                {it.badge}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* بَجِ pane (روی چارت / پنجرهٔ جدا) */}
-                          <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-[120ms]"
-                            style={{ color: TH.text, background: TH.chipBg }}>
-                            {it.pane === 'main' ? 'روی چارت' : 'پنجرهٔ جدا'}
+              <div className="pb-1.5">
+                {/* سرتیترِ لیستِ الفبایی — «SCRIPT NAME»ِ TV */}
+                <div className="sticky top-0 z-10 px-4 py-1.5 text-[10.5px] font-bold tracking-wider flex items-center gap-1.5"
+                  style={{ color: TH.text, background: TH.panel, borderBottom: `1px solid ${TH.border}` }}>
+                  <span>نامِ اسکریپت</span>
+                  <span className="opacity-40" dir="ltr">SCRIPT NAME</span>
+                  <span className="opacity-40 tabular-nums tnum mr-auto" dir="ltr">{filtered.length}</span>
+                </div>
+                {filtered.map((it) => {
+                  const isFav = favs.includes(it.key);
+                  const justAdded = added === it.key;
+                  return (
+                    <div key={it.key}
+                      className="group flex items-center gap-2.5 px-4 py-2 cursor-pointer transition-colors duration-[120ms]"
+                      title={it.desc}
+                      onClick={() => handlePick(it.key)}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                      {/* نام‌ها */}
+                      <div className="flex-1 min-w-0 flex items-center gap-2">
+                        <span className="text-[13px] font-medium truncate" style={{ color: TH.textStrong }}>{it.label}</span>
+                        <span className="text-[11.5px] truncate opacity-55" dir="ltr" style={{ color: TH.text }}>{it.eng}</span>
+                        {it.badge && (
+                          <span className="shrink-0 text-[9px] font-bold px-1.5 py-px rounded"
+                            dir="ltr"
+                            style={it.badge === 'NEW'
+                              ? { color: '#fff', background: TH.up }
+                              : { color: TH.accent, border: `1px solid ${TH.accent}`, background: 'transparent' }}>
+                            {it.badge}
                           </span>
+                        )}
+                      </div>
 
-                          {/* فیدبکِ افزودن */}
-                          {justAdded ? (
-                            <span className="shrink-0 text-[11px] font-bold" style={{ color: TH.up }}>✓ افزوده شد</span>
-                          ) : (
-                            <span className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-[120ms]" style={{ color: TH.accent }}>
-                              <ChevronLeft size={16} />
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
+                      {/* بَجِ pane (روی چارت / پنجرهٔ جدا) — فقط هنگامِ hover */}
+                      <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-[120ms]"
+                        style={{ color: TH.text, background: TH.chipBg }}>
+                        {it.pane === 'main' ? 'روی چارت' : 'پنجرهٔ جدا'}
+                      </span>
+
+                      {/* فیدبکِ افزودن (هنگامِ hover) */}
+                      {justAdded ? (
+                        <span className="shrink-0 text-[11px] font-bold" style={{ color: TH.up }}>✓ افزوده شد</span>
+                      ) : (
+                        <span className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-[120ms]" style={{ color: TH.accent }}>
+                          <ChevronLeft size={16} />
+                        </span>
+                      )}
+
+                      {/* ستارهٔ منتخب — لبهٔ پایانی مثلِ TV؛ همیشه اگر منتخب، وگرنه هنگامِ hover */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleFav(it.key); }}
+                        title={isFav ? 'حذف از منتخب‌ها' : 'افزودن به منتخب‌ها'}
+                        className="shrink-0 p-0.5 rounded transition-opacity duration-[120ms]"
+                        style={{ opacity: isFav ? 1 : undefined }}>
+                        <Star size={15}
+                          className={isFav ? '' : 'opacity-0 group-hover:opacity-40'}
+                          style={isFav ? { fill: TH.accent, color: TH.accent } : { color: TH.text }} />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

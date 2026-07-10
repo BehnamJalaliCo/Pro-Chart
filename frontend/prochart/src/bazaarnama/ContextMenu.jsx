@@ -61,21 +61,22 @@ function MenuPanel({ items, TH, onClose, style, dir = 'rtl', autoClamp = true })
   const cancelClose = () => { if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null; } };
   useEffect(() => () => cancelClose(), []);
 
-  const rowBase = 'flex items-center gap-2.5 w-full text-right rounded-md select-none transition-colors duration-[120ms]';
+  const rowBase = 'flex items-center gap-2.5 w-full text-right rounded select-none transition-colors duration-[120ms]';
 
   return (
     <div
       ref={ref}
       dir={dir}
-      className="fixed z-[81] rounded-lg p-1 text-[12.5px]"
+      className="fixed z-[81] p-1 text-[12.5px]"
       style={{
         ...pos,
         width: MENU_W,
         background: TH.popoverBg,
         border: `1px solid ${TH.border}`,
+        borderRadius: 6,
         color: TH.text,
-        boxShadow: '0 6px 24px -6px rgba(0,0,0,.45), 0 2px 6px -2px rgba(0,0,0,.3)',
-        backdropFilter: 'saturate(1.1) blur(2px)',
+        boxShadow: '0 2px 4px rgba(0,0,0,.2), 0 6px 16px -4px rgba(0,0,0,.32)',
+        backdropFilter: 'saturate(1.05)',
         animation: 'pcScreenIn .1s ease-out both',
         transformOrigin: 'top right',
       }}

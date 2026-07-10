@@ -201,39 +201,47 @@ export default function NewsTab({ symbol, TH }) {
         )}
         {shown.map((a, i) => {
           const tickers = newsTickers(a);
-          const hot = (a.impact || 0) >= 8;
+          const impact = a.impact || 0;
+          const hot = impact >= 8;
           const k = newsKey(a, i);
           const isFresh = freshKeys.has(k);
+          const dot = impactColor(impact);
           return (
             <button key={k} onClick={() => a.url && window.open(a.url, '_blank', 'noopener,noreferrer')}
-              className="block w-full text-right px-3 py-2 border-b transition-colors"
+              className={`relative block w-full text-right pl-3 pr-3 py-2.5 border-b transition-colors${isFresh ? ' flash-up' : ''}`}
               style={{ borderColor: TH.border }}
               onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
               onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-              <div className={`flex items-start gap-1.5${isFresh ? ' flash-up' : ''}`}>
-                <span className="mt-1 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: impactColor(a.impact || 0) }} />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start gap-1.5">
-                    <div className="text-[11px] leading-5 flex-1" style={{ color: TH.textStrong }}>{a.title}</div>
-                    {isFresh && (
-                      <span className="shrink-0 mt-0.5 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold whitespace-nowrap"
-                        style={{ background: TH.accent, color: '#fff' }}>جدید</span>
-                    )}
-                    {hot && (
-                      <span className="shrink-0 mt-0.5 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold"
-                        style={{ background: TH.down, color: '#fff' }}>مهم</span>
-                    )}
-                  </div>
-                  {a.summary && <div className="text-[10px] leading-5 mt-0.5 opacity-70">{a.summary}</div>}
-                  <div className="flex items-center flex-wrap gap-1.5 mt-1 text-[9px] opacity-50" dir="ltr">
-                    <span>{a.source}</span><span>·</span><span dir="rtl">{relTime(a.ts)}</span>
-                    {tickers.map((t) => (
-                      <span key={t} className="tnum px-1 h-[14px] rounded leading-[14px]"
-                        style={{ background: TH.chipBg, color: TH.text, opacity: 0.9 }}>{t}</span>
-                    ))}
-                  </div>
-                </div>
+              {/* نوارِ اهمیت (لبهٔ راست، سبکِ News Flowِ TV) */}
+              {hot && <span className="absolute top-0 bottom-0 right-0 w-[2px]" style={{ background: TH.down }} />}
+              {/* ردیفِ متا: منبع · زمان + برچسب‌ها */}
+              <div className="flex items-center gap-1.5 mb-1" dir="ltr">
+                <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot }} />
+                <span className="text-[9.5px] font-semibold uppercase tracking-wide truncate" style={{ color: TH.text, opacity: 0.8, maxWidth: 130 }}>{a.source}</span>
+                <span className="text-[9px] opacity-40">·</span>
+                <span className="text-[9.5px] whitespace-nowrap opacity-55" style={{ color: TH.text }} dir="rtl">{relTime(a.ts)}</span>
+                <span className="flex-1" />
+                {isFresh && (
+                  <span className="shrink-0 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold whitespace-nowrap"
+                    style={{ background: TH.accent, color: '#fff' }}>جدید</span>
+                )}
+                {hot && (
+                  <span className="shrink-0 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold whitespace-nowrap"
+                    style={{ background: TH.down, color: '#fff' }}>مهم</span>
+                )}
               </div>
+              {/* تیتر */}
+              <div className="text-[12px] leading-[18px]" style={{ color: TH.textStrong }}>{a.title}</div>
+              {a.summary && <div className="text-[10px] leading-[17px] mt-1 opacity-60">{a.summary}</div>}
+              {/* برچسبِ نمادهای مرتبط */}
+              {tickers.length > 0 && (
+                <div className="flex items-center flex-wrap gap-1 mt-1.5" dir="ltr">
+                  {tickers.map((t) => (
+                    <span key={t} className="tnum px-1.5 h-[16px] rounded leading-[16px] text-[9px] font-semibold"
+                      style={{ background: TH.chipBg, color: TH.text }}>{t}</span>
+                  ))}
+                </div>
+              )}
             </button>
           );
         })}

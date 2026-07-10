@@ -21,15 +21,29 @@ function compact(v) {
 }
 
 // متادیتای ایستا برای انواعِ ابزار (وقتی spec دقیق نداریم، گرافِ‌ول degrade)
+// market = برچسبِ بازار/صرافیِ کوتاه (سبکِ «• NASDAQ»ِ سرتیترِ TV) · cat = دستهٔ منطقی برای متن.
 function metaFor(symbol = '') {
   const s = symbol.toUpperCase();
-  if (/BTC|ETH|USDT|SOL|XRP|DOGE|BNB|ADA/.test(s)) return { type: 'رمزارز', contract: '۱', session: '۲۴/۷' };
-  if (/XAU|GOLD/.test(s)) return { type: 'فلزِ گران‌بها (طلا)', contract: '۱۰۰', session: 'لندن/نیویورک' };
-  if (/XAG|SILVER/.test(s)) return { type: 'فلزِ گران‌بها (نقره)', contract: '۵۰۰۰', session: 'لندن/نیویورک' };
-  if (/OIL|WTI|BRENT|USOIL/.test(s)) return { type: 'انرژی (نفت)', contract: '۱۰۰۰', session: 'نیویورک' };
-  if (/US30|NAS|SPX|GER|DAX|UK100|JPN/.test(s)) return { type: 'شاخص', contract: '۱', session: 'بورسِ مربوطه' };
-  if (/^[A-Z]{6}$/.test(s)) return { type: 'جفت‌ارز (فارکس)', contract: '۱۰۰٬۰۰۰', session: 'سیدنی→نیویورک' };
-  return { type: 'ابزار', contract: '—', session: '—' };
+  if (/BTC|ETH|USDT|SOL|XRP|DOGE|BNB|ADA/.test(s)) return { type: 'رمزارز', contract: '۱', session: '۲۴/۷', market: 'CRYPTO', cat: 'crypto' };
+  if (/XAU|GOLD/.test(s)) return { type: 'فلزِ گران‌بها (طلا)', contract: '۱۰۰', session: 'لندن/نیویورک', market: 'COMEX', cat: 'metal' };
+  if (/XAG|SILVER/.test(s)) return { type: 'فلزِ گران‌بها (نقره)', contract: '۵۰۰۰', session: 'لندن/نیویورک', market: 'COMEX', cat: 'metal' };
+  if (/OIL|WTI|BRENT|USOIL/.test(s)) return { type: 'انرژی (نفت)', contract: '۱۰۰۰', session: 'نیویورک', market: 'NYMEX', cat: 'energy' };
+  if (/US30|NAS|SPX|GER|DAX|UK100|JPN/.test(s)) return { type: 'شاخص', contract: '۱', session: 'بورسِ مربوطه', market: 'INDEX', cat: 'index' };
+  if (/^[A-Z]{6}$/.test(s)) return { type: 'جفت‌ارز (فارکس)', contract: '۱۰۰٬۰۰۰', session: 'سیدنی→نیویورک', market: 'FX', cat: 'forex' };
+  return { type: 'ابزار', contract: '—', session: '—', market: '', cat: 'other' };
+}
+
+// جملهٔ توصیفیِ «حقایقِ کلیدی» (کارتِ بنفشِ سبکِ TV) — بر پایهٔ دستهٔ ابزار، بدونِ دادهٔ ساختگی.
+function factsFor(cat, label) {
+  const n = label || 'این نماد';
+  switch (cat) {
+    case 'crypto': return `${n} یک دارایی دیجیتال است که به‌صورتِ ۲۴ساعته و ۷روزِ هفته در بازارهای جهانیِ رمزارز دادوستد می‌شود؛ نوسانِ آن بالا و نقدشوندگی‌اش زیاد است.`;
+    case 'metal': return `${n} از فلزاتِ گران‌بها و دارایی‌های امن به شمار می‌آید و قیمتش با نرخِ بهرهٔ دلار و ریسکِ جهانی رابطهٔ نزدیک دارد.`;
+    case 'energy': return `${n} از قراردادهای پرمعاملهٔ انرژی است و قیمتش تابعِ عرضه‌وتقاضای جهانی، ذخایرِ هفتگی و تصمیمِ تولیدکنندگان است.`;
+    case 'index': return `${n} شاخصی از بزرگ‌ترین شرکت‌های بازارِ مربوطه است و نمایانگرِ روندِ کلیِ آن بازار محسوب می‌شود.`;
+    case 'forex': return `${n} از پرمعامله‌ترین جفت‌ارزهای بازارِ فارکس است و به‌صورتِ ۲۴ساعته از سیدنی تا نیویورک دادوستد می‌شود.`;
+    default: return `${n} در پلتفرمِ Pro-Chart به‌صورتِ زنده قابلِ رهگیری و تحلیل است.`;
+  }
 }
 
 // شمارشِ ارقامِ اعشار برای نمایشِ هم‌ترازِ بید/اَسک
@@ -167,6 +181,7 @@ export default function Details({ symbol, TH, prices = {} }) {
   const meta = useMemo(() => metaFor(symbol), [symbol]);
   const name = useMemo(() => nameFor(symbol), [symbol]);
   const quoteCcy = useMemo(() => quoteFor(symbol), [symbol]);
+  const facts = useMemo(() => factsFor(meta.cat, name || symbol), [meta.cat, name, symbol]);
   const dec = priceDecimals(symbol, mid);
   // نمایشِ هم‌ترازِ TV: اعشارِ ثابت + جداکنندهٔ هزارگان (ارقامِ لاتین، tabular، dir=ltr).
   const fmt = (v) => (v == null ? '—' : Number(v).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }));
@@ -243,7 +258,7 @@ export default function Details({ symbol, TH, prices = {} }) {
 
   return (
     <div className="p-3 text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
-      {/* سربرگ: آیکون + نماد + نامِ کامل + دسته (سبکِ سرتیترِ نمادِ TV) */}
+      {/* سربرگ: آیکون + نماد + نامِ کامل + بازار + آیکون‌های عملیاتِ راست (سبکِ سرتیترِ نمادِ TV) */}
       <div className="mb-3">
         <div className="flex items-center gap-2">
           <SymbolLogo symbol={symbol} size={32} />
@@ -253,29 +268,67 @@ export default function Details({ symbol, TH, prices = {} }) {
               <span className="text-[8.5px] font-bold uppercase tracking-[0.06em] shrink-0 px-1.5 py-0.5 rounded"
                 style={{ color: TH.text, background: TH.chipBg }} dir="ltr">{meta.type}</span>
             </div>
-            {name && <div className="text-[11px] truncate leading-tight mt-1" style={{ color: TH.text }}>{name}</div>}
+            {/* نامِ کامل • بازار (سبکِ «Apple Inc • NASDAQ»ِ TV) */}
+            <div className="flex items-center gap-1.5 mt-1 min-w-0">
+              {name && <span className="text-[11px] truncate leading-tight" style={{ color: TH.text }}>{name}</span>}
+              {meta.market && (
+                <span className="text-[9.5px] font-semibold uppercase tracking-[0.06em] shrink-0 opacity-55" dir="ltr" style={{ color: TH.text }}>· {meta.market}</span>
+              )}
+            </div>
+          </div>
+          {/* آیکون‌های عملیاتِ TV: مقایسه / ویرایش / بیشتر (نشانه‌های بصری، hover کم‌رنگ) */}
+          <div className="flex items-center gap-0.5 shrink-0 self-start" dir="ltr">
+            {[
+              <path key="a" d="M4 4h5v5H4zM11 11h5v5h-5zM4 13h5M11 4h5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />,
+              <path key="b" d="M13.5 3.8l2.7 2.7-8 8H5.3v-2.9zM12.2 5.1l2.7 2.7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round" />,
+              <g key="c" fill="currentColor"><circle cx="4.5" cy="10" r="1.4" /><circle cx="10" cy="10" r="1.4" /><circle cx="15.5" cy="10" r="1.4" /></g>,
+            ].map((g, i) => (
+              <span key={i} title={['مقایسه', 'ویرایش', 'بیشتر'][i]}
+                className="grid place-items-center rounded transition-colors duration-[120ms] cursor-default"
+                style={{ width: 24, height: 24, color: TH.text, opacity: 0.5 }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBg; e.currentTarget.style.opacity = '0.85'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.opacity = '0.5'; }}>
+                <svg width="18" height="18" viewBox="0 0 20 20">{g}</svg>
+              </span>
+            ))}
           </div>
         </div>
 
-        {/* قیمتِ بزرگ + ارزِ مظنه + تغییرِ روزِ رنگی (پیلِ کم‌رنگ + فلش) */}
+        {/* قیمتِ بزرگ (رنگِ خنثی + فلَشِ گذرا) + ارزِ مظنه + تغییرِ روزِ رنگیِ ساده (سبکِ سرتیترِ TV) */}
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mt-2.5" dir="ltr">
           <Flash value={mid} dir={dir}
             className="text-[28px] font-extrabold tabular-nums leading-none tracking-tight rounded px-0.5 -mx-0.5 inline-block"
-            style={{ color: dir > 0 ? TH.up : dir < 0 ? TH.down : TH.textStrong }}>
+            style={{ color: TH.textStrong }}>
             {mid != null ? fmt(mid) : '—'}
           </Flash>
           {quoteCcy && mid != null && (
             <span className="text-[11px] font-semibold" style={{ color: TH.text }}>{quoteCcy}</span>
           )}
           {chgPct != null && (
-            <Flash value={mid} dir={dir}
-              className="text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded inline-flex items-center gap-1"
-              style={{ color: chgCol, background: tint(chgCol, 0.14) }}>
-              <span className="text-[9px] leading-none">{chgPct >= 0 ? '▲' : '▼'}</span>
-              <span>{chgAbs >= 0 ? '+' : ''}{fmt(chgAbs)} ({chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%)</span>
-            </Flash>
+            <span className="text-[12.5px] font-bold tabular-nums" style={{ color: chgCol }}>
+              {chgAbs >= 0 ? '+' : ''}{fmt(chgAbs)}&nbsp;&nbsp;{chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%
+            </span>
           )}
         </div>
+        {/* زمانِ آخرین به‌روزرسانی (سبکِ «Last update at … GMT»ِ TV) */}
+        {mid != null && (
+          <div className="text-[10px] mt-1.5 opacity-55" style={{ color: TH.text }} dir="ltr">
+            آخرین به‌روزرسانی · {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })} GMT
+          </div>
+        )}
+      </div>
+
+      {/* کارتِ «حقایقِ کلیدی» (توصیفیِ سبکِ TV، تینتِ اکسنتِ بنفش) */}
+      <div className="rounded-lg p-2.5 mb-1" style={{ background: tint(TH.accentAi, 0.10), border: `1px solid ${tint(TH.accentAi, 0.22)}` }}>
+        <div className="flex items-center gap-1.5 mb-1">
+          <svg width="13" height="13" viewBox="0 0 20 20" style={{ color: TH.accentAi }}>
+            <path d="M10 2l1.6 4.6L16 8.2l-4.4 1.6L10 14l-1.6-4.2L4 8.2l4.4-1.6zM15.5 12l.7 2 .8-2 1.5-.6-1.5-.7-.8-1.9-.7 1.9-1.5.7z" fill="currentColor" />
+          </svg>
+          <span className="text-[11px] font-extrabold" style={{ color: TH.textStrong }}>حقایقِ کلیدی</span>
+          <span className="text-[9px] uppercase tracking-[0.08em] opacity-40" dir="ltr">Key facts</span>
+        </div>
+        <div className="text-[11px] leading-[1.7]" style={{ color: TH.text }}>{facts}</div>
+        <div className="text-[10px] font-semibold mt-1.5 cursor-default" style={{ color: TH.accent }}>بیشتر بخوانید ›</div>
       </div>
 
       {/* نوارهای رنجِ روز و ۵۲ هفته (گِیجِ گرادیانِ سبکِ TV) */}
@@ -302,8 +355,8 @@ export default function Details({ symbol, TH, prices = {} }) {
         <Row k="اسپرد" v={spread != null ? spread.toFixed(dec) : '—'} last />
       </div>
 
-      {/* حقایقِ کلیدی — مشخصاتِ قرارداد و بازار */}
-      <Label fa="حقایقِ کلیدی" en="Key facts" />
+      {/* دربارهٔ نماد — مشخصاتِ قرارداد و بازار */}
+      <Label fa="دربارهٔ نماد" en="About" />
       <div className="rounded-lg border px-3 py-1" style={{ borderColor: TH.border, background: TH.subtle }}>
         <Row k="نماد" v={symbol} />
         <Row k="نوعِ ابزار" v={meta.type} />
