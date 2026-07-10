@@ -1679,7 +1679,7 @@ export default function BazaarNama() {
           <Tip label="پنجرهٔ داده (مقادیرِ زیرِ کراس‌هیر)"><button onClick={() => setShowDataWin((v) => !v)} className={`p-1 rounded-md transition-colors duration-[120ms] ${showDataWin ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={showDataWin ? { background: TH.accent } : {}}><Table2 size={12} /></button></Tip>
           <div className="h-px w-5 my-0.5" style={{ background: TH.border }} />
           <Tip label="پاکِ آخرین ترسیم"><button onClick={() => drawRef.current && drawRef.current.clearLast()} className="p-1 rounded opacity-60 hover:opacity-100"><Minus size={12} /></button></Tip>
-          <Tip label="پاکِ همهٔ ترسیم‌ها"><button onClick={() => drawRef.current && drawRef.current.clearAll()} className="p-1 rounded opacity-60 hover:text-red-400"><Trash2 size={12} /></button></Tip>
+          {/* سطلِ «پاکِ همهٔ ترسیم‌ها»ی تکراری حذف شد — همین قابلیت در خوشهٔ پایینِ ToolRail (حذفِ همهٔ ترسیم‌ها) هست. */}
         </div>
         )}
 
