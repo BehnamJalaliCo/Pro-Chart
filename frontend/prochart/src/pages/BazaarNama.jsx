@@ -1885,7 +1885,10 @@ export default function BazaarNama() {
                 <BarChart3 size={11} style={{ opacity: 0.7 }} /><span>حجم · Vol</span>
               </div>
             )}
-            <Watermark src={bnLogo} theme={theme} opacity={0.07} />
+            {/* واترمارک — نمایش/شفافیت از دیالوگِ تنظیمات (قبلاً مرده). نگاشت طوری که پیش‌فرضِ ۵۰٪ = همان ۰٫۰۷ ظریفِ قبلی (بدونِ رگرسیون). */}
+            {chartSettingsOverrides.watermarkShown !== false && (
+              <Watermark src={bnLogo} theme={theme} opacity={chartSettingsOverrides.watermarkOpacity != null ? (chartSettingsOverrides.watermarkOpacity / 100) * 0.14 : 0.07} />
+            )}
             {/* Data Window — کامپوننتِ ChartOverlays: O/H/L/C + تغییر (مطلق/درصد) + حجم + زمان + اندیکاتورهای زیرِ کراس‌هیر */}
             {showDataWin && (
               <DataWindow
