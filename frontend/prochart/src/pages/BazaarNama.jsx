@@ -116,7 +116,7 @@ const THEMES = {
     chipBg: 'rgba(255,255,255,.06)', chipBgHover: 'rgba(255,255,255,.10)',
     subtle: 'rgba(255,255,255,.04)', popoverBg: 'rgba(30,34,45,.98)',
     overlayMask: 'rgba(0,0,0,.42)', accent: '#2962FF', accentAi: '#8b5cf6',
-    tpColor: '#22c55e', slColor: '#ef4444', crosshairLabelBg: '#2962FF',
+    tpColor: '#22c55e', slColor: '#ef4444', crosshairLabelBg: '#4c525e',
   },
   light: {
     bg: '#ffffff', panel: '#f0f3fa', border: '#e0e3eb', grid: '#e0e3eb',
@@ -126,7 +126,7 @@ const THEMES = {
     chipBg: 'rgba(0,0,0,.04)', chipBgHover: 'rgba(0,0,0,.07)',
     subtle: 'rgba(0,0,0,.03)', popoverBg: 'rgba(255,255,255,.98)',
     overlayMask: 'rgba(255,255,255,.8)', accent: '#2962FF', accentAi: '#7c3aed',
-    tpColor: '#22c55e', slColor: '#ef4444', crosshairLabelBg: '#2962FF',
+    tpColor: '#22c55e', slColor: '#ef4444', crosshairLabelBg: '#434651',
   },
 };
 

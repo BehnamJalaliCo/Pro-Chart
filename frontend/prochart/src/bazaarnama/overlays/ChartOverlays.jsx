@@ -465,8 +465,9 @@ export function DataWindow({
 export function CrosshairAxisTag({ price, time, TH }) {
   if ((!price || price.text == null) && (!time || time.text == null)) return null;
   const chipBg = (TH && (TH.crosshairLabelBg || TH.popoverBg)) || 'rgba(30,34,45,.98)';
-  const chipFg = (TH && TH.textStrong) || '#d1d4dc';
-  const chipBorder = (TH && TH.border) || 'transparent';
+  // متنِ سفید روی پس‌زمینهٔ خاکستریِ خنثیِ تگِ کراس‌هیر (سبکِ TV) — کنتراست در هر دو تم.
+  const chipFg = '#ffffff';
+  const chipBorder = 'transparent';
   return (
     <>
       {price && price.text != null && price.y != null && (
