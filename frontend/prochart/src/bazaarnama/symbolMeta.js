@@ -68,6 +68,53 @@ const CRYPTO_EN = {
   ALGO: 'Algorand', FLOW: 'Flow', SAND: 'The Sandbox', MANA: 'Decentraland', AXS: 'Axie Infinity',
   EGLD: 'MultiversX', XTZ: 'Tezos', CHZ: 'Chiliz',
 };
+// —— پوششِ تکمیلیِ نمادها (نام‌های واقعیِ کاملِ نمادهای پرتقاضایِ غایب) —— فقط اضافه، بدونِ حذف.
+// دستهٔ درست از همان classifyRaw می‌آید؛ این‌ها فقط نامِ نمایشی را کامل می‌کنند.
+Object.assign(CRYPTO_FA, {
+  WIF: 'داگ‌ویف‌هت', BONK: 'بونک', FLOKI: 'فلوکی', JUP: 'ژوپیتر', PYTH: 'پیث',
+  STX: 'استکس', KAS: 'کاسپا', ORDI: 'اوردی', ENS: 'نامِ اتریوم', DYDX: 'دی‌وای‌دی‌ایکس',
+  GALA: 'گالا', ENA: 'اتنا', ONDO: 'اوندو', JASMY: 'جاسمی', LDO: 'لیدو',
+  MKR: 'میکر', RUNE: 'تورچین', FET: 'فچ‌ای‌آی', TAO: 'بیت‌تنسور', WLD: 'ورلدکوین',
+  XMR: 'مونرو', ZEC: 'زی‌کش', DASH: 'دش', NEO: 'نئو', IOTA: 'آیوتا',
+  THETA: 'تتا', EOS: 'ایاس', CAKE: 'پنکیک‌سواپ', CRV: 'کرو', COMP: 'کامپاند',
+  SNX: 'سینتتیکس', GMX: 'جی‌ام‌ایکس', PENDLE: 'پندل', APE: 'ایپ‌کوین', LRC: 'لوپرینگ',
+  KAVA: 'کاوا', ROSE: 'اویسیس', ONE: 'هارمونی', ZIL: 'زیلیکا', ANKR: 'انکر',
+  LUNC: 'لوناکلاسیک', BTT: 'بیت‌تورنت', WIN: 'وین‌کوین', XEC: 'ای‌کش', CFX: 'کانفلاکس',
+  STRK: 'استارک‌نت', W: 'ورم‌هول', TRB: 'تلور', GMT: 'استپن', MASK: 'مسک',
+});
+Object.assign(CRYPTO_EN, {
+  WIF: 'dogwifhat', BONK: 'Bonk', FLOKI: 'FLOKI', JUP: 'Jupiter', PYTH: 'Pyth Network',
+  STX: 'Stacks', KAS: 'Kaspa', ORDI: 'ORDI', ENS: 'Ethereum Name Service', DYDX: 'dYdX',
+  GALA: 'Gala', ENA: 'Ethena', ONDO: 'Ondo', JASMY: 'JasmyCoin', LDO: 'Lido DAO',
+  MKR: 'Maker', RUNE: 'THORChain', FET: 'Fetch.ai', TAO: 'Bittensor', WLD: 'Worldcoin',
+  XMR: 'Monero', ZEC: 'Zcash', DASH: 'Dash', NEO: 'Neo', IOTA: 'IOTA',
+  THETA: 'Theta Network', EOS: 'EOS', CAKE: 'PancakeSwap', CRV: 'Curve DAO', COMP: 'Compound',
+  SNX: 'Synthetix', GMX: 'GMX', PENDLE: 'Pendle', APE: 'ApeCoin', LRC: 'Loopring',
+  KAVA: 'Kava', ROSE: 'Oasis Network', ONE: 'Harmony', ZIL: 'Zilliqa', ANKR: 'Ankr',
+  LUNC: 'Terra Classic', BTT: 'BitTorrent', WIN: 'WINkLink', XEC: 'eCash', CFX: 'Conflux',
+  STRK: 'Starknet', W: 'Wormhole', TRB: 'Tellor', GMT: 'STEPN', MASK: 'Mask Network',
+});
+// اعشارِ استانداردِ فلزات (اونسِ ترویِ TradingView): طلا/پلاتین/پالادیوم ۲، نقره ۳، مس ۴.
+const METAL_DIGITS = { XAU: 2, XAG: 3, XPT: 2, XPD: 2, XCU: 4 };
+// اعشارِ ثابتِ کریپتوهای گران/میان‌قیمت (وقتی قیمتِ زنده در دست نیست، مثلِ مدالِ جستجو).
+// کوین‌های ریزقیمت (SHIB/PEPE/…) عمداً این‌جا نیستند تا در زمانِ اجرا بر پایهٔ بزرگیِ قیمت
+// تعیین شوند (سبکِ نردبانِ TV)؛ نگاشتِ ثابت فقط پیش‌فرضِ منطقیِ بدونِ قیمت است.
+const CRYPTO_DIGITS = {
+  // گران‌ها → ۲ رقم عینِ TV (BTCUSD/ETHUSD)
+  BTC: 2, ETH: 2, BNB: 2, SOL: 2, LTC: 2, BCH: 2, AVAX: 2, LINK: 2, DOT: 2, ATOM: 2,
+  NEAR: 2, AAVE: 2, ICP: 2, EGLD: 2, TIA: 2, INJ: 2, ETC: 2, TON: 2, APT: 2, SUI: 2,
+  UNI: 2, FIL: 2, OP: 2, ARB: 2, IMX: 2, MKR: 2, TAO: 2, XMR: 2, ZEC: 2, DASH: 2,
+  NEO: 2, LDO: 2, RUNE: 2, GMX: 2, ORDI: 2, WLD: 2, KAS: 2, THETA: 2, COMP: 2, RNDR: 2,
+  // میان‌قیمت‌ها → ۳ رقم
+  XTZ: 3, ALGO: 3, FTM: 3, SEI: 3, PENDLE: 3, KAVA: 3, EOS: 3, STX: 3, CFX: 3, PYTH: 3,
+  ENA: 3, W: 3, STRK: 3, JUP: 3, DYDX: 3, FET: 3, CAKE: 3, GALA: 3, MASK: 3, APE: 3, TRB: 3,
+  // ریزها → ۴ رقم (کف)؛ در زمانِ اجرا با قیمت دقیق‌تر می‌شوند
+  ADA: 4, XRP: 4, TRX: 4, DOGE: 4, MATIC: 4, XLM: 4, HBAR: 4, VET: 5, GRT: 4, SAND: 4,
+  MANA: 4, AXS: 4, FLOW: 4, CHZ: 5, CRV: 4, SNX: 4, LRC: 5, ANKR: 5, ZIL: 5, ONE: 5,
+  IOTA: 4, JASMY: 6, ONDO: 4, WIF: 3, ROSE: 5,
+  // میکروها → ۸ رقم
+  SHIB: 8, PEPE: 8, BONK: 8, FLOKI: 6, LUNC: 6, BTT: 8, WIN: 8, XEC: 6,
+};
 // محبوب‌ها برای رتبهٔ پیش‌فرض
 const POPULAR = new Set(['EURUSD', 'GBPUSD', 'USDJPY', 'XAUUSD', 'XAGUSD', 'XTIUSD', 'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT', 'BTCUSD', 'ETHUSD', 'US30', 'US500', 'NAS100', 'DE40', 'AUDUSD', 'USDCAD', 'USDCHF', 'GBPJPY']);
 
@@ -100,6 +147,55 @@ const METAL_SPEC = {
 };
 
 function up(s) { return String(s || '').toUpperCase(); }
+// تبدیلِ مطمئنِ mid (رشته/عدد) به عدد یا null.
+function toNum(v) { const n = typeof v === 'number' ? v : parseFloat(v); return Number.isFinite(n) ? n : null; }
+// اعشارِ کریپتو بر پایهٔ بزرگیِ قیمت (سبکِ نردبانِ TradingView): هرچه ارزان‌تر، ریزتر.
+function magnitudeDigits(n) {
+  const x = Math.abs(n);
+  if (x >= 1) return 2;
+  if (x >= 0.1) return 4;
+  if (x >= 0.001) return 5;
+  if (x > 0) return 8;
+  return 2;
+}
+// اعشارِ ثابتِ دستهٔ نماد (مستقل از قیمت). کریپتو/سایر ⇒ null (یعنی «به قیمت واگذار شود»).
+function fixedDigits(m) {
+  if (!m) return null;
+  if (m.cat === 'forex') return m.quote === 'JPY' ? 3 : 5;
+  if (m.cat === 'metal') return METAL_DIGITS[m.base] != null ? METAL_DIGITS[m.base] : 2;
+  if (m.cat === 'energy') return m.base === 'NGAS' ? 3 : 2;
+  if (m.cat === 'index') return 2;
+  return null; // crypto / other → مبتنی بر بزرگیِ قیمت یا نگاشتِ ثابتِ کریپتو
+}
+/**
+ * منبعِ واحدِ حقیقتِ «اعشارِ درستِ هر نماد» برای فرمتِ قیمت (مورد ۷۶ و ۱۵۰).
+ * فارکس ۵ (ین ۳)، طلا/پلاتین/پالادیوم ۲، نقره ۳، مس ۴، نفت ۲، گاز ۳، شاخص ۲،
+ * کریپتو: اگر قیمتِ زنده بدهی بر پایهٔ بزرگیِ آن (بهترین حالت)، وگرنه نگاشتِ ثابتِ کریپتو، وگرنه ۲.
+ * @param {string} symbol نمادِ خام (EURUSD, XAUUSD, BTCUSDT, PEPEUSDT, …)
+ * @param {number|string} [mid] قیمتِ زنده (اختیاری) — برای دقتِ per-symbolِ کریپتو
+ * @returns {number} تعدادِ ارقامِ اعشار
+ */
+export function priceDigits(symbol, mid) {
+  const m = classifyRaw(symbol);
+  const fx = fixedDigits(m);
+  if (fx != null) return fx;
+  // کریپتو/سایر: قیمتِ زنده اولویتِ اول (سبکِ نردبانِ TV)
+  const n = toNum(mid);
+  if (n != null) return magnitudeDigits(n);
+  if (m.cat === 'crypto' && CRYPTO_DIGITS[m.base] != null) return CRYPTO_DIGITS[m.base];
+  return 2;
+}
+/**
+ * payloadِ آمادهٔ priceFormat برای lightweight-charts (type:'price') بر پایهٔ اعشارِ درستِ نماد.
+ * @param {string} symbol نماد
+ * @param {number|string} [mid] قیمتِ زنده (اختیاری)
+ * @returns {{type:'price',precision:number,minMove:number}}
+ */
+export function priceFormatFor(symbol, mid) {
+  const d = priceDigits(symbol, mid);
+  // minMove دقیق (بدونِ خطای شناور مثلِ Math.pow(10,-5)=0.0000099…): 10^-d از رشتهٔ نمایی.
+  return { type: 'price', precision: d, minMove: d > 0 ? parseFloat('1e-' + d) : 1 };
+}
 
 // نامِ کاملِ انگلیسیِ استانداردِ نماد (سبکِ سرتیترِ TradingView: «Euro / US Dollar»). نبودِ نگاشت ⇐ خودِ نماد.
 function nameEnOf(m) {
@@ -137,10 +233,15 @@ function enrich(m) {
     m.contract = isGas ? '۱۰٬۰۰۰ MMBtu' : '۱٬۰۰۰ بشکه';
     m.tick = isGas ? 0.001 : 0.01;
   } else if (m.cat === 'crypto') {
-    m.contract = '۱ ' + (m.base || ''); m.tick = 0.01;
+    m.contract = '۱ ' + (m.base || '');
+    // تیکِ کریپتو هم‌ترازِ اعشارِ ثابتِ همان کوین (نبودِ نگاشت ⇒ ۲ رقم).
+    const cd = CRYPTO_DIGITS[m.base] != null ? CRYPTO_DIGITS[m.base] : 2;
+    m.tick = parseFloat('1e-' + cd);
   } else {
     m.contract = '—'; m.tick = 0.01;
   }
+  // اعشارِ درستِ نماد برای فرمتِ قیمت (مورد ۱۵۰) — بدونِ قیمتِ زنده، پیش‌فرضِ منطقیِ دسته/کوین.
+  m.digits = priceDigits(m.symbol);
   return m;
 }
 

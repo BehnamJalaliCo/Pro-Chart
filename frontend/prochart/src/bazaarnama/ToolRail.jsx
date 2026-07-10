@@ -17,12 +17,15 @@
 // (در drawtools_ext.js) هستند؛ پس setTool(id) مستقیماً کار می‌کند.
 // ─────────────────────────────────────────────────────────────────────────────
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { HelpCircle, Star, Magnet } from 'lucide-react';
+import { HelpCircle, Star, Magnet, Lock, LockOpen, Eye, EyeOff, Trash2, PenLine, Check } from 'lucide-react';
 import { GLYPH, GROUP_GLYPH } from './glyphs';
 import { getHelp } from './help';
 
 // کلیدِ ماندگاریِ ابزارهای پین‌شده.
 const FAV_KEY = 'brn.toolrail.favorites';
+// کلیدهای ماندگاریِ کنترل‌های پایینِ ریل (وقتی از بیرون کنترل نشوند).
+const MAG_MODE_KEY = 'brn.toolrail.magnetMode'; // 'weak' | 'strong'
+const STAY_KEY = 'brn.toolrail.stayInDrawing';
 
 // هاتکیِ خواناشدهٔ هر ابزار (هم‌سطح با تعاریفِ hotkeys.js) — برای نمایش در تولتیپ.
 const HOTKEY = {
@@ -175,7 +178,15 @@ function tint(hex, a) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
-export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMagnet }) {
+export default function ToolRail({
+  tool, setTool, TH, onHelp,
+  // آهنربا: هم روشن/خاموش، هم شدتِ weak/strong (سبکِ TV).
+  magnet, onToggleMagnet, magnetMode, onSetMagnetMode,
+  // «ماندن در حالتِ ترسیم» (قفلِ ابزار؛ بعد از کشیدن، ابزار فعال می‌ماند).
+  stayInDrawing, onToggleStayInDrawing,
+  // قفلِ همه / مخفیِ همهٔ ترسیم‌ها + حذفِ همه.
+  allLocked, onLockAll, allHidden, onHideAll, onRemoveAll,
+}) {
   // ابزارِ «به‌خاطرسپرده‌شده» برای هر گروه (پیش‌فرض: اولین ابزارِ گروه).
   const [remembered, setRemembered] = useState(() => {
     const m = {};
@@ -195,8 +206,36 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
   const [openKey, setOpenKey] = useState(null);
   // تولتیپِ TV: پیلِ تاریکِ راست‌ایستا با نام + هاتکی (فقط برای دکمه‌های بدونِ فلای‌اوت).
   const [tip, setTip] = useState(null); // { top, label, hotkey }
+  // آیا فلای‌اوتِ کوچکِ شدتِ آهنربا (weak/strong) باز است.
+  const [magMenu, setMagMenu] = useState(false);
   const rootRef = useRef(null);
   const hoverTimer = useRef(null);
+
+  // ── کنترل‌های پایینِ ریل: controlled از بیرون یا fallbackِ داخلی (ماندگار). ──
+  // آهنربا (روشن/خاموش): اگر prop تعریف شده باشد controlled است.
+  const magnetControlled = magnet !== undefined;
+  const [magnetLocal, setMagnetLocal] = useState(false);
+  const magnetOn = magnetControlled ? !!magnet : magnetLocal;
+  // شدتِ آهنربا: controlled با magnetMode، وگرنه داخلیِ ماندگار.
+  const magModeControlled = magnetMode !== undefined;
+  const [magModeLocal, setMagModeLocal] = useState(() => {
+    try { const v = localStorage.getItem(MAG_MODE_KEY); if (v === 'weak' || v === 'strong') return v; } catch (e) { /* بی‌اعتنا */ }
+    return 'weak';
+  });
+  const magMode = magModeControlled ? magnetMode : magModeLocal;
+  // ماندن در حالتِ ترسیم.
+  const stayControlled = stayInDrawing !== undefined;
+  const [stayLocal, setStayLocal] = useState(() => {
+    try { return localStorage.getItem(STAY_KEY) === '1'; } catch (e) { return false; }
+  });
+  const stayOn = stayControlled ? !!stayInDrawing : stayLocal;
+  // قفلِ همه / مخفیِ همه.
+  const lockControlled = allLocked !== undefined;
+  const [lockLocal, setLockLocal] = useState(false);
+  const lockOn = lockControlled ? !!allLocked : lockLocal;
+  const hideControlled = allHidden !== undefined;
+  const [hideLocal, setHideLocal] = useState(false);
+  const hideOn = hideControlled ? !!allHidden : hideLocal;
 
   const accentTint = tint(TH.accent, 0.14);
 
@@ -224,6 +263,16 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
     return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey); };
   }, [openKey]);
 
+  // بستنِ منوی شدتِ آهنربا با کلیکِ بیرون یا Escape.
+  useEffect(() => {
+    if (!magMenu) return undefined;
+    const onDown = (e) => { if (rootRef.current && !rootRef.current.contains(e.target)) setMagMenu(false); };
+    const onKey = (e) => { if (e.key === 'Escape') setMagMenu(false); };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey); };
+  }, [magMenu]);
+
   useEffect(() => () => { if (hoverTimer.current) clearTimeout(hoverTimer.current); }, []);
 
   const pick = useCallback((groupKey, id) => {
@@ -236,10 +285,53 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
     setPinned((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }, []);
 
+  // ── هندلرهای کنترل‌های پایین (هم callbackِ بیرونی را صدا می‌زنند، هم fallbackِ داخلی را). ──
+  const toggleMagnet = useCallback((next) => {
+    if (typeof onToggleMagnet === 'function') onToggleMagnet(next);
+    if (!magnetControlled) setMagnetLocal(next);
+  }, [onToggleMagnet, magnetControlled]);
+
+  const setMode = useCallback((mode) => {
+    if (typeof onSetMagnetMode === 'function') onSetMagnetMode(mode);
+    if (!magModeControlled) {
+      setMagModeLocal(mode);
+      try { localStorage.setItem(MAG_MODE_KEY, mode); } catch (e) { /* بی‌اعتنا */ }
+    }
+    // انتخابِ شدت، آهنربا را روشن می‌کند (رفتارِ TV).
+    if (!magnetOn) toggleMagnet(true);
+    setMagMenu(false);
+  }, [onSetMagnetMode, magModeControlled, magnetOn, toggleMagnet]);
+
+  const toggleStay = useCallback((next) => {
+    if (typeof onToggleStayInDrawing === 'function') onToggleStayInDrawing(next);
+    if (!stayControlled) {
+      setStayLocal(next);
+      try { localStorage.setItem(STAY_KEY, next ? '1' : '0'); } catch (e) { /* بی‌اعتنا */ }
+    }
+  }, [onToggleStayInDrawing, stayControlled]);
+
+  const toggleLockAll = useCallback((next) => {
+    if (typeof onLockAll === 'function') onLockAll(next);
+    if (!lockControlled) setLockLocal(next);
+  }, [onLockAll, lockControlled]);
+
+  const toggleHideAll = useCallback((next) => {
+    if (typeof onHideAll === 'function') onHideAll(next);
+    if (!hideControlled) setHideLocal(next);
+  }, [onHideAll, hideControlled]);
+
+  const removeAll = useCallback(() => {
+    if (typeof onRemoveAll === 'function') onRemoveAll();
+  }, [onRemoveAll]);
+
   // نمایشِ تولتیپِ راست‌ایستا؛ Y را از offsetTopِ خودِ دکمه (نسبت به ریلِ relative) می‌گیرد.
   const showTip = useCallback((e, label, hotkey) => {
     const el = e.currentTarget;
-    setTip({ top: el.offsetTop + el.offsetHeight / 2, label, hotkey: hotkey || '' });
+    // Y را نسبت به ریشهٔ relative می‌گیریم (نه offsetParent) تا برای دکمه‌های تودرتو هم درست باشد.
+    const rootRect = rootRef.current ? rootRef.current.getBoundingClientRect() : null;
+    const r = el.getBoundingClientRect();
+    const top = rootRect ? (r.top - rootRect.top + r.height / 2) : (el.offsetTop + el.offsetHeight / 2);
+    setTip({ top, label, hotkey: hotkey || '' });
   }, []);
   const hideTip = useCallback(() => setTip(null), []);
 
@@ -265,32 +357,6 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
       onMouseLeave={hideTip}
     >
       <style>{`@keyframes brn-tip-in{from{opacity:0;transform:translate(4px,-50%)}to{opacity:1;transform:translate(0,-50%)}}`}</style>
-
-      {/* تاگلِ آهنربا (اختیاری) — فقط وقتی از بیرون کنترل داده شود. */}
-      {typeof onToggleMagnet === 'function' && (
-        <>
-          <button
-            type="button"
-            aria-label="آهنربا (Magnet) — چسبیدن به OHLC"
-            aria-pressed={!!magnet}
-            onClick={() => { hideTip(); onToggleMagnet(!magnet); }}
-            className="relative flex items-center justify-center rounded"
-            style={{
-              width: 38, height: 38,
-              background: magnet ? accentTint : 'transparent',
-              color: magnet ? TH.accent : TH.text,
-              transition: 'background-color 120ms ease, color 120ms ease',
-            }}
-            onMouseEnter={(e) => showTip(e, 'آهنربا — چسبیدن به OHLC', HOTKEY_MAGNET)}
-            onMouseLeave={hideTip}
-            onMouseOver={(e) => { if (!magnet) e.currentTarget.style.background = TH.chipBgHover; }}
-            onMouseOut={(e) => { if (!magnet) e.currentTarget.style.background = 'transparent'; }}
-          >
-            <Magnet size={20} />
-          </button>
-          <Divider />
-        </>
-      )}
 
       {/* نوارِ منتخب‌ها (Favorites) — ابزارهای پین‌شده به‌صورتِ دکمهٔ مستقیم. */}
       {pinned.length > 0 && (
@@ -449,6 +515,180 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
           </div>
         );
       })}
+
+      {/* ── کنترل‌های پایینِ ریل (سبکِ TV): آهنربا/شدت · ماندن در ترسیم · قفلِ همه · مخفیِ همه · حذفِ همه ── */}
+      <Divider />
+
+      {/* آهنربا (Magnet) — کلیک روی دکمه روشن/خاموش؛ کاراتِ گوشه، منوی شدتِ weak/strong. */}
+      <div
+        className="relative shrink-0 flex justify-center"
+        onMouseLeave={hideTip}
+      >
+        <button
+          type="button"
+          aria-label="آهنربا (Magnet) — چسبیدن به OHLC"
+          aria-pressed={magnetOn}
+          onClick={() => { hideTip(); toggleMagnet(!magnetOn); }}
+          className="relative flex items-center justify-center rounded"
+          style={{
+            width: 38, height: 38,
+            background: magnetOn ? accentTint : (magMenu ? TH.chipBgHover : 'transparent'),
+            color: magnetOn ? TH.accent : TH.text,
+            transition: 'background-color 120ms ease, color 120ms ease',
+          }}
+          onMouseEnter={(e) => showTip(e, `آهنربا — چسبیدن به OHLC (${magMode === 'strong' ? 'قوی' : 'ضعیف'})`, HOTKEY_MAGNET)}
+          onMouseLeave={hideTip}
+          onMouseOver={(e) => { if (!magnetOn && !magMenu) e.currentTarget.style.background = TH.chipBgHover; }}
+          onMouseOut={(e) => { if (!magnetOn && !magMenu) e.currentTarget.style.background = 'transparent'; }}
+        >
+          <Magnet size={20} />
+          {/* کاراتِ منوی شدت — کلیکِ جدا از تاگلِ اصلی. */}
+          <span
+            role="button"
+            aria-label="شدتِ آهنربا"
+            onClick={(e) => { e.stopPropagation(); hideTip(); setMagMenu((v) => !v); }}
+            className="absolute bottom-0.5 right-0.5 w-0 h-0 pointer-events-auto"
+            style={{
+              borderLeft: '3.5px solid transparent',
+              borderTop: `3.5px solid ${magnetOn ? TH.accent : TH.text}`,
+              opacity: magnetOn ? 0.9 : 0.5,
+              cursor: 'pointer',
+            }}
+          />
+        </button>
+
+        {magMenu && (
+          <div
+            dir="rtl"
+            className="absolute bottom-0 left-full ml-1.5 z-50 rounded-md overflow-hidden py-1 origin-left"
+            style={{
+              background: TH.popoverBg,
+              border: `1px solid ${TH.border}`,
+              boxShadow: '0 6px 22px -6px rgba(0,0,0,.45), 0 2px 6px -2px rgba(0,0,0,.30)',
+              minWidth: 176,
+              animation: 'brn-flyout-in 120ms ease-out both',
+            }}
+          >
+            <div className="px-3 pt-1 pb-1.5 text-[10px] font-semibold tracking-wider select-none" style={{ color: TH.text, opacity: 0.5 }}>
+              شدتِ آهنربا
+            </div>
+            {[
+              { m: 'weak', label: 'آهنربای ضعیف', hint: 'فقط نزدیکِ کندل' },
+              { m: 'strong', label: 'آهنربای قوی', hint: 'همیشه به OHLC' },
+            ].map(({ m, label, hint }) => {
+              const on = magMode === m && magnetOn;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMode(m)}
+                  className="w-full flex items-center gap-2.5 px-3 text-[12px] text-right"
+                  style={{
+                    height: 30,
+                    background: on ? accentTint : 'transparent',
+                    color: on ? TH.accent : TH.textStrong,
+                    transition: 'background-color 120ms ease, color 120ms ease',
+                  }}
+                  onMouseOver={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
+                  onMouseOut={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <Magnet size={14} className="shrink-0" style={{ opacity: m === 'strong' ? 1 : 0.7 }} />
+                  <span className="flex-1 flex flex-col leading-tight">
+                    <span className="whitespace-nowrap">{label}</span>
+                    <span className="text-[10px] opacity-50 whitespace-nowrap">{hint}</span>
+                  </span>
+                  {on && <Check size={13} className="shrink-0" />}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ماندن در حالتِ ترسیم (Stay in Drawing Mode) — بعد از کشیدن، ابزار فعال می‌ماند. */}
+      <button
+        type="button"
+        aria-label="ماندن در حالتِ ترسیم"
+        aria-pressed={stayOn}
+        onClick={() => { hideTip(); toggleStay(!stayOn); }}
+        className="relative shrink-0 flex items-center justify-center rounded"
+        style={{
+          width: 38, height: 38,
+          background: stayOn ? accentTint : 'transparent',
+          color: stayOn ? TH.accent : TH.text,
+          transition: 'background-color 120ms ease, color 120ms ease',
+        }}
+        onMouseEnter={(e) => showTip(e, 'ماندن در حالتِ ترسیم')}
+        onMouseLeave={hideTip}
+        onMouseOver={(e) => { if (!stayOn) e.currentTarget.style.background = TH.chipBgHover; }}
+        onMouseOut={(e) => { if (!stayOn) e.currentTarget.style.background = 'transparent'; }}
+      >
+        <PenLine size={20} />
+      </button>
+
+      <Divider />
+
+      {/* قفلِ همهٔ ترسیم‌ها (Lock All Drawings). */}
+      <button
+        type="button"
+        aria-label="قفلِ همهٔ ترسیم‌ها"
+        aria-pressed={lockOn}
+        onClick={() => { hideTip(); toggleLockAll(!lockOn); }}
+        className="relative shrink-0 flex items-center justify-center rounded"
+        style={{
+          width: 38, height: 38,
+          background: lockOn ? accentTint : 'transparent',
+          color: lockOn ? TH.accent : TH.text,
+          transition: 'background-color 120ms ease, color 120ms ease',
+        }}
+        onMouseEnter={(e) => showTip(e, lockOn ? 'بازکردنِ قفلِ همه' : 'قفلِ همهٔ ترسیم‌ها')}
+        onMouseLeave={hideTip}
+        onMouseOver={(e) => { if (!lockOn) e.currentTarget.style.background = TH.chipBgHover; }}
+        onMouseOut={(e) => { if (!lockOn) e.currentTarget.style.background = 'transparent'; }}
+      >
+        {lockOn ? <Lock size={20} /> : <LockOpen size={20} />}
+      </button>
+
+      {/* مخفیِ همهٔ ترسیم‌ها (Hide All Drawings) — چشم. */}
+      <button
+        type="button"
+        aria-label="نمایش/مخفیِ همهٔ ترسیم‌ها"
+        aria-pressed={hideOn}
+        onClick={() => { hideTip(); toggleHideAll(!hideOn); }}
+        className="relative shrink-0 flex items-center justify-center rounded"
+        style={{
+          width: 38, height: 38,
+          background: hideOn ? accentTint : 'transparent',
+          color: hideOn ? TH.accent : TH.text,
+          transition: 'background-color 120ms ease, color 120ms ease',
+        }}
+        onMouseEnter={(e) => showTip(e, hideOn ? 'نمایشِ همهٔ ترسیم‌ها' : 'مخفیِ همهٔ ترسیم‌ها')}
+        onMouseLeave={hideTip}
+        onMouseOver={(e) => { if (!hideOn) e.currentTarget.style.background = TH.chipBgHover; }}
+        onMouseOut={(e) => { if (!hideOn) e.currentTarget.style.background = 'transparent'; }}
+      >
+        {hideOn ? <EyeOff size={20} /> : <Eye size={20} />}
+      </button>
+
+      {/* حذفِ همهٔ ترسیم‌ها (Remove Drawings) — سطلِ قرمز. */}
+      <button
+        type="button"
+        aria-label="حذفِ همهٔ ترسیم‌ها"
+        onClick={() => { hideTip(); removeAll(); }}
+        className="relative shrink-0 flex items-center justify-center rounded"
+        style={{
+          width: 38, height: 38,
+          background: 'transparent',
+          color: TH.text,
+          transition: 'background-color 120ms ease, color 120ms ease',
+        }}
+        onMouseEnter={(e) => showTip(e, 'حذفِ همهٔ ترسیم‌ها')}
+        onMouseLeave={hideTip}
+        onMouseOver={(e) => { e.currentTarget.style.background = TH.chipBgHover; e.currentTarget.style.color = '#f6465d'; }}
+        onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = TH.text; }}
+      >
+        <Trash2 size={20} />
+      </button>
 
       {/* تولتیپِ TV — پیلِ راست‌ایستا با نام + هاتکی؛ Y هم‌ترازِ مرکزِ دکمهٔ اشاره‌شده. */}
       {tip && (

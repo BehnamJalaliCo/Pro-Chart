@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Settings2, Trash2, MoreHorizontal, ChevronDown, ChevronUp, HelpCircle, Copy, Rows3, X } from 'lucide-react';
+import { Eye, EyeOff, Settings2, Trash2, MoreHorizontal, ChevronDown, ChevronUp, HelpCircle, Copy, Rows3, X,
+  CandlestickChart, LineChart, AreaChart, BarChart3, Activity } from 'lucide-react';
 import { SPEED_LADDER } from '../ReplayController';
 import SymbolLogo from '../SymbolLogo';
 
@@ -27,10 +28,49 @@ function tint(col, a = '22') {
   return typeof col === 'string' && /^#[0-9a-fA-F]{6}$/.test(col) ? col + a : col;
 }
 
+// نگاشتِ نوعِ چارت → گلیفِ lucide (سبکِ آیکونِ نوعِ چارتِ TV در لجند، کنارِ نماد).
+//   انواعِ ناشناخته/سفارشی به کندل‌استیک برمی‌گردند تا همیشه یک آیکونِ معقول باشد.
+const CHART_TYPE_ICONS = {
+  candles: CandlestickChart, hollow: CandlestickChart, heikin: CandlestickChart,
+  bars: BarChart3, columns: BarChart3, hilo: BarChart3, volcandle: BarChart3,
+  line: LineChart, linemarkers: LineChart, step: LineChart, kagi: LineChart, linebreak: LineChart,
+  area: AreaChart, hlcarea: AreaChart, baseline: Activity, renko: BarChart3, pnf: Activity, range: BarChart3,
+};
+// آیکونِ کوچکِ نوعِ چارت — کم‌رنگ و شارپ، فقط اگر chartType داده شود.
+function ChartTypeIcon({ chartType, TH, size = 13 }) {
+  if (!chartType) return null;
+  const Ic = CHART_TYPE_ICONS[chartType] || CandlestickChart;
+  return <Ic size={size} className="shrink-0" style={{ color: TH.text, opacity: 0.6 }} />;
+}
+
+// جهتِ نرمال‌شده از priceDir/dir به up|down|'' — پشتیبانی از رشته ('up'/'down') و عدد (1/-1).
+function normDir(d) {
+  if (d === 'up' || d === 1) return 'up';
+  if (d === 'down' || d === -1) return 'down';
+  return '';
+}
+
+// فلَشِ جهت‌دارِ سبز/قرمز روی هر تغییرِ مقدار (حسِ زنده‌بودنِ TV). از کلاس‌های سراسریِ
+//   .flash-up/.flash-down (index.css) استفاده می‌کند؛ برای ری‌استارتِ انیمیشن روی هر تغییر،
+//   عنصر با keyِ نو ری‌مونت می‌شود. جهت از تیکِ فید (dir) گرفته می‌شود، نبودش ⇐ مقایسهٔ مقدار.
+function FlashNum({ value, dir, className = '', style, children }) {
+  const prev = React.useRef(value);
+  const [st, setSt] = React.useState({ cls: '', n: 0 });
+  React.useEffect(() => {
+    if (value != null && prev.current != null && value !== prev.current) {
+      const nd = normDir(dir);
+      const up = nd ? nd === 'up' : value > prev.current;
+      setSt((s) => ({ cls: up ? 'flash-up' : 'flash-down', n: s.n + 1 }));
+    }
+    prev.current = value;
+  }, [value, dir]);
+  return <span key={st.n} className={`${className} ${st.cls} rounded-sm`} style={style}>{children}</span>;
+}
+
 // لوگو + نامِ نماد (پررنگ) + بازار/تایم‌فریمِ کم‌رنگ. فرگمنت (بدونِ wrapper) تا در
 //   هر دو Legend و ChartLegend داخلِ ردیفِ موجود بنشیند. سبکِ دقیقِ TradingView:
 //   نامِ نماد پررنگ و پرکنتراست، بازار/تایم‌فریم به‌صورتِ لیبلِ کم‌رنگِ کوچک با میان‌فاصلهٔ ·.
-function SymbolHead({ TH, symbol, tf, market }) {
+function SymbolHead({ TH, symbol, tf, market, chartType }) {
   const mk = market != null ? market : marketOf(symbol);
   return (
     <>
@@ -42,13 +82,14 @@ function SymbolHead({ TH, symbol, tf, market }) {
           {mk}{mk && tf ? ' · ' : ''}{tf}
         </span>
       )}
+      <ChartTypeIcon chartType={chartType} TH={TH} />
     </>
   );
 }
 
 // O/H/L/C با لیبلِ کوچکِ کم‌رنگ و مقدارِ رنگیِ جهت (up/down) — دقیقاً مثلِ نوارِ لجندِ TV.
 //   لیبل‌ها خاکستریِ کم‌رنگ، مقادیر پررنگِ رنگی و .tnum برای هم‌ترازیِ ارقام.
-function OhlcTape({ legend, col, TH }) {
+function OhlcTape({ legend, col, TH, dir }) {
   if (!legend) return null;
   const cells = legend.open != null
     ? [['O', legend.open], ['H', legend.high], ['L', legend.low], ['C', legend.close]]
@@ -58,10 +99,40 @@ function OhlcTape({ legend, col, TH }) {
       {cells.map(([k, v]) => (
         <span key={k} className="flex items-center gap-0.5">
           <span className="font-medium" style={{ color: TH.text, opacity: 0.5 }}>{k}</span>
-          <span className="font-semibold" style={{ color: col }}>{v}</span>
+          {/* فقط Close با تیکِ زنده فلَش می‌زند (مثلِ TV) تا حسِ زنده‌بودن بدهد */}
+          {k === 'C'
+            ? <FlashNum value={v} dir={dir} className="font-semibold px-0.5 -mx-0.5" style={{ color: col }}>{v}</FlashNum>
+            : <span className="font-semibold" style={{ color: col }}>{v}</span>}
         </span>
       ))}
     </span>
+  );
+}
+
+// یک سلولِ حجم به سبکِ لجندِ TV: مربعِ رنگیِ کم‌رنگ + لیبلِ «حجم» + مقدارِ فلَش‌دار.
+//   volume خام (عدد) می‌گیرد؛ اگر fmtVol داده شود از آن، وگرنه از فرمترِ پیش‌فرضِ K/M/B.
+function VolumeRow({ vol, dir, TH, fmtVol, compact }) {
+  const str = typeof fmtVol === 'function' ? fmtVol(vol) : dwFmtVol(null, vol);
+  if (str == null) return null;
+  const nd = normDir(dir);
+  const col = nd === 'up' ? TH.up : nd === 'down' ? TH.down : TH.text;
+  if (compact) {
+    return (
+      <span className="flex items-center gap-1 rounded px-1.5 h-6 text-[12px] shrink-0" style={{ background: TH.chipBg, color: TH.textStrong }} dir="rtl">
+        <span className="rounded-[2px] shrink-0" style={{ width: 9, height: 9, background: col, opacity: 0.55, boxShadow: `0 0 0 1px ${TH.border}` }} />
+        <span className="whitespace-nowrap">حجم</span>
+        <FlashNum value={vol} dir={dir} className="tnum tabular-nums font-medium px-0.5 -mx-0.5" style={{ color: col }}>{str}</FlashNum>
+      </span>
+    );
+  }
+  return (
+    <div className="flex items-center gap-1.5 rounded-md px-1.5 h-6"
+      onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
+      onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+      <span className="rounded-[2px] shrink-0" style={{ width: 10, height: 10, background: col, opacity: 0.55, boxShadow: `0 0 0 1px ${TH.border}` }} />
+      <span className="text-[12px] font-semibold whitespace-nowrap" style={{ color: TH.textStrong }}>حجم</span>
+      <FlashNum value={vol} dir={dir} className="text-[12px] tabular-nums whitespace-nowrap font-medium px-0.5 -mx-0.5" style={{ color: col, direction: 'ltr' }}>{str}</FlashNum>
+    </div>
   );
 }
 
@@ -77,16 +148,26 @@ function ChangeChip({ ch, col }) {
 }
 
 // چیپِ Legend (OHLC) روی چارت — رندرِ خالص؛ همهٔ ورودی‌ها از props.
-export function Legend({ legend, TH, symbol, tf, market }) {
+//   propهای جدید (chartType/priceDir/volume/fmtVol) اختیاری و backward-compatible‌اند.
+export function Legend({ legend, TH, symbol, tf, market, chartType, priceDir, volume, fmtVol }) {
   if (!legend) return null;
   const ch = legend.open != null ? ((legend.close - legend.open) / legend.open) * 100 : null;
   const col = ch == null ? TH.text : ch >= 0 ? TH.up : TH.down;
+  const vol = volume != null ? volume : legend.volume;
   return (
     <div className="absolute top-2 right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 border" dir="rtl"
       style={{ background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', boxShadow: '0 1px 3px rgba(0,0,0,.10)' }}>
-      <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} />
-      <OhlcTape legend={legend} col={col} TH={TH} />
+      <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} chartType={chartType} />
+      <OhlcTape legend={legend} col={col} TH={TH} dir={priceDir} />
       <ChangeChip ch={ch} col={col} />
+      {vol != null && (
+        <span className="flex items-center gap-0.5 text-[11px] tnum whitespace-nowrap" dir="ltr">
+          <span className="font-medium" style={{ color: TH.text, opacity: 0.5 }}>Vol</span>
+          <FlashNum value={vol} dir={priceDir} className="font-semibold px-0.5 -mx-0.5" style={{ color: col, direction: 'ltr' }}>
+            {typeof fmtVol === 'function' ? fmtVol(vol) : dwFmtVol(null, vol)}
+          </FlashNum>
+        </span>
+      )}
     </div>
   );
 }
@@ -178,12 +259,16 @@ export function ChartLegend({
   items = [], legend, TH, symbol, tf, market, indVals = {},
   collapsed = false, onCollapse, viewMode = 'normal', onToggleViewMode,
   onToggleVisible, onSettings, onRemove, onDuplicate, onHelp, hasHelp, onClearAll, coarse = false,
+  chartType, priceDir, volume, fmtVol, showVolume = true,
 }) {
   const [moreId, setMoreId] = useState(null);
   const ch = legend && legend.open != null ? ((legend.close - legend.open) / legend.open) * 100 : null;
   const col = ch == null ? TH.text : ch >= 0 ? TH.up : TH.down;
   const hasInds = items.length > 0;
   const compact = viewMode === 'compact';
+  const vol = volume != null ? volume : (legend && legend.volume);
+  const hasVol = showVolume && vol != null;
+  const rowsOpen = (hasInds || hasVol) && !collapsed;
 
   return (
     <div className="absolute top-2 right-2 z-20 max-w-[min(70%,520px)]"
@@ -191,15 +276,15 @@ export function ChartLegend({
       <style>{`.bn-leg-ctrls{opacity:0;transition:opacity 120ms ease}.group\\/leg:hover .bn-leg-ctrls{opacity:1}.bn-leg-ctrl{opacity:0}.group\\/leg:hover .bn-leg-ctrl{opacity:1}`}</style>
       {/* ردیفِ نماد (OHLC) */}
       <div className="flex items-center gap-1.5 px-1.5 h-7">
-        {hasInds && (
+        {(hasInds || hasVol) && (
           <button type="button" onClick={() => onCollapse && onCollapse(!collapsed)} title={collapsed ? 'بازکردنِ اندیکاتورها' : 'جمع‌کردنِ اندیکاتورها'} aria-label="جمع/باز"
             className="flex items-center justify-center rounded shrink-0" style={{ width: 18, height: 18, color: TH.text }}
             onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
             {collapsed ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
         )}
-        <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} />
-        <OhlcTape legend={legend} col={col} TH={TH} />
+        <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} chartType={chartType} />
+        <OhlcTape legend={legend} col={col} TH={TH} dir={priceDir} />
         <ChangeChip ch={ch} col={col} />
         {hasInds && (
           <>
@@ -213,13 +298,14 @@ export function ChartLegend({
           </>
         )}
       </div>
-      {/* ردیف‌های اندیکاتور */}
-      {hasInds && !collapsed && (
+      {/* ردیف‌های اندیکاتور + ردیفِ جدای حجم (سبکِ status-line‌یِ TV) */}
+      {rowsOpen && (
         compact ? (
           <div className="flex flex-wrap items-center gap-1 px-1 pt-0.5 pb-0.5">
             {items.map((it) => (
               <LegendRow key={it.id} item={it} TH={TH} viewMode="compact" coarse={coarse} onSettings={onSettings} onToggle={onToggleVisible} onRemove={onRemove} onMore={() => {}} onDup={onDuplicate} onHelp={onHelp} hasHelp={hasHelp && hasHelp(it)} />
             ))}
+            {hasVol && <VolumeRow vol={vol} dir={priceDir} TH={TH} fmtVol={fmtVol} compact />}
           </div>
         ) : (
           <div className="flex flex-col">
@@ -229,12 +315,13 @@ export function ChartLegend({
                 onMore={() => setMoreId((m) => (m === it.id ? null : it.id))} moreOpen={moreId === it.id} onCloseMore={() => setMoreId(null)}
                 onDup={onDuplicate} onHelp={onHelp} hasHelp={hasHelp && hasHelp(it)} />
             ))}
+            {hasVol && <VolumeRow vol={vol} dir={priceDir} TH={TH} fmtVol={fmtVol} />}
           </div>
         )
       )}
-      {hasInds && collapsed && (
+      {(hasInds || hasVol) && collapsed && (
         <button type="button" onClick={() => onCollapse && onCollapse(false)} className="text-[11px] px-1.5 pb-0.5 text-right w-full" style={{ color: TH.text, opacity: 0.7 }}>
-          {items.length} اندیکاتور
+          {items.length ? `${items.length} اندیکاتور` : 'نمایشِ حجم'}
         </button>
       )}
     </div>

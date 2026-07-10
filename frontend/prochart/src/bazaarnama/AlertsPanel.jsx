@@ -83,6 +83,27 @@ function indicatorFields(key) {
 
 const DEFAULT_TF = 'H1';
 
+// فلَشِ سبز/قرمزِ جهت‌دار روی هر تیک (حسِ زنده‌بودنِ TV) — از کلاس‌های سراسریِ
+// .flash-up/.flash-down (index.css) استفاده می‌کند. برای ری‌استارتِ انیمیشن روی هر
+// تغییر، عنصرِ خروجی با key نو ری‌مونت می‌شود؛ رنگِ متن هم با جهتِ تیک هم‌گام می‌شود.
+function FlashNum({ value, TH, className = '', style, dir = 'ltr', children }) {
+  const prev = useRef(value);
+  const [st, setSt] = useState({ cls: '', dir: 0, n: 0 });
+  useEffect(() => {
+    if (value != null && prev.current != null && value !== prev.current) {
+      const up = value > prev.current;
+      setSt((s) => ({ cls: up ? 'flash-up' : 'flash-down', dir: up ? 1 : -1, n: s.n + 1 }));
+    }
+    prev.current = value;
+  }, [value]);
+  const col = st.dir > 0 ? (TH && TH.up) : st.dir < 0 ? (TH && TH.down) : undefined;
+  return (
+    <span key={st.n} dir={dir} className={`${className} ${st.cls} rounded-sm px-0.5 tabular-nums transition-colors`} style={{ color: col, ...style }}>
+      {children}
+    </span>
+  );
+}
+
 // زمانِ نسبیِ فارسی برای لاگِ آلارم.
 function timeAgo(ts) {
   const t = new Date(ts).getTime();
@@ -322,11 +343,16 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       {/* ───────────────── سازندهٔ آلارم ───────────────── */}
       <div className="rounded-md border p-2 mb-2 space-y-1.5" style={{ borderColor: TH.border, background: TH.subtle }}>
         <div className="flex items-center justify-between">
-          <div className="text-[10px] opacity-50">
-            {form.id ? 'ویرایشِ آلارم' : 'سازندهٔ آلارم'} — <span dir="ltr">{symbol} · {DEFAULT_TF}</span>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-[10px] opacity-50 truncate">
+              {form.id ? 'ویرایشِ آلارم' : 'سازندهٔ آلارم'} — <span dir="ltr">{symbol} · {DEFAULT_TF}</span>
+            </span>
+            {price != null && Number.isFinite(Number(price)) && (
+              <FlashNum value={price} TH={TH} className="text-[10px] font-medium" style={{ color: TH.textStrong }}>{price}</FlashNum>
+            )}
           </div>
           {form.id && (
-            <button onClick={cancelEdit} className="text-[10px] opacity-60 hover:opacity-100 transition-opacity">انصراف</button>
+            <button onClick={cancelEdit} className="text-[10px] opacity-60 hover:opacity-100 transition-opacity shrink-0">انصراف</button>
           )}
         </div>
 
@@ -406,8 +432,10 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
 
         {/* پیش‌نمایشِ فاصله */}
         {distancePreview && (
-          <div className="text-[9px] opacity-60 px-1 tabular-nums" dir="ltr">
-            {symbol} → {distancePreview.target} · اکنون {distancePreview.now} ({distancePreview.sign}{distancePreview.pips.toFixed(1)} pips)
+          <div className="text-[9px] opacity-60 px-1 tabular-nums flex items-center gap-1" dir="ltr">
+            <span>{symbol} → {distancePreview.target} · اکنون</span>
+            <FlashNum value={distancePreview.now} TH={TH}>{distancePreview.now}</FlashNum>
+            <span>({distancePreview.sign}{distancePreview.pips.toFixed(1)} pips)</span>
           </div>
         )}
 

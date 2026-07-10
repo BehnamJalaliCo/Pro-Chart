@@ -1,7 +1,12 @@
 // اخبارِ بازار — فارسی، بدونِ عکس. منبع: /academy/bn/news (RSSِ بین‌المللی،
 // خلاصه/ترجمهٔ فارسی توسطِ Claudeِ داخلِ سرور). بدنهٔ تبِ پنلِ راست. props: { symbol, TH }
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../../api/client';
+
+// کلیدِ پایدارِ خبر (مستقل از موقعیت در لیست) — برای تشخیصِ خبرِ تازه و کلیدِ React
+function newsKey(a, i) {
+  return (a && (a.id || a.url)) || `${a?.ts || ''}|${a?.title || ''}` || `i${i}`;
+}
 
 // زمانِ نسبیِ فارسی از unix-seconds
 function relTime(ts) {
@@ -70,6 +75,10 @@ export default function NewsTab({ symbol, TH }) {
   const [items, setItems] = useState(null); // null=loading
   const [onlyRelevant, setOnlyRelevant] = useState(false);
   const [cat, setCat] = useState('all');
+  const [, setTick] = useState(0);            // فقط برای تازه‌کردنِ زمانِ نسبی
+  const seenRef = useRef(null);               // مجموعهٔ کلیدهای دیده‌شده (null = قبل از اولین بار)
+  const [freshKeys, setFreshKeys] = useState(() => new Set()); // اخبارِ تازه‌رسیده (فلَش)
+  const freshTimer = useRef(null);
 
   useEffect(() => {
     let on = true;
@@ -79,6 +88,30 @@ export default function NewsTab({ symbol, TH }) {
     return () => { on = false; clearInterval(id); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // تیکِ سبک هر ۳۰ث تا «X دقیقه پیش» بدونِ وابستگی به فچ زنده بماند
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => (t + 1) % 1e6), 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  // تشخیصِ خبرِ تازه‌رسیده → فلَشِ کوتاه + برچسبِ «جدید» که خودش پاک می‌شود
+  useEffect(() => {
+    if (items === null) return;
+    const keys = items.map((a, i) => newsKey(a, i));
+    const prev = seenRef.current;
+    if (prev === null) { seenRef.current = new Set(keys); return; } // اولین بار: بدونِ فلَش
+    const fresh = new Set();
+    keys.forEach((k) => { if (!prev.has(k)) fresh.add(k); });
+    keys.forEach((k) => prev.add(k));
+    if (fresh.size) {
+      setFreshKeys(fresh);
+      if (freshTimer.current) clearTimeout(freshTimer.current);
+      freshTimer.current = setTimeout(() => setFreshKeys(new Set()), 6000);
+    }
+  }, [items]);
+
+  useEffect(() => () => { if (freshTimer.current) clearTimeout(freshTimer.current); }, []);
 
   const kw = useMemo(() => symbolKeywords(symbol), [symbol]);
 
@@ -113,7 +146,13 @@ export default function NewsTab({ symbol, TH }) {
     <div className="flex flex-col text-xs min-h-0" style={{ color: TH.text }}>
       {/* سرتیتر + فیلترِ همهٔ نمادها / نمادِ فعلی */}
       <div className="flex items-center justify-between gap-2 px-3 h-8 border-b shrink-0" style={{ borderColor: TH.border }}>
-        <span className="opacity-50 text-[10px] whitespace-nowrap">مهم‌ترین اخبارِ بازار</span>
+        <span className="flex items-center gap-1.5 whitespace-nowrap">
+          <span className="relative flex w-1.5 h-1.5 shrink-0">
+            <span className="absolute inline-flex w-full h-full rounded-full animate-ping" style={{ background: TH.up, opacity: 0.55 }} />
+            <span className="relative inline-flex w-1.5 h-1.5 rounded-full" style={{ background: TH.up }} />
+          </span>
+          <span className="opacity-50 text-[10px]">مهم‌ترین اخبارِ بازار</span>
+        </span>
         <div className="flex items-center rounded-md overflow-hidden shrink-0" style={{ border: `1px solid ${TH.border}` }} dir="rtl">
           <button onClick={() => setOnlyRelevant(false)}
             className="px-2 h-[22px] text-[10px] transition-colors" style={segBtn(!onlyRelevant)}
@@ -163,17 +202,23 @@ export default function NewsTab({ symbol, TH }) {
         {shown.map((a, i) => {
           const tickers = newsTickers(a);
           const hot = (a.impact || 0) >= 8;
+          const k = newsKey(a, i);
+          const isFresh = freshKeys.has(k);
           return (
-            <button key={a.id || a.url || i} onClick={() => a.url && window.open(a.url, '_blank', 'noopener,noreferrer')}
+            <button key={k} onClick={() => a.url && window.open(a.url, '_blank', 'noopener,noreferrer')}
               className="block w-full text-right px-3 py-2 border-b transition-colors"
               style={{ borderColor: TH.border }}
               onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
               onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-              <div className="flex items-start gap-1.5">
+              <div className={`flex items-start gap-1.5${isFresh ? ' flash-up' : ''}`}>
                 <span className="mt-1 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: impactColor(a.impact || 0) }} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start gap-1.5">
                     <div className="text-[11px] leading-5 flex-1" style={{ color: TH.textStrong }}>{a.title}</div>
+                    {isFresh && (
+                      <span className="shrink-0 mt-0.5 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold whitespace-nowrap"
+                        style={{ background: TH.accent, color: '#fff' }}>جدید</span>
+                    )}
                     {hot && (
                       <span className="shrink-0 mt-0.5 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold"
                         style={{ background: TH.down, color: '#fff' }}>مهم</span>

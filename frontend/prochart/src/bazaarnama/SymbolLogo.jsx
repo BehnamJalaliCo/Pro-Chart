@@ -1,7 +1,10 @@
-// بازارنما — لوگوی نماد (اوریجینال، شارپ و واقعی مثلِ TradingView).
-// جفت‌ارزها = دو پرچمِ دایره‌ایِ روی‌هم؛ فلز = شمشِ گرادیانی؛ کریپتو = آیکونِ رنگیِ واقعی؛
-// شاخص = بَجِ رنگیِ برنددار؛ ناشناخته = مونوگرامِ رنگی. همه گِرد، هم‌تراز، آنتی‌الیاسِ تمیز.
+// بازارنما — لوگوی نماد به سبکِ TradingView: «یک دایرهٔ تختِ تمیز» (بدونِ سایه، بدونِ پرچمِ دوتاییِ روی‌هم).
+// فارکس = پرچمِ ارزِ پایه در یک دایرهٔ تمیز؛ فلز = شمشِ طلا/نقره؛ کریپتو = لوگوی واقعی از /crypto-icons؛
+// شاخص/انرژی = بَجِ رنگیِ تختِ برنددار؛ ناشناخته = مونوگرامِ رنگی. همه گِرد، هم‌تراز، آنتی‌الیاسِ تمیز، بدونِ drop-shadow.
 import React from 'react';
+
+// رنگِ رینگِ ظریفِ لبه (hairline) — تیره در روشن، روشن در تیره. یک خطِ تخت، نه سایه.
+const RING = 'var(--logo-ring, rgba(0,0,0,.14))';
 
 // ── پرچم‌های سادهٔ ۸ ارزِ اصلی (۲۴×۲۴، بعداً در دایره کلیپ می‌شوند). ──────────────
 const FLAG = {
@@ -16,7 +19,7 @@ const FLAG = {
 };
 const CCY = Object.keys(FLAG);
 
-// ── فلزاتِ گران‌بها → شمشِ فلزیِ گرادیانی (شاین/رفلکشنِ واقعی). ────────────────────
+// ── فلزاتِ گران‌بها → شمشِ فلزیِ گرادیانی (شاین/رفلکشنِ واقعی، تخت و بدونِ drop-shadow). ──
 const METAL = {
   XAU: { bg1: '#e7c56b', bg2: '#9a6f14', bar1: '#fff0bf', bar2: '#c48f27', top1: '#fff7dc', top2: '#f0cf78', edge: '#6f4f0e', spark: '#fffdf3' }, // طلا
   XAG: { bg1: '#eef2f7', bg2: '#8a95a2', bar1: '#ffffff', bar2: '#c0c9d4', top1: '#ffffff', top2: '#e2e8f0', edge: '#69727d', spark: '#ffffff' }, // نقره
@@ -55,7 +58,7 @@ function ingotPaint(kind) {
   );
 }
 
-// شمشِ فلزی به‌صورتِ svgِ مستقل (نمادِ تک، مثلِ XAU بدونِ جفت).
+// شمشِ فلزی به‌صورتِ svgِ مستقل (دایرهٔ تختِ تمیز، یک رینگِ ظریف، بدونِ drop-shadow).
 function metalSvg(kind, s) {
   const c = s / 2, r = c - 0.5;
   return (
@@ -63,7 +66,7 @@ function metalSvg(kind, s) {
       {metalDefs(kind)}
       <circle cx={c} cy={c} r={r} fill={`url(#mlBg-${kind})`} />
       <g transform={`scale(${s / 24})`}>{ingotPaint(kind)}</g>
-      <circle cx={c} cy={c} r={r} fill="none" stroke="rgba(0,0,0,.22)" strokeWidth="0.75" />
+      <circle cx={c} cy={c} r={r} fill="none" stroke={RING} strokeWidth="1" />
     </svg>
   );
 }
@@ -137,24 +140,19 @@ function badgeFor(sym = '') {
   return { color: '#64748b', txt: s.slice(0, 3) };
 }
 
-// یک دایرهٔ پرچم/نشان. r شعاع، (cx,cy) مرکز.
-function Disc({ ccy, cx, cy, r, ring }) {
-  const id = `clip_${ccy}_${cx}_${cy}`.replace(/\./g, '');
+// ── یک دایرهٔ تختِ تمیز با پرچمِ ارزِ ccy (سبکِ TV؛ بدونِ سایه، فقط یک رینگِ ظریف). ──
+function flagSvg(ccy, s) {
+  const c = s / 2, r = c - 0.5;
+  const id = `fclip_${ccy}_${s}`;
   const flag = FLAG[ccy];
-  const metal = METAL[ccy];
   return (
-    <g>
-      {ring && <circle cx={cx} cy={cy} r={r + 0.6} fill={ring} />}
-      {metal && metalDefs(ccy)}
-      <clipPath id={id}><circle cx={cx} cy={cy} r={r} /></clipPath>
-      <g clipPath={`url(#${id})`} transform={`translate(${cx - r} ${cy - r}) scale(${(2 * r) / 24})`}>
-        {metal
-          ? (<g><rect width="24" height="24" fill={`url(#mlBg-${ccy})`} />{ingotPaint(ccy)}</g>)
-          : (flag || <rect width="24" height="24" fill="#64748b" />)}
+    <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0" aria-hidden>
+      <clipPath id={id}><circle cx={c} cy={c} r={r} /></clipPath>
+      <g clipPath={`url(#${id})`} transform={`translate(${c - r} ${c - r}) scale(${(2 * r) / 24})`}>
+        {flag || <rect width="24" height="24" fill="#64748b" />}
       </g>
-      {/* رینگِ داخلیِ ظریف برای لبهٔ نرم و شارپ */}
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(0,0,0,.18)" strokeWidth="0.6" />
-    </g>
+      <circle cx={c} cy={c} r={r} fill="none" stroke={RING} strokeWidth="1" />
+    </svg>
   );
 }
 
@@ -168,7 +166,7 @@ function cryptoTicker(sym = '') {
   return base ? base.toLowerCase() : null;
 }
 
-// بَجِ رنگیِ fallback (وقتی لوگوی واقعی نبود) — چیپِ براقِ گرادیانی، پرکنتراست.
+// بَجِ رنگیِ تخت (شاخص/انرژی/کریپتو-fallback/ناشناخته) — دایرهٔ توپرِ تمیز، بدونِ براقیِ سه‌بعدی/سایه.
 function badgeSvg(sym, s) {
   const bd = badgeFor(sym);
   if (bd.key && METAL[bd.key]) return metalSvg(bd.key, s);
@@ -176,22 +174,14 @@ function badgeSvg(sym, s) {
   const fs = bd.txt.length > 3 ? s * 0.27 : bd.txt.length > 2 ? s * 0.34 : s * 0.46;
   return (
     <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0" aria-hidden>
-      <defs>
-        <linearGradient id="chipShade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.22" />
-          <stop offset="0.5" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="1" stopColor="#000000" stopOpacity="0.16" />
-        </linearGradient>
-      </defs>
       <circle cx={c} cy={c} r={r} fill={bd.color} />
-      <circle cx={c} cy={c} r={r} fill="url(#chipShade)" />
-      <text x="50%" y="52%" textAnchor="middle" dominantBaseline="central" fill="#fff" fontSize={fs} fontWeight="800" letterSpacing={bd.txt.length > 2 ? -0.4 : 0} fontFamily="IRANYekanX, Ravagh, Vazirmatn, sans-serif" style={{ paintOrder: 'stroke' }}>{bd.txt}</text>
-      <circle cx={c} cy={c} r={r} fill="none" stroke="rgba(0,0,0,.16)" strokeWidth="0.75" />
+      <text x="50%" y="52%" textAnchor="middle" dominantBaseline="central" fill="#fff" fontSize={fs} fontWeight="700" letterSpacing={bd.txt.length > 2 ? -0.4 : 0} fontFamily="IRANYekanX, Ravagh, Vazirmatn, sans-serif">{bd.txt}</text>
+      <circle cx={c} cy={c} r={r} fill="none" stroke={RING} strokeWidth="1" />
     </svg>
   );
 }
 
-// لوگوی واقعیِ کریپتو از /crypto-icons/{ticker}.svg؛ اگر نبود → بَجِ رنگی.
+// لوگوی واقعیِ کریپتو از /crypto-icons/{ticker}.svg؛ اگر نبود → بَجِ رنگی. تخت و گرد، بدونِ سایه.
 function CryptoLogo({ symbol, ticker, size }) {
   const [err, setErr] = React.useState(false);
   if (err) return badgeSvg(symbol, size);
@@ -212,15 +202,10 @@ export default function SymbolLogo({ symbol, size = 22 }) {
   const p = pair(symbol);
   const s = size;
   if (p) {
-    const [a, b] = p;
-    const r = s * 0.30;
-    return (
-      <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0" aria-hidden>
-        {/* مظنه پشت (راست‌پایین)، پایه جلو (چپ‌بالا) */}
-        <Disc ccy={b} cx={s * 0.62} cy={s * 0.6} r={r} ring="#0008" />
-        <Disc ccy={a} cx={s * 0.38} cy={s * 0.42} r={r} ring="var(--logo-ring,#1e222d)" />
-      </svg>
-    );
+    // سبکِ TV: یک دایرهٔ تختِ تمیزِ ارزِ پایه (نه پرچمِ دوتاییِ روی‌هم، نه سایه).
+    const base = p[0];
+    if (METAL[base]) return metalSvg(base, s);
+    return flagSvg(base, s);
   }
   const ct = cryptoTicker(symbol);
   if (ct) return <CryptoLogo symbol={symbol} ticker={ct} size={s} />;

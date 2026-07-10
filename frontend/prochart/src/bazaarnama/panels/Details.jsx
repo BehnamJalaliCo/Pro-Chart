@@ -64,11 +64,52 @@ function quoteFor(symbol = '') {
   return null;
 }
 
+// اعشارِ دقیقِ نمایشِ قیمت به سبکِ TradingView (نه ۸ رقمِ خامِ فید):
+// فارکس ۵ رقم، جفت‌های ین ۳، طلا ۲، نقره ۳، نفت ۲، شاخص ۲، رمزارز بر اساسِ بزرگیِ قیمت.
+function priceDecimals(symbol, mid) {
+  const s = String(symbol).toUpperCase();
+  const clean = s.replace(/[^A-Z0-9]/g, '');
+  const a = clean.slice(0, 3), b = clean.slice(3, 6);
+  if (/XAG|SILVER/.test(s)) return 3;
+  if (/XAU|GOLD|XPT|XPD/.test(s)) return 2;
+  if (/OIL|WTI|BRENT|USOIL|UKOIL|XTI|XBR/.test(s)) return 2;
+  if (/US30|US500|SPX|US100|NAS|UK100|DE40|GER|DAX|FRA40|CAC|JP225|N225|HK50|HSI|AUS200|VIX|DJI/.test(s)) return 2;
+  // جفت‌ارزِ فارکس (۶ حرفِ ارزِ شناخته‌شده)
+  if (clean.length >= 6 && CCY_FA[a] && CCY_FA[b]) return b === 'JPY' ? 3 : 5;
+  // رمزارز و بقیه → بر اساسِ بزرگیِ قیمت (سبکِ نردبانِ TV)
+  const n = num(mid);
+  if (n != null) {
+    const x = Math.abs(n);
+    if (x >= 1) return 2;
+    if (x >= 0.1) return 4;
+    if (x >= 0.001) return 5;
+    if (x > 0) return 8;
+  }
+  // آخرین پناه: اعشارِ خودِ فید (سقفِ ۵ برای پرهیز از ۸ رقمِ زشت)
+  return Math.min(decimals(mid), 5);
+}
+
 // تبدیلِ رنگِ hexِ ۶رقمی به rgba برای پس‌زمینهٔ کم‌رنگِ پیلِ تغییر (سبکِ TV).
 function tint(hex, a) {
   const h = String(hex || '').replace('#', '');
   if (h.length !== 6) return 'transparent';
   return `rgba(${parseInt(h.slice(0, 2), 16)},${parseInt(h.slice(2, 4), 16)},${parseInt(h.slice(4, 6), 16)},${a})`;
+}
+
+// فلَشِ جهت‌دارِ سبز/قرمز روی هر تغییرِ قیمت (حسِ زنده‌بودنِ TV). از کلاس‌های سراسریِ
+// .flash-up/.flash-down استفاده می‌کند؛ برای ری‌استارتِ انیمیشن، عنصر با key نو ری‌مونت می‌شود.
+// جهتِ فلَش از تیکِ فید (dir) گرفته می‌شود؛ نبودش ⇐ مقایسهٔ مقدارِ قبلی.
+function Flash({ value, dir, className = '', style, children }) {
+  const prev = React.useRef(value);
+  const [st, setSt] = React.useState({ cls: '', n: 0 });
+  React.useEffect(() => {
+    if (value != null && prev.current != null && value !== prev.current) {
+      const up = dir === 1 || dir === -1 ? dir === 1 : value > prev.current;
+      setSt((s) => ({ cls: up ? 'flash-up' : 'flash-down', n: s.n + 1 }));
+    }
+    prev.current = value;
+  }, [value, dir]);
+  return <span key={st.n} className={`${className} ${st.cls}`} style={style}>{children}</span>;
 }
 
 export default function Details({ symbol, TH, prices = {} }) {
@@ -126,8 +167,9 @@ export default function Details({ symbol, TH, prices = {} }) {
   const meta = useMemo(() => metaFor(symbol), [symbol]);
   const name = useMemo(() => nameFor(symbol), [symbol]);
   const quoteCcy = useMemo(() => quoteFor(symbol), [symbol]);
-  const dec = decimals(lp?.mid);
-  const fmt = (v) => (v == null ? '—' : Number(v).toFixed(dec));
+  const dec = priceDecimals(symbol, mid);
+  // نمایشِ هم‌ترازِ TV: اعشارِ ثابت + جداکنندهٔ هزارگان (ارقامِ لاتین، tabular، dir=ltr).
+  const fmt = (v) => (v == null ? '—' : Number(v).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }));
 
   // اسپردِ تخمینی: نصفِ یک پیپ هرطرف (پراکسیِ نمایشی)
   const pip = Math.pow(10, -(dec > 0 ? dec - 1 : 0));
@@ -217,16 +259,21 @@ export default function Details({ symbol, TH, prices = {} }) {
 
         {/* قیمتِ بزرگ + ارزِ مظنه + تغییرِ روزِ رنگی (پیلِ کم‌رنگ + فلش) */}
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mt-2.5" dir="ltr">
-          <span className="text-[27px] font-extrabold tabular-nums leading-none tracking-tight" style={{ color: dir > 0 ? TH.up : dir < 0 ? TH.down : TH.textStrong }}>
+          <Flash value={mid} dir={dir}
+            className="text-[28px] font-extrabold tabular-nums leading-none tracking-tight rounded px-0.5 -mx-0.5 inline-block"
+            style={{ color: dir > 0 ? TH.up : dir < 0 ? TH.down : TH.textStrong }}>
             {mid != null ? fmt(mid) : '—'}
-          </span>
+          </Flash>
           {quoteCcy && mid != null && (
             <span className="text-[11px] font-semibold" style={{ color: TH.text }}>{quoteCcy}</span>
           )}
           {chgPct != null && (
-            <span className="text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded" style={{ color: chgCol, background: tint(chgCol, 0.14) }}>
-              {chgPct >= 0 ? '▲' : '▼'} {chgAbs >= 0 ? '+' : ''}{fmt(chgAbs)} ({chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%)
-            </span>
+            <Flash value={mid} dir={dir}
+              className="text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded inline-flex items-center gap-1"
+              style={{ color: chgCol, background: tint(chgCol, 0.14) }}>
+              <span className="text-[9px] leading-none">{chgPct >= 0 ? '▲' : '▼'}</span>
+              <span>{chgAbs >= 0 ? '+' : ''}{fmt(chgAbs)} ({chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%)</span>
+            </Flash>
           )}
         </div>
       </div>

@@ -39,8 +39,32 @@ const dayKey = (iso, tz) => { try { const d = new Date(iso); const wd = tz ? new
 function Dots({ imp }) {
   const m = IMPACT[imp] || IMPACT.low;
   return (
-    <span className="inline-flex gap-0.5 items-center shrink-0">
+    <span className="inline-flex gap-0.5 items-center shrink-0" title={`اهمیتِ ${m.label}`}>
       {[0, 1, 2].map((i) => (<span key={i} className="w-1 h-1 rounded-full" style={{ background: i < m.dots ? m.color : 'transparent', border: i < m.dots ? 'none' : `1px solid ${m.color}55` }} />))}
+    </span>
+  );
+}
+
+// سلولِ «واقعی» — روی تغییرِ مقدار سبز/قرمز فلَش می‌زند (زنده‌بودنِ TV) + پیکانِ جهت نسبت به پیش‌بینی
+function ActualCell({ value, color, arrow, TH }) {
+  const ref = useRef(null);
+  const prev = useRef(value);
+  useEffect(() => {
+    const p = toNum(prev.current), n = toNum(value);
+    if (ref.current && p != null && n != null && n !== p) {
+      const cls = n > p ? 'flash-up' : 'flash-down';
+      ref.current.classList.remove('flash-up', 'flash-down');
+      void ref.current.offsetWidth; // ری‌استارتِ انیمیشن
+      ref.current.classList.add(cls);
+    }
+    prev.current = value;
+  }, [value]);
+  const show = value != null && value !== '';
+  return (
+    <span ref={ref} className="w-11 text-left text-[10px] shrink-0 font-semibold tnum rounded-sm inline-flex items-center justify-end gap-0.5" dir="ltr"
+      style={{ color: show ? color : TH.text, opacity: show ? 1 : 0.35 }}>
+      {show && arrow ? <span className="text-[7px] leading-none">{arrow === 'up' ? '▲' : '▼'}</span> : null}
+      {show ? value : '—'}
     </span>
   );
 }
@@ -53,7 +77,11 @@ export default function Calendar({ symbol, TH }) {
   const [country, setCountry] = useState('all');
   const [tzId, setTzId] = useState('local');
   const [menu, setMenu] = useState(null); // 'country' | 'tz' | null
+  const [tick, setTick] = useState(0); // ضربانِ ۶۰ثانیه‌ای برای بازمحاسبهٔ «رویدادِ بعدی»
   const rootRef = useRef(null);
+
+  // «الان» را هر دقیقه تازه کن تا نشانگرِ رویدادِ بعدی زنده بماند
+  useEffect(() => { const id = setInterval(() => setTick((t) => t + 1), 60000); return () => clearInterval(id); }, []);
 
   useEffect(() => {
     let on = true;
@@ -87,6 +115,14 @@ export default function Calendar({ symbol, TH }) {
     all.forEach((e) => { const k = dayKey(e.date, tz); (g[k] = g[k] || []).push(e); });
     return Object.entries(g);
   }, [items, imp, country, onlyRelevant, curs, tz]);
+
+  // نخستین رویدادِ آینده (>= الان) — نشانگرِ «بعدی» با ضربانِ آبی، مثل خطِ زمانِ فعلیِ TV
+  const nextIso = useMemo(() => {
+    const now = Date.now();
+    const ev = (items || []).slice().sort((a, b) => new Date(a.date) - new Date(b.date)).find((e) => new Date(e.date).getTime() >= now);
+    return ev ? ev.date : null;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items, tick]);
 
   const Toggle = ({ on, set, children }) => (
     <button onClick={() => set((v) => !v)} className="px-2 h-[26px] rounded-md text-[10px] transition-colors"
@@ -167,18 +203,25 @@ export default function Calendar({ symbol, TH }) {
               const forecast = e.forecast ?? e.fc;
               const previous = e.previous ?? e.prev;
               const na = toNum(actual), nf = toNum(forecast);
-              const actColor = na != null && nf != null && na !== nf ? (na > nf ? TH.up : TH.down) : TH.textStrong;
+              const diff = na != null && nf != null && na !== nf;
+              const actUp = diff && na > nf;
+              const actColor = diff ? (actUp ? TH.up : TH.down) : TH.textStrong;
+              const isNext = e.date === nextIso;
+              const rowBg = isNext ? `${TH.accent}14` : 'transparent';
               return (
-                <div key={i} className="flex items-center gap-2 px-3 py-1.5 border-b transition-colors" style={{ borderColor: TH.border }}
+                <div key={i} className="flex items-center gap-2 px-3 py-1.5 border-b transition-colors" style={{ borderColor: TH.border, background: rowBg, boxShadow: isNext ? `inset 2px 0 0 ${TH.accent}` : 'none' }}
                   onMouseEnter={(ev) => (ev.currentTarget.style.background = TH.chipBgHover)}
-                  onMouseLeave={(ev) => (ev.currentTarget.style.background = 'transparent')}>
-                  <span className="text-[10px] opacity-60 w-10 shrink-0" dir="ltr">{fmtTime(e.date, tz)}</span>
+                  onMouseLeave={(ev) => (ev.currentTarget.style.background = rowBg)}>
+                  <span className="text-[10px] w-10 shrink-0 inline-flex items-center gap-1 tnum" dir="ltr" style={{ color: isNext ? TH.accent : TH.text, opacity: isNext ? 1 : 0.6 }}>
+                    {isNext && <span className="w-1.5 h-1.5 rounded-full shrink-0" title="رویدادِ بعدی" style={{ background: TH.accent, animation: 'pcGlow 2.4s ease-in-out infinite' }} />}
+                    {fmtTime(e.date, tz)}
+                  </span>
                   <span className="text-[10px] font-semibold w-8 shrink-0" dir="ltr" style={{ color: TH.textStrong }}>{e.country}</span>
                   <Dots imp={e.impact} />
                   <span className="text-[11px] leading-4 flex-1 min-w-0 truncate">{e.title}</span>
-                  <span className="w-11 text-left text-[10px] shrink-0 font-semibold" dir="ltr" style={{ color: actual != null && actual !== '' ? actColor : TH.text, opacity: actual != null && actual !== '' ? 1 : 0.35 }}>{actual != null && actual !== '' ? actual : '—'}</span>
-                  <span className="w-11 text-left text-[10px] shrink-0 opacity-60" dir="ltr">{forecast != null && forecast !== '' ? forecast : '—'}</span>
-                  <span className="w-11 text-left text-[10px] shrink-0 opacity-40" dir="ltr">{previous != null && previous !== '' ? previous : '—'}</span>
+                  <ActualCell value={actual} color={actColor} arrow={diff ? (actUp ? 'up' : 'down') : null} TH={TH} />
+                  <span className="w-11 text-left text-[10px] shrink-0 opacity-60 tnum" dir="ltr">{forecast != null && forecast !== '' ? forecast : '—'}</span>
+                  <span className="w-11 text-left text-[10px] shrink-0 opacity-40 tnum" dir="ltr">{previous != null && previous !== '' ? previous : '—'}</span>
                 </div>
               );
             })}

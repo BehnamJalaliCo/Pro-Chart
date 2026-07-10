@@ -11,6 +11,62 @@ const TYPE_COLOR = {
   index: '#9C56E6', energy: '#26A69A', other: '#787B86',
 };
 
+// ── پرچمِ کشورِ ردیف (سبکِ TradingView؛ trailing meta). نگاشتِ ارز/شاخص → کدِ ISO2 ──
+// فارکس: ارزِ مظنه (پایه روی لوگوی چپ است) · فلز: مظنه (معمولاً USD) · شاخص/انرژی: کشورِ بورس.
+const CCY_CC = {
+  USD: 'US', EUR: 'EU', GBP: 'GB', JPY: 'JP', CHF: 'CH', CAD: 'CA', AUD: 'AU', NZD: 'NZ',
+  NOK: 'NO', SEK: 'SE', SGD: 'SG', HKD: 'HK', TRY: 'TR', ZAR: 'ZA', MXN: 'MX', CNH: 'CN',
+  DKK: 'DK', PLN: 'PL',
+};
+function flagCodeOf(m) {
+  if (!m) return null;
+  if (m.cat === 'forex') return CCY_CC[m.quote] || CCY_CC[m.base] || null;
+  if (m.cat === 'metal') return CCY_CC[m.quote] || 'US';
+  if (m.cat === 'index') return m.country || null;
+  if (m.cat === 'energy') return m.country || 'US';
+  return null; // کریپتو/سایر → جهانی، بدونِ پرچم
+}
+
+// گلیفِ پرچمِ سادهٔ ۲۴×۱۶ (تخت، شارپ، خوانا در اندازهٔ کوچک). فقط کشورهایی که واقعاً ظاهر می‌شوند.
+const FLAGS = {
+  US: (<><rect width="24" height="16" fill="#b22234" />{[1, 3, 5, 7, 9, 11].map((i) => (<rect key={i} y={i * (16 / 13)} width="24" height={16 / 13} fill="#fff" />))}<rect width="11" height={16 * 7 / 13} fill="#3c3b6e" /></>),
+  EU: (<><rect width="24" height="16" fill="#039" /><circle cx="12" cy="8" r="4.2" fill="none" stroke="#fc0" strokeWidth="1.1" strokeDasharray="0.5 1.35" /></>),
+  GB: (<><rect width="24" height="16" fill="#012169" /><path d="M0 0L24 16M24 0L0 16" stroke="#fff" strokeWidth="3.2" /><path d="M0 0L24 16M24 0L0 16" stroke="#c8102e" strokeWidth="1.4" /><path d="M12 0v16M0 8h24" stroke="#fff" strokeWidth="5" /><path d="M12 0v16M0 8h24" stroke="#c8102e" strokeWidth="2.6" /></>),
+  JP: (<><rect width="24" height="16" fill="#fff" /><circle cx="12" cy="8" r="4" fill="#bc002d" /></>),
+  CH: (<><rect width="24" height="16" fill="#d52b1e" /><rect x="10.5" y="3" width="3" height="10" fill="#fff" /><rect x="7" y="6.5" width="10" height="3" fill="#fff" /></>),
+  CA: (<><rect width="24" height="16" fill="#fff" /><rect width="6" height="16" fill="#d52b1e" /><rect x="18" width="6" height="16" fill="#d52b1e" /><path d="M12 4l1 2.2 2.2-.6-1 2 1.6 1.2-2 .4.2 2-2-1.2-2 1.2.2-2-2-.4 1.6-1.2-1-2 2.2.6z" fill="#d52b1e" /></>),
+  AU: (<><rect width="24" height="16" fill="#00247d" /><rect width="11" height="8" fill="#012169" /><path d="M0 0l11 8M11 0L0 8" stroke="#fff" strokeWidth="1.4" /><path d="M5.5 0v8M0 4h11" stroke="#fff" strokeWidth="2" /><circle cx="5.5" cy="12.5" r="1.3" fill="#fff" /><circle cx="18" cy="9.5" r="1" fill="#fff" /><circle cx="20.5" cy="5.5" r="0.9" fill="#fff" /></>),
+  NZ: (<><rect width="24" height="16" fill="#00247d" /><rect width="11" height="8" fill="#012169" /><path d="M0 0l11 8M11 0L0 8" stroke="#fff" strokeWidth="1.4" /><path d="M5.5 0v8M0 4h11" stroke="#fff" strokeWidth="2" /><circle cx="18" cy="9.5" r="1.1" fill="#cc142b" /><circle cx="20.5" cy="5.5" r="0.9" fill="#cc142b" /></>),
+  NO: (<><rect width="24" height="16" fill="#ef2b2d" /><rect x="6" width="4" height="16" fill="#fff" /><rect y="6" width="24" height="4" fill="#fff" /><rect x="7" width="2" height="16" fill="#002868" /><rect y="7" width="24" height="2" fill="#002868" /></>),
+  SE: (<><rect width="24" height="16" fill="#006aa7" /><rect x="6" width="3" height="16" fill="#fecc00" /><rect y="6.5" width="24" height="3" fill="#fecc00" /></>),
+  DK: (<><rect width="24" height="16" fill="#c60c30" /><rect x="6" width="3" height="16" fill="#fff" /><rect y="6.5" width="24" height="3" fill="#fff" /></>),
+  DE: (<><rect width="24" height="16" fill="#ffce00" /><rect width="24" height="10.67" fill="#d00" /><rect width="24" height="5.33" fill="#000" /></>),
+  FR: (<><rect width="24" height="16" fill="#ed2939" /><rect width="16" height="16" fill="#fff" /><rect width="8" height="16" fill="#002395" /></>),
+  PL: (<><rect width="24" height="16" fill="#fff" /><rect y="8" width="24" height="8" fill="#dc143c" /></>),
+  MX: (<><rect width="24" height="16" fill="#ce1126" /><rect width="16" height="16" fill="#fff" /><rect width="8" height="16" fill="#006847" /><circle cx="12" cy="8" r="1.3" fill="#8b5a2b" /></>),
+  CN: (<><rect width="24" height="16" fill="#de2910" /><circle cx="5" cy="5" r="2" fill="#ffde00" /><circle cx="9.5" cy="2.6" r="0.7" fill="#ffde00" /><circle cx="11" cy="5" r="0.7" fill="#ffde00" /><circle cx="10.5" cy="8" r="0.7" fill="#ffde00" /><circle cx="8.6" cy="9.6" r="0.7" fill="#ffde00" /></>),
+  HK: (<><rect width="24" height="16" fill="#de2910" /><circle cx="12" cy="8" r="3.2" fill="#fff" /><circle cx="12" cy="8" r="1.5" fill="#de2910" /></>),
+  SG: (<><rect width="24" height="16" fill="#fff" /><rect width="24" height="8" fill="#ef3340" /><circle cx="6.2" cy="4" r="2.6" fill="#fff" /><circle cx="7.7" cy="4" r="2.1" fill="#ef3340" /><circle cx="9.8" cy="2.6" r="0.55" fill="#fff" /><circle cx="9.8" cy="5.4" r="0.55" fill="#fff" /><circle cx="11" cy="4" r="0.55" fill="#fff" /></>),
+  TR: (<><rect width="24" height="16" fill="#e30a17" /><circle cx="10" cy="8" r="3.2" fill="#fff" /><circle cx="11.3" cy="8" r="2.5" fill="#e30a17" /><circle cx="14" cy="8" r="1.1" fill="#fff" /></>),
+  ZA: (<><rect width="24" height="16" fill="#fff" /><rect width="24" height="5.3" fill="#e03c31" /><rect y="10.7" width="24" height="5.3" fill="#001489" /><path d="M0 0L9 8L0 16Z" fill="#000" /><path d="M0 2.4L10.5 8L0 13.6Z" fill="#007749" /></>),
+};
+
+// دایرهٔ نه؛ مستطیلِ گِردِ ۳:۲ سبکِ TradingView (رینگِ ظریف، بدونِ سایه). fallback: کدِ خاکستری.
+function CountryFlag({ code, size = 18 }) {
+  const g = FLAGS[code];
+  const w = size, h = Math.round(size * 2 / 3);
+  const cid = `bnfl_${code}_${size}`;
+  return (
+    <svg width={w} height={h} viewBox="0 0 24 16" shapeRendering="geometricPrecision" className="shrink-0" aria-hidden style={{ borderRadius: 2.5, display: 'block' }}>
+      <clipPath id={cid}><rect width="24" height="16" rx="2.5" /></clipPath>
+      <g clipPath={`url(#${cid})`}>
+        {g || (<><rect width="24" height="16" fill="#3a3f4b" /><text x="12" y="11" textAnchor="middle" fill="#c9cdd6" fontSize="9" fontWeight="700" fontFamily="IRANYekanX, sans-serif">{code}</text></>)}
+      </g>
+      <rect x="0.5" y="0.5" width="23" height="15" rx="2.2" fill="none" stroke="rgba(0,0,0,.20)" strokeWidth="1" />
+    </svg>
+  );
+}
+
 // های‌لایتِ حروفِ منطبقِ کوئری درونِ متن (امضای جستجوی TradingView — حتی تطبیقِ پراکنده).
 // positions از highlightPositions می‌آید؛ حروفِ پیوسته در یک span ادغام می‌شوند.
 function mark(text, positions, T) {
@@ -139,6 +195,8 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
             renderRow={(m, i) => {
               const isActive = i === active;
               const isCur = m.symbol === current;
+              const flag = flagCodeOf(m);
+              const tc = TYPE_COLOR[m.cat] || TYPE_COLOR.other;
               return (
                 <button onClick={() => pick(m.symbol)} onMouseEnter={() => setActive(i)}
                   role="option" aria-selected={isActive}
@@ -150,12 +208,15 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
                     <div className="text-[12px] opacity-60 leading-tight truncate">{mark(m.desc, highlightPositions(m.desc, qDesc), T)}</div>
                   </div>
                   {watchSet.has(m.symbol) && <Star size={13} className="text-amber-400 shrink-0" />}
-                  {/* بَجِ نوعِ دارایی، سبکِ TradingView: نقطهٔ رنگی + برچسبِ کلاس */}
-                  <span className="flex items-center gap-1.5 shrink-0 px-2 rounded-md text-[10.5px] font-semibold"
-                    style={{ height: 22, color: TYPE_COLOR[m.cat] || TYPE_COLOR.other, background: (TYPE_COLOR[m.cat] || TYPE_COLOR.other) + '1f' }}>
-                    <span style={{ width: 6, height: 6, borderRadius: 99, background: TYPE_COLOR[m.cat] || TYPE_COLOR.other }} />
-                    {CAT_FA[m.cat] || m.cat}
-                  </span>
+                  {/* trailing meta سبکِ TradingView: پرچمِ کشور + برچسبِ بازار (نقطهٔ رنگیِ کلاس) */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {flag && <CountryFlag code={flag} size={coarse ? 20 : 18} />}
+                    <span className="flex items-center gap-1.5 px-2 rounded-md text-[10.5px] font-semibold tabular-nums"
+                      style={{ height: 22, minWidth: 52, justifyContent: 'center', color: tc, background: tc + '1f' }}>
+                      <span style={{ width: 6, height: 6, borderRadius: 99, background: tc }} />
+                      {CAT_FA[m.cat] || m.cat}
+                    </span>
+                  </div>
                 </button>
               );
             }}
@@ -163,7 +224,28 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
         ) : (
           <div className="py-10 text-center text-sm opacity-50" style={{ color: T.text }}>نمادی مطابقِ «{q}» پیدا نشد</div>
         )}
+
+        {/* فوترِ راهنمای کیبورد سبکِ TradingView (ناوبریِ کامل: پیمایش/انتخاب/بستن) + شمارشِ نتایج */}
+        <div className="flex items-center justify-between px-4 shrink-0 text-[11px] select-none"
+          style={{ height: 34, borderTop: `1px solid ${T.border}`, color: T.text }}>
+          <div className="flex items-center gap-3 opacity-70">
+            <span className="flex items-center gap-1"><Kbd T={T}>↑</Kbd><Kbd T={T}>↓</Kbd> پیمایش</span>
+            <span className="flex items-center gap-1"><Kbd T={T}>↵</Kbd> انتخاب</span>
+            <span className="flex items-center gap-1"><Kbd T={T}>Esc</Kbd> بستن</span>
+          </div>
+          <span className="tabular-nums opacity-60">{results.length} نماد</span>
+        </div>
       </div>
     </div>
+  );
+}
+
+// کلیدِ راهنمای فوتر (هم‌سبکِ Esc نوارِ بالا).
+function Kbd({ children, T }) {
+  return (
+    <kbd className="inline-flex items-center justify-center rounded border tabular-nums"
+      style={{ minWidth: 18, height: 18, padding: '0 4px', fontSize: 11, lineHeight: 1, borderColor: T.border, color: T.text, background: T.chipBg }}>
+      {children}
+    </kbd>
   );
 }

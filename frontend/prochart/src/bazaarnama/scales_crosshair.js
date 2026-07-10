@@ -295,7 +295,7 @@ const _zoneFmt = (tz) => {
   if (!_fmtCache[tz]) {
     _fmtCache[tz] = new Intl.DateTimeFormat('en-US', {
       timeZone: tz, hour12: false,
-      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
     });
   }
   return _fmtCache[tz];
@@ -310,8 +310,11 @@ export const tzOffsetSec = (unixSec, tz) => {
     const get = (t) => Number(parts.find((p) => p.type === t)?.value);
     let hour = get('hour');
     if (hour === 24) hour = 0; // برخی محیط‌ها نیمه‌شب را 24 می‌دهند
+    // دقیقه را از خودِ منطقه بگیر (نه از UTC) وگرنه آفستِ نیم‌ساعته‌ها (تهران/هند)
+    // اشتباه محاسبه می‌شود. ثانیه در همهٔ مناطق با UTC یکسان است (آفست‌ها مضربِ دقیقه‌اند).
+    const min = get('minute');
     const asUtc = Date.UTC(get('year'), get('month') - 1, get('day'), hour,
-      new Date(unixSec * 1000).getUTCMinutes(), new Date(unixSec * 1000).getUTCSeconds());
+      min, new Date(unixSec * 1000).getUTCSeconds());
     return Math.round((asUtc - unixSec * 1000) / 1000);
   } catch (e) {
     return 0;
@@ -503,6 +506,180 @@ export const timeZoneOptions = (tz = 'UTC') => {
   };
   const timeFormatter = (time) => fullFmt.format(new Date((typeof time === 'number' ? time : 0) * 1000));
   return { timeScale: { tickMarkFormatter }, localization: { timeFormatter } };
+};
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * (ج) UIِ محورِ TV — منوی راست‌کلیکِ اسکیل، دکمه‌های گوشهٔ محور، ساعتِ UTC،
+ *      برچسبِ DOMِ آخرین قیمتِ جهت‌دار + فلَش. همه توابعِ خالص/توصیف‌گر (بدونِ DOM/state).
+ *      (مواردِ ۴۵–۵۳ ممیزیِ TV: منوی محور، ساعتِ UTC، برچسبِ رنگی، فونتِ tabular.)
+ * ────────────────────────────────────────────────────────────────────────── */
+
+// (۴۵) خانوادهٔ فونتِ محور با ارقامِ tabular. فونتِ اصلیِ سایت IRANYekanX است؛
+// چون canvasِ lightweight-charts از font-feature-settings/font-variant-numeric
+// پشتیبانی نمی‌کند، برای ثباتِ عرضِ ارقام روی محور (نلرزیدنِ اعداد با تغییرِ قیمت)
+// یک fallbackِ ارقامِ عرض‌ثابت پس از فونتِ اصلی می‌گذاریم.
+export const AXIS_TABULAR_FONT =
+  "'IRANYekanX', ui-monospace, 'SF Mono', Menlo, 'Roboto Mono', monospace";
+
+// راحتی: payloadِ layout با فونتِ ۱۱px + خانوادهٔ tabular (item 45). افزایشی؛
+// معادلِ priceAxisLayoutOptions(AXIS_TABULAR_FONT).
+export const tabularAxisLayoutOptions = () => priceAxisLayoutOptions(AXIS_TABULAR_FONT);
+
+/**
+ * (۴۷/۴۸/۴۹) منوی راست‌کلیکِ محورِ قیمت مثلِ TradingView.
+ * state جاری را می‌گیرد تا رادیوها/چک‌باکس‌ها علامت بخورند. آیتم‌ها:
+ *   { id, label, type:'radio'|'checkbox'|'action'|'separator', checked?, value? }
+ * میزبان با کلیک، id را به applyPriceScaleMenu(id, state) می‌دهد تا payloadِ
+ * applyOptions ساخته شود؛ اکشن‌های 'addAlert'/'settings' را خودش جدا هندل می‌کند.
+ * @param {object} [state] { mode, locked, invert }
+ * @returns {Array}
+ */
+export const priceScaleMenu = ({ mode = PRICE_SCALE_MODE.Normal, locked = false, invert = false } = {}) => [
+  { id: 'regular', label: 'عادی', type: 'radio', checked: mode === PRICE_SCALE_MODE.Normal, value: PRICE_SCALE_MODE.Normal },
+  { id: 'log', label: 'لگاریتمی', type: 'radio', checked: mode === PRICE_SCALE_MODE.Logarithmic, value: PRICE_SCALE_MODE.Logarithmic },
+  { id: 'percent', label: 'درصدی', type: 'radio', checked: mode === PRICE_SCALE_MODE.Percentage, value: PRICE_SCALE_MODE.Percentage },
+  { id: 'indexed', label: 'پایه ۱۰۰', type: 'radio', checked: mode === PRICE_SCALE_MODE.IndexedTo100, value: PRICE_SCALE_MODE.IndexedTo100 },
+  { id: 'sep1', type: 'separator' },
+  { id: 'auto', label: 'مقیاسِ خودکار', type: 'checkbox', checked: !locked },
+  { id: 'invert', label: 'وارونه‌کردنِ مقیاس', type: 'checkbox', checked: !!invert },
+  { id: 'sep2', type: 'separator' },
+  { id: 'fit', label: 'برازشِ داده‌ها', type: 'action' },
+  { id: 'reset', label: 'بازنشانیِ مقیاس', type: 'action' },
+  { id: 'sep3', type: 'separator' },
+  { id: 'addAlert', label: 'افزودنِ هشدار…', type: 'action' },
+  { id: 'settings', label: 'تنظیماتِ مقیاس…', type: 'action' },
+];
+
+/**
+ * نگاشتِ کلیکِ آیتمِ منوی محور → state بعدی + payloadِ applyOptions.
+ * @param {string} id   یکی از idهای priceScaleMenu (اکشن‌های محض null می‌دهند)
+ * @param {object} state وضعیتِ جاری { mode, locked, invert }
+ * @returns {{patch:object, apply:object, fitContent:boolean}|null}
+ *   patch: وضعیتِ ذخیره‌ایِ بعدی (برای CH3_DEFAULTS-مانند). apply: payloadِ
+ *   chart.priceScale().applyOptions. fitContent: آیا میزبان timeScale().fitContent() هم بزند.
+ *   برای اکشن‌های 'addAlert'/'settings' مقدارِ null برمی‌گردد (میزبان جدا هندل کند).
+ */
+export const applyPriceScaleMenu = (id, state = {}) => {
+  const cur = { mode: PRICE_SCALE_MODE.Normal, locked: false, invert: false, ...state };
+  const next = { ...cur };
+  let fitContent = false;
+  switch (id) {
+    case 'regular': next.mode = PRICE_SCALE_MODE.Normal; break;
+    case 'log': next.mode = PRICE_SCALE_MODE.Logarithmic; break;
+    case 'percent': next.mode = PRICE_SCALE_MODE.Percentage; break;
+    case 'indexed': next.mode = PRICE_SCALE_MODE.IndexedTo100; break;
+    case 'auto': next.locked = !cur.locked; if (!next.locked) fitContent = true; break;
+    case 'invert': next.invert = !cur.invert; break;
+    case 'fit': next.locked = false; fitContent = true; break;
+    case 'reset': next.mode = PRICE_SCALE_MODE.Normal; next.locked = false; next.invert = false; fitContent = true; break;
+    default: return null;
+  }
+  return { patch: next, apply: priceScaleOptions(next), fitContent };
+};
+
+/**
+ * (۴۷/۵۲/۵۳) دکمه‌های ریزِ گوشهٔ پایینِ محورِ قیمت مثلِ TV: ٪ / log / A(uto).
+ * توگل‌اند (برخلافِ رادیوهای منو): کلیکِ log وقتی log فعال است → عادی.
+ * @param {object} [state] { mode, locked }
+ * @returns {Array<{id,label,title,active}>}
+ */
+export const priceScaleCornerButtons = ({ mode = PRICE_SCALE_MODE.Normal, locked = false } = {}) => [
+  { id: 'percent', label: '٪', title: 'مقیاسِ درصدی', active: mode === PRICE_SCALE_MODE.Percentage },
+  { id: 'log', label: 'log', title: 'مقیاسِ لگاریتمی', active: mode === PRICE_SCALE_MODE.Logarithmic },
+  { id: 'auto', label: 'A', title: 'مقیاسِ خودکار (Fit)', active: !locked },
+];
+
+/**
+ * نگاشتِ کلیکِ دکمهٔ گوشهٔ محور → state بعدی + payload (سمانتیکِ توگل).
+ * @param {string} id 'percent'|'log'|'auto'
+ * @param {object} state { mode, locked, invert }
+ * @returns {{patch:object, apply:object, fitContent:boolean}|null}
+ */
+export const applyCornerButton = (id, state = {}) => {
+  const cur = { mode: PRICE_SCALE_MODE.Normal, locked: false, invert: false, ...state };
+  const next = { ...cur };
+  let fitContent = false;
+  if (id === 'log') next.mode = cur.mode === PRICE_SCALE_MODE.Logarithmic ? PRICE_SCALE_MODE.Normal : PRICE_SCALE_MODE.Logarithmic;
+  else if (id === 'percent') next.mode = cur.mode === PRICE_SCALE_MODE.Percentage ? PRICE_SCALE_MODE.Normal : PRICE_SCALE_MODE.Percentage;
+  else if (id === 'auto') { next.locked = !cur.locked; if (!next.locked) fitContent = true; }
+  else return null;
+  return { patch: next, apply: priceScaleOptions(next), fitContent };
+};
+
+// فرمترهای کش‌شدهٔ ساعت برای axisClock (بر اساسِ tz).
+const _clockCache = {};
+const _clockFmt = (tz) => {
+  if (!_clockCache[tz]) {
+    _clockCache[tz] = new Intl.DateTimeFormat('fa-IR', {
+      timeZone: tz, hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit',
+    });
+  }
+  return _clockCache[tz];
+};
+
+/**
+ * (۵۱) ساعتِ زندهٔ گوشهٔ پایینِ محورِ زمان + برچسبِ آفستِ منطقه مثلِ TV.
+ * میزبان آن را هر ثانیه صدا می‌زند و رشته‌ها را کنارِ محورِ زمان نشان می‌دهد.
+ * ارقام فارسیِ .tnum و dir=ltr. آفست DST-aware (از tzOffsetSec).
+ * @param {number} [nowSec] یونیکس‌ثانیه (پیش‌فرض Date.now)
+ * @param {string} [tz]     منطقهٔ نمایش
+ * @returns {{time:string, offsetLabel:string, tz:string}}
+ *   time: 'HH:MM:SS' در منطقه. offsetLabel: 'UTC' یا 'UTC+3:30' / 'UTC-5'.
+ */
+export const axisClock = (nowSec, tz = 'UTC') => {
+  const now = nowSec != null ? nowSec : Math.floor(Date.now() / 1000);
+  let time = '';
+  try { time = _clockFmt(tz).format(new Date(now * 1000)); } catch (e) { time = ''; }
+  const off = tzOffsetSec(now, tz);
+  let offsetLabel;
+  if (off === 0) {
+    offsetLabel = 'UTC';
+  } else {
+    const sign = off < 0 ? '-' : '+';
+    const a = Math.abs(off);
+    const oh = Math.floor(a / 3600);
+    const om = Math.floor((a % 3600) / 60);
+    offsetLabel = om ? `UTC${sign}${oh}:${String(om).padStart(2, '0')}` : `UTC${sign}${oh}`;
+  }
+  return { time, offsetLabel, tz };
+};
+
+/**
+ * کلاسِ فلَشِ جهت‌دار برای رقم‌های تغییرکرده (.flash-up/.flash-down).
+ * @param {number} dir >0 صعودی، <0 نزولی، 0 خنثی
+ * @returns {string} 'flash-up' | 'flash-down' | ''
+ */
+export const directionFlashClass = (dir) => (dir > 0 ? 'flash-up' : dir < 0 ? 'flash-down' : '');
+
+/**
+ * (۴۶) توصیف‌گرِ pillِ «آخرین قیمت» روی لبهٔ محور (DOM/overlay) — مکمّلِ
+ * livePriceLineOptions که برای series.createPriceLine در lightweight-charts است.
+ * پس‌زمینهٔ جهت‌دار سبز/قرمز، متنِ سفید، تگِ LIVE و کلاسِ فلَش برای تیک.
+ * dir از مقایسهٔ price با prev استخراج می‌شود اگر مستقیم داده نشود.
+ * @param {object} opt
+ * @param {number} [opt.price]  قیمتِ جاری
+ * @param {number} [opt.prev]   قیمتِ قبلی (برای استخراجِ جهت اگر dir داده نشود)
+ * @param {number} [opt.dir]    جهتِ صریح (اولویت با این)
+ * @param {string} [opt.up]     رنگِ صعودی (معمولاً TH.up)
+ * @param {string} [opt.down]   رنگِ نزولی (معمولاً TH.down)
+ * @param {string} [opt.accent] رنگِ خنثی (پیش‌فرض آبیِ TV)
+ * @param {boolean}[opt.live]   نمایشِ تگِ LIVE (پیش‌فرض true)
+ * @param {string} [opt.text]   متنِ آمادهٔ قیمت (وگرنه String(price))
+ * @returns {{text:string, bg:string, color:string, dir:number, live:boolean, flashClass:string}}
+ */
+export const lastPriceLabel = ({ price, prev, dir, up, down, accent = LIVE_FLAT, live = true, text } = {}) => {
+  const d = dir != null
+    ? Math.sign(dir)
+    : (prev != null && price != null ? Math.sign(price - prev) : 0);
+  const bg = d > 0 ? (up || LIVE_UP) : d < 0 ? (down || LIVE_DOWN) : accent;
+  return {
+    text: text != null ? text : (price != null ? String(price) : ''),
+    bg,
+    color: '#ffffff',
+    dir: d,
+    live: !!live,
+    flashClass: directionFlashClass(d),
+  };
 };
 
 // پیش‌فرضِ کاملِ این فصل برای ذخیره/بازیابیِ میزِکار (saveWS/loadWS).

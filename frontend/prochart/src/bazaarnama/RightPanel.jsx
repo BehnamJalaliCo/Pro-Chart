@@ -336,6 +336,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [listMenuOpen, setListMenuOpen] = React.useState(false);
   const [flagFor, setFlagFor] = React.useState(null); // symِ نمادی که پاپ‌اوورِ پرچمش باز است
+  const [ctx, setCtx] = React.useState(null); // منوی راست‌کلیکِ ردیف: { sym, x, y } | null
 
   // baselineِ سشن برای ٪ (اولین midِ دیده‌شدهٔ هر نماد) — وقتی payload فیلدِ prevClose ندارد
   const baseRef = React.useRef({});
@@ -410,7 +411,9 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     const lo = sess ? sess.lo : null;
     const range = (hi != null && lo != null && lo) ? ((hi - lo) / lo) * 100 : null;
     const im = itemMeta(sym);
-    return { sym, lp, dir, chg, chgAbs, hi, lo, range, flag: im.flag || null, section: im.section || null, kind: symbolKind(sym) };
+    // وضعیتِ بازار (سبکِ TV): وجودِ midِ زندهٔ معتبر = بازار باز (نقطهٔ سبز)، نبودش = بسته (خاکستری).
+    const open = mid != null;
+    return { sym, lp, dir, chg, chgAbs, hi, lo, range, open, flag: im.flag || null, section: im.section || null, kind: symbolKind(sym) };
   });
 
   // فیلترِ رنگ
@@ -456,7 +459,12 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     return s.toLowerCase().includes(q) || prettySym(s).toLowerCase().includes(q);
   }).slice(0, 60);
 
-  const closeMenus = () => { setMenuOpen(false); setListMenuOpen(false); setFlagFor(null); };
+  const closeMenus = () => { setMenuOpen(false); setListMenuOpen(false); setFlagFor(null); setCtx(null); };
+
+  // منوی راست‌کلیکِ ردیف (سبکِ TV) — با موقعیتِ کلیک، محدود به مرزِ صفحه.
+  const openCtx = (sym, e) => { e.preventDefault(); e.stopPropagation(); setFlagFor(null); setCtx({ sym, x: e.clientX, y: e.clientY }); };
+  // جابه‌جاییِ نماد به سکشن (فقط وقتی گروه‌بندی=سکشن معنا دارد؛ متادیتای محلی است)
+  const moveToSection = (sym, sid) => { setItemMeta(sym, { section: sid }); setCtx(null); };
 
   // ── رندرِ یک ردیف (list یا table) ──
   const cols = meta.columns || [];
@@ -467,6 +475,13 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     // جهتِ رنگِ تغییر: اول از Chg٪، اگر نبود از Chgِ مطلق (سبکِ TV: فقط تغییر رنگی می‌شود، نه قیمتِ آخر).
     const chgDir = r.chg != null ? r.chg : (r.chgAbs != null ? r.chgAbs : null);
     const chgCol = chgDir == null ? TH.text : (chgDir > 0 ? TH.up : chgDir < 0 ? TH.down : TH.text);
+    // رنگِ جهت‌دارِ «آخرین» بر اساسِ جهتِ تیکِ زنده (حسِ زنده‌بودنِ TV): بالا=سبز، پایین=قرمز، خنثی=متن.
+    const priceCol = active ? TH.accent : (r.dir > 0 ? TH.up : r.dir < 0 ? TH.down : TH.textStrong);
+    // نقطهٔ وضعیتِ بازار (سبز=باز، خاکستریِ کم‌رنگ=بسته) — سبکِ TV.
+    const dot = (
+      <span className="inline-block rounded-full shrink-0" title={r.open ? 'بازار باز' : 'بازار بسته'}
+        style={{ width: 6, height: 6, background: r.open ? TH.up : TH.text, opacity: r.open ? 1 : 0.35, boxShadow: r.open ? `0 0 4px ${TH.up}99` : 'none' }} />
+    );
     const chgTxt = r.chg == null ? '' : `${r.chg > 0 ? '+' : ''}${r.chg.toFixed(2)}٪`;
     const chgAbsTxt = r.chgAbs == null ? '' : `${r.chgAbs > 0 ? '+' : ''}${fmtPrice(r.sym, r.chgAbs)}`;
     // یک ستونِ عددیِ اختیاری → { متن، رنگ }
@@ -481,14 +496,17 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
 
     if (isTable) {
       return (
-        <button key={r.sym} onClick={() => setSymbol(r.sym)} className="group/row relative flex items-center gap-2 w-full px-3 h-9 transition-colors duration-[120ms]"
+        <button key={r.sym} onClick={() => setSymbol(r.sym)} onContextMenu={(e) => openCtx(r.sym, e)} className="group/row relative flex items-center gap-2 w-full px-3 h-9 transition-colors duration-[120ms]"
           style={{ background: active ? TH.accent + '1f' : 'transparent', borderRight: `2px solid ${active ? TH.accent : 'transparent'}` }}
           onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
           onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
           {r.flag && <span className="absolute right-0 top-1 bottom-1 w-[2px] rounded-full" style={{ background: FLAG_HEX[r.flag] }} />}
           {meta.showLogo && <SymbolLogo symbol={r.sym} size={logoSz} />}
-          <span className="flex-1 min-w-0 text-[12px] font-semibold truncate text-left" dir="ltr" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</span>
-          <FlashNum value={r.lp?.mid} className="tnum text-[11px] w-16 text-left shrink-0 rounded" dir="ltr" style={{ color: active ? TH.accent : TH.textStrong }}>{r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}</FlashNum>
+          <span className="flex-1 min-w-0 flex items-center gap-1.5 text-left" dir="ltr">
+            {dot}
+            <span className="min-w-0 text-[12px] font-semibold truncate" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</span>
+          </span>
+          <FlashNum value={r.lp?.mid} className="tnum text-[11px] w-16 text-left shrink-0 rounded" dir="ltr" style={{ color: priceCol }}>{r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}</FlashNum>
           {cols.map((key) => { const c = numCell(key); return <span key={key} className="tnum text-[10px] w-12 text-left shrink-0 rounded px-0.5" dir="ltr" style={{ color: c.col, background: key === 'change' ? chgBg(r.chg) : 'transparent' }}>{c.txt}</span>; })}
           <RowActions r={r} TH={TH} flagFor={flagFor} setFlagFor={setFlagFor} setFlag={setFlag} toggleWatch={toggleWatch} compact />
         </button>
@@ -496,19 +514,22 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     }
 
     return (
-      <button key={r.sym} onClick={() => setSymbol(r.sym)} className="group/row relative flex items-center gap-2 w-full px-3 h-9 transition-colors duration-[120ms]"
+      <button key={r.sym} onClick={() => setSymbol(r.sym)} onContextMenu={(e) => openCtx(r.sym, e)} className="group/row relative flex items-center gap-2 w-full px-3 h-9 transition-colors duration-[120ms]"
         style={{ background: active ? TH.accent + '1f' : 'transparent', borderRight: `2px solid ${active ? TH.accent : 'transparent'}` }}
         onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
         onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
         {r.flag && <span className="absolute right-0 top-1.5 bottom-1.5 w-[2px] rounded-full" style={{ background: FLAG_HEX[r.flag] }} />}
         {meta.showLogo && <span className="shrink-0" style={{ filter: meta.logoSize === 'lg' ? 'drop-shadow(0 1px 2px rgba(0,0,0,.45))' : 'none' }}><SymbolLogo symbol={r.sym} size={logoSz} /></span>}
         <div className="flex-1 min-w-0 text-left" dir="ltr">
-          <div className="text-[13px] font-bold leading-tight truncate" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</div>
+          <div className="flex items-center gap-1.5 min-w-0">
+            {dot}
+            <span className="text-[13px] font-bold leading-tight truncate" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</span>
+          </div>
           {meta.showDesc && <div className="text-[10px] leading-tight opacity-50 truncate" style={{ color: TH.text }}>{KIND_LABEL[r.kind]}</div>}
         </div>
-        {/* سلولِ قیمتِ TV: «آخرین» خنثی و tabular با فلَشِ تیک روی خطِ بالا، «Chg Chg٪» رنگی زیرِ آن */}
+        {/* سلولِ قیمتِ TV: «آخرین» رنگِ جهت‌دارِ تیک + فلَشِ تیک روی خطِ بالا، «Chg Chg٪» رنگی زیرِ آن */}
         <div className="shrink-0 flex flex-col items-end justify-center gap-0.5 leading-none min-w-[58px]" dir="ltr">
-          <FlashNum value={r.lp?.mid} className="tnum text-[12px] font-semibold rounded" style={{ color: active ? TH.accent : TH.textStrong }}>
+          <FlashNum value={r.lp?.mid} className="tnum text-[12px] font-semibold rounded" style={{ color: priceCol }}>
             {r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}
           </FlashNum>
           <span className="tnum text-[10px] whitespace-nowrap" style={{ color: chgCol }}>
@@ -532,9 +553,13 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           <span className="truncate max-w-[110px]">{list.name}</span>
           <ChevronDown size={12} className={`transition-transform duration-[120ms] ${listMenuOpen ? 'rotate-180' : ''}`} style={{ color: TH.text }} />
         </button>
-        <div className="flex items-center gap-1.5">
-          <span className="tabular-nums text-[10px] opacity-50" style={{ color: TH.text }}>{rows.length}</span>
-          <button onClick={() => { setMenuOpen((v) => !v); setListMenuOpen(false); }} title="شخصی‌سازی" className="p-0.5 rounded transition-colors" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+        <div className="flex items-center gap-0.5">
+          <span className="tabular-nums text-[10px] opacity-50 mr-1" style={{ color: TH.text }}>{rows.length}</span>
+          {/* دکمه‌های بالای واچ‌لیست (سبکِ TV): افزودنِ نماد + تنظیمِ ستون/شخصی‌سازی */}
+          <button onClick={() => { setAdding((v) => !v); setMenuOpen(false); setListMenuOpen(false); }} title="افزودنِ نماد" className="p-0.5 rounded transition-colors" style={{ color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+            <Plus size={15} className={`transition-transform duration-[120ms] ${adding ? 'rotate-45' : ''}`} />
+          </button>
+          <button onClick={() => { setMenuOpen((v) => !v); setListMenuOpen(false); }} title="تنظیمِ ستون‌ها و شخصی‌سازی" className="p-0.5 rounded transition-colors" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
             <MoreVertical size={14} />
           </button>
         </div>
@@ -612,7 +637,31 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
         {meta.flagFilter && <button onClick={() => patch({ flagFilter: null })} className="text-[10px] opacity-60 hover:opacity-100" style={{ color: TH.text }}>پاک</button>}
       </div>
 
-      {rows.length === 0 && <div className="px-3 py-6 text-center text-[11px] opacity-40">نمادی نیست — از پایین اضافه کن.</div>}
+      {/* افزودنِ نماد — جستجوی واقعی، بالای لیست (سبکِ TV؛ با دکمهٔ + بالای پنل باز/بسته می‌شود) */}
+      {adding && (
+        <div className="px-2 pb-2 flex flex-col gap-1 border-b" style={{ borderColor: TH.border }}>
+          <div className="flex items-center gap-1.5 rounded-md px-2 h-8" style={{ background: TH.chipBg }}>
+            <Search size={13} style={{ color: TH.text, opacity: 0.6 }} />
+            <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="جستجوی نماد…" dir="ltr"
+              className="flex-1 bg-transparent outline-none text-[12px] text-left" style={{ color: TH.textStrong }} />
+            {query && <button onClick={() => setQuery('')} className="opacity-50 hover:opacity-100"><X size={12} /></button>}
+          </div>
+          <div className="flex flex-col gap-0.5 max-h-64 overflow-auto bn-thin-scroll mt-0.5">
+            {addCandidates.length === 0 && <div className="px-2 py-3 text-center text-[11px] opacity-40">موردی پیدا نشد.</div>}
+            {addCandidates.map((s) => (
+              <button key={s} onClick={() => toggleWatch(s)} className="flex items-center gap-2.5 px-2 h-9 rounded-md transition-colors"
+                onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
+                <SymbolLogo symbol={s} size={24} />
+                <span className="flex-1 text-[12px] font-semibold truncate text-left" dir="ltr" style={{ color: TH.textStrong }}>{prettySym(s)}</span>
+                <span className="text-[9px] px-1.5 py-0.5 rounded-full shrink-0" style={{ background: TH.chipBg, color: TH.text }}>{KIND_LABEL[symbolKind(s)]}</span>
+                <Plus size={13} className="opacity-60 shrink-0" style={{ color: TH.accent }} />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {rows.length === 0 && <div className="px-3 py-6 text-center text-[11px] opacity-40">نمادی نیست — از دکمهٔ + بالا اضافه کن.</div>}
 
       {/* هدرِ ستون‌ها (سبکِ TV) — هم‌ترازِ سلول‌های سطرها، متناسب با نمای لیست/جدول */}
       {rows.length > 0 && (
@@ -660,36 +709,6 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
         </div>
       ))}
 
-      {/* افزودنِ نماد — با جستجوی واقعی */}
-      <div className="px-3 pt-3 pb-1 flex items-center justify-between select-none">
-        <span className="text-[10px] font-semibold tracking-wide" style={{ color: TH.text, opacity: 0.55 }}>افزودنِ نماد</span>
-        <button onClick={() => setAdding((v) => !v)} className="p-0.5 rounded" style={{ color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-          <Plus size={14} className={`transition-transform duration-[120ms] ${adding ? 'rotate-45' : ''}`} />
-        </button>
-      </div>
-      {adding && (
-        <div className="px-2 pb-3 flex flex-col gap-1">
-          <div className="flex items-center gap-1.5 rounded-md px-2 h-8" style={{ background: TH.chipBg }}>
-            <Search size={13} style={{ color: TH.text, opacity: 0.6 }} />
-            <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="جستجوی نماد…" dir="ltr"
-              className="flex-1 bg-transparent outline-none text-[12px] text-left" style={{ color: TH.textStrong }} />
-            {query && <button onClick={() => setQuery('')} className="opacity-50 hover:opacity-100"><X size={12} /></button>}
-          </div>
-          <div className="flex flex-col gap-0.5 max-h-64 overflow-auto bn-thin-scroll mt-0.5">
-            {addCandidates.length === 0 && <div className="px-2 py-3 text-center text-[11px] opacity-40">موردی پیدا نشد.</div>}
-            {addCandidates.map((s) => (
-              <button key={s} onClick={() => toggleWatch(s)} className="flex items-center gap-2.5 px-2 h-9 rounded-md transition-colors"
-                onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
-                <SymbolLogo symbol={s} size={24} />
-                <span className="flex-1 text-[12px] font-semibold truncate text-left" dir="ltr" style={{ color: TH.textStrong }}>{prettySym(s)}</span>
-                <span className="text-[9px] px-1.5 py-0.5 rounded-full shrink-0" style={{ background: TH.chipBg, color: TH.text }}>{KIND_LABEL[symbolKind(s)]}</span>
-                <Plus size={13} className="opacity-60 shrink-0" style={{ color: TH.accent }} />
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* پنلِ جزئیاتِ نمادِ فعال (سبکِ TV) — زیرِ لیست mount می‌شود تا مشخصاتِ نمادِ فعال دیده شود */}
       <div className="mt-2 border-t" style={{ borderColor: TH.border }}>
         <button onClick={() => patch({ showDetails: meta.showDetails === false })} className="flex items-center justify-between w-full px-3 py-2 select-none" style={{ color: TH.text }}
@@ -706,6 +725,47 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           </div>
         )}
       </div>
+
+      {/* منوی راست‌کلیکِ ردیف (سبکِ TV): انتخاب، رنگِ پرچم، جابه‌جایی به سکشن، حذف */}
+      {ctx && (() => {
+        const cm = itemMeta(ctx.sym);
+        // clamp تا از لبهٔ پایین/راستِ صفحه بیرون نزند (منوی ~۲۰۰px عرض، ~۲۴۰px ارتفاع)
+        const left = Math.min(ctx.x, (typeof window !== 'undefined' ? window.innerWidth : 9999) - 208);
+        const top = Math.min(ctx.y, (typeof window !== 'undefined' ? window.innerHeight : 9999) - 260);
+        return (
+          <div className="fixed inset-0 z-[70]" onClick={closeMenus} onContextMenu={(e) => { e.preventDefault(); closeMenus(); }}>
+            <div dir="rtl" className="fixed w-52 rounded-lg p-1 pc-pop text-[12px]" style={{ left, top, background: TH.popoverBg, border: `1px solid ${TH.border}`, color: TH.text }} onClick={(e) => e.stopPropagation()}>
+              <div className="px-2 py-1 text-[11px] font-bold truncate" dir="ltr" style={{ color: TH.textStrong }}>{prettySym(ctx.sym)}</div>
+              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
+              <button onClick={() => { setSymbol(ctx.sym); setCtx(null); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 rounded" onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><LineChart size={13} /> بازکردن روی چارت</button>
+              {/* رنگِ پرچم */}
+              <div className="px-2 py-1.5">
+                <div className="text-[10px] opacity-55 mb-1">رنگِ پرچم</div>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {FLAG_ORDER.map((c) => (
+                    <button key={c} title={c} onClick={() => { setFlag(ctx.sym, c); setCtx(null); }} className="w-4 h-4 rounded-full transition-transform hover:scale-110" style={{ background: FLAG_HEX[c], outline: cm.flag === c ? `2px solid ${TH.textStrong}` : 'none', outlineOffset: 1 }} />
+                  ))}
+                  <button title="بدونِ پرچم" onClick={() => { setFlag(ctx.sym, null); setCtx(null); }} className="w-4 h-4 rounded-full flex items-center justify-center" style={{ border: `1px solid ${TH.border}` }}><X size={9} style={{ color: TH.text }} /></button>
+                </div>
+              </div>
+              {/* جابه‌جایی به سکشن (وقتی سکشنی تعریف شده) */}
+              {list.sections.length > 0 && (
+                <div className="px-2 py-1.5 border-t" style={{ borderColor: TH.border }}>
+                  <div className="text-[10px] opacity-55 mb-1">انتقال به سکشن</div>
+                  <div className="flex flex-col gap-0.5 max-h-28 overflow-auto bn-thin-scroll">
+                    {list.sections.map((s) => (
+                      <button key={s.id} onClick={() => moveToSection(ctx.sym, s.id)} className="text-right px-1.5 py-1 rounded truncate" style={{ color: cm.section === s.id ? TH.accent : TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>{s.name}</button>
+                    ))}
+                    {cm.section && <button onClick={() => moveToSection(ctx.sym, null)} className="text-right px-1.5 py-1 rounded" style={{ color: TH.text, opacity: 0.7 }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>بدونِ سکشن</button>}
+                  </div>
+                </div>
+              )}
+              <div className="my-1 border-t" style={{ borderColor: TH.border }} />
+              <button onClick={() => { toggleWatch(ctx.sym); setCtx(null); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 rounded" style={{ color: TH.down }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><Trash2 size={13} /> حذف از واچ‌لیست</button>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

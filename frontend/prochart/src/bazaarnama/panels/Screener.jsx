@@ -25,6 +25,27 @@ const digits = (sym = '') => {
 const fmtP = (sym, v) => { const n = num(v); return n == null ? '—' : n.toFixed(digits(sym)); };
 // درصد با علامت و دو رقم (سبکِ فارسیِ واچ‌لیست)
 const fmtPct = (n) => (n == null ? '—' : `${n > 0 ? '+' : ''}${n.toFixed(2)}٪`);
+// تغییرِ مطلق با علامت و دقتِ نماد (ستونِ Chg عینِ TV)
+const fmtAbs = (sym, n) => (n == null ? '—' : `${n > 0 ? '+' : ''}${n.toFixed(digits(sym))}`);
+
+// پس‌زمینهٔ نیمه‌شفافِ سلولِ تغییر (پیلِ سبز/قرمزِ کم‌رنگ عینِ اسکرینرِ TV)
+const tint = (color, n) => (n == null || n === 0 ? 'transparent' : `color-mix(in srgb, ${color} 14%, transparent)`);
+
+// فلَشِ سبز/قرمزِ سلول روی هر تیک (حسِ زنده‌بودنِ TV) — از کلاس‌های سراسریِ
+// .flash-up/.flash-down استفاده می‌کند؛ عنصر با keyِ نو ری‌مونت می‌شود تا انیمیشن
+// روی هر تغییر از نو اجرا شود (هوک‌ها پایدار می‌مانند). dirِ صریحِ تیک اولویت دارد.
+function FlashNum({ value, dir = 0, className = '', style, children }) {
+  const prev = React.useRef(value);
+  const [st, setSt] = React.useState({ cls: '', n: 0 });
+  React.useEffect(() => {
+    if (value != null && prev.current != null && value !== prev.current) {
+      const up = dir > 0 || (dir === 0 && value > prev.current);
+      setSt((s) => ({ cls: up ? 'flash-up' : 'flash-down', n: s.n + 1 }));
+    }
+    prev.current = value;
+  }, [value, dir]);
+  return <span key={st.n} dir="ltr" className={`${className} ${st.cls}`} style={style}>{children}</span>;
+}
 
 // #۵ رتبهٔ «ارزش/اهمیت» — باارزش‌ترین (طلا، شاخص‌ها، میجرها، کریپتوی برتر) بالا، بقیه پایین.
 // نمادها از همین رتبه به‌صورتِ نزولی (باارزش→بی‌ارزش) چیده می‌شوند؛ پایه (USDT/USD) نادیده گرفته می‌شود.
@@ -78,6 +99,7 @@ const PRESETS = [
 // ستون‌های عددیِ اختیاری (قیمت همیشه هست) — تکنیکال/قیمتیِ ساخته‌شده از سشنِ زنده
 const OPT_COLS = [
   ['change', 'تغییر٪'],
+  ['chgAbs', 'تغییر'],
   ['high', 'سقف'],
   ['low', 'کف'],
   ['range', 'دامنه٪'],
@@ -138,8 +160,9 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
     const hi = sess ? sess.hi : null;
     const lo = sess ? sess.lo : null;
     const chg = (mid != null && base) ? ((mid - base) / base) * 100 : null;
+    const chgAbs = (mid != null && base != null) ? (mid - base) : null;
     const range = (hi != null && lo != null && lo) ? ((hi - lo) / lo) * 100 : null;
-    return { last: mid, dir: lp?.dir || 0, chg, hi, lo, range, spread: spreadPips(lp?.mid) };
+    return { last: mid, dir: lp?.dir || 0, chg, chgAbs, hi, lo, range, spread: spreadPips(lp?.mid) };
   };
 
   const rows = useMemo(() => {
@@ -169,6 +192,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
       else if (sortBy === 'symbol') r = a.localeCompare(b);
       else if (sortBy === 'last') r = (ma.last ?? -Infinity) - (mb.last ?? -Infinity);
       else if (sortBy === 'change') r = (ma.chg ?? -Infinity) - (mb.chg ?? -Infinity);
+      else if (sortBy === 'chgAbs') r = (ma.chgAbs ?? -Infinity) - (mb.chgAbs ?? -Infinity);
       else if (sortBy === 'high') r = (ma.hi ?? -Infinity) - (mb.hi ?? -Infinity);
       else if (sortBy === 'low') r = (ma.lo ?? -Infinity) - (mb.lo ?? -Infinity);
       else if (sortBy === 'range') r = (ma.range ?? -Infinity) - (mb.range ?? -Infinity);
@@ -343,15 +367,18 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
               >
                 <SymbolLogo symbol={s} size={20} />
                 <span className="text-left truncate" style={{ color: active ? TH.accent : TH.textStrong, fontWeight: active ? 600 : 400 }}>{s}</span>
-                <span className="tnum text-right" style={{ color: col }}>{m.last != null ? fmtP(s, m.last) : '—'}</span>
+                <FlashNum value={m.last} dir={dir} className="tnum text-right rounded px-0.5 -mx-0.5" style={{ color: col }}>
+                  {m.last != null ? fmtP(s, m.last) : '—'}
+                </FlashNum>
                 {optActive.map(([key]) => {
-                  let txt = '—', c = TH.text;
-                  if (key === 'change') { txt = fmtPct(m.chg); c = m.chg == null ? TH.text : m.chg > 0 ? TH.up : m.chg < 0 ? TH.down : TH.text; }
+                  let txt = '—', c = TH.text, bg = 'transparent';
+                  if (key === 'change') { txt = fmtPct(m.chg); c = m.chg == null ? TH.text : m.chg > 0 ? TH.up : m.chg < 0 ? TH.down : TH.text; bg = tint(c, m.chg); }
+                  else if (key === 'chgAbs') { txt = fmtAbs(s, m.chgAbs); c = m.chgAbs == null ? TH.text : m.chgAbs > 0 ? TH.up : m.chgAbs < 0 ? TH.down : TH.text; bg = tint(c, m.chgAbs); }
                   else if (key === 'high') { txt = m.hi != null ? fmtP(s, m.hi) : '—'; c = TH.up; }
                   else if (key === 'low') { txt = m.lo != null ? fmtP(s, m.lo) : '—'; c = TH.down; }
                   else if (key === 'range') { txt = m.range != null ? `${m.range.toFixed(2)}٪` : '—'; }
                   else if (key === 'spread') { txt = m.spread != null ? String(m.spread) : '—'; }
-                  return <span key={key} className="tnum text-right text-[10px] truncate" style={{ color: c }}>{txt}</span>;
+                  return <span key={key} className="tnum text-right text-[10px] truncate rounded px-1 py-0.5" style={{ color: c, background: bg }}>{txt}</span>;
                 })}
                 <span className="text-right" style={{ color: col }}>{dir !== 0 ? (dir > 0 ? '▲' : '▼') : ''}</span>
                 {toggleWatch && (

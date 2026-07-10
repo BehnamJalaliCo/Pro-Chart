@@ -421,3 +421,46 @@ button, [role="button"], a, summary, .pc-btn {
 
 /* hairlineِ خامِ ۱px با رنگِ نامیِ دقیق (وقتی var حلقهٔ ارجاعِ border دارد) */
 .pc-hairline-x { border-color: var(--pc-hairline-color) !important; }
+
+/* ════════════════════════════════════════════════════════════════════
+   راند ۶ — colors-type: هِلپرهای «زنده‌بودن» + عددِ ایمنِ RTL + کارتِ فلَت.
+   افزایشی و بدونِ شکستنِ سلکتورهای موجود. تمِ دارک = :root، روشن = .light.
+   بدونِ دست‌زدن به --accent (سینکِ THEMES.dark چارت) — رنگِ chromeِ TV از
+   --pc-accent (#2962ff) و up/down از --pc-up-ui/--pc-down-ui (#089981/#f23645).
+   ════════════════════════════════════════════════════════════════════ */
+
+/* رنگِ متنِ جهت‌دار — قیمت/تغییرِ صعودی سبزِ TV، نزولی قرمزِ TV (UI-toneها) */
+.pc-up-text   { color: var(--pc-up-ui); }
+.pc-down-text { color: var(--pc-down-ui); }
+/* حالتِ خنثی (بدونِ تغییر) — mutedِ off-white، نه سفیدِ خالص */
+.pc-flat-text { color: var(--pc-text-muted); }
+
+/* عددِ زندهٔ ایمن در RTL: هم‌عرض (tabular) + جداسازیِ جهت تا رقم‌ها LTR بمانند
+   و کنارِ متنِ فارسی نلغزند. روی span/cellِ قیمت بگذار (نیازی به dir="ltr" جدا نیست). */
+.pc-num-ltr {
+  direction: ltr; unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  white-space: nowrap;
+}
+
+/* فلَشِ سلولِ قیمت — نسخهٔ کوتاه‌ترِ «سریع و تمیز» برای تیک‌های پرتکرار (اختیاری).
+   کلاس‌های اصلیِ .flash-up/.flash-down دست‌نخورده می‌مانند؛ این‌ها فقط سریع‌ترند. */
+.flash-up-fast   { animation: flashUp   .22s var(--pc-ease-out); }
+.flash-down-fast { animation: flashDown .22s var(--pc-ease-out); }
+
+/* کارتِ فلَتِ عینِ TV — fill + hairline، بدونِ هیچ سایهٔ سنگین/سه‌بعدی (§۱۴۳).
+   برای جایی که کارت باید تختِ خالص باشد؛ الویشن فقط با border دیده می‌شود. */
+.pc-card-flat {
+  background: var(--pc-surface);
+  border: var(--pc-hairline) solid var(--pc-border);
+  border-radius: var(--pc-radius-dialog);
+  box-shadow: none;
+}
+/* الویشنِ ظریفِ کارت (وقتی جداسازیِ لایه لازم است) — یک سایهٔ سبک، نه سنگین (§۱۴۲) */
+.pc-card-raised {
+  background: var(--pc-surface);
+  border: var(--pc-hairline) solid var(--pc-border);
+  border-radius: var(--pc-radius-dialog);
+  box-shadow: var(--pc-elev-1);
+}

@@ -25,16 +25,18 @@ export function Sparkline({ data, up, width = 56, height = 22, stroke, fill = tr
   // فضای ثابت رزرو می‌شود حتی وقتی داده نیست → بی‌جهش/بی‌لرزش در ردیف.
   if (!data || data.length < 2) return <svg width={width} height={height} style={{ display: 'block', flex: '0 0 auto' }} aria-hidden="true" />;
   const rise = up != null ? up : data[data.length - 1] >= data[0]; // روندِ کلی: آخر vs اول
-  const col = stroke || (rise ? th.up : th.down);
+  const unchanged = up == null && data[data.length - 1] === data[0]; // بی‌تغییر → خاکستریِ خنثی (سبکِ TV)
+  const col = stroke || (unchanged ? th.cross : rise ? th.up : th.down);
   const pad = 2, lastI = data.length - 1;
   let min = data[0], max = data[0];
   for (let i = 1; i < data.length; i++) { const v = data[i]; if (v < min) min = v; else if (v > max) max = v; }
-  const rng = (max - min) || 1;
+  const flat = max === min;              // سریِ صاف → خطِ افقیِ مرکزی (مثلِ TV، نه چسبیده به کف)
+  const rng = flat ? 1 : (max - min);
   const stepX = (width - pad * 2) / lastI;
-  const topY = pad, botY = height - pad;
+  const topY = pad, botY = height - pad, innerH = height - pad * 2;
   const clampY = (y) => (y < topY ? topY : y > botY ? botY : y); // مهارِ کنترل‌پوینت‌ها → بی‌اورشوت
   const xs = [], ys = [];
-  for (let i = 0; i < data.length; i++) { xs.push(pad + i * stepX); ys.push(botY - ((data[i] - min) / rng) * (height - pad * 2)); }
+  for (let i = 0; i < data.length; i++) { xs.push(pad + i * stepX); ys.push(flat ? topY + innerH / 2 : botY - ((data[i] - min) / rng) * innerH); }
   // مسیرِ خط: پلی‌لاینِ تیز، یا منحنیِ نرمِ کاتمول-رام→بزیه با کنترلِ مهارشده
   let linePath = `M ${xs[0].toFixed(2)} ${ys[0].toFixed(2)}`;
   if (smooth && data.length > 2) {

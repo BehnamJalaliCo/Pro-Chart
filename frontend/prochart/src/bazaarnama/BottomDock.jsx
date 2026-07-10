@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Maximize2, Minimize2, X, ChevronUp } from 'lucide-react';
 import useResizable from './useResizable';
 
@@ -97,7 +97,7 @@ export default function BottomDock({
                 className="relative flex items-center gap-1 px-2.5 h-7 rounded-md whitespace-nowrap transition-colors"
                 style={
                   on
-                    ? { background: `${TH.accent}1f`, color: TH.accent, fontWeight: 600 }
+                    ? { color: TH.textStrong, fontWeight: 600 }
                     : { color: TH.text }
                 }
                 onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
@@ -242,6 +242,49 @@ function MRow({ TH, label, value, tone }) {
 }
 
 /*
+ * FlashNum — پوششِ زنده‌بودن: وقتی مقدارِ عددی تغییر کند، پس‌زمینه یک‌بار سبز/قرمز
+ * فلَش می‌زند (کلاس‌های سراسریِ .flash-up/.flash-down در index.css). جهت از مقایسه‌ی
+ * مقدارِ نو با مقدارِ قبلی می‌آید. با تغییرِ key، انیمیشنِ CSS از نو شروع می‌شود.
+ */
+function FlashNum({ value, className = '', children }) {
+  const prev = useRef(null);
+  const [st, setSt] = useState({ cls: '', n: 0 });
+  useEffect(() => {
+    const v = typeof value === 'number' ? value : Number(value);
+    if (Number.isFinite(v)) {
+      if (prev.current != null && v !== prev.current) {
+        setSt((s) => ({ cls: v > prev.current ? 'flash-up' : 'flash-down', n: s.n + 1 }));
+      }
+      prev.current = v;
+    }
+  }, [value]);
+  return (
+    <span key={st.n} className={`${st.cls} inline-flex rounded-[3px] ${className}`}>
+      {children}
+    </span>
+  );
+}
+
+/*
+ * HeroStat — سلولِ خلاصه‌ی بزرگِ ردیفِ «نمای کلی» عینِ Strategy Tester ِ TV:
+ * برچسبِ ریز بالا، عددِ درشت، درصدِ هم‌رنگ زیرِ آن و یک زیرنویسِ کم‌رنگِ اختیاری.
+ * flashVal برای فلَشِ جهت‌دار هنگامِ رسیدنِ نتیجه‌ی بک‌تستِ تازه.
+ */
+function HeroStat({ TH, label, value, pct, note, tone, flashVal }) {
+  const color = tone === 'up' ? TH.up : tone === 'down' ? TH.down : TH.textStrong;
+  return (
+    <div className="flex flex-col gap-0.5 px-4 py-2 min-w-[124px] justify-center">
+      <span className="text-[11px] whitespace-nowrap" style={{ color: TH.text, opacity: 0.65 }}>{label}</span>
+      <FlashNum value={flashVal} className="self-start -mx-1 px-1">
+        <span className="text-[18px] font-semibold tabular-nums leading-tight" dir="ltr" style={{ color }}>{value}</span>
+      </FlashNum>
+      {pct != null && <span className="text-[11px] tabular-nums leading-none" dir="ltr" style={{ color }}>{pct}</span>}
+      {note != null && <span className="text-[10px] tabular-nums leading-none" dir="ltr" style={{ color: TH.text, opacity: 0.5 }}>{note}</span>}
+    </div>
+  );
+}
+
+/*
  * StrategyTesterTab — تبِ «تستِ استراتژی» با چیدمانِ هم‌ترازِ TradingView:
  *   نمای کلی / عملکرد / معاملات / مشخصات.
  *
@@ -281,6 +324,20 @@ export function StrategyTesterTab({ TH, children, result, properties }) {
     const avgTrade = Number(result.avgTrade) || 0;
     const list = result.list || [];
 
+    // مشتق‌های نمای کلی (دفاعی — فقط جایی که داده هست)
+    const initCap = properties && Number(properties.initialCapital) > 0 ? Number(properties.initialCapital) : null;
+    const netPct = initCap ? `${net >= 0 ? '+' : ''}${((net / initCap) * 100).toFixed(2)}٪` : null;
+    const winNum = Number(result.win);
+    const pfNum = Number(result.pf != null ? result.pf : result.pfTxt);
+    const heroes = [
+      { label: 'سودِ خالص', value: fmtNum(net, 2), pct: netPct, tone: net >= 0 ? 'up' : 'down', flashVal: net },
+      { label: 'کلِ معاملاتِ بسته', value: fmtNum(result.trades, 0), flashVal: Number(result.trades) },
+      { label: 'درصدِ سودده', value: `${fmtNum(result.win, 1)}٪`, note: result.wins != null ? `${result.wins}/${result.trades}` : null, tone: Number.isFinite(winNum) ? (winNum >= 50 ? 'up' : 'down') : undefined, flashVal: winNum },
+      { label: 'فاکتورِ سود', value: fmtNum(result.pfTxt != null ? result.pfTxt : result.pf, 3), tone: Number.isFinite(pfNum) ? (pfNum >= 1 ? 'up' : 'down') : undefined, flashVal: pfNum },
+      { label: 'حداکثر افت', value: fmtNum(result.ddTxt != null ? result.ddTxt : result.dd, 2), tone: 'down', flashVal: Number(result.dd) },
+      { label: 'میانگینِ معامله', value: fmtNum(avgTrade, 2), tone: avgTrade >= 0 ? 'up' : 'down', flashVal: avgTrade },
+    ];
+
     return (
       <div className="h-full flex flex-col" dir="rtl">
         {/* نوارِ زیرتب‌ها */}
@@ -310,27 +367,43 @@ export function StrategyTesterTab({ TH, children, result, properties }) {
         <div className="flex-1 min-h-0 overflow-auto p-3">
           {sub === 'overview' && (
             <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap gap-2">
-                <Stat TH={TH} label="سودِ خالص" value={fmtNum(net, 2)} tone={net >= 0 ? 'up' : 'down'} />
-                <Stat TH={TH} label="کلِ معاملات" value={fmtNum(result.trades, 0)} />
-                <Stat TH={TH} label="نرخِ برد" value={`${fmtNum(result.win, 1)}٪`} sub={result.wins != null ? `${result.wins}/${result.trades}` : undefined} />
-                <Stat TH={TH} label="فاکتورِ سود" value={fmtNum(result.pfTxt != null ? result.pfTxt : result.pf, 2)} />
-                <Stat TH={TH} label="حداکثر افت" value={fmtNum(result.ddTxt != null ? result.ddTxt : result.dd, 2)} tone="down" />
+              {/* نوارِ خلاصه‌ی بزرگ عینِ TV — سلول‌ها با هرلاینِ عمودیِ ظریف جدا می‌شوند */}
+              <div
+                className="flex flex-wrap items-stretch rounded-md overflow-hidden"
+                style={{ background: TH.subtle, border: `1px solid ${TH.border}` }}
+              >
+                {heroes.map((h, i) => (
+                  <React.Fragment key={h.label}>
+                    {i > 0 && <div className="w-px self-stretch my-2" style={{ background: TH.border }} />}
+                    <HeroStat TH={TH} label={h.label} value={h.value} pct={h.pct} note={h.note} tone={h.tone} flashVal={h.flashVal} />
+                  </React.Fragment>
+                ))}
               </div>
-              {/* منحنیِ سرمایه — عرضِ کامل */}
+              {/* منحنیِ سرمایه — عرضِ کامل، با پُرشدنِ گرادیانی و خطِ صفر */}
               {result.equity && result.equity.length > 1 && (() => {
                 const es = result.equity.map((p) => p.e);
                 const mn = Math.min(0, ...es), mx = Math.max(0, ...es);
                 const rng = mx - mn || 1; const W = 600, Hh = 120;
-                const pts = result.equity.map((p, i) => `${(i / (result.equity.length - 1)) * W},${Hh - ((p.e - mn) / rng) * Hh}`).join(' ');
-                const zeroY = Hh - ((0 - mn) / rng) * Hh;
+                const xAt = (i) => (i / (result.equity.length - 1)) * W;
+                const yAt = (e) => Hh - ((e - mn) / rng) * Hh;
+                const pts = result.equity.map((p, i) => `${xAt(i)},${yAt(p.e)}`).join(' ');
+                const zeroY = yAt(0);
                 const col = net >= 0 ? TH.up : TH.down;
+                const gid = `bnEqGrad_${net >= 0 ? 'u' : 'd'}`;
+                const area = `${xAt(0)},${Hh} ${pts} ${xAt(result.equity.length - 1)},${Hh}`;
                 return (
                   <div className="rounded-md p-2" style={{ background: TH.subtle, border: `1px solid ${TH.border}` }}>
                     <div className="text-[10px] opacity-60 mb-1" style={{ color: TH.text }}>منحنیِ سرمایه</div>
                     <svg viewBox={`0 0 ${W} ${Hh}`} preserveAspectRatio="none" className="w-full" style={{ height: Hh }}>
-                      <line x1="0" y1={zeroY} x2={W} y2={zeroY} stroke={TH.border} strokeWidth="1" />
-                      <polyline points={pts} fill="none" stroke={col} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+                      <defs>
+                        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={col} stopOpacity="0.22" />
+                          <stop offset="100%" stopColor={col} stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <polygon points={area} fill={`url(#${gid})`} stroke="none" />
+                      <line x1="0" y1={zeroY} x2={W} y2={zeroY} stroke={TH.border} strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+                      <polyline points={pts} fill="none" stroke={col} strokeWidth="1.5" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
                     </svg>
                   </div>
                 );
@@ -352,26 +425,44 @@ export function StrategyTesterTab({ TH, children, result, properties }) {
             </div>
           )}
 
-          {sub === 'trades' && (
-            <div className="max-w-2xl">
-              {/* سرستون */}
-              <div className="flex items-center justify-between py-1 border-b text-[10px] opacity-50 sticky top-0" style={{ borderColor: TH.border, background: TH.panel, color: TH.text }}>
-                <span>جهت · تاریخ</span>
-                <span>بازده</span>
-              </div>
-              {list.length ? list.slice().reverse().map((tr, i) => (
-                <div key={i} className="flex items-center justify-between py-1 border-b" style={{ borderColor: TH.border }}>
-                  <span className="flex items-center gap-1.5 opacity-70 text-xs" dir="ltr">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: tr.dir === 1 ? TH.up : TH.down }} />
-                    {new Date((tr.t || 0) * 1000).toLocaleDateString('fa-IR')}
-                  </span>
-                  <b className="text-xs tabular-nums" dir="ltr" style={{ color: (tr.r || 0) >= 0 ? TH.up : TH.down }}>
-                    {(tr.r || 0) >= 0 ? '+' : ''}{fmtNum(tr.r, 5)}
-                  </b>
+          {sub === 'trades' && (() => {
+            // سودِ تجمعی به‌ترتیبِ زمانی محاسبه، سپس نمایشِ نزولی (جدیدترین بالا) عینِ TV.
+            let cum = 0;
+            const withCum = list.map((tr) => { cum += Number(tr.r) || 0; return { ...tr, cum }; });
+            const shown = withCum.slice().reverse();
+            const cols = 'grid grid-cols-[2.2rem_1fr_auto_auto] gap-x-4 items-center';
+            return (
+              <div className="max-w-2xl">
+                {/* سرستون — چسبیده به بالا */}
+                <div className={`${cols} py-1.5 border-b text-[10px] uppercase tracking-wide sticky top-0`} style={{ borderColor: TH.border, background: TH.panel, color: TH.text, opacity: 0.55 }}>
+                  <span dir="ltr">#</span>
+                  <span>جهت · تاریخ</span>
+                  <span className="text-left" dir="ltr">بازده</span>
+                  <span className="text-left" dir="ltr">تجمعی</span>
                 </div>
-              )) : <div className="opacity-50 py-3 text-xs" style={{ color: TH.text }}>معامله‌ای ثبت نشد.</div>}
-            </div>
-          )}
+                {shown.length ? shown.map((tr, i) => {
+                  const r = Number(tr.r) || 0;
+                  const c = Number(tr.cum) || 0;
+                  return (
+                    <div key={i} className={`${cols} py-1.5 border-b`} style={{ borderColor: TH.border }}>
+                      <span className="text-[11px] tabular-nums opacity-40" dir="ltr">{shown.length - i}</span>
+                      <span className="flex items-center gap-1.5 text-xs" dir="ltr" style={{ color: TH.text }}>
+                        <span className="inline-block w-1.5 h-1.5 rounded-full shrink-0" style={{ background: tr.dir === 1 ? TH.up : TH.down }} />
+                        <span className="opacity-75">{tr.dir === 1 ? 'لانگ' : 'شورت'}</span>
+                        <span className="opacity-45">{new Date((tr.t || 0) * 1000).toLocaleDateString('fa-IR')}</span>
+                      </span>
+                      <b className="text-xs tabular-nums text-left" dir="ltr" style={{ color: r >= 0 ? TH.up : TH.down }}>
+                        {r >= 0 ? '+' : ''}{fmtNum(r, 4)}
+                      </b>
+                      <span className="text-xs tabular-nums text-left" dir="ltr" style={{ color: c >= 0 ? TH.up : TH.down, opacity: 0.85 }}>
+                        {c >= 0 ? '+' : ''}{fmtNum(c, 2)}
+                      </span>
+                    </div>
+                  );
+                }) : <div className="opacity-50 py-3 text-xs" style={{ color: TH.text }}>معامله‌ای ثبت نشد.</div>}
+              </div>
+            );
+          })()}
 
           {sub === 'properties' && (
             <div className="max-w-md">
