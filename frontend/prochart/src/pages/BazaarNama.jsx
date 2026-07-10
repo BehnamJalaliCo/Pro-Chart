@@ -1686,22 +1686,27 @@ export default function BazaarNama() {
                 کلیک → همان تیکتِ سفارشِ موجود (startTrade: پنلِ ترید + خطوطِ Entry/SL/TP روی چارت). */}
             {_showQuickTrade && (
               <div className="absolute top-2 left-2 z-20 flex flex-col gap-1 items-start" dir="ltr" style={{ pointerEvents: 'none' }}>
-                <div className="flex items-stretch rounded-md overflow-hidden shadow-lg" style={{ border: `1px solid ${TH.border}`, pointerEvents: 'auto' }}>
+                {/* سبکِ TV: جعبه‌های outline (پس‌زمینهٔ پنل، حاشیه+متنِ رنگی)، قیمت بالا / برچسب پایین، اسپردِ سادهٔ وسط */}
+                <div className="flex items-stretch gap-1.5" style={{ pointerEvents: 'auto' }}>
                   <button type="button" onClick={() => startTrade('sell')} title="فروش (Sell) — بازکردنِ تیکتِ سفارش"
-                    className="flex flex-col items-center justify-center px-2.5 py-1 text-white transition-opacity duration-[120ms] hover:opacity-90"
-                    style={{ background: TH.down, minWidth: 74 }}>
-                    <span className="text-[9px] font-bold leading-none tracking-wide opacity-90">SELL</span>
-                    <span className="text-[12px] font-bold leading-tight tabular-nums mt-0.5">{fmtPrice(symbol, _bidPx)}</span>
+                    className="flex flex-col items-center justify-center px-2.5 py-0.5 rounded-md shadow-sm transition-colors duration-[120ms]"
+                    style={{ background: TH.panel, border: `1.5px solid ${TH.down}`, color: TH.down, minWidth: 74 }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = TH.down + '14')}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = TH.panel)}>
+                    <span className="text-[13px] font-bold leading-tight tabular-nums">{fmtPrice(symbol, _bidPx)}</span>
+                    <span className="text-[9px] font-bold leading-none tracking-wide opacity-90 -mt-0.5">SELL</span>
                   </button>
-                  <div className="flex flex-col items-center justify-center px-1.5" style={{ background: TH.panel, color: TH.text }}>
+                  <div className="flex flex-col items-center justify-center px-0.5" style={{ color: TH.text }}>
+                    <span className="text-[11px] tabular-nums leading-tight font-medium">{_spreadPts != null ? Math.round(_spreadPts) : '—'}</span>
                     <span className="text-[8px] leading-none opacity-55">اسپرد</span>
-                    <span className="text-[11px] tabular-nums leading-tight mt-0.5">{_spreadPts != null ? Math.round(_spreadPts) : '—'}</span>
                   </div>
                   <button type="button" onClick={() => startTrade('buy')} title="خرید (Buy) — بازکردنِ تیکتِ سفارش"
-                    className="flex flex-col items-center justify-center px-2.5 py-1 text-white transition-opacity duration-[120ms] hover:opacity-90"
-                    style={{ background: TH.accent, minWidth: 74 }}>
-                    <span className="text-[9px] font-bold leading-none tracking-wide opacity-90">BUY</span>
-                    <span className="text-[12px] font-bold leading-tight tabular-nums mt-0.5">{fmtPrice(symbol, _askPx)}</span>
+                    className="flex flex-col items-center justify-center px-2.5 py-0.5 rounded-md shadow-sm transition-colors duration-[120ms]"
+                    style={{ background: TH.panel, border: `1.5px solid ${TH.accent}`, color: TH.accent, minWidth: 74 }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = TH.accent + '14')}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = TH.panel)}>
+                    <span className="text-[13px] font-bold leading-tight tabular-nums">{fmtPrice(symbol, _askPx)}</span>
+                    <span className="text-[9px] font-bold leading-none tracking-wide opacity-90 -mt-0.5">BUY</span>
                   </button>
                 </div>
                 {_chg != null && (
