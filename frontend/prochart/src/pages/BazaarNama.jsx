@@ -651,7 +651,9 @@ export default function BazaarNama() {
       } else {
         const l1 = L({ color: sub.color || def.color }, r.line);
         if (r.signal) L({ color: '#f59e0b' }, r.signal);
-        (r.guides || []).forEach((g) => l1.createPriceLine({ price: g, color: TH.grid, lineWidth: 1, lineStyle: 2 }));
+        // خطوطِ مرجعِ اسیلاتور (مثلِ ۷۰/۳۰ در RSI) — رنگِ متنِ خنثی تا مثلِ TradingView دیده شوند،
+        // نه رنگِ گرید که قبلاً باعث می‌شد با خطوطِ شبکه یکی و عملاً نامرئی شوند.
+        (r.guides || []).forEach((g) => l1.createPriceLine({ price: g, color: TH.text, lineWidth: 1, lineStyle: 2 }));
       }
       try { const panes = chart.panes(); if (panes && panes[pane]) panes[pane].setHeight(108); } catch (e) {}
       subChartsRef.current[sub.id] = arr;
