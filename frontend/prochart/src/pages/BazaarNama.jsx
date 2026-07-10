@@ -1876,6 +1876,7 @@ export default function BazaarNama() {
                 { icon: <Activity size={14} />, label: 'افزودنِ اندیکاتور', hotkey: '/', onClick: () => setIndDlg(true) },
                 ...(ctx.price != null ? [
                   { icon: <Bell size={14} />, label: `افزودنِ آلارم در ${fmtPrice(symbol, ctx.price)}`, onClick: () => { setAlForm((f) => ({ ...f, op: 'above', value: fmtPrice(symbol, ctx.price) })); setRightTab('alerts'); setShowRight(true); } },
+                  { icon: (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h8" /></svg>), label: `کپیِ قیمت: ${fmtPrice(symbol, ctx.price)}`, onClick: () => { try { navigator.clipboard && navigator.clipboard.writeText(fmtPrice(symbol, ctx.price)); } catch (err) {} } },
                   { separator: true },
                   { icon: <TrendingUp size={14} />, label: 'لانگ (خرید) — رسمِ رو‌به‌جلو', onClick: () => placeLongShort('buy', ctx.price, ctx.cx) },
                   { icon: <TrendingDown size={14} />, label: 'شورت (فروش) — رسمِ رو‌به‌جلو', onClick: () => placeLongShort('sell', ctx.price, ctx.cx) },
