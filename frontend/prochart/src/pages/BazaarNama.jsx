@@ -1443,6 +1443,7 @@ export default function BazaarNama() {
         ) : (
           <span className="text-[11px] text-amber-500/80">● بازار بسته</span>
         )}
+        <span className="w-px h-6 self-center rounded shrink-0" style={{ background: TH.border, opacity: 0.7 }} />
         {/* اینتروالِ سبکِ TV: منتخب‌های inline + اینتروالِ فعال (اگر منتخب نبود) + dropdownِ کاملِ همه با ستارهٔ منتخب‌سازی */}
         <div data-menu className="flex items-center gap-0.5 rounded-lg p-0.5 relative" style={{ background: TH.subtle }}>
           {(() => { const inline = TFS.filter((t) => tfFavs.includes(t) || t === tf); return inline.map((t) => { const on = tf === t; return (<button key={t} onClick={() => setTf(t)} title={TF_TITLE[t] || t} className="px-2 h-7 rounded-md text-[12px] font-semibold tabular-nums transition-colors duration-[120ms]" dir="ltr" style={on ? { background: TH.accent, color: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,.25)' } : { background: 'transparent', color: TH.text }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>{TF_LABEL[t] || t}</button>); }); })()}
@@ -1496,11 +1497,13 @@ export default function BazaarNama() {
             </div>
           )}
         </div>
+        <span className="w-px h-6 self-center rounded shrink-0" style={{ background: TH.border, opacity: 0.7 }} />
         <button onClick={openNamaScript} title={bnPrem ? 'نمااسکریپت' : 'ویژهٔ پرمیوم'} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={editorOpen ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!editorOpen) e.currentTarget.style.background = TH.chipBg; }}><Code2 size={17} /> نمااسکریپت{!bnPrem && <Lock size={12} className="opacity-70" />}</button>
         {/* #6 دکمهٔ «هشدار» مستقلِ تولبار (مثلِ Alertِ TV) — پنلِ آلارم‌ها را باز می‌کند */}
         <button onClick={() => { setRightTab('alerts'); setShowRight(true); }} title="افزودنِ هشدارِ قیمت" className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={(rightTab === 'alerts' && showRight) ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!(rightTab === 'alerts' && showRight)) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!(rightTab === 'alerts' && showRight)) e.currentTarget.style.background = TH.chipBg; }}><Bell size={17} /> هشدار</button>
         <button onClick={() => (replay.on ? exitReplay() : enterReplay())} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={replay.on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!replay.on) e.currentTarget.style.background = TH.chipBg; }}><Play size={17} /> بازپخش</button>
         <button onClick={getAiSignal} disabled={aiBusy} className="flex items-center gap-1 px-2.5 py-1 rounded-md text-sm text-white disabled:opacity-60 transition-opacity duration-[120ms]" style={{ background: TH.accentAi }} title="ستاپِ کاملِ AI در همین نماد/تایم‌فریم"><Sparkles size={17} className={aiBusy ? 'animate-pulse' : ''} /> سیگنالِ AI {aiQuota && <span className="tabular-nums" dir="ltr">{`(${aiQuota.remaining}/${aiQuota.limit})`}</span>}</button>
+        <span className="w-px h-6 self-center rounded shrink-0" style={{ background: TH.border, opacity: 0.7 }} />
         <div data-menu className="relative">
           <button onClick={() => setGridMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={grid > 1 ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBg; }} title="چند-چارت — انتخابِ چیدمان"><LayoutGrid size={17} /> {grid}× <ChevronDown size={13} /></button>
           {gridMenu && (
