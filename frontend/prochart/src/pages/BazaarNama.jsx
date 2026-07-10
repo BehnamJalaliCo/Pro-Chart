@@ -88,6 +88,16 @@ const resampleCandles = (cs, factor) => {
 const WS_KEY = 'bn_workspace';
 const loadWS = () => { try { return JSON.parse(localStorage.getItem(WS_KEY) || '{}') || {}; } catch (e) { return {}; } };
 const saveWS = (patch) => { try { localStorage.setItem(WS_KEY, JSON.stringify({ ...loadWS(), ...patch })); } catch (e) { /* noop */ } };
+// آیکون‌های اختصاصیِ SVG برای نوع‌چارت‌های تخصصی — تا در منوی نوعِ چارت (سبکِ TradingView)
+// هر نوع آیکونِ متمایزِ خودش را داشته باشد (قبلاً renko/range/linebreak همه آیکونِ کندل و
+// kagi/pnf هر دو آیکونِ خط داشتند و از هم قابلِ‌تشخیص نبودند). اصیل‌اند، نه کپیِ آیکونِ TV.
+const _ico = (size, children) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>);
+const IcoRenko = ({ size = 16 }) => _ico(size, <><rect x="3" y="13.5" width="6" height="6.5" /><rect x="9" y="8.5" width="6" height="6.5" /><rect x="15" y="3.5" width="6" height="6.5" /></>);
+const IcoRange = ({ size = 16 }) => _ico(size, <><path d="M4 7h11" /><path d="M8 12h12" /><path d="M4 17h9" /></>);
+const IcoLineBreak = ({ size = 16 }) => _ico(size, <><rect x="6.5" y="3.5" width="11" height="4.5" /><rect x="6.5" y="10" width="11" height="4.5" /><rect x="6.5" y="16.5" width="11" height="4" /></>);
+const IcoKagi = ({ size = 16 }) => _ico(size, <><path d="M4 19 L9 6" strokeWidth="3" /><path d="M9 6 L14 15" strokeWidth="1.3" /><path d="M14 15 L20 5" strokeWidth="3" /></>);
+const IcoPnf = ({ size = 16 }) => _ico(size, <><path d="M3 5.5 L9 13 M9 5.5 L3 13" strokeWidth="1.8" /><circle cx="17" cy="15" r="3.4" strokeWidth="1.8" /></>);
+
 const CHART_TYPES = [
   { id: 'candles', label: 'کندل', Icon: CandlestickChart },
   { id: 'hollow', label: 'توخالی', Icon: CandlestickChart },
@@ -97,11 +107,11 @@ const CHART_TYPES = [
   { id: 'area', label: 'ناحیه', Icon: AreaChart },
   { id: 'baseline', label: 'پایه', Icon: AreaChart },
   { id: 'step', label: 'پلکانی', Icon: LineChart },
-  { id: 'renko', label: 'رنکو (Renko)', Icon: CandlestickChart },
-  { id: 'range', label: 'بازه‌ای (Range)', Icon: CandlestickChart },
-  { id: 'linebreak', label: 'شکستِ خط', Icon: CandlestickChart },
-  { id: 'kagi', label: 'کاگی (Kagi)', Icon: LineChart },
-  { id: 'pnf', label: 'نقطه‌وشکل (P&F)', Icon: LineChart },
+  { id: 'renko', label: 'رنکو (Renko)', Icon: IcoRenko },
+  { id: 'range', label: 'بازه‌ای (Range)', Icon: IcoRange },
+  { id: 'linebreak', label: 'شکستِ خط', Icon: IcoLineBreak },
+  { id: 'kagi', label: 'کاگی (Kagi)', Icon: IcoKagi },
+  { id: 'pnf', label: 'نقطه‌وشکل (P&F)', Icon: IcoPnf },
   ...EXT_CHART_TYPES,
 ];
 // ابزارهای ترسیم اکنون در کامپوننتِ ToolRail (گروه‌بندی‌شده، سبکِ TradingView) تعریف می‌شوند.
