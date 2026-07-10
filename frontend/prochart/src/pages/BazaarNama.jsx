@@ -459,11 +459,17 @@ export default function BazaarNama() {
     // eslint-disable-next-line
   }, []);
 
+  // پس‌زمینهٔ چارت از تنظیمات: solid (پیش‌فرض) یا gradientِ عمودی (top=bgColor, bottom=bgColor2).
+  // مقادیرِ bgType دقیقاً 'solid'|'gradient' هستند = همان ColorType، پس بدونِ importِ اضافه پاس می‌شوند.
+  const bgOpts = (ov = {}) => (ov.bgType === 'gradient'
+    ? { type: 'gradient', topColor: ov.bgColor || TH.bg, bottomColor: ov.bgColor2 || ov.bgColor || TH.bg }
+    : { color: ov.bgColor || TH.bg });
+
   // اعمالِ تم
   useEffect(() => {
     const ch = chartRef.current; if (!ch) return;
     const _ov = chartSettingsOverrides;
-    ch.applyOptions({ layout: { background: { color: _ov.bgColor || TH.bg }, textColor: TH.text, fontSize: _ov.scaleFontSize || 12 }, grid: { vertLines: { color: _ov.gridVertColor || TH.gridLine, visible: _ov.gridVert !== false }, horzLines: { color: _ov.gridHorzColor || TH.gridLine, visible: _ov.gridHorz !== false } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
+    ch.applyOptions({ layout: { background: bgOpts(_ov), textColor: TH.text, fontSize: _ov.scaleFontSize || 12 }, grid: { vertLines: { color: _ov.gridVertColor || TH.gridLine, visible: _ov.gridVert !== false }, horzLines: { color: _ov.gridHorzColor || TH.gridLine, visible: _ov.gridHorz !== false } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
     // eslint-disable-next-line
   }, [theme]);
 
@@ -2300,9 +2306,9 @@ export default function BazaarNama() {
           if ('scaleFontSize' in patch) {
             try { chartRef.current && chartRef.current.applyOptions({ layout: { fontSize: patch.scaleFontSize || 12 } }); } catch (e) {}
           }
-          // رنگِ پس‌زمینهٔ چارت (قبلاً مرده) — chart-level، پس با تعویضِ نماد/نوع‌چارت می‌ماند؛ در افکتِ تم هم لحاظ شد.
-          if ('bgColor' in patch) {
-            try { chartRef.current && chartRef.current.applyOptions({ layout: { background: { color: patch.bgColor || TH.bg } } }); } catch (e) {}
+          // پس‌زمینهٔ چارت (قبلاً مرده) — solid یا gradient؛ chart-level، در افکتِ تم هم لحاظ شد.
+          if ('bgColor' in patch || 'bgType' in patch || 'bgColor2' in patch) {
+            try { chartRef.current && chartRef.current.applyOptions({ layout: { background: bgOpts({ ...chartSettingsOverrides, ...patch }) } }); } catch (e) {}
           }
           // رنگ/حاشیه/فتیلهٔ کندل (قبلاً مرده) — روی سریِ فعال زنده اعمال می‌شود؛ فقط انواعِ کندلی (بدونِ rebuild/refetch).
           if (['symUpColor', 'symDownColor', 'symBordersShown', 'symBorderUpColor', 'symBorderDownColor', 'symWickShown', 'symWickUpColor', 'symWickDownColor'].some((k) => k in patch)) {
