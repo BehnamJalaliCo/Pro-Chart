@@ -310,12 +310,19 @@ export default function Details({ symbol, TH, prices = {} }) {
             </span>
           )}
         </div>
-        {/* زمانِ آخرین به‌روزرسانی (سبکِ «Last update at … GMT»ِ TV) */}
-        {mid != null && (
-          <div className="text-[10px] mt-1.5 opacity-55" style={{ color: TH.text }} dir="ltr">
-            آخرین به‌روزرسانی · {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })} GMT
-          </div>
-        )}
+        {/* وضعیتِ بازار + زمانِ آخرین به‌روزرسانی (سبکِ «● Market open · Last update … GMT»ِ سرتیترِ TV).
+            heuristic هم‌راستا با ردیف‌های واچ‌لیست: وجودِ midِ زندهٔ معتبر ⇒ بازار باز (نقطهٔ سبز)، نبودش ⇒ بسته (خاکستری). */}
+        <div className="flex items-center gap-1.5 text-[10px] mt-1.5" dir="ltr">
+          <span className="inline-flex items-center gap-1 font-semibold" style={{ color: mid != null ? TH.up : TH.text, opacity: mid != null ? 0.85 : 0.5 }}>
+            <span className="inline-block rounded-full shrink-0" style={{ width: 6, height: 6, background: mid != null ? TH.up : TH.text, opacity: mid != null ? 1 : 0.45 }} />
+            {mid != null ? 'بازار باز' : 'بازار بسته'}
+          </span>
+          {mid != null && (
+            <span className="opacity-55" style={{ color: TH.text }}>
+              · آخرین به‌روزرسانی · {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })} GMT
+            </span>
+          )}
+        </div>
       </div>
 
       {/* کارتِ «حقایقِ کلیدی» (توصیفیِ سبکِ TV، تینتِ اکسنتِ بنفش) */}
