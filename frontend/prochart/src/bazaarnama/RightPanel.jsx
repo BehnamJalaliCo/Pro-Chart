@@ -456,8 +456,8 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   })();
 
   const isTable = meta.view === 'table';
-  // اندازهٔ لوگو هم‌ترازِ ردیفِ ۳۶pxِ TV — بزرگ‌ترین حالت هم داخلِ ردیف جا شود و شارپ بماند.
-  const logoSz = isTable ? 20 : (meta.logoSize === 'lg' ? 30 : 24);
+  // اندازهٔ لوگو هم‌ترازِ آیکونِ ~۲۰pxِ ردیفِ واچ‌لیستِ TV — قبلاً ۳۰px بود و ستونِ نماد را له می‌کرد.
+  const logoSz = isTable ? 18 : (meta.logoSize === 'lg' ? 24 : 20);
 
   // افزودنِ نماد با جستجو — فقط نمادهای دارای لوگوی واقعی پیشنهاد می‌شوند (واچ‌لیست تمیز می‌ماند).
   const addCandidates = (symbols || []).filter((s) => !(watch || []).includes(s) && isCleanSymbol(s)).filter((s) => {
@@ -523,14 +523,14 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     // ستون‌های عددیِ اختیاریِ اضافه (سقف/کف/دامنه) — Chg/Chg٪ حالا ستونِ همیشگی‌اند (سبکِ TV).
     const extraCols = cols.filter((k) => k !== 'change' && k !== 'chgAbs');
     return (
-      <button key={r.sym} onClick={() => setSymbol(r.sym)} onContextMenu={(e) => openCtx(r.sym, e)} className="group/row relative flex items-center gap-1.5 w-full px-2 h-9 transition-colors duration-[120ms]"
+      <button key={r.sym} onClick={() => setSymbol(r.sym)} onContextMenu={(e) => openCtx(r.sym, e)} className="group/row relative flex items-center gap-1 w-full px-2 h-9 transition-colors duration-[120ms]"
         style={{ background: active ? TH.accent + '1f' : 'transparent', borderRight: `2px solid ${active ? TH.accent : 'transparent'}` }}
         onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
         onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
         {r.flag && <span className="absolute right-0 top-1.5 bottom-1.5 w-[2px] rounded-full" style={{ background: FLAG_HEX[r.flag] }} />}
         {meta.showLogo && <span className="shrink-0"><SymbolLogo symbol={r.sym} size={logoSz} /></span>}
-        {/* نماد (پررنگ) + نقطهٔ وضعیتِ بازار + توضیحِ اختیاری */}
-        <div className="flex-1 min-w-0 text-left" dir="ltr">
+        {/* نماد (پررنگ) + نقطهٔ وضعیتِ بازار + توضیحِ اختیاری — ستونِ اولویت‌دار: min-width تا هرگز له نشود (سبکِ TV) */}
+        <div className="flex-1 min-w-[46px] text-left" dir="ltr">
           <div className="flex items-center gap-1.5 min-w-0">
             {dot}
             <span className="text-[12px] font-bold leading-tight truncate" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</span>
@@ -538,11 +538,11 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           {meta.showDesc && <div className="text-[10px] leading-tight opacity-50 truncate" style={{ color: TH.text }}>{r.nameEn || r.name || KIND_LABEL[r.kind]}</div>}
         </div>
         {/* ردیفِ TV: آخرین | Chg | Chg٪ — ستونیِ هم‌تراز و رنگیِ جهت‌دار (Last رنگِ تیکِ زنده، Chg/Chg٪ رنگِ جهتِ تغییر) */}
-        <FlashNum value={r.lp?.mid} className="tnum text-[11px] font-semibold text-right shrink-0 w-[50px] leading-none rounded" dir="ltr" style={{ color: priceCol }}>
+        <FlashNum value={r.lp?.mid} className="tnum text-[11px] font-semibold text-right shrink-0 w-[46px] leading-none rounded" dir="ltr" style={{ color: priceCol }}>
           {r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}
         </FlashNum>
-        <span className="tnum text-[10px] text-right shrink-0 w-[46px] leading-none whitespace-nowrap" dir="ltr" style={{ color: chgCol }}>{chgAbsTxt || '—'}</span>
-        <span className="tnum text-[10px] text-right shrink-0 w-[44px] leading-none whitespace-nowrap rounded px-0.5" dir="ltr" style={{ color: chgCol, background: chgBg(r.chg) }}>{chgTxt || '—'}</span>
+        <span className="tnum text-[10px] text-right shrink-0 w-[42px] leading-none whitespace-nowrap" dir="ltr" style={{ color: chgCol }}>{chgAbsTxt || '—'}</span>
+        <span className="tnum text-[10px] text-right shrink-0 w-[38px] leading-none whitespace-nowrap rounded px-0.5" dir="ltr" style={{ color: chgCol, background: chgBg(r.chg) }}>{chgTxt || '—'}</span>
         {extraCols.map((key) => { const c = numCell(key); return <span key={key} className="tnum text-[10px] w-11 text-right shrink-0" dir="ltr" style={{ color: c.col }}>{c.txt}</span>; })}
         {/* اکشن‌ها روی hover overlay می‌شوند (سبکِ TV) تا عرضِ ستون‌ها مصرف نشود */}
         <RowActions r={r} TH={TH} flagFor={flagFor} setFlagFor={setFlagFor} setFlag={setFlag} toggleWatch={toggleWatch} overlay />
@@ -682,12 +682,12 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
             <span className="shrink-0" style={{ width: 22 }} />
           </div>
         ) : (
-          <div className={`flex items-center gap-1.5 w-full px-2 h-6 text-[9px] font-semibold tracking-wide select-none border-b`} style={{ color: TH.text, opacity: 0.5, borderColor: TH.border }}>
+          <div className={`flex items-center gap-1 w-full px-2 h-6 text-[9px] font-semibold tracking-wide select-none border-b`} style={{ color: TH.text, opacity: 0.5, borderColor: TH.border }}>
             {meta.showLogo && <span className="shrink-0" style={{ width: logoSz }} />}
-            <span className="flex-1 min-w-0 text-left" dir="ltr">نماد</span>
-            <span className="text-right shrink-0 w-[50px]" dir="ltr">آخرین</span>
-            <span className="text-right shrink-0 w-[46px]" dir="ltr">تغییر</span>
-            <span className="text-right shrink-0 w-[44px]" dir="ltr">تغییر٪</span>
+            <span className="flex-1 min-w-[46px] text-left" dir="ltr">نماد</span>
+            <span className="text-right shrink-0 w-[46px]" dir="ltr">آخرین</span>
+            <span className="text-right shrink-0 w-[42px]" dir="ltr">تغییر</span>
+            <span className="text-right shrink-0 w-[38px]" dir="ltr">تغییر٪</span>
             {cols.filter((k) => k !== 'change' && k !== 'chgAbs').map((key) => <span key={key} className="w-11 text-right shrink-0" dir="ltr">{COL_LABEL[key] || key}</span>)}
           </div>
         )
