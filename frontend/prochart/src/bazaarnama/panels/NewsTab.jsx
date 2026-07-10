@@ -208,9 +208,10 @@ export default function NewsTab({ symbol, TH }) {
           const dot = impactColor(impact);
           return (
             <button key={k} onClick={() => a.url && window.open(a.url, '_blank', 'noopener,noreferrer')}
-              className={`relative block w-full text-right pl-3 pr-3 py-2.5 border-b transition-colors${isFresh ? ' flash-up' : ''}`}
-              style={{ borderColor: TH.border }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
+              title={a.url ? 'بازکردنِ خبر در منبع' : undefined} aria-label={a.url ? `بازکردنِ خبر: ${a.title}` : a.title}
+              className={`group relative block w-full text-right pl-3 pr-3 py-2.5 border-b transition-colors${isFresh ? ' flash-up' : ''}`}
+              style={{ borderColor: TH.border, cursor: a.url ? 'pointer' : 'default' }}
+              onMouseEnter={(e) => { if (a.url) e.currentTarget.style.background = TH.chipBgHover; }}
               onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
               {/* نوارِ اهمیت (لبهٔ راست، سبکِ News Flowِ TV) */}
               {hot && <span className="absolute top-0 bottom-0 right-0 w-[2px]" style={{ background: TH.down }} />}
@@ -228,6 +229,12 @@ export default function NewsTab({ symbol, TH }) {
                 {hot && (
                   <span className="shrink-0 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold whitespace-nowrap"
                     style={{ background: TH.down, color: '#fff' }}>مهم</span>
+                )}
+                {/* نشانگرِ «بازشدن در منبع» — فقط وقتی لینک دارد و روی hover (سبکِ آیتم‌های خبریِ TV) */}
+                {a.url && (
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-0 group-hover:opacity-45 transition-opacity" style={{ color: TH.text }} aria-hidden="true">
+                    <path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  </svg>
                 )}
               </div>
               {/* تیتر */}
