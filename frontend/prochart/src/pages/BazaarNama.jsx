@@ -475,6 +475,19 @@ export default function BazaarNama() {
   useEffect(() => { if (drawRef.current) drawRef.current.setTool(tool, drawColor); }, [tool, drawColor]);
   useEffect(() => { try { chartRef.current && chartRef.current.priceScale('right').applyOptions(priceScaleOptions({ mode: scaleMode, locked: scaleLocked, invert: scaleInvert })); saveWS({ scaleMode, scaleLocked, scaleInvert }); } catch (e) {} }, [scaleMode, scaleLocked, scaleInvert]);
 
+  // آینهٔ رفِ تنظیمات تا سری‌سازِ candle همیشه آخرین رنگ‌ها را بخواند بدونِ افزودن به depها
+  // (افزودنِ overrides به depهای buildPriceSeries باعثِ رفچِ دوبارهٔ دیتا در افکتِ ۶۹۱ می‌شد).
+  const settingsRef = useRef(chartSettingsOverrides); settingsRef.current = chartSettingsOverrides;
+  // گزینه‌های رنگِ کندل از دیالوگِ تنظیمات (قبلاً مرده بود). fallback به تمِ up/down؛ toggleهای حاشیه/فتیله.
+  const candleOptsFrom = (o = {}, hollow = false) => {
+    const up = o.symUpColor || TH.up, down = o.symDownColor || TH.down;
+    return {
+      upColor: hollow ? 'rgba(0,0,0,0)' : up, downColor: down,
+      borderVisible: o.symBordersShown !== false, borderUpColor: o.symBorderUpColor || up, borderDownColor: o.symBorderDownColor || down,
+      wickVisible: o.symWickShown !== false, wickUpColor: o.symWickUpColor || up, wickDownColor: o.symWickDownColor || down,
+    };
+  };
+
   const buildPriceSeries = useCallback((cs) => {
     const chart = chartRef.current; if (!chart) return;
     if (priceSeriesRef.current) { try { chart.removeSeries(priceSeriesRef.current); } catch (e) {} priceSeriesRef.current = null; }
@@ -499,7 +512,7 @@ export default function BazaarNama() {
     if (NONSTANDARD.includes(chartType)) {
       const built = buildNonStandard(chartType, cs);
       let s2;
-      if (built && built.kind === 'candle') { s2 = chart.addSeries(CandlestickSeries, { upColor: TH.up, downColor: TH.down, borderUpColor: TH.up, borderDownColor: TH.down, wickUpColor: TH.up, wickDownColor: TH.down }); s2.setData((built.data || []).map((c) => ({ time: c.t, open: c.o, high: c.h, low: c.l, close: c.c }))); }
+      if (built && built.kind === 'candle') { s2 = chart.addSeries(CandlestickSeries, candleOptsFrom(settingsRef.current)); s2.setData((built.data || []).map((c) => ({ time: c.t, open: c.o, high: c.h, low: c.l, close: c.c }))); }
       else { s2 = chart.addSeries(LineSeries, { color: TH.accent, lineWidth: 2 }); s2.setData((built && built.data || []).map((p) => ({ time: p.t, value: p.value }))); }
       priceSeriesRef.current = s2; drawRef.current && drawRef.current.setSeries(s2);
       return;
@@ -517,7 +530,7 @@ export default function BazaarNama() {
       }
       const b = buildExtType(chartType, cs, opts);
       let s2;
-      if (b.kind === 'candle') s2 = chart.addSeries(CandlestickSeries, { upColor: TH.up, downColor: TH.down, borderUpColor: TH.up, borderDownColor: TH.down, wickUpColor: TH.up, wickDownColor: TH.down, ...b.options });
+      if (b.kind === 'candle') s2 = chart.addSeries(CandlestickSeries, { ...candleOptsFrom(settingsRef.current), ...b.options });
       else if (b.kind === 'histogram') s2 = chart.addSeries(HistogramSeries, b.options);
       else s2 = chart.addSeries(LineSeries, b.options); // line-markers
       s2.setData(b.data);
@@ -531,8 +544,8 @@ export default function BazaarNama() {
     else if (chartType === 'area') s = chart.addSeries(AreaSeries,{ lineColor: TH.accent, topColor: 'rgba(41,98,255,.35)', bottomColor: 'rgba(41,98,255,0)' });
     else if (chartType === 'baseline') s = chart.addSeries(BaselineSeries,{ baseValue: { type: 'price', price: cs[0]?.c || 0 }, topLineColor: TH.up, bottomLineColor: TH.down });
     else if (chartType === 'bars') s = chart.addSeries(BarSeries,{ upColor: TH.up, downColor: TH.down });
-    else if (chartType === 'hollow') s = chart.addSeries(CandlestickSeries,{ upColor: 'rgba(0,0,0,0)', downColor: TH.down, borderUpColor: TH.up, borderDownColor: TH.down, wickUpColor: TH.up, wickDownColor: TH.down });
-    else s = chart.addSeries(CandlestickSeries,{ upColor: TH.up, downColor: TH.down, borderUpColor: TH.up, borderDownColor: TH.down, wickUpColor: TH.up, wickDownColor: TH.down });
+    else if (chartType === 'hollow') s = chart.addSeries(CandlestickSeries, candleOptsFrom(settingsRef.current, true));
+    else s = chart.addSeries(CandlestickSeries, candleOptsFrom(settingsRef.current));
     { const d = priceDigits(symbol); try { s.applyOptions({ priceFormat: { type: 'price', precision: d, minMove: Math.pow(10, -d) } }); } catch (e) { /* noop */ } }
     s.setData((['line', 'area', 'baseline', 'step'].includes(chartType) || EXT_VALUE_TYPES.includes(chartType)) ? valSeries(data) : ohlc(data));
     priceSeriesRef.current = s;
@@ -2264,6 +2277,12 @@ export default function BazaarNama() {
               vertLines: { visible: ov.gridVert !== false, color: ov.gridVertColor || TH.gridLine },
               horzLines: { visible: ov.gridHorz !== false, color: ov.gridHorzColor || TH.gridLine },
             } }); } catch (e) {}
+          }
+          // رنگ/حاشیه/فتیلهٔ کندل (قبلاً مرده) — روی سریِ فعال زنده اعمال می‌شود؛ فقط انواعِ کندلی (بدونِ rebuild/refetch).
+          if (['symUpColor', 'symDownColor', 'symBordersShown', 'symBorderUpColor', 'symBorderDownColor', 'symWickShown', 'symWickUpColor', 'symWickDownColor'].some((k) => k in patch)) {
+            if (['candles', 'hollow', 'heikin', 'renko', 'range', 'linebreak'].includes(chartType)) {
+              try { priceSeriesRef.current && priceSeriesRef.current.applyOptions(candleOptsFrom({ ...chartSettingsOverrides, ...patch }, chartType === 'hollow')); } catch (e) {}
+            }
           }
         }}
       />
