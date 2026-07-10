@@ -2302,6 +2302,11 @@ export default function BazaarNama() {
           if ('priceLineShown' in patch) {
             try { const on = patch.priceLineShown !== false; priceSeriesRef.current && priceSeriesRef.current.applyOptions({ priceLineVisible: on, lastValueVisible: on }); } catch (e) {}
           }
+          // اسکرول/زومِ محورها با درگ (قبلاً مرده) — chart-level؛ پیش‌فرضِ کتابخانه true پس بدونِ رگرسیون.
+          if ('scrollScale' in patch) {
+            const on = patch.scrollScale !== false;
+            try { chartRef.current && chartRef.current.applyOptions({ handleScroll: on, handleScale: on }); } catch (e) {}
+          }
           // اندازهٔ فونتِ محورها (قبلاً مرده) — chart-level؛ در افکتِ تم هم لحاظ شد تا بماند.
           if ('scaleFontSize' in patch) {
             try { chartRef.current && chartRef.current.applyOptions({ layout: { fontSize: patch.scaleFontSize || 12 } }); } catch (e) {}
