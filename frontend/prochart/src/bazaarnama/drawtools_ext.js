@@ -146,13 +146,13 @@ export const EXT_REGISTRY = {
   // پرتوِ افقی: از p0 تا راست
   hray: {
     label: 'پرتوِ افقی', points: 2,
-    draw(ctx, d, api) { const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d); seg(ctx, a.x, a.y, api.W, a.y); ctx.fillText(d.p0.p.toFixed(5), a.x + 4, a.y - 3); },
+    draw(ctx, d, api) { const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d); seg(ctx, a.x, a.y, api.W, a.y); ctx.fillText(d.p0.p.toFixed(api.digits()), a.x + 4, a.y - 3); },
     hit(d, x, y, api) { const a = px(api, d.p0); if (!ok(a)) return false; return Math.abs(y - a.y) < 7 && x >= a.x - 7; },
   },
   // خطِ صلیبی: افقی + عمودی از یک لنگر
   crossline: {
     label: 'خطِ صلیبی', points: 2,
-    draw(ctx, d, api) { const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d); seg(ctx, 0, a.y, api.W, a.y); seg(ctx, a.x, 0, a.x, api.H); ctx.fillText(d.p0.p.toFixed(5), a.x + 4, a.y - 3); },
+    draw(ctx, d, api) { const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d); seg(ctx, 0, a.y, api.W, a.y); seg(ctx, a.x, 0, a.x, api.H); ctx.fillText(d.p0.p.toFixed(api.digits()), a.x + 4, a.y - 3); },
     hit(d, x, y, api) { const a = px(api, d.p0); if (!ok(a)) return false; return Math.abs(y - a.y) < 7 || Math.abs(x - a.x) < 7; },
   },
 
@@ -233,7 +233,7 @@ export const EXT_REGISTRY = {
       const A = d.pts[0].p, B = d.pts[1].p, C = d.pts[2].p, dir = (B - A) >= 0 ? 1 : -1, mag = Math.abs(B - A);
       const xa = api.x(d.pts[1].t), xb = api.x(d.pts[2].t) + 60;
       style(ctx, d); ctx.globalAlpha = 0.5; seg(ctx, P[0].x, P[0].y, P[1].x, P[1].y); seg(ctx, P[1].x, P[1].y, P[2].x, P[2].y); ctx.globalAlpha = 1;
-      fibLevels(d, C, dir * mag).forEach((L) => { const y = api.y(L.price); if (y == null) return; dash(ctx, false); seg(ctx, xa, y, xb, y); ctx.fillText(`${(L.ratio * 100).toFixed(1)}%  ${L.price.toFixed(5)}`, xa + 4, y - 2); });
+      fibLevels(d, C, dir * mag).forEach((L) => { const y = api.y(L.price); if (y == null) return; dash(ctx, false); seg(ctx, xa, y, xb, y); ctx.fillText(`${(L.ratio * 100).toFixed(1)}%  ${L.price.toFixed(api.digits())}`, xa + 4, y - 2); });
     },
     hit(d, x, y, api) { const xa = api.x(d.pts[1].t), xb = api.x(d.pts[2].t) + 60; if (xa == null) return false; if (x < Math.min(xa, xb) - 7 || x > Math.max(xa, xb) + 7) return false; const A = d.pts[0].p, B = d.pts[1].p, C = d.pts[2].p, dir = (B - A) >= 0 ? 1 : -1, mag = Math.abs(B - A); return fibLevels(d, C, dir * mag).some((L) => { const yy = api.y(L.price); return yy != null && Math.abs(yy - y) < 7; }); },
   },
@@ -451,7 +451,7 @@ export const EXT_REGISTRY = {
       const cx = (a.x + b.x) / 2; style(ctx, d); seg(ctx, cx, a.y, cx, b.y); seg(ctx, cx - 8, a.y, cx + 8, a.y); seg(ctx, cx - 8, b.y, cx + 8, b.y);
       const dp = d.p1.p - d.p0.p, pct = d.p0.p ? dp / d.p0.p * 100 : 0;
       const col = dp >= 0 ? 'rgba(34,197,94,.12)' : 'rgba(239,68,68,.12)'; ctx.fillStyle = col; ctx.fillRect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x) || 30, Math.abs(b.y - a.y));
-      labelBox(ctx, cx, (a.y + b.y) / 2, `${dp.toFixed(5)}\n${pct.toFixed(2)}%`, { anchor: 'center', border: d.color });
+      labelBox(ctx, cx, (a.y + b.y) / 2, `${dp.toFixed(api.digits())}\n${pct.toFixed(2)}%`, { anchor: 'center', border: d.color });
     },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; const cx = (a.x + b.x) / 2; return Math.abs(x - cx) < 14 && y >= Math.min(a.y, b.y) - 7 && y <= Math.max(a.y, b.y) + 7; },
   },
@@ -588,7 +588,7 @@ export const EXT_REGISTRY = {
     label: 'برچسبِ قیمت', points: 2,
     draw(ctx, d, api) {
       const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d); dash(ctx, true); seg(ctx, 0, a.y, api.W, a.y); dash(ctx, false);
-      const txt = (d.text ? d.text + '  ' : '') + d.p0.p.toFixed(5);
+      const txt = (d.text ? d.text + '  ' : '') + d.p0.p.toFixed(api.digits());
       ctx.font = '11px IRANYekanX, Ravagh, Vazirmatn, sans-serif'; const w = ctx.measureText(txt).width + 12;
       ctx.fillStyle = d.color || '#2962FF'; ctx.fillRect(api.W - w, a.y - 9, w, 18);
       ctx.fillStyle = '#fff'; ctx.textBaseline = 'middle'; ctx.fillText(txt, api.W - w + 6, a.y); ctx.textBaseline = 'alphabetic';
