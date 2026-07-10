@@ -110,6 +110,7 @@ const CHART_TYPES = [
 const THEMES = {
   dark: {
     bg: '#131722', panel: '#1e222d', border: '#2a2e39', grid: '#1e222d',
+    gridLine: 'rgba(255,255,255,.05)', // خطِ داخلیِ گرید: بسیار کم‌رنگ مثلِ TV (نه به پررنگیِ border)
     text: '#b2b5be', textStrong: '#d1d4dc',
     up: '#26a69a', down: '#ef5350',
     chipBg: 'rgba(255,255,255,.06)', chipBgHover: 'rgba(255,255,255,.10)',
@@ -119,6 +120,7 @@ const THEMES = {
   },
   light: {
     bg: '#ffffff', panel: '#f0f3fa', border: '#e0e3eb', grid: '#e0e3eb',
+    gridLine: 'rgba(42,46,57,.06)', // خطِ داخلیِ گرید: بسیار کم‌رنگ مثلِ TV (border پررنگ‌تر می‌ماند)
     text: '#5d606b', textStrong: '#131722',
     up: '#089981', down: '#f23645',
     chipBg: 'rgba(0,0,0,.04)', chipBgHover: 'rgba(0,0,0,.07)',
@@ -360,7 +362,7 @@ export default function BazaarNama() {
     const chart = createChart(el, {
       // #۱۰/#۱۸ فیدلیتیِ TradingView: لوگوی پیش‌فرضِ کتابخانه پنهان (لوگوی خودِ بازارنما پایین‌چپ هست)
       layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif', fontSize: 12, attributionLogo: false },
-      grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } },
+      grid: { vertLines: { color: TH.gridLine }, horzLines: { color: TH.gridLine } },
       // مقیاسِ زمان سبکِ TV: قفلِ رِنج روی resize، آخرین کندل ثابت هنگام اسکرول، فاصلهٔ پایهٔ میله، بدونِ tickِ ریز
       timeScale: {
         timeVisible: true, secondsVisible: false, borderColor: TH.grid, rightOffset: 6,
@@ -445,7 +447,7 @@ export default function BazaarNama() {
   // اعمالِ تم
   useEffect(() => {
     const ch = chartRef.current; if (!ch) return;
-    ch.applyOptions({ layout: { background: { color: TH.bg }, textColor: TH.text }, grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
+    ch.applyOptions({ layout: { background: { color: TH.bg }, textColor: TH.text }, grid: { vertLines: { color: TH.gridLine }, horzLines: { color: TH.gridLine } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
     // eslint-disable-next-line
   }, [theme]);
 
