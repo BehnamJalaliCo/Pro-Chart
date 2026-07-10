@@ -321,6 +321,7 @@ export default function BazaarNama() {
   const [scaleInvert, setScaleInvert] = useState(loadWS().scaleInvert ?? false); // وارونگیِ محور
   const [crosshairId, setCrosshairId] = useState(loadWS().crosshairId ?? 'cross'); // حالتِ کراس‌هیر
   const [tz, setTz] = useState(loadWS().tz ?? CH3_DEFAULTS.tz); // منطقهٔ زمانیِ نمایش
+  const [tzClock, setTzClock] = useState(''); // ساعتِ زندهٔ نوارِ پایین به‌وقتِ منطقهٔ زمانیِ انتخابی (HH:MM:SS) — مثلِ TradingView
   const [sessionsOn, setSessionsOn] = useState(loadWS().sessionsOn ?? false); // نمایشِ باندهای سشن
   const [sessionSel, setSessionSel] = useState(() => loadWS().sessionSel || SESSIONS.map((s) => s.id)); // #1 سشن‌های انتخابی
   const [sessMenu, setSessMenu] = useState(false); // #1 منوی انتخابِ سشن‌ها
@@ -773,6 +774,12 @@ export default function BazaarNama() {
   }, [sessionsOn, tz, tf, symbol, sessionSel]);
   // منطقهٔ زمانی (فصل ۳): قالب‌بندیِ محورِ زمان و برچسبِ کراس‌هیر
   useEffect(() => { const tzo = timeZoneOptions(tz); crossTimeFmtRef.current = tzo.localization.timeFormatter; const ch = chartRef.current; if (!ch) return; try { ch.applyOptions(tzo); } catch (e) {} saveWS({ tz }); }, [tz]);
+  // ساعتِ زندهٔ نوارِ پایین: هر ثانیه به‌وقتِ منطقهٔ زمانیِ فعال به‌روز می‌شود (parity با نوارِ پایینِ TradingView)
+  useEffect(() => {
+    let fmt; try { fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: tz }); } catch (e) { fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }); }
+    const tick = () => { try { setTzClock(fmt.format(new Date())); } catch (e) {} };
+    tick(); const id = setInterval(tick, 1000); return () => clearInterval(id);
+  }, [tz]);
   useEffect(() => { if (drawRef.current) drawRef.current.setStayInMode(stayDraw); }, [stayDraw]);
   // شمارشِ معکوسِ بسته‌شدنِ کندلِ جاری
   useEffect(() => {
@@ -1898,6 +1905,11 @@ export default function BazaarNama() {
                     onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>{lbl}</button>
                 );
               })}
+              {/* ساعتِ زندهٔ منطقهٔ زمانی — سمتِ راستِ نوار (parity با نوارِ پایینِ TradingView) */}
+              <span className="ml-auto flex items-center gap-1 pl-2 text-[11px] tabular-nums whitespace-nowrap select-none" style={{ color: TH.textMuted || TH.text, opacity: 0.85 }} title="ساعتِ فعلی به‌وقتِ منطقهٔ زمانیِ چارت">
+                <span>{tzClock}</span>
+                <span style={{ opacity: 0.7 }}>({(TIMEZONES.find((z) => z.id === tz) || {}).label || tz})</span>
+              </span>
             </div>
           )}
           <div ref={subWrapRef} />
