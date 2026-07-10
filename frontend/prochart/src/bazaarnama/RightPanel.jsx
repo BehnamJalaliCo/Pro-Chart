@@ -530,19 +530,19 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
         {r.flag && <span className="absolute right-0 top-1.5 bottom-1.5 w-[2px] rounded-full" style={{ background: FLAG_HEX[r.flag] }} />}
         {meta.showLogo && <span className="shrink-0"><SymbolLogo symbol={r.sym} size={logoSz} /></span>}
         {/* نماد (پررنگ) + نقطهٔ وضعیتِ بازار + توضیحِ اختیاری — ستونِ اولویت‌دار: min-width تا هرگز له نشود (سبکِ TV) */}
-        <div className="flex-1 min-w-[46px] text-left" dir="ltr">
-          <div className="flex items-center gap-1.5 min-w-0">
+        <div className="flex-1 min-w-[52px] text-left" dir="ltr">
+          <div className="flex items-center gap-1 min-w-0">
             {dot}
-            <span className="text-[12px] font-bold leading-tight truncate" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</span>
+            <span className="text-[11px] font-bold leading-tight truncate" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</span>
           </div>
           {meta.showDesc && <div className="text-[10px] leading-tight opacity-50 truncate" style={{ color: TH.text }}>{r.nameEn || r.name || KIND_LABEL[r.kind]}</div>}
         </div>
         {/* ردیفِ TV: آخرین | Chg | Chg٪ — ستونیِ هم‌تراز و رنگیِ جهت‌دار (Last رنگِ تیکِ زنده، Chg/Chg٪ رنگِ جهتِ تغییر) */}
-        <FlashNum value={r.lp?.mid} className="tnum text-[11px] font-semibold text-right shrink-0 w-[46px] leading-none rounded" dir="ltr" style={{ color: priceCol }}>
+        <FlashNum value={r.lp?.mid} className="tnum text-[11px] font-semibold text-right shrink-0 w-[44px] leading-none rounded" dir="ltr" style={{ color: priceCol }}>
           {r.lp ? fmtPrice(r.sym, r.lp.mid) : '—'}
         </FlashNum>
-        <span className="tnum text-[10px] text-right shrink-0 w-[42px] leading-none whitespace-nowrap" dir="ltr" style={{ color: chgCol }}>{chgAbsTxt || '—'}</span>
-        <span className="tnum text-[10px] text-right shrink-0 w-[38px] leading-none whitespace-nowrap rounded px-0.5" dir="ltr" style={{ color: chgCol, background: chgBg(r.chg) }}>{chgTxt || '—'}</span>
+        <span className="tnum text-[10px] text-right shrink-0 w-[40px] leading-none whitespace-nowrap" dir="ltr" style={{ color: chgCol }}>{chgAbsTxt || '—'}</span>
+        <span className="tnum text-[10px] text-right shrink-0 w-[36px] leading-none whitespace-nowrap rounded px-0.5" dir="ltr" style={{ color: chgCol, background: chgBg(r.chg) }}>{chgTxt || '—'}</span>
         {extraCols.map((key) => { const c = numCell(key); return <span key={key} className="tnum text-[10px] w-11 text-right shrink-0" dir="ltr" style={{ color: c.col }}>{c.txt}</span>; })}
         {/* اکشن‌ها روی hover overlay می‌شوند (سبکِ TV) تا عرضِ ستون‌ها مصرف نشود */}
         <RowActions r={r} TH={TH} flagFor={flagFor} setFlagFor={setFlagFor} setFlag={setFlag} toggleWatch={toggleWatch} overlay />
@@ -684,10 +684,10 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
         ) : (
           <div className={`flex items-center gap-1 w-full px-2 h-6 text-[9px] font-semibold tracking-wide select-none border-b`} style={{ color: TH.text, opacity: 0.5, borderColor: TH.border }}>
             {meta.showLogo && <span className="shrink-0" style={{ width: logoSz }} />}
-            <span className="flex-1 min-w-[46px] text-left" dir="ltr">نماد</span>
-            <span className="text-right shrink-0 w-[46px]" dir="ltr">آخرین</span>
-            <span className="text-right shrink-0 w-[42px]" dir="ltr">تغییر</span>
-            <span className="text-right shrink-0 w-[38px]" dir="ltr">تغییر٪</span>
+            <span className="flex-1 min-w-[52px] text-left" dir="ltr">نماد</span>
+            <span className="text-right shrink-0 w-[44px]" dir="ltr">آخرین</span>
+            <span className="text-right shrink-0 w-[40px]" dir="ltr">تغییر</span>
+            <span className="text-right shrink-0 w-[36px]" dir="ltr">تغییر٪</span>
             {cols.filter((k) => k !== 'change' && k !== 'chgAbs').map((key) => <span key={key} className="w-11 text-right shrink-0" dir="ltr">{COL_LABEL[key] || key}</span>)}
           </div>
         )
