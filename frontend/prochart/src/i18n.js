@@ -133,6 +133,21 @@ export const dict = {
     'trade.fee': 'کارمزدِ تخمینی',
     'trade.place': 'ثبتِ سفارش',
     'trade.connect': 'برای معاملهٔ واقعی، حساب را وصل کن',
+
+    // چارت — تولبار/اندیکاتورها/نوعِ چارت (M-round6)
+    'chart.indicators': 'اندیکاتورها',
+    'chart.indicators.title': 'اندیکاتورها، سنجه‌ها و استراتژی‌ها',
+    'chart.indicators.search': 'جستجو در بیش از ۱۰۰ اندیکاتور…',
+    'chart.indicators.add': 'افزودن',
+    'chart.indicators.added': 'افزوده شد',
+    'chart.indicators.favorites': 'منتخب‌ها',
+    'chart.type': 'نوعِ چارت',
+    'chart.script': 'نمااسکریپت',
+    'chart.replay': 'بازپخش',
+    'chart.aiSignal': 'سیگنالِ AI',
+    'chart.live': 'زنده',
+    'chart.marketClosed': 'بازار بسته',
+    'chart.volume': 'حجم',
   },
   en: {
     'nav.chart': 'Chart',
@@ -264,6 +279,21 @@ export const dict = {
     'trade.fee': 'Est. fee',
     'trade.place': 'Place order',
     'trade.connect': 'Connect an account for live trading',
+
+    // chart — toolbar / indicators / chart type (M-round6)
+    'chart.indicators': 'Indicators',
+    'chart.indicators.title': 'Indicators, metrics & strategies',
+    'chart.indicators.search': 'Search 100+ indicators…',
+    'chart.indicators.add': 'Add',
+    'chart.indicators.added': 'Added',
+    'chart.indicators.favorites': 'Favorites',
+    'chart.type': 'Chart type',
+    'chart.script': 'NamaScript',
+    'chart.replay': 'Replay',
+    'chart.aiSignal': 'AI Signal',
+    'chart.live': 'Live',
+    'chart.marketClosed': 'Market closed',
+    'chart.volume': 'Volume',
   },
 };
 

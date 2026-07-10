@@ -37,6 +37,7 @@ import { buildMeta } from '../bazaarnama/symbolMeta';
 import ScreenshotMenu from '../bazaarnama/ScreenshotMenu';
 import { captureChart, canvasToBlob, copyBlobToClipboard, downloadBlob } from '../bazaarnama/screenshot';
 import RightPanel from '../bazaarnama/RightPanel';
+import IndicatorsDialog from '../bazaarnama/IndicatorsDialog';
 import AuthMenu from '../AuthMenu';
 import HelpModal, { HelpDot } from '../bazaarnama/Help';
 import Legal from './Legal';
@@ -191,8 +192,11 @@ export default function BazaarNama() {
   const [overlays, setOverlays] = useState(() => loadWS().overlays || []);
   const [subs, setSubs] = useState(() => loadWS().subs || []);
   const [indMenu, setIndMenu] = useState(false);
+  const [indDlg, setIndDlg] = useState(false); // دیالوگِ کاملِ اندیکاتورها (جایگزینِ triggerِ dropdownِ قدیمی)
   const [indFavs, setIndFavs] = useState(() => loadWS().indFavs || []); // اندیکاتورهای منتخب (پین‌شده)
   const toggleIndFav = (k) => setIndFavs((f) => { const n = f.includes(k) ? f.filter((x) => x !== k) : [...f, k]; saveWS({ indFavs: n }); return n; });
+  // سینکِ منتخب‌ها با دیالوگ (IndicatorsDialog رویداد bn-indfavs را dispatch می‌کند)
+  useEffect(() => { const h = (e) => { if (Array.isArray(e.detail)) setIndFavs(e.detail); }; window.addEventListener('bn-indfavs', h); return () => window.removeEventListener('bn-indfavs', h); }, []);
   const [indTpls, setIndTpls] = useState(() => loadWS().indTpls || {}); // {name:{overlays,subs}} — تمپلیتِ اندیکاتورها
   const saveIndTpl = () => { const name = (window.prompt('نامِ تمپلیتِ اندیکاتورها:') || '').trim(); if (!name) return; const n = { ...indTpls, [name]: { overlays, subs } }; setIndTpls(n); saveWS({ indTpls: n }); };
   const applyIndTpl = (name) => { const t = indTpls[name]; if (!t) return; setOverlays(t.overlays || []); setSubs(t.subs || []); setIndMenu(false); };
@@ -1295,7 +1299,7 @@ export default function BazaarNama() {
       toggleRight: () => setShowRight((v) => !v),
       fullscreen: () => { try { if (document.fullscreenElement) document.exitFullscreen(); else rootRef.current && rootRef.current.requestFullscreen(); } catch (e) {} },
       toggleTheme: () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')),
-      indicators: () => setIndMenu(true),
+      indicators: () => setIndDlg(true),
       help: () => setShowShortcuts((v) => !v),
       screenshot: () => quickScreenshot(),
       // چیدمان
@@ -1415,9 +1419,12 @@ export default function BazaarNama() {
           <Search size={14} className="opacity-50" />
         </button>
         {marketOpen ? (
-          <span className="flex items-center gap-1 text-[11px] text-green-400">
-            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            {livePrice != null ? <b dir="ltr" className="tabular-nums">{fmtPrice(symbol, livePrice)}</b> : 'زنده'}
+          <span className="flex items-center gap-1 text-[11px]" style={{ color: TH.text }}>
+            <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: TH.up }} />
+            {/* #44/#67 فلَشِ رنگیِ قیمتِ آخر بر اساسِ جهتِ تیک (سبز بالا / قرمز پایین) — key با هر تیک انیمیشن را دوباره اجرا می‌کند */}
+            {livePrice != null
+              ? <b key={livePrice} dir="ltr" className={`tabular-nums px-1 rounded ${priceDir === 'up' ? 'flash-up' : priceDir === 'down' ? 'flash-down' : ''}`} style={{ color: priceDir === 'up' ? TH.up : priceDir === 'down' ? TH.down : TH.textStrong }}>{fmtPrice(symbol, livePrice)}</b>
+              : <span style={{ color: TH.up }}>زنده</span>}
           </span>
         ) : (
           <span className="text-[11px] text-amber-500/80">● بازار بسته</span>
@@ -1425,10 +1432,10 @@ export default function BazaarNama() {
         <div className="flex items-center gap-0.5 rounded-lg p-0.5" style={{ background: TH.subtle }}>{TFS.map((t) => { const on = tf === t; return (<button key={t} onClick={() => setTf(t)} title={TF_TITLE[t] || t} className="px-2 h-7 rounded-md text-[12px] font-semibold tabular-nums transition-colors duration-[120ms]" dir="ltr" style={on ? { background: TH.accent, color: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,.25)' } : { background: 'transparent', color: TH.text }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>{TF_LABEL[t] || t}</button>); })}</div>
         <div data-menu className="relative">
           <button onClick={() => setCtMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><CandlestickChart size={17} /> {CHART_TYPES.find((c) => c.id === chartType)?.label}<ChevronDown size={13} /></button>
-          {ctMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-32" style={{ background: TH.panel, borderColor: TH.border }}>{CHART_TYPES.map((ct) => (<button key={ct.id} onClick={() => { setChartType(ct.id); setCtMenu(false); }} className="block w-full text-right px-3 py-1.5 text-sm hover:bg-black/5" style={chartType === ct.id ? { color: TH.accent } : {}}>{ct.label}</button>))}</div>)}
+          {ctMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-44 max-h-[70vh] overflow-auto pc-pop" style={{ background: TH.panel, borderColor: TH.border }}>{CHART_TYPES.map((ct) => { const I = ct.Icon || CandlestickChart; const on = chartType === ct.id; return (<button key={ct.id} onClick={() => { setChartType(ct.id); setCtMenu(false); }} className="flex items-center gap-2 w-full text-right px-3 py-1.5 text-sm transition-colors duration-[120ms]" style={on ? { color: TH.accent, background: TH.chipBg } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}><I size={15} style={{ color: on ? TH.accent : TH.text }} /> {ct.label}</button>); })}</div>)}
         </div>
         <div data-menu className="relative">
-          <button onClick={() => setIndMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Activity size={17} /> اندیکاتورها</button>
+          <button onClick={() => setIndDlg(true)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Activity size={17} /> اندیکاتورها</button>
           {indMenu && (
             <div className="absolute z-40 mt-1 rounded-lg w-56 max-h-80 overflow-auto p-1 pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}` }}>
               {indFavs.filter((k) => REGISTRY[k]).length > 0 && (
@@ -1629,6 +1636,8 @@ export default function BazaarNama() {
             <div dir="rtl">
               <ChartLegend
                 items={legendItems} legend={_legendShown} TH={TH} symbol={symbol} tf={tf}
+                chartType={chartType} priceDir={priceDir}
+                volume={(legend && legend.volume != null) ? legend.volume : (_lastCandle ? _lastCandle.v : undefined)}
                 indVals={legendVals} coarse={bp.coarse}
                 collapsed={legCollapsed} onCollapse={setLegCollapsed}
                 viewMode={legView} onToggleViewMode={() => setLegView((v) => (v === 'compact' ? 'normal' : 'compact'))}
@@ -1641,7 +1650,9 @@ export default function BazaarNama() {
               />
             </div>
           ) : (
-            <Legend legend={_legendShown} TH={TH} symbol={symbol} tf={tf} />
+            <Legend legend={_legendShown} TH={TH} symbol={symbol} tf={tf}
+              chartType={chartType} priceDir={priceDir}
+              volume={(legend && legend.volume != null) ? legend.volume : (_lastCandle ? _lastCandle.v : undefined)} />
           )}
           <div className="relative flex-1 min-h-0"
                style={compact ? { touchAction: 'none', overscrollBehavior: 'none' } : undefined}
@@ -2173,6 +2184,9 @@ export default function BazaarNama() {
       {/* #7 مدالِ جستجوی نمادِ حرفه‌ای (fuzzy + دسته‌بندی + اسکرولِ مجازی + کیبورد) */}
       <SymbolSearchModal open={symModal} onClose={() => setSymModal(false)} metaList={symbolMeta} watch={watch} current={symbol} onPick={(s) => setSymbol(s)} TH={TH} coarse={bp.coarse} />
 
+      {/* دیالوگِ کاملِ اندیکاتورها (پاریتیِ TV) — با کلیک روی هر مورد addInd صدا زده می‌شود؛ دیالوگ برای افزودنِ پیاپی باز می‌مانَد */}
+      <IndicatorsDialog open={indDlg} onClose={() => setIndDlg(false)} TH={TH} onPick={(key) => { if (REGISTRY[key]) addInd(key); }} />
+
       {/* #4 نسخهٔ موبایل: شیت‌های پایین (ناوبریِ پایینیِ اپ اکنون در AppShell است؛ ابزارها از نوارِ بالا/«بیشتر» باز می‌شوند) */}
       {compact && (
         <>
@@ -2248,7 +2262,7 @@ export default function BazaarNama() {
               <button onClick={() => { setSheet('draw'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Pencil size={16} /> ابزارِ ترسیم</button>
               <button onClick={() => { setSheet('tabs'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Star size={16} /> پنل‌ها</button>
               <button onClick={() => { getAiSignal(); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: '#fff', background: TH.accentAi }}><Sparkles size={16} /> سیگنالِ AI</button>
-              <button onClick={() => { setIndMenu(true); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Activity size={16} /> اندیکاتورها</button>
+              <button onClick={() => { setIndDlg(true); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Activity size={16} /> اندیکاتورها</button>
               <button onClick={() => { openNamaScript(); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center justify-center gap-1" style={{ minHeight: 44, color: TH.textStrong, background: TH.chipBg }}><Code2 size={16} /> نمااسکریپت{!bnPrem && <Lock size={11} className="opacity-70" />}</button>
               <button onClick={() => { (replay.on ? exitReplay() : enterReplay()); setSheet('none'); }} className="rounded-lg px-3 text-sm flex items-center gap-1.5" style={{ minHeight: 44, color: replay.on ? '#fff' : TH.textStrong, background: replay.on ? TH.accent : TH.chipBg }}><Play size={16} /> بازپخش</button>
               <button onClick={() => setSessionsOn((v) => !v)} className="rounded-lg px-3 text-sm" style={{ minHeight: 44, color: sessionsOn ? '#fff' : TH.textStrong, background: sessionsOn ? TH.accent : TH.chipBg }}>سشن‌ها</button>
