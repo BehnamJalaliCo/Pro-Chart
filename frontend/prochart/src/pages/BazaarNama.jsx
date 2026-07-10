@@ -521,6 +521,7 @@ export default function BazaarNama() {
     else if (chartType === 'bars') s = chart.addSeries(BarSeries,{ upColor: TH.up, downColor: TH.down });
     else if (chartType === 'hollow') s = chart.addSeries(CandlestickSeries,{ upColor: 'rgba(0,0,0,0)', downColor: TH.down, borderUpColor: TH.up, borderDownColor: TH.down, wickUpColor: TH.up, wickDownColor: TH.down });
     else s = chart.addSeries(CandlestickSeries,{ upColor: TH.up, downColor: TH.down, borderUpColor: TH.up, borderDownColor: TH.down, wickUpColor: TH.up, wickDownColor: TH.down });
+    { const d = priceDigits(symbol); try { s.applyOptions({ priceFormat: { type: 'price', precision: d, minMove: Math.pow(10, -d) } }); } catch (e) { /* noop */ } }
     s.setData((['line', 'area', 'baseline', 'step'].includes(chartType) || EXT_VALUE_TYPES.includes(chartType)) ? valSeries(data) : ohlc(data));
     priceSeriesRef.current = s;
     drawRef.current && drawRef.current.setSeries(s);
@@ -532,7 +533,7 @@ export default function BazaarNama() {
     const s = priceSeriesRef.current; if (!s) return;
     const d = priceDigits(symbol);
     try { s.applyOptions({ priceFormat: { type: 'price', precision: d, minMove: Math.pow(10, -d) } }); } catch (e) { /* noop */ }
-  }, [symbol, chartType]);
+  }, [symbol, chartType, TH]);
 
   const applyOverlays = useCallback((cs) => {
     const chart = chartRef.current; if (!chart) return;
