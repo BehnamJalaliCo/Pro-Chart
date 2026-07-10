@@ -231,8 +231,15 @@ class DataFeedManager:
         """بروزرسانی قیمت لحظه‌ای هر ۲ ثانیه"""
         while self._running:
             try:
+                import os as _os
+                _fh = _os.getenv("FINNHUB_WS_ENABLED", "0") == "1"
+                _fh_syms = {"EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD",
+                            "EURGBP","EURJPY","GBPJPY","AUDJPY","EURAUD","XAUUSD","XAGUSD",
+                            "XTIUSD","US30","US500","NAS100","DE40"} if _fh else set()
                 tasks = []
                 for symbol in settings.SYMBOLS:
+                    if symbol in _fh_syms:
+                        continue  # قیمتِ زنده از Finnhub WS می‌آید — yfinance آن را overwrite نکند
                     tasks.append(self._update_price(symbol))
                 await asyncio.gather(*tasks, return_exceptions=True)
             except Exception as e:
