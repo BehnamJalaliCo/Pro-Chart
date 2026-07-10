@@ -157,7 +157,7 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null })
         <select value={symbol} onChange={(e) => setSymbol(e.target.value)} className="text-[11px] rounded px-1 py-0.5 outline-none transition-colors duration-[120ms]" style={{ background: isDark ? 'rgba(0,0,0,.4)' : 'rgba(255,255,255,.72)', color: th.text, border: `1px solid ${th.border}` }}>
           {symbols.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        {last != null && <span className="tnum text-[11px] font-semibold" dir="ltr" style={{ color: priceColor }}>{last}</span>}
+        {last != null && <span className="tnum text-[11px] font-semibold" dir="ltr" style={{ color: priceColor }}>{Number(last).toFixed(priceDigits(symbol))}</span>}
       </div>
       <div ref={elRef} className="w-full h-full" />
     </div>
