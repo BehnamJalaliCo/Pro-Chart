@@ -42,7 +42,7 @@ const DEFAULTS = {
   slIndTitles: true, slIndValues: true, slIndArgs: false, slMarketStatus: true,
   // Scales & lines
   scaleMode: 0, scaleInvert: false, scaleLock: false,
-  scaleCountdown: false, scaleFontSize: 12, priceLineShown: true,
+  scaleCountdown: true, scaleFontSize: 12, priceLineShown: true,
   scaleCurrency: false, scaleUnit: false,
   // Appearance / Canvas
   bgType: 'solid', bgColor: '#131722', bgColor2: '#0c0e15',
