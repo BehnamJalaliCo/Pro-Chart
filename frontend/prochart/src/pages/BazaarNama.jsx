@@ -526,6 +526,14 @@ export default function BazaarNama() {
     drawRef.current && drawRef.current.setSeries(s);
   }, [chartType, TH]);
 
+  // دقتِ محورِ قیمت و برچسبِ آخر بر اساسِ نماد (فارکس ۵، JPY ۳، شاخص/طلا ۲، BTC/ETH ۱) — سبکِ TV.
+  // پیش‌فرضِ کتابخانه precision:2 است و برای فارکس «1.14» نشان می‌داد؛ حالا 1.14432 مثلِ لجند.
+  useEffect(() => {
+    const s = priceSeriesRef.current; if (!s) return;
+    const d = priceDigits(symbol);
+    try { s.applyOptions({ priceFormat: { type: 'price', precision: d, minMove: Math.pow(10, -d) } }); } catch (e) { /* noop */ }
+  }, [symbol, chartType]);
+
   const applyOverlays = useCallback((cs) => {
     const chart = chartRef.current; if (!chart) return;
     Object.values(overlaySeries.current).flat().forEach((s) => { try { chart.removeSeries(s); } catch (e) {} });
