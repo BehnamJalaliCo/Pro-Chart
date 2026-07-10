@@ -202,8 +202,12 @@ export default function Details({ symbol, TH, prices = {} }) {
   // رنگِ نشانگرِ نوارِ رنج (جهتِ روز؛ نبودِ داده ⇐ اکسنت)
   const trendCol = chgPct == null ? TH.accent : chgPct >= 0 ? TH.up : TH.down;
 
-  // موقعیتِ قیمت در بازهٔ روز (0..1) برای نوارِ بازه
-  const lo = day?.l, hi = day?.h;
+  // موقعیتِ قیمت در بازهٔ روز (0..1) برای نوارِ بازه.
+  // بازهٔ روز باید همیشه قیمتِ زندهٔ فعلی را دربر بگیرد (مثلِ TradingView): اگر ref از کف/سقفِ
+  // کندلِ روزانه بیرون زد، بازه را گسترش بده تا برچسب‌ها و knob بیرونِ نوار پین نشوند
+  // (هم‌راستا با همان منطقِ folding که در بازهٔ ۵۲ هفته پایین‌تر هست).
+  const lo = (day?.l != null && ref != null) ? Math.min(day.l, ref) : day?.l;
+  const hi = (day?.h != null && ref != null) ? Math.max(day.h, ref) : day?.h;
   const pos = (lo != null && hi != null && hi > lo && ref != null)
     ? Math.max(0, Math.min(1, (ref - lo) / (hi - lo))) : null;
 
