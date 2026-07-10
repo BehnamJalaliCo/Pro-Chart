@@ -207,6 +207,10 @@ export default function BazaarNama() {
   const applyIndTpl = (name) => { const t = indTpls[name]; if (!t) return; setOverlays(t.overlays || []); setSubs(t.subs || []); setIndMenu(false); };
   const delIndTpl = (name) => setIndTpls((p) => { const n = { ...p }; delete n[name]; saveWS({ indTpls: n }); return n; });
   const [ctMenu, setCtMenu] = useState(false);
+  // اینتروال سبکِ TV: تایم‌فریم‌های منتخبِ inline + dropdownِ کاملِ همه (audit #2)
+  const [tfMenu, setTfMenu] = useState(false);
+  const [tfFavs, setTfFavs] = useState(() => { const f = loadWS().tfFavs; return Array.isArray(f) && f.length ? f.filter((k) => TFS.includes(k)) : ['M15', 'H1', 'H4', 'D1', 'W1']; });
+  const toggleTfFav = (k) => setTfFavs((p) => { const n = p.includes(k) ? p.filter((x) => x !== k) : [...p, k]; saveWS({ tfFavs: n }); return n; });
   const [watch, setWatch] = useState([]);
   const [rightTab, setRightTab] = useState('watch');
   const [showRight, setShowRight] = useState(() => (typeof window !== 'undefined' ? window.innerWidth >= 1024 : true));
@@ -1352,7 +1356,7 @@ export default function BazaarNama() {
   // §۱۶ منوها: بستن با کلیکِ بیرون یا Escape (رفتارِ استانداردِ Dropdown)
   useEffect(() => {
     if (!ctMenu && !indMenu && !gridMenu && !search && !sessMenu && !cfgMenu && !layoutMenu) return undefined;
-    const closeAll = () => { setCtMenu(false); setIndMenu(false); setGridMenu(false); setSearch(''); setSessMenu(false); setCfgMenu(false); setLayoutMenu(false); };
+    const closeAll = () => { setCtMenu(false); setIndMenu(false); setGridMenu(false); setSearch(''); setSessMenu(false); setCfgMenu(false); setLayoutMenu(false); setTfMenu(false); };
     const onDown = (e) => { if (!e.target.closest('[data-menu]')) closeAll(); };
     const onEsc = (e) => { if (e.key === 'Escape') closeAll(); };
     document.addEventListener('mousedown', onDown);
@@ -1439,7 +1443,20 @@ export default function BazaarNama() {
         ) : (
           <span className="text-[11px] text-amber-500/80">● بازار بسته</span>
         )}
-        <div className="flex items-center gap-0.5 rounded-lg p-0.5" style={{ background: TH.subtle }}>{TFS.map((t) => { const on = tf === t; return (<button key={t} onClick={() => setTf(t)} title={TF_TITLE[t] || t} className="px-2 h-7 rounded-md text-[12px] font-semibold tabular-nums transition-colors duration-[120ms]" dir="ltr" style={on ? { background: TH.accent, color: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,.25)' } : { background: 'transparent', color: TH.text }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>{TF_LABEL[t] || t}</button>); })}</div>
+        {/* اینتروالِ سبکِ TV: منتخب‌های inline + اینتروالِ فعال (اگر منتخب نبود) + dropdownِ کاملِ همه با ستارهٔ منتخب‌سازی */}
+        <div data-menu className="flex items-center gap-0.5 rounded-lg p-0.5 relative" style={{ background: TH.subtle }}>
+          {(() => { const inline = TFS.filter((t) => tfFavs.includes(t) || t === tf); return inline.map((t) => { const on = tf === t; return (<button key={t} onClick={() => setTf(t)} title={TF_TITLE[t] || t} className="px-2 h-7 rounded-md text-[12px] font-semibold tabular-nums transition-colors duration-[120ms]" dir="ltr" style={on ? { background: TH.accent, color: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,.25)' } : { background: 'transparent', color: TH.text }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>{TF_LABEL[t] || t}</button>); }); })()}
+          <button onClick={() => setTfMenu((v) => !v)} title="همهٔ اینتروال‌ها" className="px-1 h-7 rounded-md transition-colors duration-[120ms] flex items-center" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><ChevronDown size={14} /></button>
+          {tfMenu && (
+            <div className="absolute z-40 top-9 right-0 border rounded-lg w-40 max-h-[70vh] overflow-auto p-1 pc-pop" style={{ background: TH.panel, borderColor: TH.border }}>
+              {TFS.map((t) => { const on = tf === t; const fav = tfFavs.includes(t); return (
+                <div key={t} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={on ? { color: TH.accent, background: TH.chipBg } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
+                  <button onClick={() => { setTf(t); setTfMenu(false); }} className="flex-1 text-right tabular-nums" dir="ltr">{TF_LABEL[t] || t} <span className="text-[10px] opacity-50">{TF_TITLE[t]}</span></button>
+                  <button onClick={() => toggleTfFav(t)} title={fav ? 'حذف از منتخب' : 'افزودن به منتخب'}><Star size={13} style={fav ? { fill: TH.accent, color: TH.accent } : { color: TH.text, opacity: 0.5 }} /></button>
+                </div>); })}
+            </div>
+          )}
+        </div>
         <div data-menu className="relative">
           <button onClick={() => setCtMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{(() => { const CtI = (CHART_TYPES.find((c) => c.id === chartType) || {}).Icon || CandlestickChart; return <CtI size={17} />; })()} {CHART_TYPES.find((c) => c.id === chartType)?.label}<ChevronDown size={13} /></button>
           {ctMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-44 max-h-[70vh] overflow-auto pc-pop" style={{ background: TH.panel, borderColor: TH.border }}>{CHART_TYPES.map((ct) => { const I = ct.Icon || CandlestickChart; const on = chartType === ct.id; return (<button key={ct.id} onClick={() => { setChartType(ct.id); setCtMenu(false); }} className="flex items-center gap-2 w-full text-right px-3 py-1.5 text-sm transition-colors duration-[120ms]" style={on ? { color: TH.accent, background: TH.chipBg } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}><I size={15} style={{ color: on ? TH.accent : TH.text }} /> {ct.label}</button>); })}</div>)}
