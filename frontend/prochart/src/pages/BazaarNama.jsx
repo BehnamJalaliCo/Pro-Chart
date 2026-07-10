@@ -462,7 +462,8 @@ export default function BazaarNama() {
   // اعمالِ تم
   useEffect(() => {
     const ch = chartRef.current; if (!ch) return;
-    ch.applyOptions({ layout: { background: { color: TH.bg }, textColor: TH.text }, grid: { vertLines: { color: TH.gridLine }, horzLines: { color: TH.gridLine } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
+    const _ov = chartSettingsOverrides;
+    ch.applyOptions({ layout: { background: { color: TH.bg }, textColor: TH.text }, grid: { vertLines: { color: _ov.gridVertColor || TH.gridLine, visible: _ov.gridVert !== false }, horzLines: { color: _ov.gridHorzColor || TH.gridLine, visible: _ov.gridHorz !== false } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
     // eslint-disable-next-line
   }, [theme]);
 
@@ -2256,6 +2257,14 @@ export default function BazaarNama() {
           if ('scaleLock' in patch) setScaleLocked(patch.scaleLock);
           if ('slVolume' in patch) setShowVolume(patch.slVolume);
           if ('crosshairStyle' in patch) setCrosshairId(patch.crosshairStyle === 0 ? 'cross' : 'dot');
+          // خطوطِ شبکه (Grid lines) — قبلاً در دیالوگ بودند ولی به چارت وصل نبودند؛ اکنون زنده اعمال می‌شوند (chart-level ⇒ با تعویضِ نماد/نوع‌چارت هم می‌مانند).
+          if ('gridHorz' in patch || 'gridVert' in patch || 'gridHorzColor' in patch || 'gridVertColor' in patch) {
+            const ov = { ...chartSettingsOverrides, ...patch };
+            try { chartRef.current && chartRef.current.applyOptions({ grid: {
+              vertLines: { visible: ov.gridVert !== false, color: ov.gridVertColor || TH.gridLine },
+              horzLines: { visible: ov.gridHorz !== false, color: ov.gridHorzColor || TH.gridLine },
+            } }); } catch (e) {}
+          }
         }}
       />
 
