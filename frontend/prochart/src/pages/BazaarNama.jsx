@@ -2189,7 +2189,7 @@ export default function BazaarNama() {
                 {indDlgTab === 'inputs' && (
                   inputKeys.length ? inputKeys.map((k) => (
                     <div key={k} className="flex items-center justify-between mb-2.5 text-sm">
-                      <label className="opacity-70" dir="ltr">{k}</label>
+                      <label className="opacity-70" dir="ltr">{k.charAt(0).toUpperCase() + k.slice(1)}</label>
                       <input type="number" step="any" value={it.inputs[k]} onChange={(e) => upd({ inputs: { [k]: Number(e.target.value) } })} className="w-24 rounded px-2 py-1 outline-none text-right" dir="ltr" style={{ background: TH.chipBg, color: TH.textStrong, border: `1px solid ${TH.border}` }} />
                     </div>
                   )) : <div className="text-center text-[12px] opacity-50 py-3">این اندیکاتور ورودیِ قابلِ‌تنظیم ندارد.</div>
