@@ -773,7 +773,7 @@ export default function BazaarNama() {
     const useAxisTag = crosshairId !== 'hidden' && visibleSubs === 0;
     // رنگ/سبکِ دقیقِ کراس‌هیرِ TradingView: خاکستریِ خنثیِ #9598a1 نقطه‌چین (LineStyle.Dotted=1)
     // در هر دو تم؛ فقط ظاهرِ خط را روی خروجیِ crosshairOptions override می‌کند (visible/label حفظ می‌شود).
-    const XH_COLOR = '#9598a1';
+    const XH_COLOR = settingsRef.current.crosshairColor || '#9598a1'; // رنگِ کراس‌هیر از دیالوگِ تنظیمات (قبلاً مرده)؛ پیش‌فرض خاکستریِ خنثیِ TV
     const XH_STYLE = 1;
     ch.applyOptions({ crosshair: { ...crosshair, vertLine: { ...crosshair.vertLine, color: XH_COLOR, style: XH_STYLE, labelVisible: !useAxisTag && crosshair.vertLine.labelVisible }, horzLine: { ...crosshair.horzLine, color: XH_COLOR, style: XH_STYLE, labelVisible: !useAxisTag && crosshair.horzLine.labelVisible } } });
     crosshairGlyphRef.current = _ui.glyph;
@@ -2280,6 +2280,11 @@ export default function BazaarNama() {
               vertLines: { visible: ov.gridVert !== false, color: ov.gridVertColor || TH.gridLine },
               horzLines: { visible: ov.gridHorz !== false, color: ov.gridHorzColor || TH.gridLine },
             } }); } catch (e) {}
+          }
+          // رنگِ کراس‌هیر (قبلاً مرده) — chart-level؛ merge با گزینه‌های موجود پس سبک/نمایش حفظ می‌شود.
+          if ('crosshairColor' in patch) {
+            const c = patch.crosshairColor || '#9598a1';
+            try { chartRef.current && chartRef.current.applyOptions({ crosshair: { vertLine: { color: c }, horzLine: { color: c } } }); } catch (e) {}
           }
           // خطِ قیمتِ آخر (قبلاً مرده) — نمایش/پنهانِ خطِ قیمتِ جاری + برچسبِ آخر روی سریِ فعال.
           if ('priceLineShown' in patch) {
