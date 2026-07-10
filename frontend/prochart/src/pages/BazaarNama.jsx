@@ -1303,7 +1303,7 @@ export default function BazaarNama() {
       cursor: () => setTool('cursor'),
       trend: () => setTool('trend'), hline: () => setTool('hline'), vline: () => setTool('vline'),
       ray: () => setTool('ray'), rect: () => setTool('rect'), fib: () => setTool('fib'),
-      channel: () => setTool('channel'), text: () => setTool('text'),
+      channel: () => setTool('channel'), text: () => setTool('text'), longshort: () => setTool('longshort'),
       magnet: () => setMagnet((v) => !v), stayDraw: () => setStayDraw((v) => !v),
       // ویرایش
       undo: () => { drawRef.current && drawRef.current.undo(); treeRefresh(); },
@@ -1312,6 +1312,7 @@ export default function BazaarNama() {
       clearChart: () => clearScreen(),
       removeAll: () => { drawRef.current && drawRef.current.clearAll(); treeRefresh(); },
       lockSel: () => { if (selDraw >= 0 && drawRef.current) { drawRef.current.toggleLock(selDraw); treeRefresh(); } },
+      hideAll: () => setAllHidden((v) => { const nv = !v; try { drawRef.current && drawRef.current.hideAll(nv); } catch (e) {} treeRefresh(); return nv; }),
       // تایم‌فریم
       tfNext: () => setTf((t) => TFS[Math.min(TFS.length - 1, TFS.indexOf(t) + 1)] || t),
       tfPrev: () => setTf((t) => TFS[Math.max(0, TFS.indexOf(t) - 1)] || t),
@@ -1323,13 +1324,19 @@ export default function BazaarNama() {
       scrollLeft: () => { try { const ts = chartRef.current.timeScale(); ts.scrollToPosition(ts.scrollPosition() - 5, false); } catch (e) {} },
       scrollRight: () => { try { const ts = chartRef.current.timeScale(); ts.scrollToPosition(ts.scrollPosition() + 5, false); } catch (e) {} },
       scrollEnd: () => { try { chartRef.current.timeScale().scrollToRealTime(); } catch (e) {} },
+      scrollHome: () => { try { chartRef.current.timeScale().scrollToPosition(-1e6, false); } catch (e) {} },
+      zoomIn: () => { try { const ts = chartRef.current.timeScale(); const bs = (ts.options().barSpacing || 8); ts.applyOptions({ barSpacing: Math.min(60, bs * 1.25) }); } catch (e) {} },
+      zoomOut: () => { try { const ts = chartRef.current.timeScale(); const bs = (ts.options().barSpacing || 8); ts.applyOptions({ barSpacing: Math.max(1.5, bs * 0.8) }); } catch (e) {} },
       fit: () => { try { chartRef.current.timeScale().fitContent(); } catch (e) {} },
       resetScale: () => { try { chartRef.current.priceScale('right').applyOptions({ autoScale: true }); setScaleLocked(false); } catch (e) {} },
+      invertScale: () => setScaleInvert((v) => !v),
       // نما
       toggleRight: () => setShowRight((v) => !v),
       fullscreen: () => { try { if (document.fullscreenElement) document.exitFullscreen(); else rootRef.current && rootRef.current.requestFullscreen(); } catch (e) {} },
       toggleTheme: () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')),
       indicators: () => setIndDlg(true),
+      settings: () => setChartSettingsOpen(true),
+      newAlert: () => { setRightTab('alerts'); setShowRight(true); },
       help: () => setShowShortcuts((v) => !v),
       screenshot: () => quickScreenshot(),
       // چیدمان
