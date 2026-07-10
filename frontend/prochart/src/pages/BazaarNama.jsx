@@ -1907,6 +1907,7 @@ export default function BazaarNama() {
               })}
               {/* ساعتِ زندهٔ منطقهٔ زمانی — سمتِ راستِ نوار (parity با نوارِ پایینِ TradingView) */}
               <span className="ml-auto flex items-center gap-1 pl-2 text-[11px] tabular-nums whitespace-nowrap select-none" style={{ color: TH.textMuted || TH.text, opacity: 0.85 }} title="ساعتِ فعلی به‌وقتِ منطقهٔ زمانیِ چارت">
+                <Clock size={12} style={{ opacity: 0.7 }} />
                 <span>{tzClock}</span>
                 <span style={{ opacity: 0.7 }}>({(TIMEZONES.find((z) => z.id === tz) || {}).label || tz})</span>
               </span>
