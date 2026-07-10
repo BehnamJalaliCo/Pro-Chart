@@ -1434,7 +1434,7 @@ export default function BazaarNama() {
       )}
       {/* نوارِ بالا (فقط دسکتاپِ ≥۱۲۸۰px) — در تبلت/گوشی جایش CompactTopBar می‌آید تا wrapِ چندردیفه روی چارت نیفتد */}
       {!compact && (
-      <div className="flex items-center gap-1.5 px-3 py-1.5 border-b flex-wrap relative" style={{ borderColor: TH.border }}>
+      <div className="flex items-center gap-1 px-3 py-1.5 border-b flex-wrap relative" style={{ borderColor: TH.border }}>
         {/* #7 سویچرِ نماد — مدالِ جستجوی حرفه‌ای را باز می‌کند */}
         <button onClick={() => setSymModal(true)} data-menu className="flex items-center gap-2 h-9 px-3 rounded-lg transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)} title="جستجوی نماد (Ctrl+K یا /)">
           <SymbolLogo symbol={symbol} size={20} />
@@ -1478,7 +1478,7 @@ export default function BazaarNama() {
           {ctMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-44 max-h-[70vh] overflow-auto pc-pop" style={{ background: TH.panel, borderColor: TH.border }}>{CHART_TYPES.map((ct) => { const I = ct.Icon || CandlestickChart; const on = chartType === ct.id; return (<button key={ct.id} onClick={() => { setChartType(ct.id); setCtMenu(false); }} className="flex items-center gap-2 w-full text-right px-3 py-1.5 text-sm transition-colors duration-[120ms]" style={on ? { color: TH.accent, background: TH.chipBg } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}><I size={15} style={{ color: on ? TH.accent : TH.text }} /> {ct.label}</button>); })}</div>)}
         </div>
         <div data-menu className="relative">
-          <button onClick={() => setIndDlg(true)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Activity size={17} /> اندیکاتورها</button>
+          <button onClick={() => setIndDlg(true)} title="اندیکاتورها، سنجه‌ها و استراتژی‌ها" className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Activity size={17} /></button>
           {indMenu && (
             <div className="absolute z-40 mt-1 rounded-lg w-56 max-h-80 overflow-auto p-1 pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}` }}>
               {indFavs.filter((k) => REGISTRY[k]).length > 0 && (
