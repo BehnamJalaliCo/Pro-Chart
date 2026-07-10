@@ -38,6 +38,9 @@ import ScreenshotMenu from '../bazaarnama/ScreenshotMenu';
 import { captureChart, canvasToBlob, copyBlobToClipboard, downloadBlob } from '../bazaarnama/screenshot';
 import RightPanel from '../bazaarnama/RightPanel';
 import IndicatorsDialog from '../bazaarnama/IndicatorsDialog';
+import ChartSettingsDialog from '../bazaarnama/ChartSettingsDialog';
+import RightIconRail from '../bazaarnama/RightIconRail';
+import ContextMenu from '../bazaarnama/ContextMenu';
 import AuthMenu from '../AuthMenu';
 import HelpModal, { HelpDot } from '../bazaarnama/Help';
 import Legal from './Legal';
@@ -295,6 +298,8 @@ export default function BazaarNama() {
   const [grid, setGrid] = useState(1); // 1/2/4 چند-چارت
   const [gridMenu, setGridMenu] = useState(false); // منوی پریستِ چیدمانِ چند-چارت (layoutPresets)
   const [cfgMenu, setCfgMenu] = useState(false); // منوی چرخ‌دندهٔ «تنظیماتِ چارت» (ظاهر/مقیاس/کراس‌هیر)
+  const [chartSettingsOpen, setChartSettingsOpen] = useState(false); // دیالوگِ کاملِ «تنظیماتِ چارت» (ChartSettingsDialog)
+  const [chartSettingsOverrides, setChartSettingsOverrides] = useState({}); // کلیدهای دیالوگ که هنوز به chart وصل نشده‌اند (نگه‌داریِ حالتِ UI)
   const [layoutMenu, setLayoutMenu] = useState(false); // منوی «چیدمان/لایوت» (ذخیره/بارگذاری)
   const [showShortcuts, setShowShortcuts] = useState(false); // دیالوگِ راهنمای میان‌بُرها
   const [symModal, setSymModal] = useState(false); // #7 مدالِ جستجوی نماد
@@ -321,7 +326,7 @@ export default function BazaarNama() {
   const [showDataWin, setShowDataWin] = useState(loadWS().showDataWin ?? false); // Data Window (مقادیرِ زیرِ کراس‌هیر)
   const [dataWin, setDataWin] = useState(null);        // {ohlc, vol, time, inds:[{label,vals,color}]}
   const [crossTag, setCrossTag] = useState(null);      // #9 تگِ محورِ قیمت/زمانِ زیرِ کراس‌هیر {price:{y,text}, time:{x,text}}
-  const [ctxMenu, setCtxMenu] = useState(null);        // منوی راست‌کلیکِ چارت {x,y,price}
+  const [ctx, setCtx] = useState(null);                // منوی راست‌کلیکِ چارت (ContextMenu) { x, y, price, cx } — x/y مختصاتِ viewport، cx مختصاتِ افقیِ نسبی برای placeLongShort
   const indLabelRef = useRef({});                       // id → {label,color} برای Data Window
   const lastIndValRef = useRef({});                     // id → [last values] برای Legend بیرون از کراس‌هیر
   const showDataWinRef = useRef(loadWS().showDataWin ?? false); // گیتِ محاسبهٔ Data Window در هندلرِ کراس‌هیر
@@ -1548,6 +1553,10 @@ export default function BazaarNama() {
           {cfgMenu && (
             <div className="absolute z-[60] top-full mt-1 right-0 rounded-xl w-60 p-2 shadow-2xl" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
               <div className="px-1 pb-1.5 text-[11px] font-bold" style={{ color: TH.textStrong }}>تنظیماتِ چارت</div>
+              <button onClick={() => { setCfgMenu(false); setChartSettingsOpen(true); }} className="flex items-center gap-2 w-full text-right px-1.5 py-1.5 mb-1 rounded-md text-[12px] font-semibold" style={{ background: TH.chipBg, color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
+                <Settings2 size={14} style={{ color: TH.accent }} />
+                <span className="flex-1">تنظیماتِ کاملِ چارت…</span>
+              </button>
               <div className="flex items-center justify-between px-1 py-1">
                 <span className="text-[12px]" style={{ color: TH.text }}>تمِ نمایش</span>
                 <button onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))} className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[12px]" style={{ background: TH.chipBg, color: TH.textStrong }}>{theme === 'dark' ? <Moon size={13} /> : <Sun size={13} />} {theme === 'dark' ? 'تیره' : 'روشن'}</button>
@@ -1661,7 +1670,7 @@ export default function BazaarNama() {
                  const rect = e.currentTarget.getBoundingClientRect();
                  const yy = e.clientY - rect.top;
                  let price = null; try { price = priceSeriesRef.current && priceSeriesRef.current.coordinateToPrice(yy); } catch (err) {}
-                 setCtxMenu({ x: e.clientX - rect.left, y: yy, price });
+                 setCtx({ x: e.clientX, y: e.clientY, price, cx: e.clientX - rect.left });
                }}>
             <div ref={mainRef} className="absolute inset-0" />
             <canvas ref={overlayRef} className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }} />
@@ -1794,56 +1803,30 @@ export default function BazaarNama() {
             )}
             {/* #9 تگِ محورِ قیمت (راست) و زمان (پایین) زیرِ کراس‌هیر — از دادهٔ زندهٔ subscribeCrosshairMove */}
             <CrosshairAxisTag price={crossTag && crossTag.price} time={crossTag && crossTag.time} TH={TH} />
-            {/* منوی راست‌کلیکِ چارت (مثلِ TradingView) */}
-            {ctxMenu && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setCtxMenu(null)} onContextMenu={(e) => { e.preventDefault(); setCtxMenu(null); }} />
-                <div className="absolute z-50 w-52 rounded-md pc-pop py-1 text-[12px]" dir="rtl"
-                     style={{ left: ctxMenu.x, top: ctxMenu.y, background: TH.panel, border: `1px solid ${TH.border}`, color: TH.textStrong }}>
-                  {ctxMenu.price != null && (
-                    <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
-                      onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                      onClick={() => { setAlForm((f) => ({ ...f, op: 'above', value: fmtPrice(symbol, ctxMenu.price) })); setRightTab('alerts'); setShowRight(true); setCtxMenu(null); }}>
-                      <Bell size={13} /> افزودنِ آلارم در {fmtPrice(symbol, ctxMenu.price)}
-                    </button>
-                  )}
-                  {ctxMenu.price != null && (
-                    <>
-                      <div className="px-3 pt-1.5 pb-1 text-[10px] font-bold opacity-45" style={{ color: TH.text }}>موقعیت از {fmtPrice(symbol, ctxMenu.price)} (رسمِ رو‌به‌جلو)</div>
-                      <button className="w-full text-right px-3 py-2 flex items-center gap-2 font-semibold" style={{ color: TH.up }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = (TH.up || '#26a69a') + '1f')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { placeLongShort('buy', ctxMenu.price, ctxMenu.x); setCtxMenu(null); }}>
-                        <span className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ background: (TH.up || '#26a69a') + '2a', color: TH.up }}><TrendingUp size={12} /></span>
-                        لانگ <span className="opacity-55 font-normal text-[11px]">(Long / خرید)</span>
-                      </button>
-                      <button className="w-full text-right px-3 py-2 flex items-center gap-2 font-semibold" style={{ color: TH.down }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = (TH.down || '#ef5350') + '1f')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { placeLongShort('sell', ctxMenu.price, ctxMenu.x); setCtxMenu(null); }}>
-                        <span className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ background: (TH.down || '#ef5350') + '2a', color: TH.down }}><TrendingDown size={12} /></span>
-                        شورت <span className="opacity-55 font-normal text-[11px]">(Short / فروش)</span>
-                      </button>
-                      {/* #۹ ترید واقعی (پنلِ سفارش) + پاک‌کردنِ ترسیم‌ها */}
-                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2 opacity-80" style={{ color: TH.textStrong }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { startTrade('buy', ctxMenu.price); setCtxMenu(null); }}><Activity size={13} /> ترید واقعی (پنلِ سفارش)</button>
-                      <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.down }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                        onClick={() => { try { drawRef.current && drawRef.current.clearAll(); } catch (e) {} setOrder(null); treeRefresh(); setCtxMenu(null); }}><Trash2 size={13} /> پاک‌کردنِ ترسیم‌ها/موقعیت‌ها</button>
-                      <div className="my-1 border-t" style={{ borderColor: TH.border }} />
-                    </>
-                  )}
-                  <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                    onClick={() => { setShowDataWin(true); setCtxMenu(null); }}><Table2 size={13} /> پنجرهٔ داده</button>
-                  <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                    onClick={() => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); } catch (e) {} setCtxMenu(null); }}>بازنشانیِ مقیاس</button>
-                  <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                    onClick={() => { try { rootRef.current.requestFullscreen(); } catch (e) {} setCtxMenu(null); }}><Maximize2 size={13} /> تمام‌صفحه</button>
-                </div>
-              </>
-            )}
+            {/* منوی راست‌کلیکِ چارت (ContextMenu — TV-parity) */}
+            <ContextMenu
+              open={!!ctx} x={ctx ? ctx.x : 0} y={ctx ? ctx.y : 0} TH={TH}
+              onClose={() => setCtx(null)}
+              items={ctx ? [
+                { header: symbol },
+                { separator: true },
+                { icon: <Activity size={14} />, label: 'افزودنِ اندیکاتور', hotkey: '/', onClick: () => setIndDlg(true) },
+                ...(ctx.price != null ? [
+                  { icon: <Bell size={14} />, label: `افزودنِ آلارم در ${fmtPrice(symbol, ctx.price)}`, onClick: () => { setAlForm((f) => ({ ...f, op: 'above', value: fmtPrice(symbol, ctx.price) })); setRightTab('alerts'); setShowRight(true); } },
+                  { separator: true },
+                  { icon: <TrendingUp size={14} />, label: 'لانگ (خرید) — رسمِ رو‌به‌جلو', onClick: () => placeLongShort('buy', ctx.price, ctx.cx) },
+                  { icon: <TrendingDown size={14} />, label: 'شورت (فروش) — رسمِ رو‌به‌جلو', onClick: () => placeLongShort('sell', ctx.price, ctx.cx) },
+                  { icon: <Activity size={14} />, label: 'ترید واقعی (پنلِ سفارش)', onClick: () => startTrade('buy', ctx.price) },
+                  { icon: <Trash2 size={14} />, label: 'پاک‌کردنِ ترسیم‌ها/موقعیت‌ها', danger: true, onClick: () => { try { drawRef.current && drawRef.current.clearAll(); } catch (err) {} setOrder(null); treeRefresh(); } },
+                ] : []),
+                { separator: true },
+                { icon: <Table2 size={14} />, label: 'پنجرهٔ داده', onClick: () => setShowDataWin(true) },
+                { icon: <Scaling size={14} />, label: 'بازنشانیِ مقیاس', onClick: () => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); } catch (err) {} } },
+                { separator: true },
+                { icon: <Settings2 size={14} />, label: 'تنظیماتِ چارت', onClick: () => setChartSettingsOpen(true) },
+                { icon: <Maximize2 size={14} />, label: 'تمام‌صفحه', onClick: () => { try { rootRef.current.requestFullscreen(); } catch (err) {} } },
+              ] : []}
+            />
             {grid > 1 && (
               <div className="absolute inset-0 z-30 grid gap-1 p-1" style={{ background: TH.bg, gridTemplateColumns: grid === 2 ? '1fr 1fr' : '1fr 1fr', gridTemplateRows: grid === 2 ? '1fr' : '1fr 1fr' }}>
                 {Array.from({ length: grid }).map((_, i) => (
@@ -1903,27 +1886,10 @@ export default function BazaarNama() {
           )
         )}
 
-        {/* #۹ دستگیرهٔ کشوییِ مرئیِ پنلِ راست (دسکتاپ): وقتی پنل بسته است، یک تبِ باریکِ لبه که با کلیک کشو را باز می‌کند */}
-        {!showRight && !compact && (
-          <button
-            onClick={() => setShowRight(true)}
-            title="بازکردنِ نوارِ کناری (واچ‌لیست، سیگنال AI، اسکنر، ترید، آلارم)"
-            aria-label="بازکردنِ نوارِ کناری"
-            className="absolute z-[56] flex flex-col items-center justify-center gap-1.5 transition-all duration-150"
-            style={{
-              top: '50%', right: 0, transform: 'translateY(-50%)',
-              width: 22, paddingTop: 14, paddingBottom: 14,
-              background: TH.panel || TH.chipBg, color: TH.textStrong,
-              border: `1px solid ${TH.border}`, borderRight: 'none',
-              borderTopLeftRadius: 10, borderBottomLeftRadius: 10,
-              boxShadow: '-2px 0 10px rgba(0,0,0,.18)', cursor: 'pointer',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = TH.accent; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = TH.panel || TH.chipBg; e.currentTarget.style.color = TH.textStrong; }}
-          >
-            <ChevronDown size={15} style={{ transform: 'rotate(90deg)' }} />
-            <span style={{ writingMode: 'vertical-rl', fontSize: 11, fontWeight: 700, letterSpacing: 1 }}>پنل</span>
-          </button>
+        {/* ریلِ عمودیِ آیکونِ سمتِ راست (پنل‌سوییچرِ سبکِ TradingView) — آخرین فرزندِ فلکسِ افقی، چسبیده به لبهٔ راست.
+            کلیک روی هر آیکون: تبِ راست را انتخاب و پنل را باز می‌کند. جایگزینِ دستگیرهٔ کشوییِ قدیمی است. */}
+        {!compact && (
+          <RightIconRail active={showRight ? rightTab : null} onSelect={(k) => { setRightTab(k); setShowRight(true); }} TH={TH} />
         )}
       </div>
 
@@ -2186,6 +2152,28 @@ export default function BazaarNama() {
 
       {/* دیالوگِ کاملِ اندیکاتورها (پاریتیِ TV) — با کلیک روی هر مورد addInd صدا زده می‌شود؛ دیالوگ برای افزودنِ پیاپی باز می‌مانَد */}
       <IndicatorsDialog open={indDlg} onClose={() => setIndDlg(false)} TH={TH} onPick={(key) => { if (REGISTRY[key]) addInd(key); }} />
+      {/* دیالوگِ کاملِ «تنظیماتِ چارت» — settings مسطح از stateهای موجود؛ کلیدهای هنوز-وصل‌نشده در overrides نگه‌داری می‌شوند تا UI زنده بماند. */}
+      <ChartSettingsDialog
+        open={chartSettingsOpen}
+        onClose={() => setChartSettingsOpen(false)}
+        TH={TH}
+        settings={{
+          ...chartSettingsOverrides,
+          scaleMode,
+          scaleInvert,
+          scaleLock: scaleLocked,
+          slVolume: showVolume,
+          crosshairStyle: crosshairId === 'cross' ? 0 : 1,
+        }}
+        onChange={(patch) => {
+          setChartSettingsOverrides((prev) => ({ ...prev, ...patch }));
+          if ('scaleMode' in patch) setScaleMode(patch.scaleMode);
+          if ('scaleInvert' in patch) setScaleInvert(patch.scaleInvert);
+          if ('scaleLock' in patch) setScaleLocked(patch.scaleLock);
+          if ('slVolume' in patch) setShowVolume(patch.slVolume);
+          if ('crosshairStyle' in patch) setCrosshairId(patch.crosshairStyle === 0 ? 'cross' : 'dot');
+        }}
+      />
 
       {/* #4 نسخهٔ موبایل: شیت‌های پایین (ناوبریِ پایینیِ اپ اکنون در AppShell است؛ ابزارها از نوارِ بالا/«بیشتر» باز می‌شوند) */}
       {compact && (

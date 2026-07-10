@@ -3,7 +3,7 @@ import { Search, X, Star } from 'lucide-react';
 import SymbolLogo from './SymbolLogo';
 import VirtualList from './VirtualList';
 import { searchSymbols, highlightPositions } from './fuzzy';
-import { CATEGORIES, CAT_FA } from './symbolMeta';
+import { CATEGORIES, CAT_FA, filterCleanMeta, isCleanSymbol } from './symbolMeta';
 
 // #۷ رنگِ بَجِ نوعِ دارایی، هم‌خانوادهٔ پالتِ TradingView (هر کلاس یک رنگِ امضا)
 const TYPE_COLOR = {
@@ -107,14 +107,18 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
   useEffect(() => { const t = setTimeout(() => setDq(q), 80); return () => clearTimeout(t); }, [q]);
   useEffect(() => { if (open) { setQ(''); setDq(''); setCat('all'); setActive(0); setTimeout(() => inputRef.current && inputRef.current.focus(), 30); } }, [open]);
 
-  const results = useMemo(() => searchSymbols(metaList, dq, cat), [metaList, dq, cat]);
+  // #۷/۱۴۹ فقط نمادهای دارای لوگوی واقعی (فارکس/کریپتو/فلز/شاخص/انرژی)؛ سهام‌های تصادفیِ
+  // بی‌لوگو (A/AA/AAL…) که فقط مونوگرامِ خاکستری می‌گیرند از جهانِ جستجو حذف می‌شوند.
+  const cleanMeta = useMemo(() => filterCleanMeta(metaList), [metaList]);
+  const results = useMemo(() => searchSymbols(cleanMeta, dq, cat), [cleanMeta, dq, cat]);
   // کوئریِ پاک‌شده برای های‌لایتِ نماد (نمادها الفبا-عددی‌اند؛ اسلش/فاصله حذف می‌شود).
   const qSym = useMemo(() => dq.replace(/[^A-Za-z0-9]/g, ''), [dq]);
   const qDesc = useMemo(() => dq.trim(), [dq]);
   useEffect(() => { setActive(0); }, [dq, cat]);
 
-  const recent = useMemo(() => loadRecent().filter((s) => metaList.some((m) => m.symbol === s)), [metaList, open]);
-  const watchSet = useMemo(() => new Set(watch), [watch]);
+  const recent = useMemo(() => loadRecent().filter((s) => isCleanSymbol(s) && cleanMeta.some((m) => m.symbol === s)), [cleanMeta, open]);
+  const cleanWatch = useMemo(() => watch.filter(isCleanSymbol), [watch]);
+  const watchSet = useMemo(() => new Set(cleanWatch), [cleanWatch]);
 
   const pick = (sym) => { pushRecent(sym); onPick && onPick(sym); onClose && onClose(); };
 
@@ -168,7 +172,7 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
         </div>
 
         {/* میان‌بُرها: اخیر + واچ‌لیست (فقط وقتی کوئری خالی است) */}
-        {!dq && (recent.length > 0 || watch.length > 0) && (
+        {!dq && (recent.length > 0 || cleanWatch.length > 0) && (
           <div className="px-3 pt-2 pb-1.5 flex flex-wrap gap-1.5 text-[12px] shrink-0" style={{ borderBottom: `1px solid ${T.border}` }}>
             {recent.map((s) => (
               <button key={'r' + s} onClick={() => pick(s)} className="flex items-center gap-1 px-2 rounded-lg" dir="ltr"
@@ -177,7 +181,7 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
                 <SymbolLogo symbol={s} size={16} /> {s}
               </button>
             ))}
-            {watch.filter((s) => !recent.includes(s)).slice(0, 6).map((s) => (
+            {cleanWatch.filter((s) => !recent.includes(s)).slice(0, 6).map((s) => (
               <button key={'w' + s} onClick={() => pick(s)} className="flex items-center gap-1 px-2 rounded-lg" dir="ltr"
                 style={{ height: 30, background: T.chipBg, color: T.textStrong }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = T.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = T.chipBg)}>

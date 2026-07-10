@@ -237,6 +237,15 @@ export default function ToolRail({
   const [hideLocal, setHideLocal] = useState(false);
   const hideOn = hideControlled ? !!allHidden : hideLocal;
 
+  // کنترل‌های پایینِ ریل فقط وقتی رندر می‌شوند که از بیرون وصل شده باشند.
+  // در نبودِ وصل‌شدن، BazaarNama نسخهٔ خودش را نشان می‌دهد؛ این گِیت جلوی «دوتا روی هم» را می‌گیرد.
+  const showMagnet = typeof onToggleMagnet === 'function' || magnet !== undefined;
+  const showStay = typeof onToggleStayInDrawing === 'function' || stayInDrawing !== undefined;
+  const showLock = typeof onLockAll === 'function' || allLocked !== undefined;
+  const showHide = typeof onHideAll === 'function' || allHidden !== undefined;
+  const showRemove = typeof onRemoveAll === 'function';
+  const showBottom = showMagnet || showStay || showLock || showHide || showRemove;
+
   const accentTint = tint(TH.accent, 0.14);
 
   // گروهی که ابزارِ فعالِ فعلی در آن است.
@@ -374,7 +383,7 @@ export default function ToolRail({
                 onClick={() => { hideTip(); setTool(id); }}
                 className="relative flex items-center justify-center rounded"
                 style={{
-                  width: 38, height: 38,
+                  width: 40, height: 40,
                   background: active ? accentTint : 'transparent',
                   color: active ? TH.accent : TH.text,
                   transition: 'background-color 120ms ease, color 120ms ease',
@@ -417,7 +426,7 @@ export default function ToolRail({
               onClick={() => (isOpen ? setOpenKey(null) : openOn(g.key))}
               className="relative flex items-center justify-center rounded"
               style={{
-                width: 38, height: 38,
+                width: 40, height: 40,
                 // اکتیوِ tinted (accent با شفافیت) به‌جای پُرکردنِ سختِ آبی — پریتیِ TV.
                 background: isActiveGroup ? accentTint : (isOpen ? TH.chipBgHover : 'transparent'),
                 color: isActiveGroup ? TH.accent : TH.text,
@@ -434,15 +443,17 @@ export default function ToolRail({
               }}
             >
               <Icon size={20} />
-              {/* نشانهٔ ریزِ کارت: مثلثِ ظریف در گوشهٔ پایین‌راست */}
-              <span
-                className="absolute bottom-1 right-1 w-0 h-0 pointer-events-none"
-                style={{
-                  borderLeft: '3px solid transparent',
-                  borderTop: `3px solid ${isActiveGroup ? TH.accent : TH.text}`,
-                  opacity: isActiveGroup ? 0.85 : 0.45,
-                }}
-              />
+              {/* مثلثِ فلای‌اوت — فقط روی گروه‌هایی که واقعاً چند ابزار دارند (سبکِ TV). */}
+              {g.tools.length > 1 && (
+                <span
+                  className="absolute bottom-1 right-1 w-0 h-0 pointer-events-none"
+                  style={{
+                    borderLeft: '3px solid transparent',
+                    borderTop: `3px solid ${isActiveGroup ? TH.accent : TH.text}`,
+                    opacity: isActiveGroup ? 0.85 : 0.45,
+                  }}
+                />
+              )}
             </button>
 
             {isOpen && (
@@ -516,10 +527,12 @@ export default function ToolRail({
         );
       })}
 
-      {/* ── کنترل‌های پایینِ ریل (سبکِ TV): آهنربا/شدت · ماندن در ترسیم · قفلِ همه · مخفیِ همه · حذفِ همه ── */}
-      <Divider />
+      {/* ── کنترل‌های پایینِ ریل (سبکِ TV): آهنربا/شدت · ماندن در ترسیم · قفلِ همه · مخفیِ همه · حذفِ همه ──
+          فقط وقتی رندر می‌شوند که از بیرون وصل شده باشند (وگرنه با کنترل‌های لگاسیِ BazaarNama دوتایی می‌شد). */}
+      {showBottom && <Divider />}
 
       {/* آهنربا (Magnet) — کلیک روی دکمه روشن/خاموش؛ کاراتِ گوشه، منوی شدتِ weak/strong. */}
+      {showMagnet && (
       <div
         className="relative shrink-0 flex justify-center"
         onMouseLeave={hideTip}
@@ -531,7 +544,7 @@ export default function ToolRail({
           onClick={() => { hideTip(); toggleMagnet(!magnetOn); }}
           className="relative flex items-center justify-center rounded"
           style={{
-            width: 38, height: 38,
+            width: 40, height: 40,
             background: magnetOn ? accentTint : (magMenu ? TH.chipBgHover : 'transparent'),
             color: magnetOn ? TH.accent : TH.text,
             transition: 'background-color 120ms ease, color 120ms ease',
@@ -604,8 +617,10 @@ export default function ToolRail({
           </div>
         )}
       </div>
+      )}
 
       {/* ماندن در حالتِ ترسیم (Stay in Drawing Mode) — بعد از کشیدن، ابزار فعال می‌ماند. */}
+      {showStay && (
       <button
         type="button"
         aria-label="ماندن در حالتِ ترسیم"
@@ -613,7 +628,7 @@ export default function ToolRail({
         onClick={() => { hideTip(); toggleStay(!stayOn); }}
         className="relative shrink-0 flex items-center justify-center rounded"
         style={{
-          width: 38, height: 38,
+          width: 40, height: 40,
           background: stayOn ? accentTint : 'transparent',
           color: stayOn ? TH.accent : TH.text,
           transition: 'background-color 120ms ease, color 120ms ease',
@@ -625,10 +640,12 @@ export default function ToolRail({
       >
         <PenLine size={20} />
       </button>
+      )}
 
-      <Divider />
+      {(showLock || showHide || showRemove) && <Divider />}
 
       {/* قفلِ همهٔ ترسیم‌ها (Lock All Drawings). */}
+      {showLock && (
       <button
         type="button"
         aria-label="قفلِ همهٔ ترسیم‌ها"
@@ -636,7 +653,7 @@ export default function ToolRail({
         onClick={() => { hideTip(); toggleLockAll(!lockOn); }}
         className="relative shrink-0 flex items-center justify-center rounded"
         style={{
-          width: 38, height: 38,
+          width: 40, height: 40,
           background: lockOn ? accentTint : 'transparent',
           color: lockOn ? TH.accent : TH.text,
           transition: 'background-color 120ms ease, color 120ms ease',
@@ -648,8 +665,10 @@ export default function ToolRail({
       >
         {lockOn ? <Lock size={20} /> : <LockOpen size={20} />}
       </button>
+      )}
 
       {/* مخفیِ همهٔ ترسیم‌ها (Hide All Drawings) — چشم. */}
+      {showHide && (
       <button
         type="button"
         aria-label="نمایش/مخفیِ همهٔ ترسیم‌ها"
@@ -657,7 +676,7 @@ export default function ToolRail({
         onClick={() => { hideTip(); toggleHideAll(!hideOn); }}
         className="relative shrink-0 flex items-center justify-center rounded"
         style={{
-          width: 38, height: 38,
+          width: 40, height: 40,
           background: hideOn ? accentTint : 'transparent',
           color: hideOn ? TH.accent : TH.text,
           transition: 'background-color 120ms ease, color 120ms ease',
@@ -669,15 +688,17 @@ export default function ToolRail({
       >
         {hideOn ? <EyeOff size={20} /> : <Eye size={20} />}
       </button>
+      )}
 
       {/* حذفِ همهٔ ترسیم‌ها (Remove Drawings) — سطلِ قرمز. */}
+      {showRemove && (
       <button
         type="button"
         aria-label="حذفِ همهٔ ترسیم‌ها"
         onClick={() => { hideTip(); removeAll(); }}
         className="relative shrink-0 flex items-center justify-center rounded"
         style={{
-          width: 38, height: 38,
+          width: 40, height: 40,
           background: 'transparent',
           color: TH.text,
           transition: 'background-color 120ms ease, color 120ms ease',
@@ -689,6 +710,7 @@ export default function ToolRail({
       >
         <Trash2 size={20} />
       </button>
+      )}
 
       {/* تولتیپِ TV — پیلِ راست‌ایستا با نام + هاتکی؛ Y هم‌ترازِ مرکزِ دکمهٔ اشاره‌شده. */}
       {tip && (

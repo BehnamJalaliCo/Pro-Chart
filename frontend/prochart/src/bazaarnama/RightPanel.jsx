@@ -7,6 +7,9 @@ import NewsTab from './panels/NewsTab';
 import Calendar from './panels/Calendar';
 import SymbolLogo from './SymbolLogo';
 import OrderTicket from './OrderTicket';
+// فیلترِ «جهانِ نمادِ تمیز» (لوگوی واقعی) + نامِ کاملِ نماد — منبعِ واحد در symbolMeta.js
+// (بدونِ تغییرِ آن فایل؛ فقط importِ محلی). isCleanSymbol = همان hasRealLogo از دیدِ داده.
+import { isCleanSymbol, classify as classifySym } from './symbolMeta';
 
 // پنلِ راست — نوارِ تب + بدنه‌های inline (watch/ai/trade) و واگذاری به پنل‌های جدا
 // (Screener/Details/NewsTab/Calendar/AlertsPanel). همهٔ state/handlerها از props می‌آیند؛
@@ -393,7 +396,9 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   const delList = () => { if (meta.lists.length <= 1) { window.alert('حداقل یک واچ‌لیست باید بماند.'); return; } if (!window.confirm(`حذفِ واچ‌لیستِ «${list.name}»؟ (نمادها از سرور حذف نمی‌شوند)`)) return; setMeta((m) => { const lists = m.lists.filter((l) => l.id !== m.activeListId); return { ...m, lists, activeListId: lists[0].id }; }); setListMenuOpen(false); };
 
   // ── دادهٔ نمایش: نمادهای واچ + متادیتا + قیمتِ زنده ──
-  const rows = (watch || []).map((sym) => {
+  // فیلترِ لوگوی واقعی (مورد ۶۰/۱۴۹): نمادهای بی‌لوگو (مونوگرامِ خاکستری) اصلاً ردیف نمی‌شوند.
+  // منبعِ «وجودِ نماد» (propِ watch, سینکِ سرور) دست‌نخورده می‌ماند؛ فقط نمایش فیلتر می‌شود.
+  const rows = (watch || []).filter(isCleanSymbol).map((sym) => {
     const lp = (live || {})[sym];
     const dir = lp?.dir || 0;
     // baselineِ سشن را اولین‌بار که midِ معتبر دیدیم ثبت کن + سقف/کفِ سشن را به‌روز نگه‌دار
@@ -413,7 +418,9 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     const im = itemMeta(sym);
     // وضعیتِ بازار (سبکِ TV): وجودِ midِ زندهٔ معتبر = بازار باز (نقطهٔ سبز)، نبودش = بسته (خاکستری).
     const open = mid != null;
-    return { sym, lp, dir, chg, chgAbs, hi, lo, range, open, flag: im.flag || null, section: im.section || null, kind: symbolKind(sym) };
+    // نامِ کاملِ نماد (مورد ۶۱/۱۵۰) از symbolMeta — انگلیسیِ سبکِ TV («Euro / US Dollar») + فارسی fallback.
+    const cls = classifySym(sym);
+    return { sym, lp, dir, chg, chgAbs, hi, lo, range, open, flag: im.flag || null, section: im.section || null, kind: symbolKind(sym), name: cls.name, nameEn: cls.nameEn };
   });
 
   // فیلترِ رنگ
@@ -452,8 +459,8 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   // اندازهٔ لوگو هم‌ترازِ ردیفِ ۳۶pxِ TV — بزرگ‌ترین حالت هم داخلِ ردیف جا شود و شارپ بماند.
   const logoSz = isTable ? 20 : (meta.logoSize === 'lg' ? 30 : 24);
 
-  // افزودنِ نماد با جستجو
-  const addCandidates = (symbols || []).filter((s) => !(watch || []).includes(s)).filter((s) => {
+  // افزودنِ نماد با جستجو — فقط نمادهای دارای لوگوی واقعی پیشنهاد می‌شوند (واچ‌لیست تمیز می‌ماند).
+  const addCandidates = (symbols || []).filter((s) => !(watch || []).includes(s) && isCleanSymbol(s)).filter((s) => {
     if (!query.trim()) return true;
     const q = query.trim().toLowerCase();
     return s.toLowerCase().includes(q) || prettySym(s).toLowerCase().includes(q);
@@ -525,7 +532,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
             {dot}
             <span className="text-[13px] font-bold leading-tight truncate" style={{ color: active ? TH.accent : TH.textStrong }}>{prettySym(r.sym)}</span>
           </div>
-          {meta.showDesc && <div className="text-[10px] leading-tight opacity-50 truncate" style={{ color: TH.text }}>{KIND_LABEL[r.kind]}</div>}
+          {meta.showDesc && <div className="text-[10px] leading-tight opacity-50 truncate" style={{ color: TH.text }}>{r.nameEn || r.name || KIND_LABEL[r.kind]}</div>}
         </div>
         {/* سلولِ قیمتِ TV: «آخرین» رنگِ جهت‌دارِ تیک + فلَشِ تیک روی خطِ بالا، «Chg Chg٪» رنگی زیرِ آن */}
         <div className="shrink-0 flex flex-col items-end justify-center gap-0.5 leading-none min-w-[58px]" dir="ltr">
@@ -652,7 +659,10 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
               <button key={s} onClick={() => toggleWatch(s)} className="flex items-center gap-2.5 px-2 h-9 rounded-md transition-colors"
                 onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
                 <SymbolLogo symbol={s} size={24} />
-                <span className="flex-1 text-[12px] font-semibold truncate text-left" dir="ltr" style={{ color: TH.textStrong }}>{prettySym(s)}</span>
+                <span className="flex-1 min-w-0 text-left" dir="ltr">
+                  <span className="block text-[12px] font-semibold truncate" style={{ color: TH.textStrong }}>{prettySym(s)}</span>
+                  <span className="block text-[9px] leading-tight opacity-50 truncate" style={{ color: TH.text }}>{classifySym(s).nameEn}</span>
+                </span>
                 <span className="text-[9px] px-1.5 py-0.5 rounded-full shrink-0" style={{ background: TH.chipBg, color: TH.text }}>{KIND_LABEL[symbolKind(s)]}</span>
                 <Plus size={13} className="opacity-60 shrink-0" style={{ color: TH.accent }} />
               </button>

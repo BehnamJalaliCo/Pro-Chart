@@ -292,6 +292,59 @@ export function buildMeta(list) {
   return (list || []).map((s) => { const m = classify(s); m.popular = POPULAR.has(up(s).replace(/[^A-Z0-9]/g, '')); return m; });
 }
 
+// ————————————————————————————————————————————————————————————————————————
+// «جهانِ نمادِ تمیز» (مورد ۶۰/۱۴۹): فقط نمادهایی که لوگوی «واقعی» دارند بمانند و
+// سهام‌های تصادفیِ بی‌لوگو (مونوگرامِ خاکستری) از واچ‌لیست/سرچ حذف شوند.
+// تعریفِ تمیز — هم‌ترازِ گلیف‌های SymbolLogo.jsx (بدونِ importِ متقابل تا کوپلینگ نشود):
+//   • فارکس: هر دو طرفِ جفت از ۸ ارزِ اصلی (میجر/مینور/کراس) که پرچمِ واقعی دارند.
+//   • فلز: طلا/نقره/پلاتین/پالادیوم (شمشِ واقعی) — مس (XCU) لوگو ندارد ⇒ حذف.
+//   • شاخص: کلیدِ شناخته‌شدهٔ INDEX_FA (بَجِ برنددار).
+//   • انرژی: WTI/برنت/گاز طبیعی (بَجِ برنددار).
+//   • کریپتو: تنها کوین‌های تاپِ فهرست‌شده (آیکونِ واقعی) — بقیه حذف.
+// ۸ ارزِ اصلی که در SymbolLogo پرچمِ واقعیِ SVG دارند (میجرها). خارج از این ⇒ اگزوتیک/بی‌پرچم.
+const CORE_CCY = new Set(['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'NZD']);
+// فلزاتِ دارای شمشِ واقعی (مس بیرون است).
+const CLEAN_METAL = new Set(['XAU', 'XAG', 'XPT', 'XPD']);
+// کوین‌های تاپِ دارای لوگوی واقعی = همان فهرستِ کیوریت‌شدهٔ نام‌های کامل (CRYPTO_FA).
+const CLEAN_CRYPTO = new Set(Object.keys(CRYPTO_FA));
+
+/**
+ * آیا نماد در «جهانِ نمادِ تمیز» است؟ (لوگوی واقعی دارد)
+ * برای فیلترِ حذفِ سهام‌های تصادفیِ بی‌لوگو در RightPanel/واچ‌لیست و SymbolSearch.
+ * @param {string} symbol نمادِ خام (EURUSD, XAUUSD, BTCUSDT, AAPL, …)
+ * @returns {boolean} true = بماند (لوگوی واقعی)، false = حذف (بی‌لوگو)
+ */
+export function isCleanSymbol(symbol) {
+  const m = classifyRaw(symbol);
+  switch (m.cat) {
+    case 'forex': return CORE_CCY.has(m.base) && CORE_CCY.has(m.quote);
+    case 'metal': return CLEAN_METAL.has(m.base);
+    case 'index': return INDEX_FA[m.indexKey] != null;
+    case 'energy': return true;
+    case 'crypto': return CLEAN_CRYPTO.has(m.base);
+    default: return false; // 'other' = سهامِ تصادفیِ بی‌لوگو
+  }
+}
+
+/**
+ * فیلترِ آرایهٔ نمادهای خام (رشته‌ای) به جهانِ تمیز. ترتیبِ ورودی حفظ می‌شود.
+ * مصرف در RightPanel/Watchlist: `filterClean(watch)` و `filterClean(symbols)`.
+ * @param {string[]} list
+ * @returns {string[]}
+ */
+export function filterClean(list) {
+  return (list || []).filter(isCleanSymbol);
+}
+
+/**
+ * فیلترِ آرایهٔ متادیتا (خروجیِ buildMeta) به جهانِ تمیز — برای metaListِ SymbolSearch.
+ * @param {Array<{symbol:string}>} metaList
+ * @returns {Array<{symbol:string}>}
+ */
+export function filterCleanMeta(metaList) {
+  return (metaList || []).filter((m) => m && isCleanSymbol(m.symbol));
+}
+
 export const CATEGORIES = [
   { id: 'all', label: 'همه' },
   { id: 'forex', label: 'فارکس' },
