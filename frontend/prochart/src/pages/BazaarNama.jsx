@@ -347,7 +347,7 @@ export default function BazaarNama() {
     const el = mainRef.current;
     const chart = createChart(el, {
       // #۱۰/#۱۸ فیدلیتیِ TradingView: لوگوی پیش‌فرضِ کتابخانه پنهان (لوگوی خودِ بازارنما پایین‌چپ هست)
-      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif', fontSize: 11, attributionLogo: false },
+      layout: { background: { color: TH.bg }, textColor: TH.text, fontFamily: 'IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif', fontSize: 12, attributionLogo: false },
       grid: { vertLines: { color: TH.grid }, horzLines: { color: TH.grid } },
       // مقیاسِ زمان سبکِ TV: قفلِ رِنج روی resize، آخرین کندل ثابت هنگام اسکرول، فاصلهٔ پایهٔ میله، بدونِ tickِ ریز
       timeScale: {
@@ -716,7 +716,11 @@ export default function BazaarNama() {
     // برچسبِ نیتیو خاموش می‌شود تا تکراری نشود. با ساب‌پنل، نیتیو روشن می‌ماند (درستیِ هر پنل حفظ شود).
     const visibleSubs = subs.filter((s) => { const d = REGISTRY[s.key]; return d && d.pane === 'sub' && s.visible !== false; }).length;
     const useAxisTag = crosshairId !== 'hidden' && visibleSubs === 0;
-    ch.applyOptions({ crosshair: { ...crosshair, vertLine: { ...crosshair.vertLine, labelVisible: !useAxisTag && crosshair.vertLine.labelVisible }, horzLine: { ...crosshair.horzLine, labelVisible: !useAxisTag && crosshair.horzLine.labelVisible } } });
+    // رنگ/سبکِ دقیقِ کراس‌هیرِ TradingView: خاکستریِ خنثیِ #9598a1 نقطه‌چین (LineStyle.Dotted=1)
+    // در هر دو تم؛ فقط ظاهرِ خط را روی خروجیِ crosshairOptions override می‌کند (visible/label حفظ می‌شود).
+    const XH_COLOR = '#9598a1';
+    const XH_STYLE = 1;
+    ch.applyOptions({ crosshair: { ...crosshair, vertLine: { ...crosshair.vertLine, color: XH_COLOR, style: XH_STYLE, labelVisible: !useAxisTag && crosshair.vertLine.labelVisible }, horzLine: { ...crosshair.horzLine, color: XH_COLOR, style: XH_STYLE, labelVisible: !useAxisTag && crosshair.horzLine.labelVisible } } });
     crosshairGlyphRef.current = _ui.glyph;
     crossTagOnRef.current = useAxisTag;
     if (!useAxisTag) setCrossTag(null);

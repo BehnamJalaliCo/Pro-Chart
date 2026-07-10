@@ -53,6 +53,17 @@ function nameFor(symbol = '') {
   return null;
 }
 
+// ارزِ مظنه برای نمایشِ کنارِ قیمتِ بزرگ (سبکِ سرتیترِ TV: «۱٫۱۰۲۳ USD»). نبود ⇐ null.
+function quoteFor(symbol = '') {
+  const s = String(symbol).toUpperCase();
+  const clean = s.replace(/[^A-Z0-9]/g, '');
+  if (/USDT$/.test(clean)) return 'USDT';
+  const b = clean.slice(3, 6);
+  if (clean.length >= 6 && CCY_FA[b]) return b; // جفت‌ارز/فلز → ارزِ دوم
+  if (/USD$/.test(clean) && clean.length > 3) return 'USD';
+  return null;
+}
+
 // تبدیلِ رنگِ hexِ ۶رقمی به rgba برای پس‌زمینهٔ کم‌رنگِ پیلِ تغییر (سبکِ TV).
 function tint(hex, a) {
   const h = String(hex || '').replace('#', '');
@@ -114,6 +125,7 @@ export default function Details({ symbol, TH, prices = {} }) {
 
   const meta = useMemo(() => metaFor(symbol), [symbol]);
   const name = useMemo(() => nameFor(symbol), [symbol]);
+  const quoteCcy = useMemo(() => quoteFor(symbol), [symbol]);
   const dec = decimals(lp?.mid);
   const fmt = (v) => (v == null ? '—' : Number(v).toFixed(dec));
 
@@ -130,6 +142,8 @@ export default function Details({ symbol, TH, prices = {} }) {
   const chgAbs = (base != null && ref != null) ? ref - base : null;
   const chgPct = (base && ref != null) ? (chgAbs / base) * 100 : null;
   const chgCol = chgPct == null ? TH.text : chgPct >= 0 ? TH.up : TH.down;
+  // رنگِ نشانگرِ نوارِ رنج (جهتِ روز؛ نبودِ داده ⇐ اکسنت)
+  const trendCol = chgPct == null ? TH.accent : chgPct >= 0 ? TH.up : TH.down;
 
   // موقعیتِ قیمت در بازهٔ روز (0..1) برای نوارِ بازه
   const lo = day?.l, hi = day?.h;
@@ -143,17 +157,41 @@ export default function Details({ symbol, TH, prices = {} }) {
     ? Math.max(0, Math.min(1, (ref - lo52) / (hi52 - lo52))) : null;
 
   const Row = ({ k, v, c, last }) => (
-    <div className="flex items-center justify-between py-1" style={{ borderBottom: last ? 'none' : `1px solid ${TH.border}` }}>
-      <span className="opacity-60">{k}</span>
-      <span className="tabular-nums" dir="ltr" style={{ color: c || TH.textStrong }}>{v}</span>
+    <div className="flex items-center justify-between gap-3 py-[5px]" style={{ borderBottom: last ? 'none' : `1px solid ${TH.border}` }}>
+      <span className="text-[11px] shrink-0" style={{ color: TH.text }}>{k}</span>
+      <span className="text-[11.5px] font-semibold tabular-nums truncate text-left" dir="ltr" style={{ color: c || TH.textStrong }}>{v}</span>
     </div>
   );
 
   // سرتیترِ بخش هم‌ترازِ TV: عنوانِ فارسی + برچسبِ انگلیسیِ کم‌رنگ
   const Label = ({ fa, en }) => (
-    <div className="flex items-baseline gap-1.5 mb-1 mt-3">
-      <span className="text-[11px] font-bold" style={{ color: TH.textStrong }}>{fa}</span>
-      <span className="text-[9px] uppercase tracking-wide opacity-40" dir="ltr">{en}</span>
+    <div className="flex items-baseline gap-1.5 mb-1.5 mt-3.5">
+      <span className="text-[11px] font-extrabold" style={{ color: TH.textStrong }}>{fa}</span>
+      <span className="text-[9px] uppercase tracking-[0.08em] opacity-40" dir="ltr">{en}</span>
+    </div>
+  );
+
+  // نوارِ رنجِ افقیِ سبکِ TV: track گرادیانِ قرمز→سبز + knobِ شارپ در موقعیتِ قیمت،
+  // با مقادیرِ کف/سقف در دو سرِ نوار. p در بازهٔ 0..1 (کف=چپ، سقف=راست) یا null.
+  const RangeBar = ({ title, loVal, hiVal, p }) => (
+    <div className="mb-2.5">
+      <div className="text-[10.5px] mb-1.5" style={{ color: TH.text }}>{title}</div>
+      <div className="flex items-center gap-2" dir="ltr">
+        <span className="text-[10px] tabular-nums shrink-0 w-14 text-right" style={{ color: TH.textStrong, opacity: 0.85 }}>{loVal}</span>
+        <div className="relative flex-1 h-1.5 rounded-full"
+          style={{ background: p == null ? TH.chipBg : `linear-gradient(90deg, ${TH.down}, ${TH.up})` }}>
+          {p != null && (
+            <span className="absolute top-1/2 rounded-full"
+              style={{
+                left: `${p * 100}%`, transform: 'translate(-50%,-50%)',
+                width: 12, height: 12, background: TH.bg,
+                border: `2.5px solid ${trendCol}`,
+                boxShadow: '0 1px 3px rgba(0,0,0,.35)',
+              }} />
+          )}
+        </div>
+        <span className="text-[10px] tabular-nums shrink-0 w-14 text-left" style={{ color: TH.textStrong, opacity: 0.85 }}>{hiVal}</span>
+      </div>
     </div>
   );
 
@@ -166,66 +204,40 @@ export default function Details({ symbol, TH, prices = {} }) {
       {/* سربرگ: آیکون + نماد + نامِ کامل + دسته (سبکِ سرتیترِ نمادِ TV) */}
       <div className="mb-3">
         <div className="flex items-center gap-2">
-          <SymbolLogo symbol={symbol} size={30} />
+          <SymbolLogo symbol={symbol} size={32} />
           <div className="min-w-0 flex-1">
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-bold text-sm" style={{ color: TH.textStrong }} dir="ltr">{symbol}</span>
-              <span className="text-[9px] uppercase tracking-wide opacity-40 shrink-0" dir="ltr">{meta.type}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="font-extrabold text-[15px] leading-none tracking-tight" style={{ color: TH.textStrong }} dir="ltr">{symbol}</span>
+              <span className="text-[8.5px] font-bold uppercase tracking-[0.06em] shrink-0 px-1.5 py-0.5 rounded"
+                style={{ color: TH.text, background: TH.chipBg }} dir="ltr">{meta.type}</span>
             </div>
-            {name && <div className="text-[11px] opacity-60 truncate leading-tight">{name}</div>}
+            {name && <div className="text-[11px] truncate leading-tight mt-1" style={{ color: TH.text }}>{name}</div>}
           </div>
         </div>
 
-        {/* قیمتِ بزرگ + تغییرِ روزِ رنگی (پیلِ کم‌رنگ + فلش) */}
-        <div className="flex items-center gap-2 mt-2" dir="ltr">
-          <span className="text-2xl font-bold tabular-nums leading-none" style={{ color: dir > 0 ? TH.up : dir < 0 ? TH.down : TH.textStrong }}>
+        {/* قیمتِ بزرگ + ارزِ مظنه + تغییرِ روزِ رنگی (پیلِ کم‌رنگ + فلش) */}
+        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mt-2.5" dir="ltr">
+          <span className="text-[27px] font-extrabold tabular-nums leading-none tracking-tight" style={{ color: dir > 0 ? TH.up : dir < 0 ? TH.down : TH.textStrong }}>
             {mid != null ? fmt(mid) : '—'}
           </span>
+          {quoteCcy && mid != null && (
+            <span className="text-[11px] font-semibold" style={{ color: TH.text }}>{quoteCcy}</span>
+          )}
           {chgPct != null && (
-            <span className="text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded" style={{ color: chgCol, background: tint(chgCol, 0.12) }}>
+            <span className="text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded" style={{ color: chgCol, background: tint(chgCol, 0.14) }}>
               {chgPct >= 0 ? '▲' : '▼'} {chgAbs >= 0 ? '+' : ''}{fmt(chgAbs)} ({chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%)
             </span>
           )}
         </div>
       </div>
 
-      {/* نوارِ بازهٔ روز */}
-      <div className="mb-1">
-        <div className="flex items-center justify-between text-[10px] opacity-60 mb-1">
-          <span>بازهٔ روز</span>
-          <span dir="ltr" className="tabular-nums">{fmt(lo)} – {fmt(hi)}</span>
-        </div>
-        <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: TH.chipBg }}>
-          {pos != null && (
-            <>
-              <div className="absolute inset-y-0 right-0" style={{ width: `${(1 - pos) * 100}%`, background: TH.accent, opacity: 0.25 }} />
-              <div className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
-                style={{ right: `calc(${(1 - pos) * 100}% - 3px)`, background: dir < 0 ? TH.down : TH.up }} />
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* نوارِ بازهٔ ۵۲ هفته */}
-      <div className="mb-1">
-        <div className="flex items-center justify-between text-[10px] opacity-60 mb-1">
-          <span>بازهٔ ۵۲ هفته</span>
-          <span dir="ltr" className="tabular-nums">{pos52 != null ? `${fmt(lo52)} – ${fmt(hi52)}` : '—'}</span>
-        </div>
-        <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: TH.chipBg }}>
-          {pos52 != null && (
-            <>
-              <div className="absolute inset-y-0 right-0" style={{ width: `${(1 - pos52) * 100}%`, background: TH.accent, opacity: 0.18 }} />
-              <div className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
-                style={{ right: `calc(${(1 - pos52) * 100}% - 3px)`, background: dir < 0 ? TH.down : TH.up }} />
-            </>
-          )}
-        </div>
-      </div>
+      {/* نوارهای رنجِ روز و ۵۲ هفته (گِیجِ گرادیانِ سبکِ TV) */}
+      <RangeBar title="بازهٔ روز" loVal={fmt(lo)} hiVal={fmt(hi)} p={pos} />
+      <RangeBar title="بازهٔ ۵۲ هفته" loVal={pos52 != null ? fmt(lo52) : '—'} hiVal={pos52 != null ? fmt(hi52) : '—'} p={pos52} />
 
       {/* آمارِ کلیدی — باز/سقف/کف روز، حجم، بازهٔ ۵۲ هفته */}
       <Label fa="آمارِ کلیدی" en="Key stats" />
-      <div className="rounded-md border px-2.5 py-0.5" style={{ borderColor: TH.border, background: TH.subtle }}>
+      <div className="rounded-lg border px-3 py-1" style={{ borderColor: TH.border, background: TH.subtle }}>
         <Row k="بازشدنِ روز" v={fmt(day?.o)} />
         <Row k="بالاترینِ روز" v={fmt(hi)} c={TH.up} />
         <Row k="پایین‌ترینِ روز" v={fmt(lo)} c={TH.down} />
@@ -237,7 +249,7 @@ export default function Details({ symbol, TH, prices = {} }) {
 
       {/* مشخصاتِ معاملاتی — بید/اَسک/اسپرد */}
       <Label fa="مشخصاتِ معاملاتی" en="Quote" />
-      <div className="rounded-md border px-2.5 py-0.5" style={{ borderColor: TH.border, background: TH.subtle }}>
+      <div className="rounded-lg border px-3 py-1" style={{ borderColor: TH.border, background: TH.subtle }}>
         <Row k="بید (Bid)" v={fmt(bid)} c={TH.down} />
         <Row k="اَسک (Ask)" v={fmt(ask)} c={TH.up} />
         <Row k="اسپرد" v={spread != null ? spread.toFixed(dec) : '—'} last />
@@ -245,7 +257,7 @@ export default function Details({ symbol, TH, prices = {} }) {
 
       {/* حقایقِ کلیدی — مشخصاتِ قرارداد و بازار */}
       <Label fa="حقایقِ کلیدی" en="Key facts" />
-      <div className="rounded-md border px-2.5 py-0.5" style={{ borderColor: TH.border, background: TH.subtle }}>
+      <div className="rounded-lg border px-3 py-1" style={{ borderColor: TH.border, background: TH.subtle }}>
         <Row k="نماد" v={symbol} />
         <Row k="نوعِ ابزار" v={meta.type} />
         <Row k="اندازهٔ قرارداد" v={meta.contract} />

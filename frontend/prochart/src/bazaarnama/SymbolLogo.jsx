@@ -1,8 +1,9 @@
-// بازارنما — لوگوی نماد (اوریجینال). جفت‌ارزها = دو پرچمِ دایره‌ایِ روی‌هم؛
-// فلز/نفت/شاخص/کریپتو = نشانِ رنگیِ اختصاصی. پرچم‌ها طرحِ سادهٔ پرچمِ ملی (پابلیک‌دامین) هستند.
+// بازارنما — لوگوی نماد (اوریجینال، شارپ و واقعی مثلِ TradingView).
+// جفت‌ارزها = دو پرچمِ دایره‌ایِ روی‌هم؛ فلز = شمشِ گرادیانی؛ کریپتو = آیکونِ رنگیِ واقعی؛
+// شاخص = بَجِ رنگیِ برنددار؛ ناشناخته = مونوگرامِ رنگی. همه گِرد، هم‌تراز، آنتی‌الیاسِ تمیز.
 import React from 'react';
 
-// پرچم‌های سادهٔ ۸ ارزِ اصلی (۲۴×۲۴، بعداً در دایره کلیپ می‌شوند).
+// ── پرچم‌های سادهٔ ۸ ارزِ اصلی (۲۴×۲۴، بعداً در دایره کلیپ می‌شوند). ──────────────
 const FLAG = {
   USD: (<g><rect width="24" height="24" fill="#fff" /><rect width="24" height="24" fill="#b22234" />{[1,3,5,7,9,11].map((i)=>(<rect key={i} y={i*2} width="24" height="2" fill="#fff" />))}<rect width="13" height="14" fill="#3c3b6e" /></g>),
   EUR: (<g><rect width="24" height="24" fill="#039" /><circle cx="12" cy="12" r="6" fill="none" stroke="#fc0" strokeWidth="1.4" strokeDasharray="0.7 1.7" /></g>),
@@ -13,45 +14,61 @@ const FLAG = {
   AUD: (<g><rect width="24" height="24" fill="#00247d" /><rect width="11" height="8" fill="#012169" /><path d="M0 0l11 8M11 0L0 8" stroke="#fff" strokeWidth="1.6" /><path d="M5.5 0v8M0 4h11" stroke="#fff" strokeWidth="2.2" /><circle cx="17" cy="15" r="1.2" fill="#fff" /><circle cx="20" cy="9" r="1" fill="#fff" /></g>),
   NZD: (<g><rect width="24" height="24" fill="#00247d" /><rect width="11" height="8" fill="#012169" /><path d="M0 0l11 8M11 0L0 8" stroke="#fff" strokeWidth="1.6" /><path d="M5.5 0v8M0 4h11" stroke="#fff" strokeWidth="2.2" /><circle cx="18" cy="14" r="1.2" fill="#cc142b" /><circle cx="20" cy="9" r="1" fill="#cc142b" /></g>),
 };
+const CCY = Object.keys(FLAG);
 
-// نشانِ تک‌رنگ برای کالا/شاخص/کریپتو/ارزِ ناشناخته.
-const BADGE = {
-  XAU: ['#caa53d', 'طلا'], XAG: ['#9ca3af', 'نقره'], XPT: ['#8a9597', 'Pt'], XPD: ['#7d8a8c', 'Pd'],
-  OIL: ['#2b2b2b', 'OIL'], WTI: ['#2b2b2b', 'WTI'], BRENT: ['#2b2b2b', 'BR'],
-};
-
-// فلزاتِ گران‌بها → شمشِ فلزی (مثلِ TradingView): پس‌زمینهٔ فلزی + گلیفِ شمش.
+// ── فلزاتِ گران‌بها → شمشِ فلزیِ گرادیانی (شاین/رفلکشنِ واقعی). ────────────────────
 const METAL = {
-  XAU: { bg: '#a67c1a', bar: '#f2cf6b', top: '#ffe6a3', edge: '#7a5a12' }, // طلا
-  XAG: { bg: '#8b95a1', bar: '#dfe5ec', top: '#f4f7fb', edge: '#6a727d' }, // نقره
-  XPT: { bg: '#93a0a3', bar: '#dbe3e5', top: '#eef3f4', edge: '#6f797b' }, // پلاتین
-  XPD: { bg: '#8b9698', bar: '#d4dcdd', top: '#eaeeef', edge: '#69716f' }, // پالادیوم
+  XAU: { bg1: '#e7c56b', bg2: '#9a6f14', bar1: '#fff0bf', bar2: '#c48f27', top1: '#fff7dc', top2: '#f0cf78', edge: '#6f4f0e', spark: '#fffdf3' }, // طلا
+  XAG: { bg1: '#eef2f7', bg2: '#8a95a2', bar1: '#ffffff', bar2: '#c0c9d4', top1: '#ffffff', top2: '#e2e8f0', edge: '#69727d', spark: '#ffffff' }, // نقره
+  XPT: { bg1: '#e4eaec', bg2: '#7f8c8f', bar1: '#fbfdfd', bar2: '#c2cccd', top1: '#ffffff', top2: '#dfe7e8', edge: '#606a6b', spark: '#ffffff' }, // پلاتین
+  XPD: { bg1: '#dde3e3', bg2: '#79807e', bar1: '#f7fbfb', bar2: '#bcc4c2', top1: '#ffffff', top2: '#d9dedc', edge: '#5c625f', spark: '#ffffff' }, // پالادیوم
 };
 
-// گلیفِ شمش در فضای ۲۴×۲۴ (بدونِ پس‌زمینه — بالادست پر می‌شود).
+// تعریفِ گرادیان‌های یک فلز (idها بر پایهٔ نوع؛ تکراری اما یکسان → بی‌خطر).
+function metalDefs(kind) {
+  const m = METAL[kind] || METAL.XAU;
+  return (
+    <defs>
+      <radialGradient id={`mlBg-${kind}`} cx="0.35" cy="0.3" r="0.85">
+        <stop offset="0" stopColor={m.bg1} /><stop offset="1" stopColor={m.bg2} />
+      </radialGradient>
+      <linearGradient id={`mlBar-${kind}`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor={m.bar1} /><stop offset="1" stopColor={m.bar2} />
+      </linearGradient>
+      <linearGradient id={`mlTop-${kind}`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor={m.top1} /><stop offset="1" stopColor={m.top2} />
+      </linearGradient>
+    </defs>
+  );
+}
+
+// گلیفِ شمش در فضای ۲۴×۲۴ (بدونِ پس‌زمینه — بالادست پر می‌شود). نیازمندِ metalDefs(kind).
 function ingotPaint(kind) {
   const m = METAL[kind] || METAL.XAU;
   return (
     <g strokeLinejoin="round">
-      <path d="M6 15.6L18 15.6L15.7 10.1L8.3 10.1Z" fill={m.bar} stroke={m.edge} strokeWidth="0.6" />
-      <path d="M8.3 10.1L15.7 10.1L14.4 8.3L9.6 8.3Z" fill={m.top} stroke={m.edge} strokeWidth="0.6" />
-      <line x1="8.9" y1="13.7" x2="15.1" y2="13.7" stroke={m.top} strokeWidth="0.7" opacity="0.55" />
+      <path d="M6 15.7L18 15.7L15.7 10.1L8.3 10.1Z" fill={`url(#mlBar-${kind})`} stroke={m.edge} strokeWidth="0.6" />
+      <path d="M8.3 10.1L15.7 10.1L14.4 8.3L9.6 8.3Z" fill={`url(#mlTop-${kind})`} stroke={m.edge} strokeWidth="0.6" />
+      <line x1="9" y1="13.9" x2="14.8" y2="13.9" stroke={m.spark} strokeWidth="0.7" opacity="0.6" />
+      <line x1="7.6" y1="14.9" x2="9.6" y2="11.2" stroke={m.spark} strokeWidth="0.8" opacity="0.5" strokeLinecap="round" />
     </g>
   );
 }
 
 // شمشِ فلزی به‌صورتِ svgِ مستقل (نمادِ تک، مثلِ XAU بدونِ جفت).
 function metalSvg(kind, s) {
-  const m = METAL[kind] || METAL.XAU;
+  const c = s / 2, r = c - 0.5;
   return (
     <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0" aria-hidden>
-      <circle cx={s / 2} cy={s / 2} r={s / 2 - 0.5} fill={m.bg} />
+      {metalDefs(kind)}
+      <circle cx={c} cy={c} r={r} fill={`url(#mlBg-${kind})`} />
       <g transform={`scale(${s / 24})`}>{ingotPaint(kind)}</g>
+      <circle cx={c} cy={c} r={r} fill="none" stroke="rgba(0,0,0,.22)" strokeWidth="0.75" />
     </svg>
   );
 }
 
-// کریپتو — رنگِ برندِ هر کوین + نمادِ نمایشی (تیکر یا glyph). تطبیق با کوینِ پایه (بدونِ USDT/USD).
+// ── کریپتو — رنگِ برند + گلیف (fallback وقتی آیکونِ واقعی نبود). تطبیق با کوینِ پایه. ──
 const CRYPTO = {
   BTC: ['#f7931a', '₿'], ETH: ['#627eea', 'Ξ'], BNB: ['#f3ba2f', 'BNB'], SOL: ['#14f195', 'SOL'],
   XRP: ['#23292f', 'XRP'], ADA: ['#0033ad', 'ADA'], DOGE: ['#c2a633', 'DOGE'], TRX: ['#ef0027', 'TRX'],
@@ -70,7 +87,33 @@ const CRYPTO = {
   GMT: ['#caa46a', 'GMT'], FET: ['#1e1e2a', 'FET'], AR: ['#111111', 'AR'], EGLD: ['#1b46c2', 'EGLD'],
 };
 
-const CCY = Object.keys(FLAG);
+// ── شاخص‌ها → بَجِ رنگیِ برنددار (S&P/NDX/DJI-style). [regex, رنگ, برچسب] ──────────
+const INDICES = [
+  [/US500|SPX500|\bSPX\b|GSPC|SP500/, '#2962ff', 'SPX'],
+  [/NAS100|US100|\bNDX\b|USTEC|NASDAQ|\bNAS\b/, '#0098d8', 'NDX'],
+  [/US30|\bDJI\b|DJ30|WS30|DOW/, '#0a4a86', 'DJI'],
+  [/US2000|\bRUT\b|RUSSELL/, '#7c3aed', 'RUT'],
+  [/UK100|FTSE/, '#c8102e', 'FTSE'],
+  [/DE40|GER40|GER30|DE30|\bDAX\b/, '#111827', 'DAX'],
+  [/FRA40|\bCAC\b/, '#0055a4', 'CAC'],
+  [/JP225|JPN225|N225|NIKKEI/, '#bc002d', 'N225'],
+  [/HK50|\bHSI\b|HANGSENG/, '#de2910', 'HSI'],
+  [/AUS200|ASX200|\bASX\b/, '#00843d', 'ASX'],
+  [/EU50|STOXX|ESTX/, '#003399', 'STX'],
+  [/\bVIX\b/, '#f59e0b', 'VIX'],
+];
+
+// ── انرژی → بَجِ تیره با برچسب. [regex, رنگ, برچسب] ──────────────────────────────
+const ENERGY = [
+  [/WTI|USOIL|CRUDE|\bXTI\b|CL_/, '#1f2937', 'WTI'],
+  [/BRENT|UKOIL|\bXBR\b/, '#111827', 'BR'],
+  [/NATGAS|NAT_?GAS|\bXNG\b|\bNG_/, '#0284c7', 'NG'],
+  [/\bOIL\b/, '#1f2937', 'OIL'],
+];
+
+const METAL_RE = /^(XAU|XAG|XPT|XPD)/;
+const INDEX_RE = /US30|US500|SPX500|SP500|GSPC|NAS100|US100|NDX|USTEC|NASDAQ|\bNAS\b|\bSPX\b|\bDJI\b|DJ30|WS30|DOW|US2000|\bRUT\b|RUSSELL|UK100|FTSE|DE40|GER40|GER30|DE30|\bDAX\b|FRA40|\bCAC\b|JP225|JPN225|N225|NIKKEI|HK50|\bHSI\b|HANGSENG|AUS200|ASX200|\bASX\b|EU50|STOXX|ESTX|\bVIX\b/;
+const ENERGY_RE = /WTI|USOIL|CRUDE|\bXTI\b|CL_|BRENT|UKOIL|\bXBR\b|NATGAS|NAT_?GAS|\bXNG\b|\bNG_|OIL/;
 
 // تجزیهٔ نماد به ارزِ پایه/مظنه (اگر جفت‌ارز باشد).
 function pair(sym = '') {
@@ -78,20 +121,19 @@ function pair(sym = '') {
   if (s.length >= 6) {
     const a = s.slice(0, 3), b = s.slice(3, 6);
     if (CCY.includes(a) && CCY.includes(b)) return [a, b];
-    // طلا/نقره در برابر دلار: XAUUSD / XAGUSD
     if ((a === 'XAU' || a === 'XAG' || a === 'XPT' || a === 'XPD') && CCY.includes(b)) return [a, b];
   }
   return null;
 }
 
+// انتخابِ رنگ/برچسبِ بَج برای شاخص/انرژی/کریپتو-fallback/فلز/ناشناخته.
 function badgeFor(sym = '') {
   const s = String(sym).toUpperCase();
-  // کریپتو: کوینِ پایه را با حذفِ پسوندِ USDT/USD دقیق تطبیق بده (نه زیررشتهٔ مبهم)
   const base = s.replace(/USDT$|USD$/, '');
   if (CRYPTO[base]) return { color: CRYPTO[base][0], txt: CRYPTO[base][1] };
-  for (const k of Object.keys(BADGE)) if (s.includes(k)) return { key: k, color: BADGE[k][0], txt: BADGE[k][1] };
-  // شاخص‌ها
-  if (/US30|US500|NAS100|NAS|SPX|DJI|NDX|UK100|DE40|JP225|US100|FRA40|HK50/.test(s)) return { color: '#3b82f6', txt: s.slice(0, 3) };
+  if (METAL_RE.test(s)) return { key: s.slice(0, 3), color: (METAL[s.slice(0, 3)] || METAL.XAU).bg2, txt: s.slice(0, 3) };
+  for (const [re, color, txt] of INDICES) if (re.test(s)) return { color, txt, index: true };
+  for (const [re, color, txt] of ENERGY) if (re.test(s)) return { color, txt };
   return { color: '#64748b', txt: s.slice(0, 3) };
 }
 
@@ -103,35 +145,48 @@ function Disc({ ccy, cx, cy, r, ring }) {
   return (
     <g>
       {ring && <circle cx={cx} cy={cy} r={r + 0.6} fill={ring} />}
+      {metal && metalDefs(ccy)}
       <clipPath id={id}><circle cx={cx} cy={cy} r={r} /></clipPath>
       <g clipPath={`url(#${id})`} transform={`translate(${cx - r} ${cy - r}) scale(${(2 * r) / 24})`}>
         {metal
-          ? (<g><rect width="24" height="24" fill={metal.bg} />{ingotPaint(ccy)}</g>)
+          ? (<g><rect width="24" height="24" fill={`url(#mlBg-${ccy})`} />{ingotPaint(ccy)}</g>)
           : (flag || <rect width="24" height="24" fill="#64748b" />)}
       </g>
+      {/* رینگِ داخلیِ ظریف برای لبهٔ نرم و شارپ */}
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(0,0,0,.18)" strokeWidth="0.6" />
     </g>
   );
 }
 
-// آیا نماد کریپتو است؟ (نه جفت‌ارز، نه فلز/کالا، نه شاخص) → تیکرِ کوینِ پایه برمی‌گرداند.
+// آیا نماد کریپتو است؟ (نه جفت‌ارز، نه فلز/کالا، نه شاخص/انرژی) → تیکرِ کوینِ پایه.
 function cryptoTicker(sym = '') {
   const s = String(sym).toUpperCase();
-  if (pair(s)) return null; // جفت‌ارز
-  if (/^(XAU|XAG|XPT|XPD)/.test(s)) return null; // فلز
-  if (/US30|US500|NAS100|NAS|SPX|DJI|NDX|UK100|DE40|JP225|US100|FRA40|HK50|OIL|WTI|BRENT|^XTI|^XBR|^XNG/.test(s)) return null; // شاخص/انرژی
+  if (pair(s)) return null;
+  if (METAL_RE.test(s)) return null;
+  if (INDEX_RE.test(s) || ENERGY_RE.test(s)) return null;
   const base = s.replace(/USDT$|USD$/, '');
   return base ? base.toLowerCase() : null;
 }
 
-// بَجِ رنگیِ fallback (وقتی لوگوی واقعی نبود).
+// بَجِ رنگیِ fallback (وقتی لوگوی واقعی نبود) — چیپِ براقِ گرادیانی، پرکنتراست.
 function badgeSvg(sym, s) {
   const bd = badgeFor(sym);
   if (bd.key && METAL[bd.key]) return metalSvg(bd.key, s);
-  const fs = bd.txt.length > 2 ? s * 0.30 : s * 0.46;
+  const c = s / 2, r = c - 0.5;
+  const fs = bd.txt.length > 3 ? s * 0.27 : bd.txt.length > 2 ? s * 0.34 : s * 0.46;
   return (
     <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className="shrink-0" aria-hidden>
-      <circle cx={s / 2} cy={s / 2} r={s / 2 - 0.5} fill={bd.color} />
-      <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fill="#fff" fontSize={fs} fontWeight="700" fontFamily="IRANYekanX, Ravagh, Vazirmatn, sans-serif">{bd.txt}</text>
+      <defs>
+        <linearGradient id="chipShade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.22" />
+          <stop offset="0.5" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="1" stopColor="#000000" stopOpacity="0.16" />
+        </linearGradient>
+      </defs>
+      <circle cx={c} cy={c} r={r} fill={bd.color} />
+      <circle cx={c} cy={c} r={r} fill="url(#chipShade)" />
+      <text x="50%" y="52%" textAnchor="middle" dominantBaseline="central" fill="#fff" fontSize={fs} fontWeight="800" letterSpacing={bd.txt.length > 2 ? -0.4 : 0} fontFamily="IRANYekanX, Ravagh, Vazirmatn, sans-serif" style={{ paintOrder: 'stroke' }}>{bd.txt}</text>
+      <circle cx={c} cy={c} r={r} fill="none" stroke="rgba(0,0,0,.16)" strokeWidth="0.75" />
     </svg>
   );
 }
@@ -147,7 +202,7 @@ function CryptoLogo({ symbol, ticker, size }) {
       height={size}
       onError={() => setErr(true)}
       className="shrink-0"
-      style={{ borderRadius: '50%' }}
+      style={{ borderRadius: '50%', display: 'block' }}
       alt=""
     />
   );

@@ -384,3 +384,40 @@ button, [role="button"], a, summary, .pc-btn {
 .pc-legend { color: var(--pc-text-2); }
 /* عددِ chrome — همیشه tabular (در RTL خودِ عنصر dir="ltr" بگیرد) */
 .pc-num { font-variant-numeric: tabular-nums lining-nums; font-feature-settings: "tnum" 1, "lnum" 1; }
+
+/* ════════════════════════════════════════════════════════════════════
+   راند ۵ — exact-colors: توکن‌های کنتراست/الویشنِ دقیقِ TradingView.
+   افزایشی و بدونِ شکستن؛ تمامِ --pc-* رنگ‌های پایه از قبل دقیقِ TV هستند
+   (bg #131722 · surface #1e222d · hover/border #2a2e39 · text #d1d4dc ·
+   muted #787b86 · accent #2962ff · up #26a69a/#089981 · down #ef5350/#f23645).
+   این بلوک فقط الویشنِ ظریف، ringِ فوکاسِ کیبورد و hairlineِ شارپ را اضافه می‌کند.
+   ════════════════════════════════════════════════════════════════════ */
+:root {
+  /* الویشنِ لایه‌بندیِ TV — پاپ‌آپ سبک، دیالوگ عمیق‌تر، همیشه با borderِ hairline */
+  --pc-elev-1: 0 1px 2px rgba(0,0,0,.24), 0 2px 6px rgba(0,0,0,.32);
+  --pc-elev-menu: 0 2px 4px rgba(0,0,0,.28), 0 8px 20px -6px rgba(0,0,0,.5);
+  --pc-elev-dialog: 0 4px 12px rgba(0,0,0,.36), 0 24px 48px -12px rgba(0,0,0,.62);
+  --pc-elev-pop: var(--pc-elev-menu);
+  /* ringِ فوکاسِ کیبورد — دقیقاً رنگِ accentِ TV، شفافیتِ محسوس ولی نه پرنویز */
+  --pc-focus-ring: 0 0 0 2px var(--pc-bg), 0 0 0 4px rgba(41,98,255,.55);
+  --pc-focus-color: #2962ff;
+  /* hairlineِ شارپِ ۱px تم‌آگاه (نامِ رنگی مستقیم برای border-color خام) */
+  --pc-hairline-color: #2a2e39;
+}
+.light {
+  --pc-elev-1: 0 1px 2px rgba(16,24,40,.06), 0 2px 6px rgba(16,24,40,.10);
+  --pc-elev-menu: 0 2px 4px rgba(16,24,40,.08), 0 8px 20px -6px rgba(16,24,40,.16);
+  --pc-elev-dialog: 0 4px 12px rgba(16,24,40,.10), 0 24px 48px -12px rgba(16,24,40,.22);
+  --pc-focus-ring: 0 0 0 2px var(--pc-bg), 0 0 0 4px rgba(41,98,255,.40);
+  --pc-hairline-color: #e0e3eb;
+}
+
+/* لایه‌های شناور با الویشنِ دقیقِ TV (افزایشی؛ سلکتورهای موجود دست‌نخورده) */
+.pc-elev-menu   { box-shadow: var(--pc-elev-menu); }
+.pc-elev-dialog { box-shadow: var(--pc-elev-dialog); }
+
+/* ringِ فوکاسِ کیبوردِ شارپ روی هر کنترلِ دلخواه — رنگِ دقیقِ accentِ TV */
+.pc-focus-ring:focus-visible { outline: none; box-shadow: var(--pc-focus-ring); }
+
+/* hairlineِ خامِ ۱px با رنگِ نامیِ دقیق (وقتی var حلقهٔ ارجاعِ border دارد) */
+.pc-hairline-x { border-color: var(--pc-hairline-color) !important; }

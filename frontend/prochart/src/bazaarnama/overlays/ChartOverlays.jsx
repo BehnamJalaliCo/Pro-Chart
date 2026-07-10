@@ -28,15 +28,17 @@ function tint(col, a = '22') {
 }
 
 // لوگو + نامِ نماد (پررنگ) + بازار/تایم‌فریمِ کم‌رنگ. فرگمنت (بدونِ wrapper) تا در
-//   هر دو Legend و ChartLegend داخلِ ردیفِ موجود بنشیند.
+//   هر دو Legend و ChartLegend داخلِ ردیفِ موجود بنشیند. سبکِ دقیقِ TradingView:
+//   نامِ نماد پررنگ و پرکنتراست، بازار/تایم‌فریم به‌صورتِ لیبلِ کم‌رنگِ کوچک با میان‌فاصلهٔ ·.
 function SymbolHead({ TH, symbol, tf, market }) {
   const mk = market != null ? market : marketOf(symbol);
   return (
     <>
       <SymbolLogo symbol={symbol} size={18} />
-      <span className="text-[12px] font-bold whitespace-nowrap" dir="ltr" style={{ color: TH.textStrong }}>{symbol}</span>
+      <span className="text-[13px] font-bold whitespace-nowrap tracking-tight" dir="ltr"
+        style={{ color: TH.textStrong, letterSpacing: '-.01em' }}>{symbol}</span>
       {(mk || tf) && (
-        <span className="text-[10px] tnum whitespace-nowrap" dir="ltr" style={{ color: TH.text, opacity: 0.6 }}>
+        <span className="text-[10px] tnum whitespace-nowrap font-medium" dir="ltr" style={{ color: TH.text, opacity: 0.62 }}>
           {mk}{mk && tf ? ' · ' : ''}{tf}
         </span>
       )}
@@ -44,7 +46,8 @@ function SymbolHead({ TH, symbol, tf, market }) {
   );
 }
 
-// O/H/L/C با لیبلِ کوچکِ کم‌رنگ و مقدارِ رنگیِ جهت (up/down).
+// O/H/L/C با لیبلِ کوچکِ کم‌رنگ و مقدارِ رنگیِ جهت (up/down) — دقیقاً مثلِ نوارِ لجندِ TV.
+//   لیبل‌ها خاکستریِ کم‌رنگ، مقادیر پررنگِ رنگی و .tnum برای هم‌ترازیِ ارقام.
 function OhlcTape({ legend, col, TH }) {
   if (!legend) return null;
   const cells = legend.open != null
@@ -54,20 +57,20 @@ function OhlcTape({ legend, col, TH }) {
     <span className="flex items-center gap-1.5 text-[11px] tnum whitespace-nowrap" dir="ltr">
       {cells.map(([k, v]) => (
         <span key={k} className="flex items-center gap-0.5">
-          <span style={{ color: TH.text, opacity: 0.55 }}>{k}</span>
-          <span style={{ color: col }}>{v}</span>
+          <span className="font-medium" style={{ color: TH.text, opacity: 0.5 }}>{k}</span>
+          <span className="font-semibold" style={{ color: col }}>{v}</span>
         </span>
       ))}
     </span>
   );
 }
 
-// چیپِ تغییرِ درصدی، پس‌زمینه‌یِ کم‌رنگ و متنِ رنگیِ up/down.
+// چیپِ تغییرِ درصدی، پس‌زمینه‌یِ کم‌رنگِ رنگی و متنِ پررنگِ up/down — جمع‌وجور و شارپ.
 function ChangeChip({ ch, col }) {
   if (ch == null) return null;
   return (
-    <span className="tnum rounded px-1 py-px text-[10px] font-semibold shrink-0 whitespace-nowrap" dir="ltr"
-      style={{ background: tint(col), color: col }}>
+    <span className="tnum rounded-[3px] px-1 py-px text-[10px] font-bold shrink-0 whitespace-nowrap leading-none" dir="ltr"
+      style={{ background: tint(col, '24'), color: col }}>
       {ch >= 0 ? '+' : ''}{ch.toFixed(2)}%
     </span>
   );
@@ -79,7 +82,8 @@ export function Legend({ legend, TH, symbol, tf, market }) {
   const ch = legend.open != null ? ((legend.close - legend.open) / legend.open) * 100 : null;
   const col = ch == null ? TH.text : ch >= 0 ? TH.up : TH.down;
   return (
-    <div className="absolute top-2 right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 border" dir="rtl" style={{ background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(2px)' }}>
+    <div className="absolute top-2 right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 border" dir="rtl"
+      style={{ background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', boxShadow: '0 1px 3px rgba(0,0,0,.10)' }}>
       <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} />
       <OhlcTape legend={legend} col={col} TH={TH} />
       <ChangeChip ch={ch} col={col} />
@@ -133,7 +137,7 @@ function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, on
       <button type="button" onClick={() => onSettings(item)}
         className="text-[12px] font-semibold whitespace-nowrap text-right" style={{ color: TH.textStrong }}>{item.label}</button>
       {value != null && value !== '' && (
-        <span className="text-[12px] tabular-nums whitespace-nowrap" dir="ltr" style={{ color }}>{value}</span>
+        <span className="text-[12px] tabular-nums whitespace-nowrap font-medium" dir="ltr" style={{ color }}>{value}</span>
       )}
       <span className="flex-1" />
       <div className={`flex items-center gap-0.5 ${coarse ? '' : 'bn-leg-ctrls'}`}>
@@ -183,7 +187,7 @@ export function ChartLegend({
 
   return (
     <div className="absolute top-2 right-2 z-20 max-w-[min(70%,520px)]"
-      style={{ background: TH.overlayMask, backdropFilter: 'blur(2px)', border: `1px solid ${TH.border}`, borderRadius: 8, padding: '4px 6px' }}>
+      style={{ background: TH.overlayMask, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', border: `1px solid ${TH.border}`, borderRadius: 8, padding: '4px 6px', boxShadow: '0 1px 3px rgba(0,0,0,.10)' }}>
       <style>{`.bn-leg-ctrls{opacity:0;transition:opacity 120ms ease}.group\\/leg:hover .bn-leg-ctrls{opacity:1}.bn-leg-ctrl{opacity:0}.group\\/leg:hover .bn-leg-ctrl{opacity:1}`}</style>
       {/* ردیفِ نماد (OHLC) */}
       <div className="flex items-center gap-1.5 px-1.5 h-7">
@@ -376,10 +380,18 @@ export function CountdownChip({ countdown, countdownColor, TH, marketOpen }) {
   );
 }
 
-// واترمارکِ لوگوی بازارنما — رندرِ خالص.
-export function Watermark({ src, theme }) {
-  // لوگوی سفیدِ شفاف؛ روی تمِ روشن invert می‌شود. ۵۰٪ بزرگ‌تر (۴۰→۶۰) و بالاتر از محورِ تاریخ (bottom-8).
-  return <img src={src} alt="بازارنما" className="absolute bottom-8 left-3 z-20 pointer-events-none select-none" style={{ height: 60, opacity: 0.5, filter: theme === 'light' ? 'invert(1)' : 'none' }} />;
+// واترمارکِ لوگوی بازارنما — رندرِ خالص. سبکِ دقیقِ TradingView: بسیار کم‌رنگ (شبح)
+//   تا فقط برندینگِ ظریف باشد و خواناییِ چارت را خدشه‌دار نکند. opacity/height اختیاری‌اند.
+export function Watermark({ src, theme, opacity = 0.13, height = 60 }) {
+  // لوگوی سفیدِ شفاف؛ روی تمِ روشن invert می‌شود. بالاتر از محورِ تاریخ (bottom-8).
+  return (
+    <img
+      src={src}
+      alt="بازارنما"
+      className="absolute bottom-8 left-3 z-20 pointer-events-none select-none"
+      style={{ height, opacity, filter: theme === 'light' ? 'invert(1)' : 'none' }}
+    />
+  );
 }
 
 // نوارِ کنترلِ بازپخش — رندرِ خالص؛ همهٔ هندلرها از props.

@@ -193,6 +193,8 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
   });
   // کلیدِ گروهی که فلای‌اوتش باز است (یا null).
   const [openKey, setOpenKey] = useState(null);
+  // تولتیپِ TV: پیلِ تاریکِ راست‌ایستا با نام + هاتکی (فقط برای دکمه‌های بدونِ فلای‌اوت).
+  const [tip, setTip] = useState(null); // { top, label, hotkey }
   const rootRef = useRef(null);
   const hoverTimer = useRef(null);
 
@@ -234,6 +236,13 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
     setPinned((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }, []);
 
+  // نمایشِ تولتیپِ راست‌ایستا؛ Y را از offsetTopِ خودِ دکمه (نسبت به ریلِ relative) می‌گیرد.
+  const showTip = useCallback((e, label, hotkey) => {
+    const el = e.currentTarget;
+    setTip({ top: el.offsetTop + el.offsetHeight / 2, label, hotkey: hotkey || '' });
+  }, []);
+  const hideTip = useCallback(() => setTip(null), []);
+
   const openOn = useCallback((key) => {
     if (hoverTimer.current) { clearTimeout(hoverTimer.current); hoverTimer.current = null; }
     setOpenKey(key);
@@ -253,23 +262,27 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
       ref={rootRef}
       dir="ltr"
       className="relative flex flex-col items-center justify-start gap-0.5 w-full h-full overflow-visible py-2"
+      onMouseLeave={hideTip}
     >
+      <style>{`@keyframes brn-tip-in{from{opacity:0;transform:translate(4px,-50%)}to{opacity:1;transform:translate(0,-50%)}}`}</style>
+
       {/* تاگلِ آهنربا (اختیاری) — فقط وقتی از بیرون کنترل داده شود. */}
       {typeof onToggleMagnet === 'function' && (
         <>
           <button
             type="button"
-            aria-label="آهنربا (Magnet)"
+            aria-label="آهنربا (Magnet) — چسبیدن به OHLC"
             aria-pressed={!!magnet}
-            title={`آهنربا (Magnet) — چسبیدن به OHLC · ${HOTKEY_MAGNET}`}
-            onClick={() => onToggleMagnet(!magnet)}
+            onClick={() => { hideTip(); onToggleMagnet(!magnet); }}
             className="relative flex items-center justify-center rounded"
             style={{
-              width: 40, height: 40,
+              width: 38, height: 38,
               background: magnet ? accentTint : 'transparent',
               color: magnet ? TH.accent : TH.text,
               transition: 'background-color 120ms ease, color 120ms ease',
             }}
+            onMouseEnter={(e) => showTip(e, 'آهنربا — چسبیدن به OHLC', HOTKEY_MAGNET)}
+            onMouseLeave={hideTip}
             onMouseOver={(e) => { if (!magnet) e.currentTarget.style.background = TH.chipBgHover; }}
             onMouseOut={(e) => { if (!magnet) e.currentTarget.style.background = 'transparent'; }}
           >
@@ -292,15 +305,16 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
                 type="button"
                 aria-label={label}
                 aria-pressed={active}
-                title={TIP(id, `★ ${label}`)}
-                onClick={() => setTool(id)}
+                onClick={() => { hideTip(); setTool(id); }}
                 className="relative flex items-center justify-center rounded"
                 style={{
-                  width: 40, height: 40,
+                  width: 38, height: 38,
                   background: active ? accentTint : 'transparent',
                   color: active ? TH.accent : TH.text,
                   transition: 'background-color 120ms ease, color 120ms ease',
                 }}
+                onMouseEnter={(e) => showTip(e, `★ ${label}`, HOTKEY[id])}
+                onMouseLeave={hideTip}
                 onMouseOver={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
                 onMouseOut={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}
               >
@@ -326,7 +340,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
           <div
             key={g.key}
             className="relative shrink-0 flex justify-center"
-            onMouseEnter={() => openOn(g.key)}
+            onMouseEnter={() => { hideTip(); openOn(g.key); }}
             onMouseLeave={scheduleClose}
           >
             <button
@@ -337,7 +351,7 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
               onClick={() => (isOpen ? setOpenKey(null) : openOn(g.key))}
               className="relative flex items-center justify-center rounded"
               style={{
-                width: 40, height: 40,
+                width: 38, height: 38,
                 // اکتیوِ tinted (accent با شفافیت) به‌جای پُرکردنِ سختِ آبی — پریتیِ TV.
                 background: isActiveGroup ? accentTint : (isOpen ? TH.chipBgHover : 'transparent'),
                 color: isActiveGroup ? TH.accent : TH.text,
@@ -435,6 +449,28 @@ export default function ToolRail({ tool, setTool, TH, onHelp, magnet, onToggleMa
           </div>
         );
       })}
+
+      {/* تولتیپِ TV — پیلِ راست‌ایستا با نام + هاتکی؛ Y هم‌ترازِ مرکزِ دکمهٔ اشاره‌شده. */}
+      {tip && (
+        <div
+          dir="rtl"
+          className="absolute left-full ml-2 z-[60] pointer-events-none flex items-center gap-1.5 rounded-md px-2 py-1 whitespace-nowrap"
+          style={{
+            top: tip.top,
+            transform: 'translateY(-50%)',
+            background: TH.popoverBg,
+            border: `1px solid ${TH.border}`,
+            boxShadow: '0 4px 14px -4px rgba(0,0,0,.45), 0 1px 3px -1px rgba(0,0,0,.30)',
+            animation: 'brn-tip-in 90ms ease-out both',
+          }}
+        >
+          <span className="text-[11px] leading-none font-medium" style={{ color: TH.textStrong }}>{tip.label}</span>
+          {tip.hotkey && (
+            <span dir="ltr" className="text-[10px] leading-none tnum tabular-nums rounded px-1 py-0.5"
+              style={{ color: TH.text, background: TH.chipBg }}>{tip.hotkey}</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

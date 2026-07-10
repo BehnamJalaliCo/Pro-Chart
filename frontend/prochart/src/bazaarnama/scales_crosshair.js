@@ -48,6 +48,15 @@ export const magnetModeById = (id) => {
   return MAGNET_MODES.find((m) => m.id === id) || MAGNET_MODES[0];
 };
 
+// رنگ‌های دقیقِ کراس‌هیرِ TradingView (در هر دو تمِ روشن/تیره یکسان‌اند):
+//  • خطِ نقطه‌چینِ خاکستریِ #9598a1 (رنگِ رسمیِ کراس‌هیرِ TV).
+//  • پس‌زمینهٔ برچسبِ محورِ کراس‌هیر خاکستریِ خنثیِ #4c525e (نه رنگِ accent) — عینِ TV.
+//  • style = LineStyle.Dashed(2): خط‌چینِ ریزِ TV (نه LargeDashed درشتِ قبلی).
+export const TV_CROSSHAIR_COLOR = '#9598a1';
+export const TV_CROSSHAIR_LABEL_BG = '#4c525e';
+export const TV_CROSSHAIR_LABEL_TEXT = '#ffffff';
+export const CROSSHAIR_LINE_STYLE = 2; // LineStyle.Dashed — خط‌چینِ ریزِ عینِ TradingView
+
 /**
  * ساختِ payloadِ آمادهٔ chart.applyOptions({...}) برای کراس‌هیر.
  * @param {string} id            یکی از 'cross'|'dot'|'arrow'|'hidden'
@@ -65,13 +74,15 @@ export const crosshairOptions = (id, magnet, th) => {
     ? CROSSHAIR_MODE.Hidden
     : (mag.active ? CROSSHAIR_MODE.Magnet : CROSSHAIR_MODE.Normal);
   const T = th || {};
-  const lineColor = T.text || '#9598a1';
-  const labelBg = T.accent || '#2962FF';
+  // خطِ کراس‌هیر همیشه خاکستریِ TV است (در هر دو تم)، مگر تم صریحاً T.crosshair بدهد.
+  const lineColor = T.crosshair || TV_CROSSHAIR_COLOR;
+  // پس‌زمینهٔ برچسبِ محورِ کراس‌هیر خاکستریِ خنثیِ TV است، مگر تم T.crosshairLabelBg بدهد.
+  const labelBg = T.crosshairLabelBg || TV_CROSSHAIR_LABEL_BG;
   const lineCfg = {
     visible: m.linesVisible,
     color: lineColor,
     width: 1,
-    style: 3,                 // LineStyle.LargeDashed
+    style: CROSSHAIR_LINE_STYLE,
     labelVisible: m.linesVisible,
     labelBackgroundColor: labelBg,
   };
@@ -168,6 +179,37 @@ export const resetPriceScaleOptions = () => ({ autoScale: true, invertScale: fal
 // نگه می‌دارد (برخلافِ reset). معادلِ دکمهٔ «Fit» / «Auto» در TradingView.
 // میزبان برای برازشِ افقی هم chart.timeScale().fitContent() را صدا می‌زند.
 export const fitPriceScaleOptions = () => ({ autoScale: true });
+
+// رنگ‌های دقیقِ مرز/گریدِ محورهای TradingView (روشن/تیره).
+//  • borderِ محور: خطِ نازکِ جداکنندهٔ محور از ناحیهٔ چارت.
+//  • gridِ محو: خطوطِ افقی/عمودیِ بسیار کم‌رنگ عینِ TV.
+export const TV_AXIS_BORDER_DARK = '#2a2e39';
+export const TV_AXIS_BORDER_LIGHT = '#e0e3eb';
+export const TV_GRID_DARK = '#1e222d';
+export const TV_GRID_LIGHT = '#eef0f4';
+
+/**
+ * payloadِ آمادهٔ chart.applyOptions({...}) برای ظاهرِ دقیقِ مرز و گریدِ محورها مثلِ TV.
+ * افزایشی و اختیاری؛ میزبان یک‌بار پس از ساختِ چارت اعمال می‌کند.
+ * تیک‌های تمیز: borderِ نازکِ محور + گریدِ محوِ کم‌کنتراست تا اعداد خوانا و شارپ بمانند.
+ * @param {object} [opt]
+ * @param {boolean} [opt.light]        true → پالتِ روشن؛ پیش‌فرض تیره (مثلِ TV dark).
+ * @param {string}  [opt.borderColor]  override رنگِ مرزِ محور (وگرنه از تم TV).
+ * @param {string}  [opt.gridColor]    override رنگِ گرید (وگرنه از تم TV).
+ * @returns {{rightPriceScale:object, timeScale:object, grid:object}}
+ */
+export const axisAppearanceOptions = ({ light = false, borderColor, gridColor } = {}) => {
+  const border = borderColor || (light ? TV_AXIS_BORDER_LIGHT : TV_AXIS_BORDER_DARK);
+  const grid = gridColor || (light ? TV_GRID_LIGHT : TV_GRID_DARK);
+  return {
+    rightPriceScale: { borderVisible: true, borderColor: border },
+    timeScale: { borderVisible: true, borderColor: border },
+    grid: {
+      vertLines: { visible: true, color: grid, style: 0 },
+      horzLines: { visible: true, color: grid, style: 0 },
+    },
+  };
+};
 
 // اندازهٔ فونتِ برچسب‌های محور (قیمت + زمان) مثلِ TradingView.
 export const PRICE_AXIS_FONT_PX = 11;

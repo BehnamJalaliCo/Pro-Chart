@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import { createChart, CandlestickSeries } from 'lightweight-charts';
 import { api } from '../api/client';
 import { useApp } from '../appStore';
@@ -12,13 +12,16 @@ const PAL = {
 const TH = PAL.dark; // سازگاریِ عقب‌رو (پیش‌فرضِ تیره)
 
 // ── اسپارک‌لاینِ ردیفِ واچ‌لیست (سبکِ TradingView) ──────────────────────────
-// خطِ کوچکِ روند به‌صورتِ ستونِ اختیاری در واچ‌لیست: SVG سبک، بی‌لرزش، تم‌آگاه.
+// خطِ کوچکِ روند به‌صورتِ ستونِ اختیاری در واچ‌لیست: SVG سبک، بی‌لرزش، تم‌آگاه، شارپ.
 // رنگِ سبز/قرمز از همان پالتِ کندلِ این چارت گرفته می‌شود تا هم‌خانواده بماند.
 //   data: آرایهٔ اعداد (بسته‌شدن‌ها).  up: اختیاری؛ اگر نیامد از خودِ داده استنتاج می‌شود.
-//   stroke: بازنویسیِ رنگ.  fill: پرکردنِ کم‌رنگِ زیرِ خط (حسِ TV).  radius: نرمیِ گوشه‌ها.
-export function Sparkline({ data, up, width = 56, height = 22, stroke, fill = true }) {
+//   stroke: بازنویسیِ رنگ.  fill: پرکردنِ گرادیانتیِ کم‌رنگِ زیرِ خط (حسِ TV).
+//   smooth: هموارسازیِ نرمِ کاتمول-رام (بی‌اورشوت).  dot: نقطهٔ پایانیِ برجسته.
+export function Sparkline({ data, up, width = 56, height = 22, stroke, fill = true, smooth = true, dot = false }) {
   const theme = useApp((s) => s.theme) || 'light';
+  const uid = useId(); // شناسهٔ یکتای گرادیانت — جلوگیری از تداخلِ چند اسپارک‌لاین در یک صفحه
   const th = PAL[theme] || PAL.dark;
+  const isDark = theme === 'dark';
   // فضای ثابت رزرو می‌شود حتی وقتی داده نیست → بی‌جهش/بی‌لرزش در ردیف.
   if (!data || data.length < 2) return <svg width={width} height={height} style={{ display: 'block', flex: '0 0 auto' }} aria-hidden="true" />;
   const rise = up != null ? up : data[data.length - 1] >= data[0]; // روندِ کلی: آخر vs اول
@@ -28,15 +31,41 @@ export function Sparkline({ data, up, width = 56, height = 22, stroke, fill = tr
   for (let i = 1; i < data.length; i++) { const v = data[i]; if (v < min) min = v; else if (v > max) max = v; }
   const rng = (max - min) || 1;
   const stepX = (width - pad * 2) / lastI;
-  const yOf = (v) => (height - pad - ((v - min) / rng) * (height - pad * 2));
-  const pts = data.map((v, i) => `${(pad + i * stepX).toFixed(1)},${yOf(v).toFixed(1)}`);
-  const line = pts.join(' ');
-  const base = (height - pad).toFixed(1);
-  const area = `${pad.toFixed(1)},${base} ${line} ${(pad + lastI * stepX).toFixed(1)},${base}`;
+  const topY = pad, botY = height - pad;
+  const clampY = (y) => (y < topY ? topY : y > botY ? botY : y); // مهارِ کنترل‌پوینت‌ها → بی‌اورشوت
+  const xs = [], ys = [];
+  for (let i = 0; i < data.length; i++) { xs.push(pad + i * stepX); ys.push(botY - ((data[i] - min) / rng) * (height - pad * 2)); }
+  // مسیرِ خط: پلی‌لاینِ تیز، یا منحنیِ نرمِ کاتمول-رام→بزیه با کنترلِ مهارشده
+  let linePath = `M ${xs[0].toFixed(2)} ${ys[0].toFixed(2)}`;
+  if (smooth && data.length > 2) {
+    for (let i = 0; i < lastI; i++) {
+      const x0 = xs[i - 1 < 0 ? 0 : i - 1], y0 = ys[i - 1 < 0 ? 0 : i - 1];
+      const x1 = xs[i], y1 = ys[i];
+      const x2 = xs[i + 1], y2 = ys[i + 1];
+      const x3 = xs[i + 2 > lastI ? lastI : i + 2], y3 = ys[i + 2 > lastI ? lastI : i + 2];
+      const c1x = x1 + (x2 - x0) / 6, c1y = clampY(y1 + (y2 - y0) / 6);
+      const c2x = x2 - (x3 - x1) / 6, c2y = clampY(y2 - (y3 - y1) / 6);
+      linePath += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)} ${c2x.toFixed(2)} ${c2y.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+    }
+  } else {
+    for (let i = 1; i < data.length; i++) linePath += ` L ${xs[i].toFixed(2)} ${ys[i].toFixed(2)}`;
+  }
+  const b = botY.toFixed(2);
+  const areaPath = `${linePath} L ${xs[lastI].toFixed(2)} ${b} L ${xs[0].toFixed(2)} ${b} Z`;
+  const gid = `sl-${uid}`;
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none" style={{ display: 'block', flex: '0 0 auto' }} aria-hidden="true">
-      {fill && <polygon points={area} fill={col} fillOpacity={theme === 'dark' ? 0.12 : 0.09} stroke="none" />}
-      <polyline points={line} stroke={col} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none" shapeRendering="geometricPrecision" style={{ display: 'block', flex: '0 0 auto' }} aria-hidden="true">
+      {fill && (
+        <defs>
+          <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={col} stopOpacity={isDark ? 0.28 : 0.20} />
+            <stop offset="100%" stopColor={col} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      )}
+      {fill && <path d={areaPath} fill={`url(#${gid})`} stroke="none" />}
+      <path d={linePath} fill="none" stroke={col} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+      {dot && <circle cx={xs[lastI].toFixed(2)} cy={ys[lastI].toFixed(2)} r="1.7" fill={col} stroke={th.bg} strokeWidth="0.9" />}
     </svg>
   );
 }
