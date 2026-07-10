@@ -1459,11 +1459,17 @@ export default function BazaarNama() {
           <button onClick={() => setTfMenu((v) => !v)} title="همهٔ اینتروال‌ها" className="px-1 h-7 rounded-md transition-colors duration-[120ms] flex items-center" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><ChevronDown size={14} /></button>
           {tfMenu && (
             <div className="absolute z-40 top-9 right-0 border rounded-lg w-40 max-h-[70vh] overflow-auto p-1 pc-pop" style={{ background: TH.panel, borderColor: TH.border }}>
-              {TFS.map((t) => { const on = tf === t; const fav = tfFavs.includes(t); return (
-                <div key={t} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={on ? { color: TH.accent, background: TH.chipBg } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
-                  <button onClick={() => { setTf(t); setTfMenu(false); }} className="flex-1 text-right tabular-nums" dir="ltr">{TF_LABEL[t] || t} <span className="text-[10px] opacity-50">{TF_TITLE[t]}</span></button>
-                  <button onClick={() => toggleTfFav(t)} title={fav ? 'حذف از منتخب' : 'افزودن به منتخب'}><Star size={13} style={fav ? { fill: TH.accent, color: TH.accent } : { color: TH.text, opacity: 0.5 }} /></button>
-                </div>); })}
+              {/* گروه‌بندیِ سبکِ TV: دقیقه‌ای / ساعتی / روزانه (audit #116) */}
+              {[['دقیقه‌ای', ['M1', 'M5', 'M15', 'M30']], ['ساعتی', ['H1', 'H2', 'H4']], ['روزانه', ['D1', 'W1', 'MN']]].map(([gLabel, gTfs]) => (
+                <div key={gLabel}>
+                  <div className="px-2 pt-1.5 pb-0.5 text-[9px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>{gLabel}</div>
+                  {gTfs.map((t) => { const on = tf === t; const fav = tfFavs.includes(t); return (
+                    <div key={t} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={on ? { color: TH.accent, background: TH.chipBg } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
+                      <button onClick={() => { setTf(t); setTfMenu(false); }} className="flex-1 text-right tabular-nums" dir="ltr">{TF_LABEL[t] || t} <span className="text-[10px] opacity-50">{TF_TITLE[t]}</span></button>
+                      <button onClick={() => toggleTfFav(t)} title={fav ? 'حذف از منتخب' : 'افزودن به منتخب'}><Star size={13} style={fav ? { fill: TH.accent, color: TH.accent } : { color: TH.text, opacity: 0.5 }} /></button>
+                    </div>); })}
+                </div>
+              ))}
             </div>
           )}
         </div>
