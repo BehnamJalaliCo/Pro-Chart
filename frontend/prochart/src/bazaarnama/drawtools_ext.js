@@ -125,7 +125,7 @@ export const EXT_REGISTRY = {
       const dp = d.p1.p - d.p0.p, pct = d.p0.p ? dp / d.p0.p * 100 : 0;
       const bars = Math.round((b.x - a.x) / (api.barWidth() || 6));
       const ang = Math.atan2(-(b.y - a.y), (b.x - a.x)) * 180 / Math.PI;
-      const txt = `Δ ${dp.toFixed(5)}\n${pct.toFixed(2)}%  |  ${bars} بار\n${ang.toFixed(1)}°`;
+      const txt = `Δ ${dp.toFixed(api.digits())}\n${pct.toFixed(2)}%  |  ${bars} بار\n${ang.toFixed(1)}°`;
       labelBox(ctx, (a.x + b.x) / 2, (a.y + b.y) / 2, txt, { anchor: 'center', border: d.color });
     },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; return distSeg(x, y, a.x, a.y, b.x, b.y) < 7; },
@@ -475,7 +475,7 @@ export const EXT_REGISTRY = {
       const X = Math.min(a.x, b.x), Y = Math.min(a.y, b.y), w = Math.abs(b.x - a.x), h = Math.abs(b.y - a.y);
       style(ctx, d); ctx.globalAlpha = 0.1; ctx.fillRect(X, Y, w, h); ctx.globalAlpha = 1; ctx.strokeRect(X, Y, w, h);
       const dp = d.p1.p - d.p0.p, pct = d.p0.p ? dp / d.p0.p * 100 : 0, bars = Math.round(w / (api.barWidth() || 6)), dt = Math.abs(d.p1.t - d.p0.t);
-      labelBox(ctx, X + w / 2, Y + h / 2, `${dp.toFixed(5)}  (${pct.toFixed(2)}%)\n${Math.abs(bars)} بار  |  ${Math.floor(dt / 3600)} ساعت`, { anchor: 'center', border: d.color });
+      labelBox(ctx, X + w / 2, Y + h / 2, `${dp.toFixed(api.digits())}  (${pct.toFixed(2)}%)\n${Math.abs(bars)} بار  |  ${Math.floor(dt / 3600)} ساعت`, { anchor: 'center', border: d.color });
     },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; return x >= Math.min(a.x, b.x) - 7 && x <= Math.max(a.x, b.x) + 7 && y >= Math.min(a.y, b.y) - 7 && y <= Math.max(a.y, b.y) + 7; },
   },
@@ -517,7 +517,7 @@ export const EXT_REGISTRY = {
       style(ctx, d); dash(ctx, true); seg(ctx, a.x, a.y, b.x, b.y); dash(ctx, false);
       const dp = d.p1.p - d.p0.p, pct = d.p0.p ? dp / d.p0.p * 100 : 0, bars = Math.round((b.x - a.x) / (api.barWidth() || 6));
       ctx.fillStyle = dp >= 0 ? 'rgba(34,197,94,.12)' : 'rgba(239,68,68,.12)'; ctx.fillRect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x), Math.abs(b.y - a.y));
-      labelBox(ctx, b.x, b.y, `${dp >= 0 ? '▲' : '▼'} ${Math.abs(dp).toFixed(5)} (${pct.toFixed(2)}%)\n${Math.abs(bars)} بار`, { anchor: 'above', bg: dp >= 0 ? 'rgba(22,101,52,.92)' : 'rgba(127,29,29,.92)' });
+      labelBox(ctx, b.x, b.y, `${dp >= 0 ? '▲' : '▼'} ${Math.abs(dp).toFixed(api.digits())} (${pct.toFixed(2)}%)\n${Math.abs(bars)} بار`, { anchor: 'above', bg: dp >= 0 ? 'rgba(22,101,52,.92)' : 'rgba(127,29,29,.92)' });
     },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; return distSeg(x, y, a.x, a.y, b.x, b.y) < 8; },
   },
@@ -708,6 +708,7 @@ export function extApi(layer) {
     t: (x) => layer._t(x),
     p: (y) => layer._p(y),
     barWidth: () => layer._barWidth(),
+    digits: () => (layer && Number.isFinite(layer.digits)) ? layer.digits : 5, // دقتِ اعشارِ نمادِ فعال برای برچسبِ ابزارِ اندازه‌گیری (پیش‌فرض ۵ = رفتارِ قبلی)
     get W() { return layer.canvas.width; },
     get H() { return layer.canvas.height; },
     candles: layer.candles,

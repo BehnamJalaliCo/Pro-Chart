@@ -15,6 +15,7 @@ export class DrawingLayer {
     this.series = null;
     this.tool = 'cursor';
     this.color = '#3b82f6';
+    this.digits = 5; // دقتِ اعشارِ قیمتِ نمادِ فعال (برای برچسبِ ابزارِ اندازه‌گیری) — با setDigits به‌روز می‌شود
     this.drawings = [];
     this.tmp = null;      // در حالِ ترسیم
     this.dragging = false;
@@ -85,6 +86,7 @@ export class DrawingLayer {
   setProfile(buckets) { this.profile = buckets; this.render(); }
   setScriptPaint(s) { this.script = s; this.render(); }
   setCandles(cs) { this.candles = cs; }
+  setDigits(d) { if (Number.isFinite(d)) this.digits = d; } // دقتِ اعشارِ نمادِ فعال (برچسبِ ابزارِ اندازه‌گیری)
   setMagnet(on, mode) { this.magnet = on; if (mode) this.magnetMode = mode; }
 
   _snap(pt) {
