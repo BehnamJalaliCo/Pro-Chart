@@ -463,7 +463,7 @@ export default function BazaarNama() {
   useEffect(() => {
     const ch = chartRef.current; if (!ch) return;
     const _ov = chartSettingsOverrides;
-    ch.applyOptions({ layout: { background: { color: _ov.bgColor || TH.bg }, textColor: TH.text }, grid: { vertLines: { color: _ov.gridVertColor || TH.gridLine, visible: _ov.gridVert !== false }, horzLines: { color: _ov.gridHorzColor || TH.gridLine, visible: _ov.gridHorz !== false } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
+    ch.applyOptions({ layout: { background: { color: _ov.bgColor || TH.bg }, textColor: TH.text, fontSize: _ov.scaleFontSize || 12 }, grid: { vertLines: { color: _ov.gridVertColor || TH.gridLine, visible: _ov.gridVert !== false }, horzLines: { color: _ov.gridHorzColor || TH.gridLine, visible: _ov.gridHorz !== false } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
     // eslint-disable-next-line
   }, [theme]);
 
@@ -2295,6 +2295,10 @@ export default function BazaarNama() {
           // خطِ قیمتِ آخر (قبلاً مرده) — نمایش/پنهانِ خطِ قیمتِ جاری + برچسبِ آخر روی سریِ فعال.
           if ('priceLineShown' in patch) {
             try { const on = patch.priceLineShown !== false; priceSeriesRef.current && priceSeriesRef.current.applyOptions({ priceLineVisible: on, lastValueVisible: on }); } catch (e) {}
+          }
+          // اندازهٔ فونتِ محورها (قبلاً مرده) — chart-level؛ در افکتِ تم هم لحاظ شد تا بماند.
+          if ('scaleFontSize' in patch) {
+            try { chartRef.current && chartRef.current.applyOptions({ layout: { fontSize: patch.scaleFontSize || 12 } }); } catch (e) {}
           }
           // رنگِ پس‌زمینهٔ چارت (قبلاً مرده) — chart-level، پس با تعویضِ نماد/نوع‌چارت می‌ماند؛ در افکتِ تم هم لحاظ شد.
           if ('bgColor' in patch) {
