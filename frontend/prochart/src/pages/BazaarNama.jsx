@@ -69,13 +69,23 @@ const priceDigits = (sym = '') => {
   if (/US30|US500|NAS100|DE40|SPX|DJI|NDX|UK100|JP225|US100/.test(s)) return 2;
   return 5;
 };
+// دقتِ مؤثرِ محورِ قیمت: اگر کاربر در تبِ Symbolِ تنظیمات «دقت» را دستی انتخاب کرده باشد
+//   (override عددی) همان استفاده می‌شود؛ وگرنه دقتِ خودکارِ نماد (priceDigits). مثلِ TV → Precision.
+const effDigits = (override, sym) => {
+  const n = Number(override);
+  return (override != null && override !== 'default' && Number.isFinite(n)) ? n : priceDigits(sym);
+};
 const fmtPrice = (sym, v) => (v == null || !Number.isFinite(Number(v)) ? '—' : Number(v).toFixed(priceDigits(sym)));
 // برچسبِ اندیکاتور با پارامترها (سبکِ TradingView: «RSI 14»، «MACD 12 26 9») — فقط ورودی‌های عددی.
 // در Legend و پنجرهٔ داده هر دو استفاده می‌شود تا یک‌دست بمانند.
-const indLbl = (key, inputs) => {
-  const base = REGISTRY[key] ? REGISTRY[key].label : key;
+const indBase = (key) => (REGISTRY[key] ? REGISTRY[key].label : key);
+const indArgs = (inputs) => {
   const vals = inputs ? Object.values(inputs).filter((v) => typeof v === 'number') : [];
-  return vals.length ? `${base} ${vals.join(' ')}` : base;
+  return vals.length ? vals.join(' ') : '';
+};
+const indLbl = (key, inputs) => {
+  const a = indArgs(inputs);
+  return a ? `${indBase(key)} ${a}` : indBase(key);
 };
 // بازه‌های سریعِ نمایش (سطحِ چارت — مثلِ TradingView): برچسب → تعدادِ روز | 'ytd' | 'all'.
 // این رنجِ *نمایش* را تنظیم می‌کند (setVisibleRange)، مستقل از اینتروال/تایم‌فریم.
@@ -106,16 +116,29 @@ const IcoRange = ({ size = 16 }) => _ico(size, <><path d="M4 7h11" /><path d="M8
 const IcoLineBreak = ({ size = 16 }) => _ico(size, <><rect x="6.5" y="3.5" width="11" height="4.5" /><rect x="6.5" y="10" width="11" height="4.5" /><rect x="6.5" y="16.5" width="11" height="4" /></>);
 const IcoKagi = ({ size = 16 }) => _ico(size, <><path d="M4 19 L9 6" strokeWidth="3" /><path d="M9 6 L14 15" strokeWidth="1.3" /><path d="M14 15 L20 5" strokeWidth="3" /></>);
 const IcoPnf = ({ size = 16 }) => _ico(size, <><path d="M3 5.5 L9 13 M9 5.5 L3 13" strokeWidth="1.8" /><circle cx="17" cy="15" r="3.4" strokeWidth="1.8" /></>);
+// کندلِ توخالی: بدنه‌های بی‌پُر (outline) با فتیله — تا از کندلِ پُر متمایز باشد.
+const IcoHollow = ({ size = 16 }) => _ico(size, <><line x1="7.5" y1="3.5" x2="7.5" y2="20.5" strokeWidth="1.6" /><rect x="5" y="8" width="5" height="8" strokeWidth="1.6" /><line x1="16.5" y1="5.5" x2="16.5" y2="18.5" strokeWidth="1.6" /><rect x="14" y="9" width="5" height="6" strokeWidth="1.6" /></>);
+// پایه (Baseline): خطِ پایهٔ نقطه‌چینِ وسط + خطِ قیمتی که از آن عبور می‌کند.
+const IcoBaseline = ({ size = 16 }) => _ico(size, <><line x1="3" y1="12" x2="21" y2="12" strokeWidth="1.3" strokeDasharray="2 2" /><path d="M3 15 L8 9 L12 13 L17 6 L21 10" strokeWidth="1.8" /></>);
+// پلکانی (Step): خطِ پله‌ایِ زینه‌ای — متمایز از خطِ ساده.
+const IcoStep = ({ size = 16 }) => _ico(size, <path d="M3 17 H8 V12 H13 V15 H18 V8 H21" strokeWidth="1.8" />);
+// آیکونِ حالتِ کراس‌هیر (اصیل) — سبکِ TV: دکمهٔ آیکونی به‌جای متن. cross=صلیب، dot=نقطه، arrow=پیکان، hidden=بدون.
+const CrossModeIcon = ({ id = 'cross', size = 16 }) => {
+  if (id === 'dot') return _ico(size, <><path d="M12 3v6M12 15v6M3 12h6M15 12h6" strokeWidth="1.6" /><circle cx="12" cy="12" r="2.1" fill="currentColor" stroke="none" /></>);
+  if (id === 'arrow') return _ico(size, <path d="M5 4l6.5 15 2-6 6-2L5 4z" strokeWidth="1.6" />);
+  if (id === 'hidden') return _ico(size, <><circle cx="12" cy="12" r="8.5" strokeWidth="1.6" /><path d="M6 18 L18 6" strokeWidth="1.6" /></>);
+  return _ico(size, <path d="M12 3v18M3 12h18" strokeWidth="1.6" />); // cross
+};
 
 const CHART_TYPES = [
   { id: 'candles', label: 'کندل', Icon: CandlestickChart },
-  { id: 'hollow', label: 'توخالی', Icon: CandlestickChart },
+  { id: 'hollow', label: 'توخالی', Icon: IcoHollow },
   { id: 'heikin', label: 'هایکین', Icon: CandlestickChart },
   { id: 'bars', label: 'میله', Icon: BarChart3 },
   { id: 'line', label: 'خطی', Icon: LineChart },
   { id: 'area', label: 'ناحیه', Icon: AreaChart },
-  { id: 'baseline', label: 'پایه', Icon: AreaChart },
-  { id: 'step', label: 'پلکانی', Icon: LineChart },
+  { id: 'baseline', label: 'پایه', Icon: IcoBaseline },
+  { id: 'step', label: 'پلکانی', Icon: IcoStep },
   { id: 'renko', label: 'رنکو (Renko)', Icon: IcoRenko },
   { id: 'range', label: 'بازه‌ای (Range)', Icon: IcoRange },
   { id: 'linebreak', label: 'شکستِ خط', Icon: IcoLineBreak },
@@ -226,6 +249,8 @@ export default function BazaarNama() {
   const applyIndTpl = (name) => { const t = indTpls[name]; if (!t) return; setOverlays(t.overlays || []); setSubs(t.subs || []); setIndMenu(false); };
   const delIndTpl = (name) => setIndTpls((p) => { const n = { ...p }; delete n[name]; saveWS({ indTpls: n }); return n; });
   const [ctMenu, setCtMenu] = useState(false);
+  const [crossMenu, setCrossMenu] = useState(false); // منوی حالتِ کراس‌هیر (دکمهٔ آیکونی به‌جای select متنی — سبکِ TV)
+  const [scaleMenu, setScaleMenu] = useState(false); // منوی حالتِ مقیاسِ قیمت (دکمهٔ نشانِ کوتاه به‌جای select متنی — سبکِ TV: log/%/…)
   // اینتروال سبکِ TV: تایم‌فریم‌های منتخبِ inline + dropdownِ کاملِ همه (audit #2)
   const [tfMenu, setTfMenu] = useState(false);
   const [tfFavs, setTfFavs] = useState(() => { const f = loadWS().tfFavs; return Array.isArray(f) && f.length ? f.filter((k) => TFS.includes(k)) : ['M15', 'H1', 'H4', 'D1', 'W1']; });
@@ -303,6 +328,7 @@ export default function BazaarNama() {
   const [live, setLive] = useState({});
   const [marketOpen, setMarketOpen] = useState(false);
   const [livePrice, setLivePrice] = useState(null);
+  const [prevDayClose, setPrevDayClose] = useState(null); // بستهٔ سشنِ قبل — برای «تغییرِ روزِ قبل»ِ خطِ وضعیت (مثلِ TV: Last day change)
   // جهتِ حرکتِ قیمتِ زنده (برای فلَشِ سبز/قرمزِ برچسبِ قیمت) — باید بعد از تعریفِ livePrice باشد (وگرنه TDZ)
   const prevLpRef = useRef(null);
   const priceDir = (livePrice != null && prevLpRef.current != null) ? (livePrice > prevLpRef.current ? 'up' : livePrice < prevLpRef.current ? 'down' : '') : '';
@@ -325,6 +351,7 @@ export default function BazaarNama() {
   const [aiQuota, setAiQuota] = useState(null);
   const aiLinesRef = useRef([]);
   const aiZonesRef = useRef([]); // سری‌های ناحیهٔ سبز/قرمزِ سیگنالِ AI (پروجکشنِ رو به جلو)
+  const alertLinesRef = useRef([]); // خطوطِ قیمتِ آلارم‌های ذخیره‌شده روی چارت (تبِ «آلارم‌ها»ِ تنظیمات)
   const [grid, setGrid] = useState(1); // 1/2/4 چند-چارت
   const [gridMenu, setGridMenu] = useState(false); // منوی پریستِ چیدمانِ چند-چارت (layoutPresets)
   const [cfgMenu, setCfgMenu] = useState(false); // منوی چرخ‌دندهٔ «تنظیماتِ چارت» (ظاهر/مقیاس/کراس‌هیر)
@@ -568,7 +595,7 @@ export default function BazaarNama() {
     else if (chartType === 'bars') s = chart.addSeries(BarSeries,{ upColor: TH.up, downColor: TH.down });
     else if (chartType === 'hollow') s = chart.addSeries(CandlestickSeries, candleOptsFrom(settingsRef.current, true));
     else s = chart.addSeries(CandlestickSeries, candleOptsFrom(settingsRef.current));
-    { const d = priceDigits(symbol); try { s.applyOptions({ priceFormat: { type: 'price', precision: d, minMove: Math.pow(10, -d) } }); } catch (e) { /* noop */ } }
+    { const d = effDigits(settingsRef.current && settingsRef.current.precision, symbol); try { s.applyOptions({ priceFormat: { type: 'price', precision: d, minMove: Math.pow(10, -d) } }); } catch (e) { /* noop */ } }
     s.setData((['line', 'area', 'baseline', 'step'].includes(chartType) || EXT_VALUE_TYPES.includes(chartType)) ? valSeries(data) : ohlc(data));
     priceSeriesRef.current = s;
     drawRef.current && drawRef.current.setSeries(s);
@@ -579,11 +606,11 @@ export default function BazaarNama() {
   // دقتِ محورِ قیمت و برچسبِ آخر بر اساسِ نماد (فارکس ۵، JPY ۳، شاخص/طلا ۲، BTC/ETH ۱) — سبکِ TV.
   // پیش‌فرضِ کتابخانه precision:2 است و برای فارکس «1.14» نشان می‌داد؛ حالا 1.14432 مثلِ لجند.
   useEffect(() => {
-    const d = priceDigits(symbol);
+    const d = effDigits(chartSettingsOverrides.precision, symbol);
     try { drawRef.current && drawRef.current.setDigits(d); } catch (e) { /* برچسبِ ابزارِ اندازه‌گیری دقتِ درستِ نماد را بگیرد */ }
     const s = priceSeriesRef.current; if (!s) return;
     try { s.applyOptions({ priceFormat: { type: 'price', precision: d, minMove: Math.pow(10, -d) } }); } catch (e) { /* noop */ }
-  }, [symbol, chartType, TH]);
+  }, [symbol, chartType, TH, chartSettingsOverrides.precision]);
 
   const applyOverlays = useCallback((cs) => {
     const chart = chartRef.current; if (!chart) return;
@@ -970,6 +997,51 @@ export default function BazaarNama() {
     const tps = [sig.tp1, sig.tp2, sig.tp3].filter((v) => v != null);
     drawSetupZones(sig.entry, sig.sl, tps, aiZonesRef.current);
   }, [drawSetupZones]);
+
+  // ── خطوطِ آلارم روی چارت (سبکِ TradingView) ── برای هر آلارمِ ذخیره‌شدهٔ همین نماد یک
+  //   خطِ قیمتِ افقی رسم می‌شود. قابلِ خاموش‌کردن از تبِ «آلارم‌ها»ِ تنظیماتِ چارت
+  //   (alertLinesShown) و فیلترِ «فقط فعال‌ها» (alertLinesActiveOnly). رنگ بر اساسِ جهتِ شرط.
+  useEffect(() => {
+    const s = priceSeriesRef.current;
+    if (!s) return;
+    alertLinesRef.current.forEach((l) => { try { s.removePriceLine(l); } catch (e) {} });
+    alertLinesRef.current = [];
+    if (chartSettingsOverrides.alertLinesShown === false) return;
+    const activeOnly = chartSettingsOverrides.alertLinesActiveOnly === true;
+    (savedAlerts || []).forEach((a) => {
+      if (!a || a.symbol !== symbol) return;
+      if (activeOnly && a.active === false) return;
+      const c = a.condition || {};
+      const price = Number(c.value != null ? c.value : c.lo);
+      if (!Number.isFinite(price)) return;
+      const up = c.op === 'above' || c.op === 'cross_up' || c.op === 'enter_channel';
+      const color = a.active === false ? TH.text : (up ? TH.up : TH.down);
+      try {
+        alertLinesRef.current.push(s.createPriceLine({
+          price, color, lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: '🔔',
+        }));
+      } catch (e) { /* noop */ }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [savedAlerts, symbol, chartType, chartSettingsOverrides.alertLinesShown, chartSettingsOverrides.alertLinesActiveOnly, TH.up, TH.down, TH.text]);
+
+  // ── بستهٔ سشنِ قبل برای «تغییرِ روزِ قبل»ِ خطِ وضعیت (مثلِ TV: Last day change values) ──
+  //   کندلِ روزانه را می‌گیرد؛ بستهٔ کندلِ ماقبلِ آخر = بستهٔ روزِ گذشته. بی‌صدا degrade می‌شود.
+  useEffect(() => {
+    let on = true;
+    setPrevDayClose(null);
+    if (!symbol) return;
+    (async () => {
+      try {
+        const res = await api.chart(symbol, 'D1', '', 2);
+        const cs = res?.candles || res?.data || res || [];
+        const arr = Array.isArray(cs) ? cs : [];
+        const prev = arr.length >= 2 ? arr[arr.length - 2] : null;
+        if (on && prev && prev.c != null) setPrevDayClose(Number(prev.c));
+      } catch (e) { if (on) setPrevDayClose(null); }
+    })();
+    return () => { on = false; };
+  }, [symbol]);
 
   // رفتن به یک سیگنال: نماد/تایم‌فریمِ همان سیگنال را باز کن؛ اگر همان نماد/تایم‌فریم بود، رسم و زوم‌اوت کن
   const gotoSignal = useCallback((sig) => {
@@ -1429,14 +1501,14 @@ export default function BazaarNama() {
 
   // §۱۶ منوها: بستن با کلیکِ بیرون یا Escape (رفتارِ استانداردِ Dropdown)
   useEffect(() => {
-    if (!ctMenu && !indMenu && !gridMenu && !search && !sessMenu && !cfgMenu && !layoutMenu) return undefined;
-    const closeAll = () => { setCtMenu(false); setIndMenu(false); setGridMenu(false); setSearch(''); setSessMenu(false); setCfgMenu(false); setLayoutMenu(false); setTfMenu(false); };
+    if (!ctMenu && !crossMenu && !scaleMenu && !indMenu && !gridMenu && !search && !sessMenu && !cfgMenu && !layoutMenu) return undefined;
+    const closeAll = () => { setCtMenu(false); setCrossMenu(false); setScaleMenu(false); setIndMenu(false); setGridMenu(false); setSearch(''); setSessMenu(false); setCfgMenu(false); setLayoutMenu(false); setTfMenu(false); };
     const onDown = (e) => { if (!e.target.closest('[data-menu]')) closeAll(); };
     const onEsc = (e) => { if (e.key === 'Escape') closeAll(); };
     document.addEventListener('mousedown', onDown);
     window.addEventListener('keydown', onEsc);
     return () => { document.removeEventListener('mousedown', onDown); window.removeEventListener('keydown', onEsc); };
-  }, [ctMenu, indMenu, gridMenu, search, sessMenu, cfgMenu, layoutMenu]);
+  }, [ctMenu, crossMenu, scaleMenu, indMenu, gridMenu, search, sessMenu, cfgMenu, layoutMenu]);
 
   const filteredSymbols = symbols.filter((s) => s.toLowerCase().includes(search.toLowerCase()));
   const txt = theme === 'dark' ? 'text-gray-200' : 'text-gray-800';
@@ -1446,8 +1518,8 @@ export default function BazaarNama() {
 
   // #3 آیتم‌های Legend (overlays + subs) + مقادیرِ زنده (کراس‌هیر، وگرنه آخرین کندل)
   const legendItems = useMemo(() => ([
-    ...overlays.map((o) => ({ id: o.id, key: o.key, scope: 'main', label: indLbl(o.key, o.inputs), color: (o.lineColors && o.lineColors[0]) || o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
-    ...subs.map((o) => ({ id: o.id, key: o.key, scope: 'sub', label: indLbl(o.key, o.inputs), color: o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
+    ...overlays.map((o) => ({ id: o.id, key: o.key, scope: 'main', label: indLbl(o.key, o.inputs), title: indBase(o.key), args: indArgs(o.inputs), color: (o.lineColors && o.lineColors[0]) || o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
+    ...subs.map((o) => ({ id: o.id, key: o.key, scope: 'sub', label: indLbl(o.key, o.inputs), title: indBase(o.key), args: indArgs(o.inputs), color: o.color || (REGISTRY[o.key] && REGISTRY[o.key].color), visible: o.visible !== false })),
   ]), [overlays, subs]);
   const legendVals = useMemo(() => {
     const out = {};
@@ -1483,7 +1555,12 @@ export default function BazaarNama() {
   const _chg = (_barOpen != null && _barClose != null) ? (_barClose - _barOpen) : null;
   const _chgPct = (_chg != null && _barOpen) ? (_chg / _barOpen) * 100 : null;
   const _chgCol = _chg == null ? TH.text : (_chg > 0 ? TH.up : _chg < 0 ? TH.down : TH.text);
-  const _showQuickTrade = grid <= 1 && (_bidPx != null || livePrice != null);
+  // تغییرِ روزِ قبل (Last day change) — قیمتِ زنده نسبت به بستهٔ سشنِ قبل؛ برای خطِ وضعیت (مثلِ TV).
+  const _ldRef = livePrice != null ? livePrice : _barClose;
+  const _lastDayChg = (prevDayClose != null && _ldRef != null) ? (_ldRef - prevDayClose) : null;
+  const _lastDayPct = (_lastDayChg != null && prevDayClose) ? (_lastDayChg / prevDayClose) * 100 : null;
+  // دکمه‌های خرید/فروشِ روی چارت — قابلِ خاموش‌کردن از تبِ «معامله»ِ تنظیمات (مثلِ TV: Buy/sell buttons)
+  const _showQuickTrade = (chartSettingsOverrides.tradeButtons !== false) && grid <= 1 && (_bidPx != null || livePrice != null);
 
   return (
     <div ref={rootRef} dir="rtl" className={`flex flex-col h-full overflow-hidden ${txt}`} style={{ background: TH.bg }}>
@@ -1602,15 +1679,37 @@ export default function BazaarNama() {
             </div>
           )}
         </div>
-        <select value={scaleMode} onChange={(e) => setScaleMode(Number(e.target.value))} title="نوعِ مقیاس" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
-          {PRICE_SCALE_MODES.map((m) => (<option key={m.value} value={m.value}>{m.label}</option>))}
-        </select>
+        <div data-menu className="relative">
+          <button onClick={() => setScaleMenu((v) => !v)} title="حالتِ مقیاسِ قیمت" className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold transition-colors duration-[120ms]" style={{ background: TH.chipBg, color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
+            <span className="tabular-nums" dir="ltr">{['R', 'log', '%', '100'][PRICE_SCALE_MODES.findIndex((m) => m.value === scaleMode)] || 'R'}</span> <ChevronDown size={13} />
+          </button>
+          {scaleMenu && (
+            <div className="absolute z-40 mt-1 border rounded-lg w-36 p-1" style={{ background: TH.popoverBg, borderColor: TH.border }}>
+              {PRICE_SCALE_MODES.map((m, i) => { const on = scaleMode === m.value; return (
+                <button key={m.value} onClick={() => { setScaleMode(m.value); setScaleMenu(false); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-sm rounded-md transition-colors duration-[120ms]" style={on ? { background: TH.accent, color: '#fff' } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
+                  <span className="w-8 text-[11px] font-bold tabular-nums" dir="ltr" style={{ color: on ? '#fff' : TH.text }}>{['R', 'log', '%', '100'][i]}</span> <span>{m.label}</span>
+                </button>
+              ); })}
+            </div>
+          )}
+        </div>
         <button onClick={() => setScaleLocked((v) => !v)} title="قفلِ مقیاس (خاموش‌کردنِ خودکار)" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={scaleLocked ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleLocked) e.currentTarget.style.background = TH.chipBg; }}>{scaleLocked ? <Lock size={17} /> : <Unlock size={17} />}</button>
         <Tip label="وارونه‌کردنِ محورِ قیمت — بالا و پایینِ نمودار جابه‌جا می‌شود (مناسبِ تحلیلِ معکوس)"><button onClick={() => setScaleInvert((v) => !v)} title="وارونه‌کردنِ محورِ قیمت (بالا↔پایین)" aria-label="وارونه‌کردنِ محورِ قیمت" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={scaleInvert ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!scaleInvert) e.currentTarget.style.background = TH.chipBg; }}><ArrowUpDown size={16} /></button></Tip>
         <Tip label="بازنشانیِ زوم و مقیاسِ نمودار به حالتِ اولیه (اتوفیت)"><button onClick={() => { try { chartRef.current.priceScale('right').applyOptions(resetPriceScaleOptions()); chartRef.current.timeScale().fitContent(); setScaleLocked(false); setScaleInvert(false); } catch (e) {} }} title="بازنشانیِ زوم و مقیاس به حالتِ اولیه" aria-label="بازنشانیِ مقیاس" className="p-1.5 rounded-md transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Scaling size={16} /></button></Tip>
-        <select value={crosshairId} onChange={(e) => setCrosshairId(e.target.value)} title="حالتِ کراس‌هیر" className="rounded px-1.5 py-1 text-xs outline-none" style={{ background: TH.chipBg, color: TH.text }}>
-          {CROSSHAIR_MODES.map((m) => (<option key={m.id} value={m.id}>{m.label}</option>))}
-        </select>
+        <div data-menu className="relative">
+          <button onClick={() => setCrossMenu((v) => !v)} title="حالتِ کراس‌هیر" className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
+            <CrossModeIcon id={crosshairId} size={16} /> <ChevronDown size={13} />
+          </button>
+          {crossMenu && (
+            <div className="absolute z-40 mt-1 border rounded-lg w-36 p-1" style={{ background: TH.popoverBg, borderColor: TH.border }}>
+              {CROSSHAIR_MODES.map((m) => { const on = crosshairId === m.id; return (
+                <button key={m.id} onClick={() => { setCrosshairId(m.id); setCrossMenu(false); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-sm rounded-md transition-colors duration-[120ms]" style={on ? { background: TH.accent, color: '#fff' } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
+                  <CrossModeIcon id={m.id} size={15} /> <span>{m.label}</span>
+                </button>
+              ); })}
+            </div>
+          )}
+        </div>
         {/* #1 کنترلِ حرفه‌ایِ «سشن‌ها» — pillِ overflow-hidden جدا از dropdown (وگرنه منو کلیپ می‌شد و باز نمی‌شد) */}
         <div data-menu className="relative">
           <div className="flex items-center rounded-md overflow-hidden" style={sessionsOn ? { background: TH.accent } : { background: TH.chipBg }}>
@@ -1764,6 +1863,9 @@ export default function BazaarNama() {
                 onDuplicate={duplicateInd}
                 onHelp={(it) => setHelpId(it.key)} hasHelp={indHasHelp}
                 onClearAll={() => { setOverlays([]); setSubs([]); }}
+                sl={chartSettingsOverrides}
+                showVolume={showVolume}
+                lastDayChg={_lastDayChg} lastDayPct={_lastDayPct}
               />
             </div>
           ) : (
@@ -2311,6 +2413,7 @@ export default function BazaarNama() {
           scaleLock: scaleLocked,
           slVolume: showVolume,
           crosshairStyle: crosshairId === 'cross' ? 0 : 1,
+          timezone: tz,
         }}
         onChange={(patch) => {
           setChartSettingsOverrides((prev) => ({ ...prev, ...patch }));
@@ -2318,6 +2421,7 @@ export default function BazaarNama() {
           if ('scaleInvert' in patch) setScaleInvert(patch.scaleInvert);
           if ('scaleLock' in patch) setScaleLocked(patch.scaleLock);
           if ('slVolume' in patch) setShowVolume(patch.slVolume);
+          if ('timezone' in patch) setTz(patch.timezone);
           if ('crosshairStyle' in patch) setCrosshairId(patch.crosshairStyle === 0 ? 'cross' : 'dot');
           // خطوطِ شبکه (Grid lines) — قبلاً در دیالوگ بودند ولی به چارت وصل نبودند؛ اکنون زنده اعمال می‌شوند (chart-level ⇒ با تعویضِ نماد/نوع‌چارت هم می‌مانند).
           if ('gridHorz' in patch || 'gridVert' in patch || 'gridHorzColor' in patch || 'gridVertColor' in patch) {

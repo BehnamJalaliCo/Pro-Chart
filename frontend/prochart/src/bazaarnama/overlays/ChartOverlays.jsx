@@ -84,7 +84,7 @@ function FlashNum({ value, dir, className = '', style, children }) {
 // لوگو + نامِ نماد (پررنگ) + بازار/تایم‌فریمِ کم‌رنگ. فرگمنت (بدونِ wrapper) تا در
 //   هر دو Legend و ChartLegend داخلِ ردیفِ موجود بنشیند. سبکِ دقیقِ TradingView:
 //   نامِ نماد پررنگ و پرکنتراست، بازار/تایم‌فریم به‌صورتِ لیبلِ کم‌رنگِ کوچک با میان‌فاصلهٔ ·.
-function SymbolHead({ TH, symbol, tf, market, chartType, name }) {
+function SymbolHead({ TH, symbol, tf, market, chartType, name, showLogo = true, showName = true }) {
   const mk = market != null ? market : marketOf(symbol);
   // نامِ کاملِ نماد (سبکِ TV: «Apple Inc») — اگر caller مقدارِ name ندهد، از symbolMeta
   //   استخراج و memoize می‌شود تا در تیک‌های زندهٔ OHLC دوباره محاسبه نشود.
@@ -95,10 +95,10 @@ function SymbolHead({ TH, symbol, tf, market, chartType, name }) {
   }, [name, symbol]);
   return (
     <>
-      <SymbolLogo symbol={symbol} size={18} />
+      {showLogo && <SymbolLogo symbol={symbol} size={18} />}
       <span className="text-[13px] font-bold whitespace-nowrap tracking-tight" dir="ltr"
         style={{ color: TH.textStrong, letterSpacing: '-.01em' }}>{symbol}</span>
-      {full && (
+      {showName && full && (
         <span className="text-[11px] whitespace-nowrap font-medium max-w-[168px] truncate" style={{ color: TH.text, opacity: 0.74 }}>{full}</span>
       )}
       {(mk || tf) && (
@@ -222,16 +222,23 @@ function LegendIconBtn({ TH, title, ariaLabel, onClick, danger, children, always
   );
 }
 
-function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, onRemove, onMore, moreOpen, onCloseMore, onDup, onHelp, hasHelp }) {
+function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, onRemove, onMore, moreOpen, onCloseMore, onDup, onHelp, hasHelp, sl = {} }) {
   const visible = item.visible !== false;
   const color = item.color || '#2962FF';
+  // خطِ وضعیت (تبِ تنظیمات): نمایشِ عنوان، آرگومان‌ها (پارامترها) و مقدارِ زندهٔ اندیکاتور مستقلاً قابلِ خاموش‌کردن‌اند (مثلِ TV: Titles / Inputs / Values).
+  const showTitle = sl.slIndTitles !== false;
+  const showArgs = sl.slIndArgs !== false;
+  const showValue = sl.slIndValues !== false;
+  const ttl = item.title || item.label;
+  const args = item.args || '';
   if (viewMode === 'compact') {
     return (
       <button type="button" onClick={() => onSettings(item)} title={item.label}
         className="flex items-center gap-1 rounded px-1.5 h-6 text-[12px] shrink-0"
         style={{ background: TH.chipBg, color: TH.textStrong, opacity: visible ? 1 : 0.45 }}>
         <span className="rounded-full shrink-0" style={{ width: 9, height: 9, background: color, boxShadow: `0 0 0 1px ${TH.border}` }} />
-        <span className="whitespace-nowrap">{item.label}</span>
+        {showTitle && <span className="whitespace-nowrap">{ttl}</span>}
+        {showArgs && args && <span className="whitespace-nowrap" style={{ opacity: 0.6 }}>{args}</span>}
       </button>
     );
   }
@@ -242,9 +249,14 @@ function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, on
       onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
       <button type="button" onClick={() => onSettings(item)} title="تنظیماتِ اندیکاتور"
         className="rounded-full shrink-0" style={{ width: 10, height: 10, background: color, boxShadow: `0 0 0 1px ${TH.border}` }} />
-      <button type="button" onClick={() => onSettings(item)}
-        className="text-[12px] font-semibold whitespace-nowrap text-right" style={{ color: TH.textStrong }}>{item.label}</button>
-      {value != null && value !== '' && (
+      {showTitle && (
+        <button type="button" onClick={() => onSettings(item)}
+          className="text-[12px] font-semibold whitespace-nowrap text-right" style={{ color: TH.textStrong }}>{ttl}</button>
+      )}
+      {showArgs && args && (
+        <span className="text-[12px] whitespace-nowrap tabular-nums" dir="ltr" style={{ color: TH.text, opacity: 0.6 }}>{args}</span>
+      )}
+      {showValue && value != null && value !== '' && (
         <span className="text-[12px] tabular-nums whitespace-nowrap font-medium" dir="ltr" style={{ color }}>{value}</span>
       )}
       <span className="flex-1" />
@@ -287,7 +299,13 @@ export function ChartLegend({
   collapsed = false, onCollapse, viewMode = 'normal', onToggleViewMode,
   onToggleVisible, onSettings, onRemove, onDuplicate, onHelp, hasHelp, onClearAll, coarse = false,
   chartType, priceDir, volume, fmtVol, showVolume = true,
+  sl = {}, lastDayChg, lastDayPct,
 }) {
+  // نمایش/عدم‌نمایشِ اجزای خطِ وضعیت (status line) — وصل به تنظیماتِ چارت (تبِ «خطِ وضعیت»).
+  // پیش‌فرضِ همه true تا رفتارِ قبلی حفظ شود؛ فقط با خاموش‌کردنِ توگل در دیالوگ مخفی می‌شوند.
+  const slOHLC   = sl.slOHLC   !== false;
+  const slChange = sl.slChange !== false;
+  const slLastDay = sl.slLastDayChange === true; // پیش‌فرض خاموش (مثلِ TV)
   const [moreId, setMoreId] = useState(null);
   const chAbs = legend && legend.open != null ? (legend.close - legend.open) : null;
   const ch = chAbs != null && legend.open ? (chAbs / legend.open) * 100 : null;
@@ -301,7 +319,8 @@ export function ChartLegend({
 
   return (
     <div className="absolute top-2 right-2 z-20 max-w-[min(70%,520px)]"
-      style={{ background: TH.overlayMask, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', border: `1px solid ${TH.border}`, borderRadius: 8, padding: '4px 6px', boxShadow: '0 1px 3px rgba(0,0,0,.10)' }}>
+      /* سبکِ لجندِ TradingView: بدونِ کادرِ سختِ پیل — فقط پس‌زمینهٔ بسیار محوِ نیمه‌شفاف برای خوانایی روی کندل‌ها (بدونِ border/shadow). */
+      style={{ background: TH.overlayMask, backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)', borderRadius: 6, padding: '3px 6px' }}>
       <style>{`.bn-leg-ctrls{opacity:0;transition:opacity 120ms ease}.group\\/leg:hover .bn-leg-ctrls{opacity:1}.bn-leg-ctrl{opacity:0}.group\\/leg:hover .bn-leg-ctrl{opacity:1}`}</style>
       {/* ردیفِ نماد (OHLC) */}
       <div className="flex items-center gap-1.5 px-1.5 h-7">
@@ -312,9 +331,19 @@ export function ChartLegend({
             {collapsed ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
         )}
-        <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} name={name} chartType={chartType} />
-        <OhlcTape legend={legend} col={col} TH={TH} dir={priceDir} />
-        <ChangeChip ch={ch} chStr={chStr} col={col} />
+        <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} name={name} chartType={chartType}
+          showLogo={sl.slLogo !== false} showName={sl.slSymbol !== false} />
+        {slOHLC && <OhlcTape legend={legend} col={col} TH={TH} dir={priceDir} />}
+        {slChange && <ChangeChip ch={ch} chStr={chStr} col={col} />}
+        {slLastDay && lastDayChg != null && (
+          <span className="flex items-center gap-1 text-[11px] tabular-nums whitespace-nowrap" dir="ltr"
+            title="تغییرِ روزِ قبل (نسبت به بستهٔ سشنِ گذشته)"
+            style={{ color: lastDayChg >= 0 ? TH.up : TH.down }}>
+            <span style={{ opacity: 0.55 }}>D</span>
+            <span>{lastDayChg >= 0 ? '+' : ''}{fmtDelta(lastDayChg, Math.max(decimalsOf(legend && legend.close), 2))}</span>
+            {lastDayPct != null && <span>({lastDayPct >= 0 ? '+' : ''}{lastDayPct.toFixed(2)}%)</span>}
+          </span>
+        )}
         {hasInds && (
           <>
             <span className="flex-1" />
@@ -332,7 +361,7 @@ export function ChartLegend({
         compact ? (
           <div className="flex flex-wrap items-center gap-1 px-1 pt-0.5 pb-0.5">
             {items.map((it) => (
-              <LegendRow key={it.id} item={it} TH={TH} viewMode="compact" coarse={coarse} onSettings={onSettings} onToggle={onToggleVisible} onRemove={onRemove} onMore={() => {}} onDup={onDuplicate} onHelp={onHelp} hasHelp={hasHelp && hasHelp(it)} />
+              <LegendRow key={it.id} item={it} TH={TH} viewMode="compact" coarse={coarse} onSettings={onSettings} onToggle={onToggleVisible} onRemove={onRemove} onMore={() => {}} onDup={onDuplicate} onHelp={onHelp} hasHelp={hasHelp && hasHelp(it)} sl={sl} />
             ))}
             {hasVol && <VolumeRow vol={vol} dir={priceDir} TH={TH} fmtVol={fmtVol} compact />}
           </div>
@@ -342,7 +371,7 @@ export function ChartLegend({
               <LegendRow key={it.id} item={it} TH={TH} value={indVals[it.id]} coarse={coarse} viewMode="normal"
                 onToggle={onToggleVisible} onSettings={onSettings} onRemove={onRemove}
                 onMore={() => setMoreId((m) => (m === it.id ? null : it.id))} moreOpen={moreId === it.id} onCloseMore={() => setMoreId(null)}
-                onDup={onDuplicate} onHelp={onHelp} hasHelp={hasHelp && hasHelp(it)} />
+                onDup={onDuplicate} onHelp={onHelp} hasHelp={hasHelp && hasHelp(it)} sl={sl} />
             ))}
             {hasVol && <VolumeRow vol={vol} dir={priceDir} TH={TH} fmtVol={fmtVol} />}
           </div>

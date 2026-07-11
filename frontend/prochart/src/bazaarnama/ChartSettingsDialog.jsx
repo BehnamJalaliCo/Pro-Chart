@@ -25,9 +25,10 @@
 //   Events:      evDividends, evSplits, evEarnings
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { TIMEZONES } from './scales_crosshair';
 import {
   Settings, X, Palette, Ruler, Eye, CalendarDays, RotateCcw, Save,
-  ChevronDown, AlignLeft, Type, Info, Trash2,
+  ChevronDown, AlignLeft, Type, Info, Trash2, CandlestickChart, BellRing,
 } from 'lucide-react';
 
 // ───────────────────────── پیش‌فرض‌ها (مبنای TVِ دارک) ─────────────────────────
@@ -37,9 +38,11 @@ const DEFAULTS = {
   symBordersShown: true, symBorderUpColor: '#26a69a', symBorderDownColor: '#ef5350',
   symWickShown: true, symWickUpColor: '#26a69a', symWickDownColor: '#ef5350',
   symHollow: false, symThinBars: false,
+  precision: 'default',
   // Status line
-  slSymbol: true, slOHLC: true, slChange: true, slVolume: true,
-  slIndTitles: true, slIndValues: true, slIndArgs: false, slMarketStatus: true,
+  slLogo: true, slSymbol: true, slOHLC: true, slChange: true, slVolume: true,
+  slLastDayChange: false,
+  slIndTitles: true, slIndValues: true, slIndArgs: true, slMarketStatus: true,
   // Scales & lines
   scaleMode: 0, scaleInvert: false, scaleLock: false,
   scaleCountdown: true, scaleFontSize: 12, priceLineShown: true,
@@ -51,6 +54,10 @@ const DEFAULTS = {
   crosshairStyle: 1, crosshairColor: '#9598a1',
   watermarkShown: true, watermarkOpacity: 50,
   navButtons: true, scrollScale: true,
+  // Trading
+  tradeButtons: true,
+  // Alerts
+  alertLinesShown: true, alertLinesActiveOnly: false,
   // Events
   evDividends: false, evSplits: false, evEarnings: false,
 };
@@ -66,7 +73,9 @@ const TABS = [
   { id: 'symbol',     label: 'نماد',        en: 'Symbol',      icon: Palette },
   { id: 'status',     label: 'خطِ وضعیت',    en: 'Status line', icon: AlignLeft },
   { id: 'scales',     label: 'مقیاس و خطوط', en: 'Scales',      icon: Ruler },
-  { id: 'appearance', label: 'ظاهر',        en: 'Appearance',  icon: Eye },
+  { id: 'appearance', label: 'بوم',         en: 'Canvas',      icon: Eye }, // TV نامِ این تب را از Appearance به Canvas تغییر داد — برچسب را هم‌راستا کردیم (idِ داخلی دست‌نخورده می‌ماند)
+  { id: 'trading',    label: 'معامله',      en: 'Trading',     icon: CandlestickChart },
+  { id: 'alerts',     label: 'آلارم‌ها',     en: 'Alerts',      icon: BellRing },
   { id: 'events',     label: 'رویدادها',     en: 'Events',      icon: CalendarDays },
 ];
 
@@ -183,6 +192,8 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
             {tab === 'status' && <StatusTab TH={TH} s={s} set={set} />}
             {tab === 'scales' && <ScalesTab TH={TH} s={s} set={set} />}
             {tab === 'appearance' && <AppearanceTab TH={TH} s={s} set={set} />}
+            {tab === 'trading' && <TradingTab TH={TH} s={s} set={set} />}
+            {tab === 'alerts' && <AlertsTab TH={TH} s={s} set={set} />}
             {tab === 'events' && <EventsTab TH={TH} s={s} set={set} />}
           </div>
         </div>
@@ -298,16 +309,34 @@ function SymbolTab({ TH, s, set }) {
         on={s.symHollow} onToggle={() => set('symHollow', !s.symHollow)} />
       <ToggleRow TH={TH} label="میله‌های نازک" hint="Thin bars — پهنای کمترِ کندل‌ها"
         on={s.symThinBars} onToggle={() => set('symThinBars', !s.symThinBars)} />
+
+      <SectionTitle TH={TH} title="اصلاحِ داده" en="Data modification" />
+      <Row TH={TH} label="دقت (Precision)" hint="تعدادِ ارقامِ اعشارِ محورِ قیمت — «خودکار» بر اساسِ نماد تعیین می‌شود">
+        <SelectBox TH={TH} value={s.precision != null ? String(s.precision) : 'default'}
+          options={[
+            { v: 'default', label: 'خودکار' },
+            { v: '0', label: '1' }, { v: '1', label: '0.1' }, { v: '2', label: '0.01' },
+            { v: '3', label: '0.001' }, { v: '4', label: '0.0001' }, { v: '5', label: '0.00001' },
+          ]}
+          onChange={(v) => set('precision', v)} />
+      </Row>
+      <Row TH={TH} label="منطقهٔ زمانی (Timezone)" hint="منطقهٔ زمانیِ محورِ زمان و کراس‌هیر">
+        <SelectBox TH={TH} value={s.timezone || 'UTC'}
+          options={TIMEZONES.map((z) => ({ v: z.id, label: z.label }))}
+          onChange={(v) => set('timezone', v)} />
+      </Row>
     </div>
   );
 }
 
 function StatusTab({ TH, s, set }) {
   const rows = [
+    ['slLogo', 'لوگو', 'نمایشِ لوگو/پرچمِ نماد در خطِ وضعیت'],
     ['slSymbol', 'نامِ نماد', 'نمایشِ نماد در خطِ وضعیت'],
     ['slMarketStatus', 'وضعیتِ بازار', 'نشانگرِ باز/بستهٔ بازار'],
     ['slOHLC', 'مقادیرِ OHLC', 'باز/سقف/کف/بسته'],
     ['slChange', 'تغییرات', 'تغییرِ مطلق و درصدیِ کندل'],
+    ['slLastDayChange', 'تغییرِ روزِ قبل', 'تغییر نسبت به بستهٔ سشنِ گذشته (Last day change)'],
     ['slVolume', 'حجم', 'حجمِ کندلِ جاری'],
     ['slIndTitles', 'عنوانِ اندیکاتورها', 'نامِ اندیکاتورهای فعال'],
     ['slIndValues', 'مقدارِ اندیکاتورها', 'مقادیرِ زندهٔ اندیکاتورها'],
@@ -409,6 +438,33 @@ function AppearanceTab({ TH, s, set }) {
         on={s.navButtons} onToggle={() => set('navButtons', !s.navButtons)} />
       <ToggleRow TH={TH} label="اسکرول و مقیاس" hint="اجازهٔ اسکرول/زومِ محورها با درگ"
         on={s.scrollScale} onToggle={() => set('scrollScale', !s.scrollScale)} />
+    </div>
+  );
+}
+
+function TradingTab({ TH, s, set }) {
+  return (
+    <div className="space-y-1">
+      <SectionTitle TH={TH} title="عمومی" en="General" />
+      <ToggleRow TH={TH} label="دکمه‌های خرید/فروش" hint="نمایشِ دکمه‌های SELL/BUY مستقیماً روی چارت"
+        on={s.tradeButtons} onToggle={() => set('tradeButtons', !s.tradeButtons)} />
+      <div className="mt-3 flex items-start gap-2 p-3 rounded-lg text-[11.5px] leading-relaxed"
+        style={{ background: TH.subtle, color: TH.text }}>
+        <Info size={14} className="shrink-0 mt-0.5 opacity-70" />
+        <span>دکمه‌های SELL/BUY تیکتِ سفارش را باز می‌کنند (Bid/Ask). گزینه‌های بیشترِ معامله در نسخه‌های بعدی افزوده می‌شوند.</span>
+      </div>
+    </div>
+  );
+}
+
+function AlertsTab({ TH, s, set }) {
+  return (
+    <div className="space-y-1">
+      <SectionTitle TH={TH} title="نمایشِ خطوط روی چارت" en="Chart line visibility" />
+      <ToggleRow TH={TH} label="خطوطِ آلارم" hint="نمایشِ خطِ افقی برای هر آلارمِ ذخیره‌شده روی چارت"
+        on={s.alertLinesShown} onToggle={() => set('alertLinesShown', !s.alertLinesShown)} />
+      <ToggleRow TH={TH} label="فقط آلارم‌های فعال" hint="مخفی‌کردنِ خطوطِ آلارم‌های غیرفعال/منقضی"
+        on={s.alertLinesActiveOnly} onToggle={() => set('alertLinesActiveOnly', !s.alertLinesActiveOnly)} />
     </div>
   );
 }

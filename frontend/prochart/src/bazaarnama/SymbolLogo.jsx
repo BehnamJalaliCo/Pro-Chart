@@ -117,18 +117,20 @@ const CRYPTO_ICONS = new Set((
 ).split(' '));
 
 // ── شاخص‌ها → بَجِ رنگیِ برنددار (S&P/NDX/DJI-style). [regex, رنگ, برچسب] ──────────
+// سبکِ TradingView: بَجِ شاخص = دایرهٔ توپرِ برنددار + «عددِ تعدادِ اجزا» به‌سفید (نه حروف).
+//   S&P 500 → «500» قرمزِ تیره · Nasdaq 100 → «100» آبی · Dow → «30» فیروزه‌ای.
 const INDICES = [
-  [/US500|SPX500|\bSPX\b|GSPC|SP500/, '#2962ff', 'SPX'],
-  [/NAS100|US100|\bNDX\b|USTEC|NASDAQ|\bNAS\b/, '#0098d8', 'NDX'],
-  [/US30|\bDJI\b|DJ30|WS30|DOW/, '#0a4a86', 'DJI'],
-  [/US2000|\bRUT\b|RUSSELL/, '#7c3aed', 'RUT'],
-  [/UK100|FTSE/, '#c8102e', 'FTSE'],
-  [/DE40|GER40|GER30|DE30|\bDAX\b/, '#111827', 'DAX'],
-  [/FRA40|\bCAC\b/, '#0055a4', 'CAC'],
-  [/JP225|JPN225|N225|NIKKEI/, '#bc002d', 'N225'],
-  [/HK50|\bHSI\b|HANGSENG/, '#de2910', 'HSI'],
-  [/AUS200|ASX200|\bASX\b/, '#00843d', 'ASX'],
-  [/EU50|STOXX|ESTX/, '#003399', 'STX'],
+  [/US500|SPX500|\bSPX\b|GSPC|SP500/, '#e3242b', '500'],
+  [/NAS100|US100|\bNDX\b|USTEC|NASDAQ|\bNAS\b/, '#0071e3', '100'],
+  [/US30|\bDJI\b|DJ30|WS30|DOW/, '#00a0d8', '30'],
+  [/US2000|\bRUT\b|RUSSELL/, '#7c3aed', '2000'],
+  [/UK100|FTSE/, '#c8102e', '100'],
+  [/DE40|GER40|GER30|DE30|\bDAX\b/, '#111827', '40'],
+  [/FRA40|\bCAC\b/, '#0055a4', '40'],
+  [/JP225|JPN225|N225|NIKKEI/, '#bc002d', '225'],
+  [/HK50|\bHSI\b|HANGSENG/, '#de2910', '50'],
+  [/AUS200|ASX200|\bASX\b/, '#00843d', '200'],
+  [/EU50|STOXX|ESTX/, '#003399', '50'],
   [/\bVIX\b/, '#f59e0b', 'VIX'],
 ];
 
@@ -188,24 +190,23 @@ function flagSvg(ccy, s) {
 // نیمهٔ راست = ارزِ پایه (اول)، نیمهٔ چپ = ارزِ مظنه (دوم). هر پرچم بدونِ کِشیدگی
 // (aspect حفظ می‌شود) و از مرکز کراپ می‌شود؛ یک درزِ سفیدِ نازک وسط + یک رینگِ ظریفِ لبه.
 // ظرفِ CSS دایره‌ای (border-radius + overflow) → دایرهٔ کاملِ تمیز، بدونِ clipPath/idِ تکراری.
+// سبکِ TradingView: جفت‌ارز = «دو سکهٔ پرچمِ دایره‌ایِ روی‌هم‌افتاده» (نه نیم‌دایرهٔ تقسیم‌شده).
+//   پایه (base) = سکهٔ بزرگ‌ترِ جلو، پایین-چپ؛ مظنه (quote) = سکهٔ کوچک‌ترِ پشت، بالا-راست.
+//   هر پرچم داخلِ یک دایرهٔ کامل کلیپ می‌شود؛ یک رینگِ روشن دورِ سکهٔ جلو تا از سکهٔ پشت جدا شود.
+//   پرچم‌ها اصیلِ خودِ Pro-Chart‌اند (عمومی)؛ فقط چیدمان مطابقِ قراردادِ TV است.
 function pairFlagSvg(base, quote, s) {
-  const half = s / 2;
-  const oneHalf = (ccy) => (
-    <span style={{ width: half, height: s, overflow: 'hidden', display: 'block', position: 'relative', lineHeight: 0 }}>
-      <svg width={s} height={s} viewBox="0 0 24 24" style={{ display: 'block', position: 'absolute', top: 0, left: -half / 2 }}>
-        {FLAG[ccy] || <rect width="24" height="24" fill="#64748b" />}
-      </svg>
-    </span>
-  );
+  const back = Math.round(s * 0.62);   // مظنه — کوچک‌ترِ پشت
+  const front = Math.round(s * 0.74);  // پایه — بزرگ‌ترِ جلو
   return (
     <span
       className="shrink-0"
       aria-hidden
-      style={{ position: 'relative', display: 'inline-flex', direction: 'ltr', width: s, height: s, borderRadius: '50%', overflow: 'hidden', boxShadow: `inset 0 0 0 1px ${RING}`, verticalAlign: 'middle', lineHeight: 0 }}
+      style={{ position: 'relative', display: 'inline-block', width: s, height: s, verticalAlign: 'middle', lineHeight: 0 }}
     >
-      {oneHalf(quote)}{/* نیمهٔ چپ (dir=ltr → فرزندِ اول چپ) = مظنه */}
-      {oneHalf(base)}{/* نیمهٔ راست = پایه */}
-      <span style={{ position: 'absolute', top: 0, bottom: 0, left: half - 0.5, width: 1, background: 'rgba(255,255,255,.7)' }} />
+      {/* مظنه (quote) — سکهٔ کوچک‌ترِ پشت، گوشهٔ بالا-راست */}
+      <span style={{ position: 'absolute', top: 0, right: 0, lineHeight: 0 }}>{flagSvg(quote, back)}</span>
+      {/* پایه (base) — سکهٔ بزرگ‌ترِ جلو، پایین-چپ؛ رینگِ روشن برای جداسازیِ دو سکه */}
+      <span style={{ position: 'absolute', bottom: 0, left: 0, borderRadius: '50%', boxShadow: '0 0 0 1.5px var(--logo-bg, #fff)', lineHeight: 0 }}>{flagSvg(base, front)}</span>
     </span>
   );
 }
