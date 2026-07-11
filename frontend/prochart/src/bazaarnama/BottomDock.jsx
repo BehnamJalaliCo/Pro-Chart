@@ -87,12 +87,15 @@ export default function BottomDock({
         className="flex items-center gap-1 px-2 border-b text-xs shrink-0 select-none"
         style={{ borderColor: TH.border, height: HEADER }}
       >
-        <div className="flex items-center gap-0.5 flex-1 min-w-0 overflow-x-auto">
+        <div role="tablist" className="flex items-center gap-0.5 flex-1 min-w-0 overflow-x-auto">
           {tabs.map((t) => {
             const on = t.key === curKey;
             return (
               <button
                 key={t.key}
+                role="tab"
+                aria-selected={on}
+                title={typeof t.label === 'string' ? t.label : undefined}
                 onClick={() => { selectTab(t.key); if (minimized) setMinimized(false); }}
                 className="relative flex items-center gap-1 px-2.5 h-7 rounded-md whitespace-nowrap transition-colors"
                 style={

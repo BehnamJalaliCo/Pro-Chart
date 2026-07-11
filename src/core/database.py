@@ -656,6 +656,18 @@ class AcademyStudent(Base):
     phone_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     # بازارنما (Pro-Chart): نوعِ حساب از بدوِ ثبت‌نام — crypto (LBank) یا broker (وان‌رویال). جدا و بدونِ تداخل.
     account_type: Mapped[str] = mapped_column(String(20), nullable=True)
+    # اشتراک‌های محصولِ مجزا (گزینهٔ A — همه به یک کیفِ کانترکت واریز)
+    prochart_until: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)   # اشتراکِ پرو-چارت (VIP)
+    forex_copy_until: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True) # اشتراکِ کپی‌تریدِ فارکس
+    forex_signal_until: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True) # تریالِ ۴۸ساعتهٔ سیگنالِ فارکس
+    copy_crypto: Mapped[bool] = mapped_column(Boolean, default=False)       # سوییچِ کپیِ کریپتو
+    copy_crypto_risk: Mapped[float] = mapped_column(Float, default=1.0)     # ٪ریسکِ کپیِ کریپتو
+    copy_forex: Mapped[bool] = mapped_column(Boolean, default=False)        # سوییچِ کپیِ فارکس
+    copy_forex_risk: Mapped[float] = mapped_column(Float, default=1.0)      # ٪ریسکِ کپیِ فارکس
+    kyc_status: Mapped[str] = mapped_column(String(12), default="none", nullable=True)   # none/pending/approved/rejected
+    kyc_full_name: Mapped[str] = mapped_column(String(120), nullable=True)
+    kyc_country: Mapped[str] = mapped_column(String(60), nullable=True)
+    disclaimer_version: Mapped[str] = mapped_column(String(16), nullable=True)
 
 
 class AcademyDevice(Base):

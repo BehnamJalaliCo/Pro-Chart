@@ -45,12 +45,172 @@ _AI_QUOTA = {"vip": 2, "premium": 5}
 # قابلیت‌های پرمیومِ بازارنما (کاربرِ عادی/free قفل است): اسکریپت‌نویسی، هوشِ مصنوعی،
 # و ترید روی چارت (البنک/وان‌رویال). فعال‌سازی: ثبت‌نام → واریز → تأییدِ مدیر (tier=vip/premium).
 _PREMIUM_MSG = "این قابلیت ویژهٔ کاربرانِ پرمیومِ بازارنماست؛ پس از ثبت‌نام، واریز و تأییدِ مدیر فعال می‌شود."
+_VIP_MSG = "این قابلیت با اشتراکِ پرو-چارت (VIP) فعال می‌شود."
+
+
+def _prochart_active(st: "AcademyStudent") -> bool:
+    # اشتراکِ پرو-چارت (تک‌سطحیِ VIP) فعال است؟ — با سازگاریِ عقب‌روِ tier قدیمی
+    pu = getattr(st, "prochart_until", None)
+    if pu is not None and pu > datetime.now(timezone.utc):
+        return True
+    return _effective_tier(st) in ("vip", "premium")
+
+
+def _require_prochart(st: "AcademyStudent") -> None:
+    # پرو-چارت VIP همه‌چیزِ اپ را باز می‌کند (سیگنال/AI/اسکریپت/معاملهٔ واقعی)
+    if not _prochart_active(st):
+        raise HTTPException(status_code=403,
+                            detail={"msg": _PREMIUM_MSG, "premium_required": True})
+
+
+# سازگاری: گِیت‌های قدیمی حالا = اشتراکِ پرو-چارت (تک‌سطحی)
+def _require_vip(st: "AcademyStudent") -> None:
+    _require_prochart(st)
 
 
 def _require_premium(st: "AcademyStudent") -> None:
-    if _effective_tier(st) not in ("vip", "premium"):
-        raise HTTPException(status_code=403,
-                            detail={"msg": _PREMIUM_MSG, "premium_required": True})
+    _require_prochart(st)
+
+
+def _norm_dir(d):
+    return "buy" if str(d or "").lower() in ("long", "buy") else "sell"
+
+
+@router.get("/signals")
+async def bn_signals(market: str = "crypto", limit: int = 50,
+                     st: AcademyStudent = Depends(current_student)):
+    """فیدِ سیگنالِ یکپارچه (کریپتو/فارکس) — نیازمندِ اشتراکِ پرو-چارت."""
+    _require_prochart(st)
+    import os as _os, httpx as _httpx
+    limit = max(1, min(int(limit or 50), 100))
+    market = market if market in ("crypto", "forex") else "crypto"
+    out = []
+    try:
+        async with _httpx.AsyncClient(timeout=6.0) as cx:
+            if market == "crypto":
+                base = _os.getenv("BN_CRYPTO_SVC_URL", "http://10.10.1.4:8000")
+                r = await cx.get(base + "/api/demo/signals")  # demoِ کریپتو حداقلِ limit دارد → محلی برش می‌زنیم
+                data = (r.json().get("signals", []) if r.status_code == 200 else [])
+                for x in data[:limit]:
+                    out.append({"id": f"cx-{x.get('id')}", "market": "crypto", "symbol": x.get("symbol"),
+                                "direction": _norm_dir(x.get("direction")), "entry": x.get("entry_price"),
+                                "sl": x.get("sl_price"),
+                                "tps": [v for v in (x.get("tp1_price"), x.get("tp2_price")) if v is not None],
+                                "confidence": x.get("confidence"), "status": x.get("status"),
+                                "timeframe": x.get("timeframe"), "source": "tradeyar",
+                                "created_at": x.get("created_at")})
+            else:
+                base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
+                r = await cx.get(base + "/public/signals/svc", params={"limit": limit},
+                                 headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")})
+                data = (r.json().get("items", []) if r.status_code == 200 else [])
+                for x in data[:limit]:
+                    out.append({"id": f"fx-{x.get('id')}", "market": "forex", "symbol": x.get("symbol"),
+                                "direction": _norm_dir(x.get("direction")), "entry": x.get("entry_price"),
+                                "sl": x.get("sl"),
+                                "tps": [v for v in (x.get("tp1"), x.get("tp2"), x.get("tp3")) if v is not None],
+                                "confidence": x.get("signal_score"), "status": x.get("status"),
+                                "timeframe": x.get("timeframe"), "source": "coinepro-fx",
+                                "created_at": x.get("created_at")})
+    except Exception as e:  # noqa: BLE001
+        logger.warning("bn_signals_fetch_failed", market=market, error=str(e))
+    return {"market": market, "signals": out, "count": len(out)}
+
+
+@router.get("/copytrade/status")
+async def bn_copytrade_status(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """وضعیتِ کپی‌تریدِ per-user برای هر دو بازار + صلاحیت."""
+    from src.core.database import BnExchangeAccount
+    accs = (await db.execute(select(BnExchangeAccount).where(BnExchangeAccount.student_id == st.id))).scalars().all()
+    lbank = next((a for a in accs if a.kind == "lbank"), None)
+    mt5 = next((a for a in accs if a.kind == "mt5"), None)
+    now = datetime.now(timezone.utc)
+    fx_sub = bool(getattr(st, "forex_copy_until", None) and st.forex_copy_until > now)
+    ref_ok = bool(lbank and getattr(lbank, "referral_verified", False))
+    kyc_ok = (getattr(st, "kyc_status", None) == "approved")
+    forex = {"enabled": bool(getattr(st, "copy_forex", False)),
+             "risk_pct": float(getattr(st, "copy_forex_risk", 1.0) or 1.0),
+             "connected": bool(mt5), "subscription": fx_sub, "kyc": bool(kyc_ok),
+             "eligible": bool(mt5 and fx_sub)}
+    if mt5:
+        try:
+            import os as _os, httpx as _httpx
+            base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
+            async with _httpx.AsyncClient(timeout=6.0) as _cx:
+                _r = await _cx.get(base + "/user/copy-svc-status", params={"login": mt5.account_ref},
+                                   headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")})
+                if _r.status_code == 200:
+                    d = _r.json()
+                    if d.get("connected"):
+                        for k in ("master_ok", "dd_paused", "equity", "margin", "margin_free", "positions",
+                                  "risk_mode", "risk_value", "max_lot", "max_open_trades", "copy_sl_tp",
+                                  "max_daily_loss_pct", "symbols"):
+                            if d.get(k) is not None:
+                                forex[k] = d[k]
+        except Exception as _e:  # noqa: BLE001
+            logger.warning("copytrade_status_forex_live_failed", error=str(_e))
+    return {
+        "crypto": {"enabled": bool(getattr(st, "copy_crypto", False)),
+                   "risk_pct": float(getattr(st, "copy_crypto_risk", 1.0) or 1.0),
+                   "connected": bool(lbank), "referral_ok": ref_ok, "eligible": ref_ok},
+        "forex": forex,
+    }
+
+
+@router.post("/copytrade/{market}")
+async def bn_copytrade_set(market: str, payload: dict = Body(...),
+                           st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """روشن/خاموشِ کپی‌تریدِ per-user. فارکس=اشتراکِ کپی‌فارکس+MT5؛ کریپتو=LBank+رفرال."""
+    from src.core.database import BnExchangeAccount
+    market = market if market in ("crypto", "forex") else "crypto"
+    enabled = bool(payload.get("enabled"))
+    if enabled:
+        try:
+            from src.core.redis_client import redis_client as _rc_ks
+            if await _rc_ks.client.get("bn:killswitch") in (b"1", "1"):
+                raise HTTPException(503, {"msg": "اجرای معاملات موقتاً توسطِ مدیر متوقف شده است.", "killswitch": True})
+        except HTTPException:
+            raise
+        except Exception:  # noqa: BLE001
+            pass
+    try:
+        risk = float(payload.get("risk_pct", 1.0) or 1.0)
+    except Exception:  # noqa: BLE001
+        risk = 1.0
+    risk = max(0.1, min(risk, 100.0))
+    accs = (await db.execute(select(BnExchangeAccount).where(BnExchangeAccount.student_id == st.id))).scalars().all()
+    now = datetime.now(timezone.utc)
+    if market == "crypto":
+        lbank = next((a for a in accs if a.kind == "lbank"), None)
+        if not (lbank and getattr(lbank, "referral_verified", False)):
+            raise HTTPException(403, {"msg": "کپیِ کریپتو نیازمندِ اتصالِ LBank + تأییدِ رفرال است.", "premium_required": True})
+        st.copy_crypto = enabled; st.copy_crypto_risk = risk
+        await db.commit()
+        return {"ok": True, "market": "crypto", "enabled": enabled, "risk_pct": risk,
+                "note": "ثبت شد؛ اجرا با سیگنال‌های بعدیِ کریپتو"}
+    mt5 = next((a for a in accs if a.kind == "mt5"), None)
+    fx_sub = bool(getattr(st, "forex_copy_until", None) and st.forex_copy_until > now)
+    if not mt5:
+        raise HTTPException(403, {"msg": "کپیِ فارکس نیازمندِ اتصالِ MT5 است.", "premium_required": True})
+    if not fx_sub:
+        raise HTTPException(403, {"msg": "کپیِ فارکس نیازمندِ اشتراکِ کپی‌تریدِ فارکس است.", "premium_required": True})
+    st.copy_forex = enabled; st.copy_forex_risk = risk
+    await db.commit()
+    fwd_ok = False
+    try:
+        import os as _os, httpx as _httpx
+        base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
+        async with _httpx.AsyncClient(timeout=6.0) as cx:
+            _cfg = {"mt5_login": mt5.account_ref, "enabled": enabled, "risk_value": risk}
+            for _k in ("risk_mode", "max_lot", "max_open_trades", "copy_sl_tp", "max_daily_loss_pct"):
+                if payload.get(_k) is not None:
+                    _cfg[_k] = payload.get(_k)
+            r = await cx.post(base + "/user/copy-svc",
+                              headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")}, json=_cfg)
+            fwd_ok = (r.status_code == 200)
+    except Exception as e:  # noqa: BLE001
+        logger.warning("bn_copy_forward_failed", error=str(e))
+    return {"ok": True, "market": "forex", "enabled": enabled, "risk_pct": risk, "forwarded": fwd_ok}
 
 
 def _now():
@@ -73,10 +233,66 @@ async def referral_link(st: AcademyStudent = Depends(current_student)):
             "min_deposit": _o.getenv("LBANK_REFERRAL_MIN_DEPOSIT", "")}
 
 
+async def _lbank_changes() -> dict:
+    """٪ تغییرِ ۲۴سِ همهٔ جفت‌های LBank — یک fetch، کشِ ۶۰ثانیه (bn:lbchg)."""
+    from src.core.redis_client import redis_client
+    import json as _json
+    try:
+        c = await redis_client.get_json("bn:lbchg")
+        if c:
+            return c
+    except Exception:  # noqa: BLE001
+        pass
+    res: dict = {}
+    try:
+        import httpx as _hx
+        async with _hx.AsyncClient(timeout=10.0) as cli:
+            r = await cli.get("https://api.lbkex.com/v2/ticker/24hr.do", params={"symbol": "all"})
+            for row in (r.json().get("data") or []):
+                sym = str(row.get("symbol", "")).replace("_", "").upper()
+                tk = row.get("ticker") or {}
+                if sym and tk.get("change") is not None:
+                    try:
+                        res[sym] = float(tk.get("change") or 0)
+                    except Exception:  # noqa: BLE001
+                        pass
+        if res:
+            await redis_client.client.set("bn:lbchg", _json.dumps(res), ex=60)
+    except Exception:  # noqa: BLE001
+        pass
+    return res
+
+
+async def _attach_change_pct(out: dict, db) -> None:
+    """٪ تغییرِ ۲۴سِ علامت‌دار: کریپتو از LBank، فارکس از بستِ روزِ قبلِ candles."""
+    from src.api.routes._crypto_feed import is_crypto
+    crypto = [x for x in out if is_crypto(x)]
+    forex = [x for x in out if not is_crypto(x)]
+    if crypto:
+        ch = await _lbank_changes()
+        for x in crypto:
+            v = ch.get(x.replace("_", "").upper())
+            if v is not None:
+                out[x]["change_pct"] = round(v, 3)
+    if forex:
+        from sqlalchemy import text as _text
+        rows = (await db.execute(_text(
+            "SELECT DISTINCT ON (symbol) symbol, close FROM candles "
+            "WHERE symbol = ANY(:syms) AND timeframe='D1' "
+            "AND time < date_trunc('day', now() at time zone 'UTC') "
+            "ORDER BY symbol, time DESC"), {"syms": forex})).all()
+        prev = {r[0]: float(r[1]) for r in rows if r[1] is not None}
+        for x in forex:
+            pc = prev.get(x); mid = out[x].get("mid")
+            if pc and mid:
+                out[x]["change_pct"] = round((float(mid) - pc) / pc * 100.0, 3)
+
+
 @router.get("/prices")
 async def live_prices(
     symbols: str = "",
     st: AcademyStudent = Depends(current_student),
+    db: AsyncSession = Depends(get_db),
 ):
     """
     قیمتِ زندهٔ لحظه‌ای از Redis (همان تیک‌هایی که data-feed منتشر می‌کند).
@@ -108,7 +324,99 @@ async def live_prices(
             out.update(await crypto_prices(crypto_syms))
     except Exception:  # noqa: BLE001
         pass
+    try:
+        await _attach_change_pct(out, db)
+    except Exception:  # noqa: BLE001
+        pass
     return {"prices": out, "market_open": bool(out), "server_time": _now().isoformat()}
+
+
+# ─────────────────── متادیتای نماد (name_fa/name_en/cat) ───────────────────
+_CCY_FA = {"USD": "دلار", "EUR": "یورو", "GBP": "پوند", "JPY": "ین ژاپن", "CHF": "فرانک سوئیس",
+           "AUD": "دلار استرالیا", "CAD": "دلار کانادا", "NZD": "دلار نیوزیلند", "CNH": "یوان چین",
+           "SEK": "کرون سوئد", "NOK": "کرون نروژ", "TRY": "لیر ترکیه", "ZAR": "رند آفریقا",
+           "MXN": "پزو مکزیک", "SGD": "دلار سنگاپور", "HKD": "دلار هنگ‌کنگ", "PLN": "زلوتی", "DKK": "کرون دانمارک"}
+_METAL_FA = {"XAU": ("طلا", "Gold"), "XAG": ("نقره", "Silver"), "XPT": ("پلاتین", "Platinum"), "XPD": ("پالادیوم", "Palladium")}
+_ENERGY_FA = {"WTI": ("نفت WTI", "Crude Oil WTI"), "BRENT": ("نفت برنت", "Brent Oil"),
+              "USOIL": ("نفت WTI", "Crude Oil"), "UKOIL": ("نفت برنت", "Brent Oil"), "NGAS": ("گازِ طبیعی", "Natural Gas")}
+_INDEX_FA = {"US30": ("داوجونز", "Dow 30"), "NAS100": ("نزدک ۱۰۰", "Nasdaq 100"), "US500": ("اس‌اند‌پی ۵۰۰", "S&P 500"),
+             "SPX500": ("اس‌اند‌پی ۵۰۰", "S&P 500"), "GER40": ("دکسِ آلمان", "DAX 40"), "DE40": ("دکسِ آلمان", "DAX 40"),
+             "UK100": ("فوتسیِ انگلیس", "FTSE 100"), "JPN225": ("نیکی ۲۲۵", "Nikkei 225"), "HK50": ("هنگ‌سنگ", "Hang Seng"),
+             "AUS200": ("ASX 200", "ASX 200"), "FRA40": ("کک ۴۰", "CAC 40"), "EU50": ("یوروستاکس ۵۰", "Euro Stoxx 50"),
+             "US2000": ("راسل ۲۰۰۰", "Russell 2000"), "USDX": ("شاخصِ دلار", "US Dollar Index")}
+_CRYPTO_FA = {"BTC": "بیت‌کوین", "ETH": "اتریوم", "BNB": "بایننس‌کوین", "SOL": "سولانا", "XRP": "ریپل",
+              "ADA": "کاردانو", "DOGE": "دوج‌کوین", "TRX": "ترون", "DOT": "پولکادات", "MATIC": "پالیگان",
+              "LTC": "لایت‌کوین", "SHIB": "شیبا", "AVAX": "آوالانچ", "LINK": "چین‌لینک", "UNI": "یونی‌سواپ",
+              "ATOM": "کازموس", "XLM": "استلار", "ETC": "اتریوم‌کلاسیک", "FIL": "فایل‌کوین", "APT": "اپتوس",
+              "ARB": "آربیتروم", "OP": "آپتیمیزم", "NEAR": "نیر", "INJ": "اینجکتیو", "SUI": "سویی",
+              "PEPE": "پپه", "WIF": "داگ‌ویف‌هت", "TON": "تون", "SEI": "سِی", "TIA": "سلستیا"}
+
+
+def _classify_symbol(raw: str, fxset: set) -> dict:
+    su = (raw or "").strip().upper()
+    if not su:
+        return {"symbol": raw, "cat": "other", "name_fa": raw, "name_en": raw}
+    # فلز
+    if su[:3] in _METAL_FA and (len(su) <= 6):
+        fa, en = _METAL_FA[su[:3]]
+        return {"symbol": su, "cat": "metal", "base": su[:3], "quote": su[3:] or "USD", "name_fa": fa, "name_en": en, "desc": fa}
+    # انرژی
+    for k, (fa, en) in _ENERGY_FA.items():
+        if su.startswith(k):
+            return {"symbol": su, "cat": "energy", "name_fa": fa, "name_en": en, "desc": fa}
+    # شاخص
+    if su in _INDEX_FA:
+        fa, en = _INDEX_FA[su]
+        return {"symbol": su, "cat": "index", "name_fa": fa, "name_en": en, "desc": fa}
+    # کریپتو
+    try:
+        from src.api.routes._crypto_feed import is_crypto
+        _isc = is_crypto(su)
+    except Exception:  # noqa: BLE001
+        _isc = su.endswith("USDT")
+    if _isc:
+        base = su.replace("_", "")
+        for q in ("USDT", "USDC", "USD"):
+            if base.endswith(q):
+                base = base[:-len(q)]; quote = q; break
+        else:
+            quote = "USDT"
+        fa = _CRYPTO_FA.get(base)
+        return {"symbol": su, "cat": "crypto", "base": base, "quote": quote,
+                "name_fa": (fa + f" ({base})") if fa else base, "name_en": base, "desc": (fa or base)}
+    # فارکس (۶ حرفیِ ارزی)
+    if len(su) == 6 and su.isalpha() and su[:3] in _CCY_FA and su[3:] in _CCY_FA:
+        a, b = su[:3], su[3:]
+        fa = f"{_CCY_FA[a]} / {_CCY_FA[b]}"
+        return {"symbol": su, "cat": "forex", "base": a, "quote": b, "name_fa": fa, "name_en": f"{a}/{b}", "desc": fa}
+    # سهام (نمادِ آلفا از فیدِ OneRoyal که فارکس/فلز/شاخص نبود)
+    if su.isalpha() and su in fxset:
+        return {"symbol": su, "cat": "stock", "name_fa": su, "name_en": su, "desc": f"سهامِ {su}"}
+    return {"symbol": su, "cat": "other", "name_fa": su, "name_en": su, "desc": su}
+
+
+@router.get("/symbol-meta")
+async def bn_symbol_meta(symbols: str = "", st: AcademyStudent = Depends(current_student)):
+    """متادیتای نماد {symbol, cat, name_fa, name_en, base, quote, desc} — برای merge در فرانت.
+    بدونِ symbols → همهٔ نمادهای کاتالوگ (کریپتو + fxsyms)."""
+    from src.core.redis_client import redis_client
+    try:
+        fxset = {str(x).upper() for x in (await redis_client.client.smembers("bn:fxsyms") or [])}
+    except Exception:  # noqa: BLE001
+        fxset = set()
+    if symbols.strip():
+        wanted = [s.strip().upper() for s in symbols.split(",") if s.strip()][:500]
+    else:
+        wanted = list(fxset)
+        try:
+            from src.api.routes._crypto_feed import ensure_pairs
+            wanted += [str(c).upper() for c in await ensure_pairs()]
+        except Exception:  # noqa: BLE001
+            pass
+    meta = {}
+    for sym in wanted:
+        meta[sym] = _classify_symbol(sym, fxset)
+    return {"meta": meta, "count": len(meta)}
 
 
 # ─────────────────── سفارش از روی چارت (trade-from-chart) ───────────────────
@@ -278,7 +586,7 @@ async def get_script(script_id: int, st: AcademyStudent = Depends(current_studen
 
 @router.post("/scripts")
 async def save_script(payload: dict = Body(...), st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    _require_premium(st)  # اسکریپت‌نویسی/اسکریپتِ خودکار قابلیتِ پرمیوم است
+    _require_vip(st)  # اسکریپت‌نویسی قابلیتِ VIP است
     name = (payload.get("name") or "اسکریپت").strip()[:120]
     source = payload.get("source") or ""
     kind = payload.get("kind") if payload.get("kind") in ("indicator", "strategy") else "indicator"
@@ -438,7 +746,7 @@ async def ai_active(st: AcademyStudent = Depends(current_student), db: AsyncSess
 async def ai_signal(payload: dict = Body(...), st: AcademyStudent = Depends(current_student),
                     db: AsyncSession = Depends(get_db)):
     """ستاپِ کاملِ AI در تایم‌فریمِ کاربر — ترکیبِ همگراییِ تکنیکال + هوشِ مصنوعی، SL/TP مبتنی بر ATR."""
-    _require_premium(st)  # سیگنالِ AI قابلیتِ پرمیوم است (free → مودالِ ارتقاء)
+    _require_vip(st)  # سیگنالِ AI قابلیتِ VIP است (free → مودالِ ارتقاء)
     tier = _effective_tier(st)
     limit = _AI_QUOTA.get(tier, 0)
     if not limit:
@@ -758,6 +1066,7 @@ async def _notify_support(text: str) -> None:
 
 @router.post("/payment/submit")
 async def payment_submit(tx_hash: str = Body(..., embed=True),
+                         product: str = Body("prochart", embed=True),
                          plan: str = Body("monthly", embed=True),
                          st: AcademyStudent = Depends(current_student),
                          db: AsyncSession = Depends(get_db)):
@@ -767,8 +1076,17 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
     from src.core.redis_client import redis_client
     from src.api.routes._bsc import verify_usdt_payment
 
-    plan = plan if plan in ("monthly", "yearly") else "monthly"
-    min_amt, days = (25.0, 30) if plan == "monthly" else (200.0, 365)  # #۸ ماهانه ۲۵ / سالانه ۲۰۰ تتر
+    # محصولاتِ مجزا — همه به یک کیفِ کانترکت واریز؛ تفکیک با (محصول+مبلغ)+ضدِتکرارِ tx
+    _PRODUCT_PRICES = {
+        "prochart":        {"monthly": (25.0, 30),  "yearly": (200.0, 365)},
+        "academy_vip":     {"monthly": (25.0, 30),  "yearly": (250.0, 365)},
+        "academy_premium": {"monthly": (60.0, 30),  "yearly": (600.0, 365)},
+        "forex_copy":      {"monthly": (90.0, 30),  "quarterly": (200.0, 90)},
+    }
+    product = product if product in _PRODUCT_PRICES else "prochart"
+    _plans = _PRODUCT_PRICES[product]
+    plan = plan if plan in _plans else next(iter(_plans))
+    min_amt, days = _plans[plan]
     txk = (tx_hash or "").strip().lower()
     try:
         if await redis_client.exists(f"bn:tx:{txk}"):
@@ -786,17 +1104,29 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
         await redis_client.client.set(f"bn:tx:{txk}", str(st.id), ex=86400 * 90)
     except Exception:  # noqa: BLE001
         pass
-    st.tier = "premium"
-    st.expires_at = datetime.now(timezone.utc) + timedelta(days=days)
+    until = datetime.now(timezone.utc) + timedelta(days=days)
+    from sqlalchemy import text as _sqltext
+    await db.execute(_sqltext(
+        "INSERT INTO bn_payments (student_id, product, plan, tx_hash, usdt, status) "
+        "VALUES (:s,:p,:pl,:tx,:u,'confirmed')"),
+        {"s": st.id, "p": product, "pl": plan, "tx": (tx_hash or "")[:80], "u": res.get("amount")})
+    if product == "prochart":
+        st.prochart_until = until
+    elif product == "academy_vip":
+        st.tier = "vip"; st.expires_at = until
+    elif product == "academy_premium":
+        st.tier = "premium"; st.expires_at = until
+    elif product == "forex_copy":
+        st.forex_copy_until = until
     await db.commit()
     await _notify_support(
-        "💰 پرداختِ پرمیومِ بازارنما\n"
+        "💰 پرداختِ اشتراکِ بازارنما\n"
         f"کاربر: {st.username} ({getattr(st, 'account_type', None) or '-'})\n"
-        f"مبلغ: {res.get('amount')} USDT | پلن: {plan} ({days} روز)\n"
+        f"محصول: {product} | پلن: {plan} ({days} روز) | مبلغ: {res.get('amount')} USDT\n"
         f"از: {res.get('from')}\ntx: {tx_hash}"
     )
-    logger.info("bn_payment_verified", sid=st.id, amount=res.get("amount"), plan=plan)
-    return {"ok": True, "tier": "premium", "days": days, "amount": res.get("amount")}
+    logger.info("bn_payment_verified", sid=st.id, amount=res.get("amount"), product=product, plan=plan)
+    return {"ok": True, "product": product, "days": days, "amount": res.get("amount"), "until": until.isoformat()}
 
 
 # ═══════════════ اتصالِ حسابِ واقعیِ کاربر (LBank / MT5) #217 #218 ═══════════════
@@ -882,10 +1212,19 @@ async def connect_remove(kind: str, st: AcademyStudent = Depends(current_student
 @router.post("/real-order")
 async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., embed=True),
                      amount: float = Body(..., embed=True), price: float = Body(0, embed=True),
+                     leverage: int = Body(5, embed=True),
                      st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
     """سفارشِ واقعی روی حسابِ خودِ کاربر — کریپتو→LBankِ کاربر، فارکس→MT5ِ کاربر.
     ویژهٔ پرمیومِ متصل. (نه کپی‌ترید — تریدِ مستقیمِ حسابِ کاربر.)"""
     _require_premium(st)
+    try:
+        from src.core.redis_client import redis_client as _rc_ks
+        if await _rc_ks.client.get("bn:killswitch") in (b"1", "1"):
+            raise HTTPException(503, {"msg": "اجرای معاملات موقتاً توسطِ مدیر متوقف شده است.", "killswitch": True})
+    except HTTPException:
+        raise
+    except Exception:  # noqa: BLE001
+        pass
     from src.core.database import BnExchangeAccount
     from src.api.routes._crypto_feed import is_crypto, ensure_pairs
     side = (side or "").lower()
@@ -908,7 +1247,8 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
     import os as _os
     from src.core.database import BnOrder
     if crypto:
-        from src.api.routes._lbank_exec import place_order
+        # موتورِ مستقلِ فیوچرزِ Pro-Chart (مستقیم به LBank با کلیدِ کاربر؛ مستقل از تریدیار)
+        from src.api.routes import crypto_exec
         from src.core.crypto import decrypt_secret
         key = decrypt_secret(a.enc_key or "") or ""
         sec = decrypt_secret(a.enc_secret or "") or ""
@@ -919,18 +1259,25 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
                         amount=float(amount), price=float(price) or None, status="pending")
         db.add(order)
         await db.flush()
-        res = await place_order(key, sec, sym, side, float(amount), float(price) or None)
+        res = await crypto_exec.open_market(key, sec, sym, side, float(amount), int(leverage or 5))
+        if res.get("disabled"):
+            order.status = "failed"; order.error = "crypto_exec_disabled"
+            await db.commit()
+            raise HTTPException(status_code=503, detail={
+                "msg": "اجرای واقعیِ کریپتو در حالِ راه‌اندازیِ نهایی است؛ به‌زودی فعال می‌شود.",
+                "crypto_exec_disabled": True})
         if res.get("ok"):
             order.status = "filled"
-            order.broker_order_id = str(res.get("order_id") or "")[:64]
+            _r = res.get("resp") or {}
+            order.broker_order_id = str(_r.get("orderId") or _r.get("data") or _r.get("clientOrderId") or "")[:64]
             await db.commit()
-            logger.info("bn_real_order_lbank", sid=st.id, sym=sym, side=side)
-            return {"placed": True, "broker": "LBank", "order_id": res.get("order_id"),
-                    "symbol": sym, "side": side, "amount": amount}
+            logger.info("bn_real_order_lbank_futures", sid=st.id, sym=sym, side=side)
+            return {"placed": True, "broker": "LBank", "market": "futures",
+                    "symbol": sym, "side": side, "amount": amount, "leverage": int(leverage or 5)}
         order.status = "failed"
         order.error = str(res.get("error") or "")[:255]
         await db.commit()
-        raise HTTPException(status_code=502, detail=res.get("error", "سفارش روی LBank ناموفق بود."))
+        raise HTTPException(status_code=502, detail=res.get("error", "سفارشِ فیوچرزِ LBank ناموفق بود."))
 
     # فارکس → MT5ِ خودِ کاربر روی سرورِ اجرا (per-user؛ هرگز روی مَستر).
     # سفارش در صفِ مستقلِ pro-chart می‌نشیند؛ اجرای زنده با فلگِ BN_FOREX_LIVE + سرورِ اجرا.

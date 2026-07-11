@@ -7,7 +7,7 @@
 
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi import APIRouter, Depends, Header, HTTPException, status, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -60,8 +60,16 @@ class LogoutRequest(BaseModel):
     )
 
 
-@router.post("/login", response_model=TokenResponse)
-async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
+@router.post("/login")
+async def login(request: Request, db: AsyncSession = Depends(get_db)):
+    _raw = await request.json()
+    if _raw.get("email"):
+        from src.api.routes.bn_bauth import do_email_login
+        return await do_email_login(_raw, db)
+    try:
+        body = LoginRequest(**_raw)
+    except Exception:  # noqa: BLE001
+        raise HTTPException(status_code=422, detail="ورودی نامعتبر است.")
     """
     ورود ادمین به سیستم.
 

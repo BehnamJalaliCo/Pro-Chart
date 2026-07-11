@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 56" width="230" height="56" role="img" aria-label="One Royal">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5d67b"/><stop offset="1" stop-color="#c79a3a"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <rect x="4" y="10" width="36" height="36" rx="9" fill="#0a1e3f"/>
+    <path d="M13 34 L13 24 L18 29 L22 22 L26 29 L31 24 L31 34 Z" fill="url(#gold)"/>
+    <text x="52" y="37" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" fill="#0a1e3f" style="letter-spacing:.5px">One <tspan fill="url(#gold)">Royal</tspan></text>
+  </g>
+</svg>

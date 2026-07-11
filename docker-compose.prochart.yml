@@ -110,7 +110,7 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --workers 2
+    command: ['sh', '-c', 'export CENTRAL_JWT_PUBLIC_KEY="$(cat /app/secrets/central_jwt_public.pem)"; exec uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --workers 2']
     depends_on:
       timescaledb:
         condition: service_healthy
@@ -119,6 +119,14 @@ services:
     env_file: .env
     environment:
       BN_STANDALONE_AUTH: "1"
+      CENTRAL_AUTH_ENABLED: "1"
+      # SEO — دامنهٔ canonical و ثبت در موتورهای جستجو (pro-chart.com)
+      WEBSITE_DOMAIN: "pro-chart.com"
+      SEO_GSC_SITE: "sc-domain:pro-chart.com"
+      INDEXNOW_KEY: "b64067bef00e5006645434d5ec6bd0ed"
+      # اتصالِ DB — کاهشِ pool تا با max_connections=50 و سرویس‌های دیگر headroom بماند
+      DB_POOL_SIZE: "20"
+      DB_MAX_OVERFLOW: "10"
     ports:
       - "127.0.0.1:8000:8000"
     volumes:
@@ -145,12 +153,17 @@ services:
     restart: always
     depends_on:
       - api
+      - admin-frontend
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/www/certbot:/var/www/certbot:ro
+      # پنلِ ادمین (panel.pro-chart.com) — بلاکِ additive، جدا از pro-chart.ir
+      - ./nginx/panel.conf:/etc/nginx/conf.d/panel.conf:ro
+      # پنلِ کاربری (user.pro-chart.com)
+      - ./nginx/user-panel.conf:/etc/nginx/conf.d/user-panel.conf:ro
     deploy:
       resources:
         limits:
@@ -159,6 +172,48 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/health || exit 1"]
       interval: 20s
+      timeout: 5s
+      retries: 3
+
+  # فرانتِ پنلِ ادمین — panel.pro-chart.com (React SPA؛ پشتِ nginxِ frontend-prochart)
+  admin-frontend:
+    build:
+      context: ./frontend/panel
+      dockerfile: Dockerfile
+    image: prochart-admin:latest
+    container_name: prochart-admin-frontend
+    restart: always
+    depends_on:
+      - api
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.2'
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # فرانتِ پنلِ کاربری — user.pro-chart.com (React SPA؛ پشتِ nginxِ frontend-prochart)
+  user-frontend:
+    build:
+      context: ./frontend/user
+      dockerfile: Dockerfile
+    image: prochart-user:latest
+    container_name: prochart-user-frontend
+    restart: always
+    depends_on:
+      - api
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.2'
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"]
+      interval: 30s
       timeout: 5s
       retries: 3
 

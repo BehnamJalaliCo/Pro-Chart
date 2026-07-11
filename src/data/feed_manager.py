@@ -253,6 +253,42 @@ class DataFeedManager:
             await redis_client.set_price(symbol, tick)
             # ارسال از طریق pub/sub برای WebSocket
             await redis_client.publish("price_updates", tick)
+            # ساختِ کندلِ بلادرنگ از همین tick — مستقل از yfinanceِ تأخیری/بدونِ-M1.
+            try:
+                await self._aggregate_realtime_candle(symbol, tick)
+            except Exception as e:  # noqa: BLE001
+                logger.warning("rt_candle_agg_failed", symbol=symbol, error=str(e)[:120])
+
+    # تایم‌فریم‌های بلادرنگ که مستقیم از قیمتِ زنده ساخته می‌شوند (yfinance برای فارکس
+    # دادهٔ ۱-دقیقه‌ای ندارد و M5/M15 هم تأخیری است؛ این کندلِ «در حالِ شکل‌گیری» را
+    # هر ۵ ثانیه با قیمتِ واقعی به‌روز می‌کند تا چارتِ M1/M5 دیگر گیر نکند).
+    _RT_TF_SECONDS = {"M1": 60, "M5": 300, "M15": 900, "H1": 3600}
+
+    async def _aggregate_realtime_candle(self, symbol: str, tick: dict) -> None:
+        from datetime import datetime, timezone
+        from sqlalchemy import text
+
+        bid = float(tick.get("bid") or 0)
+        ask = float(tick.get("ask") or 0)
+        price = float(tick.get("last") or 0) or ((bid + ask) / 2 if (bid or ask) else 0)
+        if not price or price <= 0:
+            return
+        epoch = int(datetime.now(timezone.utc).timestamp())
+        _sql = text(
+            "INSERT INTO candles (time, symbol, timeframe, open, high, low, close) "
+            "VALUES (:t, :sym, :tf, :p, :p, :p, :p) "
+            "ON CONFLICT (time, symbol, timeframe) DO UPDATE SET "
+            "high = GREATEST(candles.high, :p), low = LEAST(candles.low, :p), close = :p"
+        )
+        # سریال‌سازی — تا نمادهای هم‌زمان ده‌ها اتصالِ DB باز نکنند (too many clients).
+        if not hasattr(self, "_agg_lock") or self._agg_lock is None:
+            self._agg_lock = asyncio.Lock()
+        async with self._agg_lock:
+            async with async_session_factory() as session:
+                for tf, sec in self._RT_TF_SECONDS.items():
+                    bar = datetime.fromtimestamp((epoch // sec) * sec, tz=timezone.utc)
+                    await session.execute(_sql, {"t": bar, "sym": symbol, "tf": tf, "p": price})
+                await session.commit()
 
     async def _candle_update_loop(self) -> None:
         """بروزرسانی کندل‌ها هر ۶۰ ثانیه"""
