@@ -1656,14 +1656,10 @@ async def chart_symbols(st: AcademyStudent = Depends(current_student), db: Async
     # فقط ۱۰۰ نمادِ برترِ فارکس/فلز/انرژی/شاخص (بقیهٔ ~۱۸۰۰ نمادِ کهنه/بی‌داده حذف)
     FOREX_TOP = frozenset({
         "EURUSD","GBPUSD","USDJPY","USDCHF","AUDUSD","NZDUSD","USDCAD","EURGBP","EURJPY","GBPJPY",
-        "AUDJPY","EURAUD","EURCHF","EURCAD","EURNZD","GBPCHF","GBPCAD","GBPAUD","GBPNZD","AUDCAD",
-        "AUDCHF","AUDNZD","CADCHF","CADJPY","CHFJPY","NZDJPY","NZDCAD","NZDCHF","USDSEK","USDNOK",
-        "USDMXN","USDZAR","USDTRY","USDSGD","USDHKD","USDPLN","USDCNH","USDDKK","EURSEK","EURNOK",
-        "EURPLN","EURTRY","GBPSEK","USDHUF","USDCZK",
-        "XAUUSD","XAGUSD","XPTUSD","XPDUSD",
-        "XTIUSD","CL","XBRUSD","NGAS","NG","HG","DX",
+        "AUDJPY","EURAUD","EURCHF","EURCAD","GBPCHF","GBPCAD","AUDCAD","CADJPY","CHFJPY","NZDJPY",
+        "USDSEK","USDNOK","USDMXN","USDZAR","USDTRY","USDSGD","EURNZD","AUDNZD","GBPAUD",
+        "XAUUSD","XAGUSD","XPTUSD","XPDUSD","XTIUSD","XBRUSD",
         "US30","US500","NAS100","DE40","UK100","JP225","HK50","AUS200","FRA40","EU50","US2000",
-        "ESP35","NL25","CHINA50","INDIA50","SWISS20","CANADA60","ITALY40",
     })
     syms = [x for x in syms if x in FOREX_TOP]
     have = set(syms)
