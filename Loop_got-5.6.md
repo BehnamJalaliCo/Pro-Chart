@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T06:15:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T06:40:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۳۸` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۳۹` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۲`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۳`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1156,6 +1156,15 @@
 - build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
 - اثر: browser harness قابل‌ردیابی است؛ این نتیجه به‌تنهایی عبور performance budget release را ثابت نمی‌کند.
 - blocker: budget مستقل، golden approval، و Motion gestureهای کامل هنوز باز هستند.
+
+### GOV-080 — secret scan محدود به source فعلی
+
+- زمان UTC: `2026-07-16T06:40:00Z`.
+- فرمان‌ها: اسکن Docker Gitleaks روی `src/` و `frontend/` با `.gitleaks.toml`؛ هر دو بدون Git و بدون چاپ secret.
+- نتیجه: `src/` برابر `no leaks found` (۳.۵۰MB)، `frontend/` برابر `no leaks found` (۱۰.۹۳MB). اجرای کل repository به‌دلیل حجم artifacts پیش از نتیجه با interrupt متوقف شد؛ بنابراین این رکورد فقط ادعای source-current دارد.
+- build/deploy: runtime تغییری نکرد؛ لازم نیست.
+- اثر: مسیرهای فعلی کد و UI clean هستند؛ historical secret scan/rotation و artifact provenance همچنان gate مستقل دارند.
+- blocker: revoke/rotate تاریخی و release provenance نیازمند اقدام/تصمیم بیرونی است؛ visual/motion نیز باز است.
 
 ## وضعیت فعلی production
 
