@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T10:00:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T10:20:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۹` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۸` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۴۹` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۳`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۴`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1248,6 +1248,15 @@
 - شاهد: full Playwright gate برابر `27 passed / 25 skipped`؛ visual targetها `3 passed` و skipها intentional.
 - build/deploy: مستنداتی/QA؛ build و deploy runtime لازم نیست.
 - blocker: approval انسانی Golden، diff threshold مصوب و پوشش کامل Route/State/Theme هنوز باز است.
+
+### GOV-090 — compose configuration integrity
+
+- زمان UTC: `2026-07-16T10:20:00Z`.
+- فرمان: `docker compose -f docker-compose.prochart.yml config --quiet`.
+- نتیجه: `compose_config=ok`؛ پیکربندی deploy فعلی syntactically معتبر است و با ۱۱ سرویس live ثبت‌شده سازگار می‌ماند.
+- build/deploy: فقط validation؛ build/deploy لازم نیست.
+- اثر: gate پیکربندی قبل از هر rollout بعدی سبز است.
+- blocker: Golden/Motion، manual accessibility، full clean Python، historical secret rotation و release provenance باز هستند.
 
 ## وضعیت فعلی production
 
