@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:12:14Z`
+آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:25:58Z`
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۸۳` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۵۹` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۸۴` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۶۰` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۸` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۵۰`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۵۲`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1367,6 +1367,21 @@
 - deploy production: لازم نبود و انجام نشد؛ DEPLOY count همان `۸` است.
 - smoke/health: `۱۱` سرویس running، frontend health=`healthy`، restart=`0` و HTTPS=`200`.
 - rollback: بازگرداندن ردیف PC-030 و دو سطر Execution State. blocker: ۱۶۱ Requirement دیگر و همهٔ gateهای سراسری Goal هنوز باید مستقل بسته شوند؛ Goal `IN_PROGRESS` می‌ماند.
+
+### CHG-091 / GOV-101 — scanner انحصار provider روی source، fixture، bundle و production
+
+- زمان UTC میزبان: `2026-07-15T08:25:58Z`.
+- فایل‌ها/سرویس: `qa/scripts/provider-exclusivity-scan.mjs`، `qa/tests/provider-exclusivity-scan.test.mjs`، `qa/package.json`؛ سه build context واقعی `frontend-prochart/admin-frontend/user-frontend`، edge configها و سه bundle candidate/live.
+- بازتولید test-first: تست scanner ابتدا با `ERR_MODULE_NOT_FOUND` شکست خورد. پیاده‌سازی بعدی پنج contract را پوشش داد: comment false-positive، source/fixture/binary asset path، minified bundle/direct URL، determinism و compose context fail-closed شامل `frontend/user` که Git آن را ignore می‌کند.
+- تغییر بنیادی: scanner با `docker compose config --format json` سه context production را کشف می‌کند و بدون اتکا به Git، source/fixture/asset path، bundle تازه، edge و QA/legacy را partition می‌کند. فقط source/fixture/bundle/edge gate را می‌بندند؛ test/QA/legacy اسکن و گزارش می‌شوند اما به‌دلیل non-shipping بودن false failure ایجاد نمی‌کنند. allowlist فقط LBank/OneRoyal و departure داخلی `/go/lbank`/`/go/oneroyal` است؛ ۵۵ rule نام/URL provider دیگر fail-closed هستند.
+- اثر بنیادی: audit واقعی `990` فایل source (`873` ProChart، `78` Panel، `39` User ignored-but-deployed)، `617` فایل bundle (`534/70/13`)، `12` edge و `45` QA را پوشش داد؛ blocking finding=`0`. تعداد `71` occurrence در QA/test/legacy جدا ثبت شد، از جمله TradeYar و direct URL در `src.bak` که داخل final image نیستند و در نتیجه پنهان یا به PASS محصول تبدیل نشدند.
+- build: build محلی ProChart (`1787 modules`, JS=`2402.11kB`) و User (`1699 modules`, JS=`411.80kB`) پاس شد؛ build محلی Panel ابتدا با `vite: not found` و سپس `npm ci` با EACCES روی پوشهٔ root-owned شکست خورد. مالکیت دست‌کاری نشد؛ build canonical سه سرویس با `docker compose ... build --provenance=false` کاملاً موفق شد. imageها: ProChart=`sha256:43a857…fa4`، Panel=`sha256:8dbab5…42b` و User=`sha256:c0db88…6f9`.
+- تست‌ها: scanner unit=`5/5 PASS`؛ دو run candidate هرکدام PASS و byte-identical با SHA-256=`da8cacdf…0813`؛ scan مستقل bundleهای live PASS با SHA-256=`2b1bb051…bf6`. سه bundle tree hash candidate/live دقیقاً برابر بود. قراردادهای source ProChart=`5/5` و User=`5/5`؛ Main E2E=`4/4` و User E2E=`4/4`; Motion+Visual=`6 passed / 4 skipped` عمدی، retry/flaky=`0`. نخستین syntax-check از cwd=`qa` با مسیر اشتباه `qa/scripts/...` به `MODULE_NOT_FOUND` خورد؛ فرمان با مسیر صحیح `scripts/...` تکرار و هر دو `node --check` پاس شدند.
+- artifact/seal: `artifacts/qa/provider-exclusivity/worktree/20260715T082200Z/`؛ `SHA256SUMS` هر سه report را `OK` تأیید کرد. report شامل absolute path، Secret یا credential نیست.
+- image/fingerprint live: Main=`sha256:4e6130…0350`، Panel=`sha256:f3b22c…39bd` و User=`sha256:6a5c25…6216`؛ candidate/live bundle tree hashها به‌ترتیب `999debc7…267a`، `ca87b67f…fbaf` و `c7072ca5…b1a` یکسان‌اند.
+- deploy production: انجام نشد؛ فقط QA/harness تغییر کرد و runtime source/bundle محصول تغییر نکرد. DEPLOY count همان `۸` است.
+- smoke/health: Main/Panel/User هر سه HTTPS=`200`، health=`healthy` و restart=`0`؛ compose همچنان `۱۱` سرویس running دارد.
+- rollback: حذف scanner/test و دو script در `qa/package.json`؛ image rollback لازم نیست. پس از commit، PC-118/PC-120 باید با همین Evidence به Matrix همگام شوند؛ Golden، accessibility دستی، performance، supply-chain و سایر Requirementها باز می‌مانند.
 
 ## وضعیت فعلی production
 

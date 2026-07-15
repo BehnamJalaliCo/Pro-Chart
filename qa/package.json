@@ -16,6 +16,8 @@
     "test:onboarding-focus": "playwright test tests/onboarding-focus.spec.mjs",
     "test:watchlist": "playwright test tests/watchlist-interactions.spec.mjs --project=chromium-desktop",
     "test:motion-chart": "playwright test tests/motion-chart.spec.mjs",
+    "test:provider-exclusivity": "node --test tests/provider-exclusivity-scan.test.mjs",
+    "scan:provider-exclusivity": "node scripts/provider-exclusivity-scan.mjs --repo-root ..",
     "test:panel-navigation": "playwright test tests/panel-navigation.spec.mjs --project=chromium-desktop",
     "test:referral-compliance": "playwright test tests/referral-compliance.spec.mjs",
     "test:security-headers": "playwright test tests/security-headers.spec.mjs --project=chromium-desktop"
