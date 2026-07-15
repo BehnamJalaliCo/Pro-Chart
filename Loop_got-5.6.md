@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T04:40:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T05:00:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۷۷` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۳۴` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۳۵` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۷`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۹`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1120,6 +1120,15 @@
 - اثر: MOT-002 اکنون شواهد رفتاری اولیه دارد؛ anchor geometry/zoom scale هنوز باید تکمیل شود.
 - commit/rollback: commit همین increment؛ rollback حذف test/script.
 - blocker: MOT-001/003/004/005/006/009/010 و golden approval باز هستند.
+
+### CHG-085 / GOV-076 — ثبت geometry assertion برای MOT-002
+
+- زمان UTC: `2026-07-16T05:00:00Z`.
+- فایل‌ها: `qa/tests/motion-chart.spec.mjs`، `docs/qa/MOTION_MATRIX.md`.
+- تغییر: bounding box canvas قبل و بعد wheel مقایسه شد؛ MOT-002 در Matrix از `NOT_CAPTURED` به `PARTIAL` رفت، بدون ادعای zoom-anchor کامل.
+- تست: `PROCHART_BASE_URL=https://localhost npm run test:motion-chart -- --reporter=line` برابر `1 passed / 1 skipped` عمدی؛ retry/flaky=`0`.
+- build/deploy: فقط QA/docs؛ build و deploy runtime لازم نیست.
+- rollback/blocker: revert مستندات و assertion ممکن است؛ MOT-001/003/004/005/006/009/010 و golden approval باز هستند.
 
 ## وضعیت فعلی production
 

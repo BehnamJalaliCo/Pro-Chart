@@ -36,11 +36,13 @@ test('MOTION-002: wheel over chart is captured without page-scroll conflict', as
     url: location.href,
     wheel: window.__pcMotionWheel,
   }));
+  const afterBox = await canvas.boundingBox();
 
   expect(after.wheel.count).toBeGreaterThan(0);
   expect(after.wheel.deltaY).toBe(240);
   expect(after.scroll).toEqual({ x: before.x, y: before.y });
   expect(after.url).toBe(before.url);
+  expect(afterBox).toEqual(box);
   await testInfo.attach('motion-wheel-evidence', {
     body: Buffer.from(JSON.stringify({ scenario: 'MOT-002', before, after }, null, 2)),
     contentType: 'application/json',

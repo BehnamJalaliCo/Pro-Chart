@@ -5,7 +5,7 @@
 | شناسه | تعامل | انتظار | Requirement | Evidence | وضعیت |
 |---|---|---|---|---|---|
 | MOT-001 | Pan افقی چارت | حرکت زمان، حفظ crosshair، بدون scroll conflict | PC-028، PC-029 | video + event trace + frame times | NOT_CAPTURED |
-| MOT-002 | Wheel/Trackpad zoom | anchor زیر pointer پایدار | PC-029، PC-040 | frame trace + geometry assertion | NOT_CAPTURED |
+| MOT-002 | Wheel/Trackpad zoom | anchor زیر pointer پایدار | PC-029، PC-040 | `qa/tests/motion-chart.spec.mjs`؛ wheel event، scroll/url و canvas geometry ثابت ثبت شد؛ zoom-anchor کامل pending | PARTIAL |
 | MOT-003 | Pinch | zoom دو محوره و بدون browser navigation conflict | PC-029 | touch trace + video | NOT_CAPTURED |
 | MOT-004 | Long press | Crosshair موبایل و cancel قابل پیش‌بینی | PC-029 | touch trace + a11y announcement | NOT_CAPTURED |
 | MOT-005 | Drawing handle drag | snap اختیاری، hit area لمسی و undo | PC-025، PC-030، PC-061 | event trace + geometry | NOT_CAPTURED |
