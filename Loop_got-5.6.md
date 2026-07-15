@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T05:35:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T06:15:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۳۷` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۳۸` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۱`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۲`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1147,6 +1147,15 @@
 - build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
 - اثر: determinism capture پس از تغییرات QA تأیید شد؛ Golden approval و full viewport/state matrix هنوز ادعا نشده است.
 - blocker: Expected/Golden تصویب‌شده صفر، Motion gestureهای کامل و performance budget مستقل هنوز باز هستند.
+
+### GOV-079 — performance browser rerun با attribution
+
+- زمان UTC: `2026-07-16T06:15:00Z`.
+- فرمان: `PROCHART_BASE_URL=https://localhost PLAYWRIGHT_IMAGE_DIGEST=sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a PERFORMANCE_RUN_ID=20260716T060000Z npm run test:performance -- --reporter=line`.
+- نتیجه: `2 passed / 2 skipped` عمدی طبق device matrix، retry/flaky=`0`؛ desktop و mobile chart evidence تولید شد.
+- build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
+- اثر: browser harness قابل‌ردیابی است؛ این نتیجه به‌تنهایی عبور performance budget release را ثابت نمی‌کند.
+- blocker: budget مستقل، golden approval، و Motion gestureهای کامل هنوز باز هستند.
 
 ## وضعیت فعلی production
 
