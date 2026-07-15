@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T08:00:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T08:20:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۳` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۴۴` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۷`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۸`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1201,6 +1201,15 @@
 - build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
 - اثر: یک state دسترس‌پذیری live به شواهد فعلی اضافه شد؛ این نتیجه جایگزین matrix کامل و audit دستی نیست.
 - blocker: contrast/manual screen-reader، visual/motion و full clean suite هنوز باز هستند.
+
+### GOV-085 — User Portal referral compliance روی vhost live
+
+- زمان UTC: `2026-07-16T08:20:00Z`.
+- فرمان: `PROCHART_BASE_URL=https://user.pro-chart.com PLAYWRIGHT_HOST_RESOLVER_RULES='MAP user.pro-chart.com 127.0.0.1' npx playwright test tests/user-referral-compliance.spec.mjs --reporter=line`.
+- نتیجه: LBank و OneRoyal در desktop/mobile، مجموعاً `4 passed`؛ eligibility/disclosure/departure gate و destination ثابت تأیید شد؛ retry/flaky=`0`.
+- build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
+- اثر: تنها referralهای مجاز در User Portal live vhost قابل‌مشاهده و gated هستند.
+- blocker: visual/motion golden، manual accessibility، historical secret rotation و release provenance باز هستند.
 
 ## وضعیت فعلی production
 
