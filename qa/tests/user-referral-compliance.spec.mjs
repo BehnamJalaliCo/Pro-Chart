@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 const DISCLOSURE = 'با استفاده از این لینک ممکن است Pro Chart اعتبار معرفی دریافت کند.';
 const ELIGIBILITY = 'ارائه این خدمت به محل اقامت و شرایط ارائه‌دهنده بستگی دارد.';
@@ -185,6 +186,27 @@ async function assertReferralGate(page, surface, expectedOrigin, provider) {
     type: element.type,
   }))).toEqual({ disabled: true, tagName: 'BUTTON', type: 'submit' });
 
+  const disclosureId = await paragraphs.nth(0).getAttribute('id');
+  const eligibilityId = await paragraphs.nth(1).getAttribute('id');
+  const expectedDescription = `لینک معرفی: ${DISCLOSURE} ${ELIGIBILITY}`;
+  expect(disclosureId).toMatch(/^referral-disclosure-/);
+  expect(eligibilityId).toMatch(/^referral-eligibility-/);
+  expect(await checkbox.getAttribute('aria-describedby')).toBe(`${disclosureId} ${eligibilityId}`);
+  expect(await submit.getAttribute('aria-describedby')).toBe(`${disclosureId} ${eligibilityId}`);
+  await expect(checkbox).toHaveAccessibleName('شرایط محل اقامت و ارائه‌دهنده را بررسی کرده‌ام و می‌خواهم ادامه دهم.');
+  await expect(checkbox).toHaveAccessibleDescription(expectedDescription);
+  await expect(submit).toHaveAccessibleDescription(expectedDescription);
+
+  const axeResult = await new AxeBuilder({ page })
+    .include(`section[aria-label="لینک معرفی ${provider.name}"]`)
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'])
+    .analyze();
+  expect(axeResult.violations.map(({ id, impact, nodes }) => ({
+    id,
+    impact,
+    nodeCount: nodes.length,
+  }))).toEqual([]);
+
   const formContract = await form.evaluate((element) => ({
     method: element.getAttribute('method'),
     rawAction: element.getAttribute('action'),
@@ -227,6 +249,57 @@ async function assertReferralGate(page, surface, expectedOrigin, provider) {
   await expect(submit).toBeEnabled();
   expect(await submit.evaluate((element) => element.disabled)).toBe(false);
 
+  const acknowledgedAxeResult = await new AxeBuilder({ page })
+    .include(`section[aria-label="لینک معرفی ${provider.name}"]`)
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'])
+    .analyze();
+  expect(acknowledgedAxeResult.violations.map(({ id, impact, nodes }) => ({
+    id,
+    impact,
+    nodeCount: nodes.length,
+  }))).toEqual([]);
+
+  const departureRequests = [];
+  const context = page.context();
+  const departurePattern = `**${provider.approvedPath}*`;
+  const departureHandler = async (route) => {
+    const requestUrl = new URL(route.request().url());
+    departureRequests.push({
+      method: route.request().method(),
+      origin: requestUrl.origin,
+      pathname: requestUrl.pathname,
+    });
+    await route.fulfill({
+      status: 200,
+      contentType: 'text/html; charset=utf-8',
+      body: '<!doctype html><html lang="fa" dir="rtl"><title>referral intercepted</title></html>',
+    });
+  };
+  await context.route(departurePattern, departureHandler);
+  const pagesBeforeDeparture = new Set(context.pages());
+  try {
+    const [departureRequest] = await Promise.all([
+      context.waitForEvent('request', {
+        predicate: (request) => new URL(request.url()).pathname === provider.approvedPath,
+      }),
+      submit.click({ noWaitAfter: true }),
+    ]);
+    await expect.poll(() => departureRequests).toEqual([{
+      method: 'GET',
+      origin: expectedOrigin,
+      pathname: provider.approvedPath,
+    }]);
+    expect(departureRequest.method()).toBe('GET');
+    expect(new URL(departureRequest.url()).origin).toBe(expectedOrigin);
+    expect(new URL(departureRequest.url()).pathname).toBe(provider.approvedPath);
+    await expect.poll(() => context.pages().length).toBe(pagesBeforeDeparture.size + 1);
+  } finally {
+    await Promise.all(context.pages()
+      .filter((candidatePage) => !pagesBeforeDeparture.has(candidatePage))
+      .map((candidatePage) => candidatePage.close()));
+    await context.unroute(departurePattern, departureHandler);
+  }
+
   const renderedTargets = await surface.locator('a[href], form[action]').evaluateAll((elements) => elements.map((element) => ({
     raw: element.getAttribute(element.tagName === 'FORM' ? 'action' : 'href'),
     resolved: element.tagName === 'FORM' ? element.action : element.href,
@@ -244,7 +317,18 @@ async function assertReferralGate(page, surface, expectedOrigin, provider) {
   expect(await page.evaluate(() => window.__userReferralQaWindowOpenCalls || [])).toEqual([]);
   await expect(page).toHaveURL((url) => url.origin === expectedOrigin && url.pathname === '/connect');
 
-  return { disclosureOrder, formContract, renderedTargets };
+  return {
+    accessibility: {
+      axeViolationCount: axeResult.violations.length,
+      acknowledgedAxeViolationCount: acknowledgedAxeResult.violations.length,
+      describedBy: `${disclosureId} ${eligibilityId}`,
+      expectedDescription,
+      departureRequests,
+    },
+    disclosureOrder,
+    formContract,
+    renderedTargets,
+  };
 }
 
 async function assertBrokerIsReferralOnly(surface) {
@@ -278,6 +362,7 @@ for (const provider of providers) {
 
     const surface = page.locator('main');
     await expect(surface).toBeVisible();
+    expect(state.popups, 'no popup exists before explicit keyboard acknowledgement and submit').toEqual([]);
     const gate = await assertReferralGate(page, surface, target.origin, provider);
 
     const storageContract = await page.evaluate(() => ({
@@ -328,6 +413,13 @@ for (const provider of providers) {
     expect(state.badResponses, 'the page must not receive an HTTP error').toEqual([]);
     expect(state.pageErrors, 'the page must not raise an uncaught error').toEqual([]);
     expect(state.requestFailures, 'the page must not have a failed request').toEqual([]);
-    expect(state.popups, 'the gate must not navigate before an explicit submit').toEqual([]);
+    expect(state.popups.map((url) => {
+      const parsed = new URL(url);
+      return { method: 'GET', origin: parsed.origin, pathname: parsed.pathname };
+    }), 'the only popup follows the explicit submit and remains same-origin').toEqual([{
+      method: 'GET',
+      origin: target.origin,
+      pathname: provider.approvedPath,
+    }]);
   });
 }

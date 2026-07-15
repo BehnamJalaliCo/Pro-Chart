@@ -20,6 +20,7 @@
     "scan:provider-exclusivity": "node scripts/provider-exclusivity-scan.mjs --repo-root ..",
     "test:panel-navigation": "playwright test tests/panel-navigation.spec.mjs --project=chromium-desktop",
     "test:referral-compliance": "playwright test tests/referral-compliance.spec.mjs",
+    "test:referral-placements": "playwright test tests/user-referral-placement-matrix.spec.mjs",
     "test:security-headers": "playwright test tests/security-headers.spec.mjs --project=chromium-desktop"
   },
   "devDependencies": {
