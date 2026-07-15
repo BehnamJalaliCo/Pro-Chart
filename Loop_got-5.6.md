@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T05:00:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T05:15:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۳۵` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۳۶` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۹`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۰`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1129,6 +1129,15 @@
 - تست: `PROCHART_BASE_URL=https://localhost npm run test:motion-chart -- --reporter=line` برابر `1 passed / 1 skipped` عمدی؛ retry/flaky=`0`.
 - build/deploy: فقط QA/docs؛ build و deploy runtime لازم نیست.
 - rollback/blocker: revert مستندات و assertion ممکن است؛ MOT-001/003/004/005/006/009/010 و golden approval باز هستند.
+
+### GOV-077 — baseline regression پس از تغییرات QA
+
+- زمان UTC: `2026-07-16T05:15:00Z`.
+- فرمان: `PROCHART_BASE_URL=https://localhost npm run test:baseline -- --reporter=line`.
+- نتیجه: baseline public shell در desktop و mobile برابر `2 passed`، retry/flaky=`0`.
+- build/deploy: runtime تغییری نکرد؛ build و deploy لازم نیست.
+- اثر: مسیر characterization اصلی پس از incrementهای QA بدون regression قابل‌مشاهده باقی ماند.
+- blocker: visual golden و Motion gestureهای باقی‌مانده همچنان باز هستند.
 
 ## وضعیت فعلی production
 
