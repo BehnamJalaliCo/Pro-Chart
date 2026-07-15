@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:29:23Z`
+آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:56:48Z`
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۸۴` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۶۱` بستهٔ بنیادیِ حاکمیت/شواهد؛
-- `۸` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۵۳`؛
+- `۸۶` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۶۳` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۹` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۵۸`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1395,15 +1395,53 @@
 - smoke/health: Main/Panel/User HTTPS=`200`، health=`healthy`، restart=`0` و کل compose=`۱۱` سرویس running.
 - rollback: بازگرداندن دو ردیف Matrix و سطرهای Evidence/Execution/Regression؛ rollback image لازم نیست. blocker: PC-119/121/122 با وجود gate PASS هنوز status مستقل دارند و ۱۵۹ الزام دیگر باید جداگانه اثبات شوند.
 
+### CHG-092 / DEPLOY-009 — رفع کنتراست دکمهٔ خروج Referral در User Portal و rollout
+
+- زمان UTC تغییر/deploy: container production در `2026-07-15T08:49:40.303191339Z` ساخته شد؛ ثبت نهایی میزبان `2026-07-15T08:53:08Z`.
+- فایل‌ها/سرویس: `frontend/user/src/components/ReferralDeparture.jsx`، `frontend/user/src/index.css`، `frontend/user/test/referrals.test.mjs` و سرویس `user-frontend`.
+- بازتولید test-first: Axe پس از keyboard acknowledgement در هر چهار حالت LBank/OneRoyal × desktop/mobile یک finding جدی `color-contrast` روی دکمهٔ فعال پیدا کرد؛ حالت disabled پیش از acknowledgement violation نداشت. failure واقعی با rerun یا threshold پنهان نشد.
+- تغییر/اثر بنیادی: کلاس ثابت `referral-departure-submit` به دکمه اضافه شد؛ رنگ فعال از blue عمومی کم‌کنتراست به `#1565c0` و hover به `#0d47a1` تغییر کرد. متن، ترتیب، form action، target و provider policy دست‌نخورده ماند.
+- build: User برابر ۱٬۶۹۹ module، JS=`411830` byte و CSS=`25198` byte؛ image=`sha256:3ebdde7b42374c1d44d8a88e767575ec5f82d9069aae4d92eb208dcd1bd0aa8d`. build نهایی API/Main/Panel نیز PASS و digestها به‌ترتیب `05ed90…cbe8`، `43a857…fa4` و `8dbab5…42b` بود.
+- تست‌ها: User unit=`5/5`؛ candidate Connect=`4/4` و placement matrix=`16/16`؛ production Connect=`4/4` و placement matrix=`16/16`. Axe WCAG 2.0/2.1/2.2 سطح A/AA پیش و پس از acknowledgement violation=`0`؛ retry/flaky/skip=`0`.
+- image/fingerprint: image قبلی=`sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216`؛ image جدید/live=`sha256:3ebdde…aa8d`؛ bundle tree candidate/live هر دو `56a17a5c0fc0a55a330d2db8e894e64d7abdfd6f872c04b9ca1eb5c4ef6faae1`.
+- deploy production: `user-frontend` با tag=`deploy-referral-a11y-20260715T084924Z` جایگزین شد؛ rollback tag=`rollback-referral-a11y-20260715T084924Z` آماده و فعال‌نشده است.
+- smoke/health: User HTTPS=`200`، health=`healthy`، restart=`0`، critical-log-pattern=`0`؛ شش security header اصلی + CSP حاضر؛ کل compose=`11` running و unhealthy=`0`. هشت redirect عمومی پس از deploy exact `302/no-store/no-cache` ماندند.
+- rollback/blocker: اجرای override با rollback tag فقط برای `user-frontend`. blockerهای عمومی screen-reader/reflow در PC-146–150 و clean-checkout کل repository مستقل باز هستند.
+
+### CHG-093 / GOV-103 — قرارداد نهایی Redirect/A11y و ماتریس همهٔ placementهای Referral
+
+- زمان UTC commit: `2026-07-15T08:52:25Z`؛ commit=`6e3fad2909977570ff95c7756e62ee16887d7fc2`.
+- فایل‌ها/سرویس: قراردادهای `src/api/routes/referrals.py` و دو component/referrals source، `qa/python/referral_redirects_regression.py`، سه spec مرورگر، `qa/package.json` و source unitهای Main/User.
+- تغییر/اثر بنیادی: تست‌ها exact copy/order، accessible name/description، IDهای واقعی `aria-describedby`، native-disabled، keyboard acknowledgement، Axe پیش/پس از ack و اولین درخواست `GET` هم‌مبدأ را gate می‌کنند. placement matrix چهار route واقعی `/`، `/connect`، `/trade` و `/subscription` را برای crypto/broker روی desktop/mobile پوشش می‌دهد؛ Main desktop canonical به‌درستی N/A و legacy UserPanel فقط supplemental ثبت شد.
+- build: build نهایی چهار image با `--provenance=false` PASS و بعد از تغییر مستندات cached تکرار شد: API=`05ed90…cbe8`، Main=`43a857…fa4`، Panel=`8dbab5…42b`، User=`3ebdde…aa8d`.
+- تست‌ها: backend network-none=`12/12`؛ source contract=`10/10`؛ provider scanner=`5/5`؛ Main canonical=`2/2` و legacy supplement=`4/4`؛ User candidate/production هرکدام `20/20`؛ Motion+Visual capture=`6 passed / 4 skipped` device-inapplicable. retry/flaky=`0`.
+- attempt discipline: نخستین Main desktop به‌علت vhost غلط harness fail شد؛ انتظار `popup` با `rel=noopener` timeout و با BrowserContext request interception اصلاح شد؛ container candidate بدون compose network upstream `api` را resolve نکرد و روی `prochart_default` پاس شد؛ Visual بدون Golden عمداً fail و capture-only پاس شد؛ فرمان validation با `python` موجود نبود و سپس headerهای اشتباه CSV نیز آشکار شد، نسخهٔ درست با `python3` و ستون‌های `status/id` پاس شد. هیچ failure محصول یا harness حذف نشده است.
+- artifact/seal: `artifacts/qa/referral-verification/20260715T083236Z/` با manifest=`f8edb6f98a85580177c84bc04916836e09e376803ceda325144c81a327269f86`؛ deploy artifact با manifest=`91503fddc45fc8010d4559d03859d54c2ebc037e80e267804e37422bda4d0fa8`؛ همهٔ entryهای canonical `OK`.
+- deploy production: تغییر runtime همین increment در `DEPLOY-009` انجام شد؛ Backend redirect runtime از قبل exact و live بود و برای ثبت source/test دوباره restart نشد.
+- smoke/health: origin + چهار host عمومی روی دو provider=`10/10 PASS`؛ API/Main/User/Panel healthy، restart=`0` و compose=`11` running.
+- rollback/blocker: rollback تست با revert commit؛ rollback runtime طبق DEPLOY-009. PC-123 policy coverage و PC-126 Bot مستقل باز می‌مانند.
+
+### GOV-104 — VERIFIEDشدن PC-119، PC-121 و PC-122
+
+- زمان UTC میزبان: `2026-07-15T08:56:48Z`.
+- فایل‌ها/سرویس: `docs/REQUIREMENTS_STATUS.csv`، `docs/EXECUTION_STATE.md`، `docs/providers/{LBANK,ONEROYAL}.md`، `docs/qa/{EVIDENCE_INDEX,REGRESSION_REPORT,REFERRAL_CONTRACT_REPORT}.md` و `Loop_got-5.6.md`؛ runtime جدیدی در این رکورد ایجاد نشد.
+- تغییر/اثر بنیادی: سه Requirement از `IN_PROGRESS/EVIDENCE_READY/PASS` به `VERIFIED/EVIDENCE_READY/PASS` رفتند و به QA-REF-002، commit=`6e3fad2`، دو manifest و deploy دقیق متصل شدند. شمار VERIFIED واقعی از `3/162` به `6/162` رسید؛ PC-123 و PC-126 بدون ادعای اضافه باز ماندند.
+- build: پس از تغییر مستندات، چهار image با build canonical کاملاً cached و بدون تغییر digest PASS شدند: API=`05ed90…cbe8`، Main=`43a857…fa4`، Panel=`8dbab5…42b` و User=`3ebdde…aa8d`.
+- تست/اعتبارسنجی: CSV برابر `162×19`؛ statusها `NOT_STARTED=126`، `IN_PROGRESS=30` و `VERIFIED=6`. دو تلاش validator پیش از کنترل محصول fail شدند: binary `python` وجود نداشت و سپس نام ستون فرضی اشتباه بود؛ validation صحیح با `python3` و header واقعی پاس شد. JSON evidence معتبر و متن‌های stale «SPA 200/undeployed» از اسناد current حذف شد.
+- image/fingerprint live: Main=`4e6130…0350`، Panel=`f3b22c…39bd`، User=`3ebdde…aa8d`، API=`91bc19…f1af`؛ User candidate/live bundle hash برابر است.
+- deploy production: لازم نبود؛ فقط governance تغییر کرد. آخرین deploy همان DEPLOY-009 است و count=`9`.
+- smoke/health: User/Main HTTPS=`200`، هر سه frontend و API healthy، restart=`0`، compose=`11` running/unhealthy=`0`.
+- rollback/blocker: بازگرداندن سه ردیف Matrix و اسناد Evidence؛ rollback image لازم نیست. کل Goal هنوز به‌علت ۱۵۶ Requirement دیگر و Gateهای release باز `IN_PROGRESS` است.
+
 ## وضعیت فعلی production
 
-- API و چهار worker Python: image `sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e`، همگی non-root/running، restart=`0` و smoke پاس.
+- API: image `sha256:91bc1949da5b86f0eb173832a654379fa08088e6ebe5cdf92c803056b758f1af`، healthy/restart=`0`؛ چهار worker Python نیز running، restart=`0` و smoke پاس.
 - Frontend ProChart/edge: image `sha256:4e6130e6caecfeacc3260a134b1a0c20e32e81f3ab2d9aaf570d3e3269f30350`، Nginx `1.30.3`، healthy و drawing-history/motion/visual smoke پاس.
-- User Portal: image `sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216`، referral-gated، healthy و browser `4/4 PASS`.
+- User Portal: image `sha256:3ebdde7b42374c1d44d8a88e767575ec5f82d9069aae4d92eb208dcd1bd0aa8d`، referral-gated، healthy و production browser `20/20 PASS`.
 - Panel: image `sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd`، healthy، hash برابر build؛ panel browser gate به‌دلیل DNS عمومی هنوز قابل‌اجرا نیست.
 - Edge پرتال‌ها: Panel و User هر دو دقیقاً هفت security header و CSP محدود live دارند؛ دو referral redirect ثابت روی origin و public پاس هستند.
 - تعداد کانتینرهای درحال اجرای پروژه: `۱۱`.
-- rollbackهای هر هشت سرویس rollout اخیر با suffix `rollback-referral-20260715T042151Z` آماده و فعال‌نشده‌اند.
+- rollbackهای هشت سرویس rollout اصلی با suffix `rollback-referral-20260715T042151Z` و rollback User A11y با suffix `rollback-referral-a11y-20260715T084924Z` آماده و فعال‌نشده‌اند.
 
 ## قالب اجباری رکوردهای بعدی
 

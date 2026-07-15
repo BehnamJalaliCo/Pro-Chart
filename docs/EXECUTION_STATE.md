@@ -1,6 +1,6 @@
 # وضعیت اجرای Pro Chart
 
-آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:10:16Z`
+آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:53:08Z`
 
 ## خلاصه تصمیم
 
@@ -10,9 +10,9 @@
 | Repository | `/home/bazaarnama/Pro-Chart/app` |
 | Branch / Commit مبنا | `claude/pro-chart-tradingview-parity-ewbpoy` / `080033ae56e3c793ba3a998276cac5daeb969d50` |
 | ماتریس | ۱۶۲ الزام؛ P0=85، P1=77، P2=0 |
-| Status / Gate | `IN_PROGRESS`؛ PC-030، PC-118 و PC-120 پاس و VERIFIED هستند، اما visual/motion و supply-chain/release gates باز |
-| VERIFIED | `۳/۱۶۲`: PC-030، PC-118 و PC-120؛ Release/Goal هنوز COMPLETE نیست |
-| Deploy | rollout production در `2026-07-15T04:22:41Z–04:22:53Z` انجام شد؛ ۸ سرویس با digestهای دقیق، rollback آماده و بدون rollback فعال |
+| Status / Gate | `IN_PROGRESS`؛ PC-030، PC-118، PC-119، PC-120، PC-121 و PC-122 پاس و VERIFIED هستند، اما visual/motion و supply-chain/release gates باز |
+| VERIFIED | `۶/۱۶۲`: PC-030، PC-118، PC-119، PC-120، PC-121 و PC-122؛ Release/Goal هنوز COMPLETE نیست |
+| Deploy | rollout هشت سرویس در `2026-07-15T04:22:41Z–04:22:53Z` و User A11y hotfix در `2026-07-15T08:49:40Z` انجام شد؛ rollback هر دو آماده و بدون rollback فعال |
 | وضعیت کلی | `IN_PROGRESS`؛ سه clean run سبز است، اما Secret history/rotation، امضای artifact، visual/motion و دسترس‌پذیری کامل هنوز باز هستند |
 
 Candidate فعلی به commit مبنا محدود نیست: فایل‌های tracked تغییرکرده و فایل‌های functional untracked دارد. بنابراین fingerprintها و artifactهای run-scoped، نه commit به‌تنهایی، هویت ورودی شاهدها را مشخص می‌کنند.
@@ -20,7 +20,7 @@ Candidate فعلی به commit مبنا محدود نیست: فایل‌های t
 ## وضعیت پس از rollout referral-only و runtime supply
 
 - API و چهار worker Python: image=`sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e`، user=`1000:1000`، restart=`0`.
-- Main edge: image=`sha256:4e6130e6caecfeacc3260a134b1a0c20e32e81f3ab2d9aaf570d3e3269f30350`؛ User Portal=`sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216`؛ Panel=`sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd`.
+- Main edge: image=`sha256:4e6130e6caecfeacc3260a134b1a0c20e32e81f3ab2d9aaf570d3e3269f30350`؛ User Portal=`sha256:3ebdde7b42374c1d44d8a88e767575ec5f82d9069aae4d92eb208dcd1bd0aa8d`؛ Panel=`sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd`.
 - همهٔ `۱۱` سرویس compose running؛ API/Main/User/Panel و زیرساخت healthcheckها healthy؛ هشت کانتینر rolloutشده critical-log-pattern=`0`.
 - User/Panel هرکدام هفت security header؛ `/go/lbank` و `/go/oneroyal` روی origin و public مقصد ثابت و status=`302` دارند؛ browser production=`۹/۹ PASS` و performance measured=`۶/۶ PASS`.
 - شواهد canonical: `artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/`؛ checksum=`PASS` و rollback=`NO`.
@@ -68,17 +68,17 @@ Candidate فعلی به commit مبنا محدود نیست: فایل‌های t
 | Root browser | `PARTIAL` | `baseline/.../20260715T011904Z`: ۲/۲ pass، retry/skip/flaky=0، HTTP 200، `fa/rtl`، runtime/network error=0؛ Desktop ۳۳ contrast node incomplete |
 | Accessibility matrix | `PARTIAL` | `a11y-matrix/.../20260715T011941Z`: ۵/۵ mobile state pass، WCAG/structure violation=0؛ ۱۶۳ contrast node incomplete و audit دستی/Route/Theme باز |
 | Interaction | `PARTIAL` | `interactions/.../20260715T012351Z`: شش case هدف پاس + شش device skip عمدی؛ Watchlist و Focus onboarding؛ walkthrough همه P0 باز |
-| Referral compliance | `PARTIAL` | `referral-compliance/.../20260715T012118Z`: ۴/۴ desktop/mobile LBank/OneRoyal pass؛ disclosure/eligibility/keyboard acknowledgement و فقط `/go/*`؛ source جدید untracked و deploy نشده |
+| Referral compliance | `PASS` برای PC-118–122؛ `PARTIAL` برای PC-123/126 | `referral-verification/20260715T083236Z`: redirect probe=۱۰/۱۰، Main canonical=۲/۲، User candidate/production=۲۰/۲۰+۲۰/۲۰، Axe WCAG 2.0/2.1/2.2 قبل/بعد ack=0؛ PC-123 policy و PC-126 Bot مستقل باز |
 | Visual | `PARTIAL_NOT_APPROVED` | `visual-determinism/.../20260715T012203Z` و `.../20260715T012250Z`: سه تصویر byte-identical؛ Golden تصویب‌شده=۰ |
 | Performance | `FAIL` | `performance/.../20260715T013244Z`: Desktop LCP p75=۴۳۴۴ms و frame p75=۲۸ms fail؛ Mobile LCP=۴۱۸۸ms fail؛ threshold تغییر نکرد |
 | Quote→canvas | `MEASURED_UNGATED` | `quote-commit/.../20260715T013516Z`: aggregate p95 ورودی→canvas=۱۷۹٫۴ms، canvas→rAF=۲۶٫۵ms، ورودی→rAF=۱۹۸٫۷ms؛ visible-pixel/60fps PASS نیست |
-| Security header/DAST | `PARTIAL` | `security-headers/.../20260715T012839Z`: candidate NO_OBF=1 غیرshipping، ۱۰/۱۰ response و browser ۱/۱؛ ZAP High=0/Medium=3؛ live header=0 و `/go/*` هنوز SPA 200؛ deploy نشده |
+| Security header/DAST | `PARTIAL` | `security-headers/.../20260715T012839Z`: candidate NO_OBF=1 غیرshipping، ۱۰/۱۰ response و browser ۱/۱؛ ZAP High=0/Medium=3. snapshot پیش از deploy است؛ وضعیت current `/go/*` و User headerها با QA-REF-002 پاس، اما active/auth DAST و scope کامل همچنان باز است |
 | Secret scan | `FAIL` | bounded current-source ۱٬۲۸۲ فایل finding=0؛ whole-artifacts post-correction exit=1 با ۱۹ heuristic reviewed و raw credential pattern=0؛ history/ignored/runtime و Rotation/Revoke باز است |
 | Supply-chain | `FAIL` | `supply-chain/.../20260715T012504Z`: ۸٬۹۷۱ component، ۸۱۷ applicable شامل ۲۹ Critical/۷۳ High، ۳۴۴ suppressed؛ image/SBOM unsigned/unattested |
 
 ## Referral candidate
 
-دو GET عمومی exact برای `/go/lbank` و `/go/oneroyal` مقصد ثابت و پاسخ 302 دارند. UI در Main و User Portal متن disclosure/eligibility را پیش از خروج نشان می‌دهد و فقط action هم‌مبدأ دارد. scanner متصل به compose روی ۹۹۰ فایل source، ۶۱۷ فایل bundle candidate/live، edge و User ignored-but-deployed هیچ provider مسدودکننده‌ای نیافت؛ سه bundle candidate/live نیز hash برابر دارند. بنابراین `PC-118` و `PC-120` VERIFIED هستند؛ وضعیت PC-119/121/122 و PC-123/126 مستقل از این دو الزام پیگیری می‌شود.
+دو GET عمومی exact برای `/go/lbank` و `/go/oneroyal` روی origin و چهار host عمومی مقصد ثابت و پاسخ 302/no-store/no-cache دارند. UI در Main و چهار route فعال User Portal متن disclosure/eligibility را پیش از خروج، با accessible description و action هم‌مبدأ نشان می‌دهد. Axe سطح 2.0/2.1/2.2 A/AA پیش و پس از acknowledgement صفر violation دارد؛ failure کنتراست دکمهٔ فعال User اصلاح و با image `3ebdde…aa8d` deploy شد. scanner compose-aware نیز provider دیگری در ۹۹۰ source و ۶۱۷ bundle shipping نیافت. بنابراین `PC-118` تا `PC-122` به‌جز PC-123 VERIFIED هستند؛ policy کامل Eligibility در PC-123 و Bot در PC-126 مستقل پیگیری می‌شوند.
 
 ## Security و Supply-chain
 
@@ -98,6 +98,6 @@ Final phase-0 verification در `final-verification/.../20260715T023416Z` هر �
 4. `SUPPLY-P0-001`: ۲۹ Critical و ۷۳ High applicable؛ triage/VEX/remediation و signing/attestation باز است.
 5. `FE-P0-001`: فایل‌های functional untracked و contextهای legacy/ignored مانع clean-checkout reproducibility هستند.
 6. `QA-P0-001`: همه Route/Stateها، Golden انسانی، screen-reader/Reflow، active/auth DAST و سه clean run کامل مانده‌اند.
-7. `DEPLOY-P0-001`: candidateها deploy نشده‌اند؛ production همچنان headerهای آزموده‌شده را ندارد و `/go/*` را SPA 200 برمی‌گرداند.
+7. `DEPLOY-P0-001`: referral runtime و User A11y hotfix deploy شده‌اند و `/go/*` exact است؛ اما سایر candidateهای modified/untracked، release signing و rollout یکپارچهٔ نهایی هنوز باز هستند.
 
 هیچ‌کدام مجوز اعلام `COMPLETE` نیستند. Action بعدی: ثبت intentional فایل‌های candidate برای reproducibility، triage Python و Critical/High، remediation LCP/frame، review دستی A11y/Golden و سپس اجرای clean full-suite/DAST/Release gates بدون تغییر threshold.
