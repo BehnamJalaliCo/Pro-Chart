@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T11:40:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T12:00:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۷۹` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۵۳` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۸۰` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۵۴` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۸`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۴۰`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1294,6 +1294,17 @@
 - build/deploy: read-only dependency gate؛ build/deploy لازم نیست.
 - اثر: dependency graph فعلی سه UI production در audit npm finding ندارد؛ SBOM/image scan و artifact signing همچنان gateهای جدا هستند.
 - blocker: scan image/SBOM تاریخی، signing/provenance، Golden/Motion و manual accessibility باز هستند.
+
+### CHG-087 / GOV-095 — assertion قابل‌اندازه‌گیری Reduced Motion
+
+- زمان UTC: `2026-07-16T12:00:00Z`.
+- فایل‌ها: `qa/tests/motion-chart.spec.mjs` و `docs/qa/MOTION_MATRIX.md`؛ runtime محصول تغییر نکرد.
+- تغییر: آزمون MOT-008 با `page.emulateMedia({reducedMotion:'reduce'})` اضافه شد و computed style واقعی product را برای animation/transition duration، iteration count و scroll behavior می‌سنجد.
+- build: build محصول لازم نبود؛ Playwright harness load و اجرا شد.
+- تست: `PROCHART_BASE_URL=https://localhost npm run test:motion-chart -- --reporter=line` برابر `3 passed / 1 skipped` عمدی؛ desktop و mobile MOT-008 پاس، retry/flaky=`0`.
+- deploy/smoke: deploy لازم نیست؛ live edge همان build قبلی و smoke سبز است.
+- اثر: MOT-008 اکنون evidence فنی `duration≤0.01ms`، `iteration≤1` و `scroll=auto` دارد؛ Matrix بدون ادعای پوشش همه gestureها همچنان PARTIAL است.
+- rollback: حذف test/assertion و بازگرداندن سطر Matrix؛ blockerهای MOT-001/003/004/005/006/009/010 و Golden approval باقی است.
 
 ## وضعیت فعلی production
 

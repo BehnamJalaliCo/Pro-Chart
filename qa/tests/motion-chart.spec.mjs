@@ -48,3 +48,43 @@ test('MOTION-002: wheel over chart is captured without page-scroll conflict', as
     contentType: 'application/json',
   });
 });
+
+test('MOTION-008: reduced-motion collapses global animation and transition durations', async ({ page }, testInfo) => {
+  const state = createFixtureState();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await installSyntheticFixture(page, testInfo, { id: 'motion-reduced', onboarding: false }, state);
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.pc-approot')).toBeVisible();
+
+  const styles = await page.evaluate(() => {
+    const probe = document.createElement('div');
+    probe.className = 'pc-spin pc-chart-swap';
+    probe.style.transitionProperty = 'opacity';
+    probe.style.transitionDuration = '2s';
+    document.body.appendChild(probe);
+    const computed = getComputedStyle(probe);
+    const root = getComputedStyle(document.documentElement);
+    const result = {
+      animationDuration: computed.animationDuration,
+      animationIterationCount: computed.animationIterationCount,
+      transitionDuration: computed.transitionDuration,
+      scrollBehavior: root.scrollBehavior,
+    };
+    probe.remove();
+    return result;
+  });
+
+  const seconds = (value) => value.split(',').map((token) => {
+    const item = token.trim();
+    return item.endsWith('ms') ? Number.parseFloat(item) / 1000 : Number.parseFloat(item);
+  });
+  expect(seconds(styles.animationDuration).every((value) => value <= 0.00001)).toBe(true);
+  expect(seconds(styles.transitionDuration).every((value) => value <= 0.00001)).toBe(true);
+  expect(styles.animationIterationCount.split(',').every((value) => Number.parseFloat(value) <= 1)).toBe(true);
+  expect(styles.scrollBehavior).toBe('auto');
+
+  await testInfo.attach('reduced-motion-evidence', {
+    body: Buffer.from(JSON.stringify({ scenario: 'MOT-008', styles }, null, 2)),
+    contentType: 'application/json',
+  });
+});
