@@ -1,12 +1,15 @@
-"""B24 — گیتِ سیگنال (کریپتو رفرال+$۵۰ / فارکس تریالِ ۴۸ساعته) + تنظیماتِ کاملِ پنلِ کپی.
-مستقل؛ نامِ فیلدها عیناً مطابقِ SERVERS-GROUND-TRUTH.md تا در client.js قفل شود.
+"""B24 — signal access and crypto copy settings.
+
+OneRoyal is referral-only. Legacy forex-copy routes deliberately expose no
+MT5 connection, persistence, or execution surface. Forex signal analysis is
+independent of broker integration and retains its trial/subscription gate.
 """
 from __future__ import annotations
 
 import os
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, HTTPException
 from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -20,6 +23,27 @@ router = APIRouter()
 
 _CRYPTO_MIN_DEPOSIT = float(os.getenv("BN_CRYPTO_MIN_DEPOSIT", "50"))
 _FOREX_TRIAL_HOURS = int(os.getenv("BN_FOREX_TRIAL_HOURS", "48"))
+_ONEROYAL_REFERRAL_PATH = "/go/oneroyal"
+
+
+def _forex_referral_state(**extra) -> dict:
+    state = {
+        "referral_only": True,
+        "integration_level": "referral_only",
+        "referral_path": _ONEROYAL_REFERRAL_PATH,
+        "connected": False,
+        "eligible": False,
+        "enabled": False,
+    }
+    state.update(extra)
+    return state
+
+
+def _reject_forex_copy_action() -> None:
+    raise HTTPException(
+        status_code=403,
+        detail=_forex_referral_state(reason="oneroyal_referral_only"),
+    )
 
 
 def _now() -> datetime:
@@ -90,13 +114,13 @@ async def _crypto_balance(st: AcademyStudent, acc) -> float | None:
 
 
 def _forex_gate(st: AcademyStudent) -> dict:
-    """فارکس: تریالِ ۴۸ساعته یا اشتراکِ فعال."""
+    """فارکس تحلیلی: تریالِ ۴۸ساعته یا اشتراکِ فعال، مستقل از OneRoyal."""
     fsu = st.forex_signal_until
     if fsu and fsu > _now():
         return {"allowed": True, "reason": "trial", "trial_ends_at": fsu.isoformat()}
     if _prochart_active(st):
         return {"allowed": True, "reason": "subscription", "trial_ends_at": None}
-    if fsu is not None:  # تریال داشته و تمام شده
+    if fsu is not None:
         return {"allowed": False, "reason": "trial_expired", "trial_ends_at": fsu.isoformat()}
     return {"allowed": False, "reason": "subscription_required", "trial_ends_at": None}
 
@@ -188,36 +212,6 @@ def _clamp_crypto(inp: dict) -> dict:
     return o
 
 
-# ── فارکس: ۸ فیلد (نام‌ها عیناً مطابقِ copy_settings کوین‌پرو) ──
-_FOREX_DEFAULTS = {
-    "enabled": False, "risk_mode": "proportional", "risk_value": 1.0,
-    "max_lot": 1.0, "max_open_trades": 10, "copy_sl_tp": True,
-    "max_daily_loss_pct": 5.0, "symbols": None,
-}
-
-
-def _clamp_forex(inp: dict) -> dict:
-    o = {}
-    for k, v in inp.items():
-        if k == "enabled":
-            o[k] = _b(v, False)
-        elif k == "risk_mode":
-            o[k] = v if v in ("proportional", "fixed_lot", "risk_percent") else "proportional"
-        elif k == "risk_value":
-            o[k] = _clampf(v, 0.01, 100.0, 1.0)
-        elif k == "max_lot":
-            o[k] = _clampf(v, 0.01, 100.0, 1.0)
-        elif k == "max_open_trades":
-            o[k] = _clampi(v, 1, 100, 10)
-        elif k == "copy_sl_tp":
-            o[k] = _b(v, True)
-        elif k == "max_daily_loss_pct":
-            o[k] = _clampf(v, 0.0, 90.0, 5.0)
-        elif k == "symbols":
-            o[k] = v if (v is None or isinstance(v, list)) else None
-    return o
-
-
 async def _get_settings(table: str, sid: int, db) -> dict:
     row = (await db.execute(text(f"SELECT data FROM {table} WHERE student_id=:s"), {"s": sid})).first()
     return dict(row[0]) if row and row[0] else {}
@@ -253,28 +247,14 @@ async def set_crypto_settings(payload: dict = Body(...),
 
 
 @router.get("/copytrade/forex/settings")
-async def get_forex_settings(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    stored = await _get_settings("bn_forex_copy_settings", st.id, db)
-    return {**_FOREX_DEFAULTS, **stored}
+async def get_forex_settings(st: AcademyStudent = Depends(current_student)):
+    """Compatibility response; no MT5 lookup or forex settings read occurs."""
+    del st
+    return _forex_referral_state(settings_available=False)
 
 
 @router.post("/copytrade/forex/settings")
-async def set_forex_settings(payload: dict = Body(...),
-                             st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    stored = await _get_settings("bn_forex_copy_settings", st.id, db)
-    merged = {**stored, **_clamp_forex(payload)}
-    await _save_settings("bn_forex_copy_settings", st.id, merged, db)
-    # فوروارد به svc فارکس (تا اثر کند) — best-effort
-    try:
-        import httpx
-        base = os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
-        tok = os.getenv("BN_BRIDGE_TOKEN", "")
-        acc = (await db.execute(select(BnExchangeAccount).where(
-            BnExchangeAccount.student_id == st.id, BnExchangeAccount.kind == "mt5"))).scalars().first()
-        if acc and acc.account_ref:
-            async with httpx.AsyncClient(timeout=6.0) as cx:
-                await cx.post(f"{base}/user/copy-svc", headers={"X-Internal-Token": tok},
-                              json={"login": acc.account_ref, **merged})
-    except Exception as e:  # noqa: BLE001
-        logger.warning("forex_settings_forward_failed", error=str(e))
-    return {"ok": True, **{**_FOREX_DEFAULTS, **merged}}
+async def set_forex_settings(st: AcademyStudent = Depends(current_student)):
+    """Forex copy settings are not a ProChart product surface."""
+    del st
+    _reject_forex_copy_action()

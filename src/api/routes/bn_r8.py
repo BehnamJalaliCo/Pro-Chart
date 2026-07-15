@@ -1,20 +1,16 @@
-"""R8 — کپی‌تریدِ فارکسِ زنده: کنترل‌های اضطراری، تاریخچه، KYC + دیسکلیمر (قلمروِ کاربرِ اپ)."""
+"""R8 — legacy copy-trade boundary plus KYC and disclaimer APIs.
+
+OneRoyal is referral-only; forex action routes are intentionally fail-closed.
+"""
 from __future__ import annotations
 
-import os
-from datetime import datetime, timezone
-
-import httpx
 from fastapi import APIRouter, Body, Depends, HTTPException
-from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.deps import get_db
 from src.api.routes.academy import current_student
-from src.core.database import AcademyStudent, BnExchangeAccount
-from src.core.logger import get_logger
+from src.core.database import AcademyStudent
 
-logger = get_logger(__name__)
 router = APIRouter()
 
 _DISCLAIMER_VERSION = "1"
@@ -24,95 +20,61 @@ _DISCLAIMER_TEXT = (
 )
 
 
-async def _forex_mt5_login(st, db) -> str | None:
-    acc = (await db.execute(select(BnExchangeAccount).where(
-        BnExchangeAccount.student_id == st.id, BnExchangeAccount.kind == "mt5"))).scalars().first()
-    return acc.account_ref if acc else None
+def _forex_referral_state(**extra) -> dict:
+    state = {
+        "referral_only": True,
+        "integration_level": "referral_only",
+        "referral_path": "/go/oneroyal",
+        "connected": False,
+        "eligible": False,
+        "enabled": False,
+    }
+    state.update(extra)
+    return state
 
 
-def _fx_base() -> str:
-    return os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
-
-
-def _fx_headers() -> dict:
-    return {"X-Internal-Token": os.getenv("BN_BRIDGE_TOKEN", "")}
+def _reject_forex_action() -> None:
+    raise HTTPException(
+        status_code=403,
+        detail=_forex_referral_state(reason="oneroyal_referral_only"),
+    )
 
 
 # ── §2 کنترل‌های اضطراری ──
 @router.post("/copytrade/stop")
-async def copytrade_stop(payload: dict = Body(default={}),
+async def copytrade_stop(market: str = "forex",
                          st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    market = payload.get("market", "forex")
     if market != "forex":
         st.copy_crypto = False
         await db.commit()
         return {"ok": True}
-    login = await _forex_mt5_login(st, db)
-    st.copy_forex = False
-    await db.commit()
-    if not login:
-        return {"ok": True, "note": "MT5 متصل نیست."}
-    try:
-        async with httpx.AsyncClient(timeout=6.0) as cx:
-            await cx.post(_fx_base() + "/user/copy-svc-stop", headers=_fx_headers(), json={"mt5_login": login})
-    except Exception as e:  # noqa: BLE001
-        logger.warning("copy_stop_fwd_failed", error=str(e))
-    return {"ok": True}
+    _reject_forex_action()
 
 
 @router.post("/copytrade/close-all")
-async def copytrade_close_all(payload: dict = Body(default={}),
-                              st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    login = await _forex_mt5_login(st, db)
-    if not login:
-        raise HTTPException(404, "حسابِ MT5 متصل نیست.")
-    try:
-        async with httpx.AsyncClient(timeout=8.0) as cx:
-            r = await cx.post(_fx_base() + "/user/copy-svc-close-all", headers=_fx_headers(), json={"mt5_login": login})
-            if r.status_code == 200:
-                return {"ok": True}
-    except Exception as e:  # noqa: BLE001
-        logger.warning("close_all_fwd_failed", error=str(e))
-    raise HTTPException(502, "ارسالِ فرمان به سرورِ اجرا ناموفق بود.")
+async def copytrade_close_all(st: AcademyStudent = Depends(current_student)):
+    _reject_forex_action()
 
 
 @router.post("/copytrade/close/{pos_id}")
-async def copytrade_close_one(pos_id: int, payload: dict = Body(default={}),
-                              st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    login = await _forex_mt5_login(st, db)
-    symbol = str(payload.get("symbol") or "").strip()
-    if not login:
-        raise HTTPException(404, "حسابِ MT5 متصل نیست.")
-    if not symbol:
-        raise HTTPException(400, "برای بستنِ پوزیشن، نمادِ آن لازم است (symbol).")
-    try:
-        async with httpx.AsyncClient(timeout=8.0) as cx:
-            r = await cx.post(_fx_base() + "/user/copy-svc-close", headers=_fx_headers(),
-                              json={"mt5_login": login, "symbol": symbol})
-            if r.status_code == 200:
-                return {"ok": True}
-    except Exception as e:  # noqa: BLE001
-        logger.warning("close_one_fwd_failed", error=str(e))
-    raise HTTPException(502, "بستنِ پوزیشن ناموفق بود.")
+async def copytrade_close_one(pos_id: int, st: AcademyStudent = Depends(current_student)):
+    _reject_forex_action()
 
 
 # ── §5 تاریخچه/عملکردِ کپیِ فارکس ──
 @router.get("/copytrade/history")
 async def copytrade_history(market: str = "forex",
-                            st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+                            st: AcademyStudent = Depends(current_student)):
     if market != "forex":
         return {"win_rate": 0, "net_pnl": 0.0, "closed_count": 0, "curve": [], "trades": []}
-    login = await _forex_mt5_login(st, db)
-    if not login:
-        return {"win_rate": 0, "net_pnl": 0.0, "closed_count": 0, "curve": [], "trades": [], "connected": False}
-    try:
-        async with httpx.AsyncClient(timeout=8.0) as cx:
-            r = await cx.get(_fx_base() + "/user/copy-svc-history", params={"login": login}, headers=_fx_headers())
-            if r.status_code == 200:
-                return r.json()
-    except Exception as e:  # noqa: BLE001
-        logger.warning("copy_history_fwd_failed", error=str(e))
-    return {"win_rate": 0, "net_pnl": 0.0, "closed_count": 0, "curve": [], "trades": []}
+    del st
+    return _forex_referral_state(
+        win_rate=0,
+        net_pnl=0.0,
+        closed_count=0,
+        curve=[],
+        trades=[],
+    )
 
 
 # ── §4 KYC ──

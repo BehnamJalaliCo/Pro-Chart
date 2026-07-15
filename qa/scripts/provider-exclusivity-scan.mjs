@@ -92,6 +92,14 @@ const PROVIDER_RULES = Object.freeze([
   // audited routes; raw referral destinations are backend-only policy data.
   ['LBank direct referral URL', 'direct-referral', 'https?:\\/\\/(?:www\\.)?lbank\\.com\\/ref(?:\\/|\\b)', 'giu'],
   ['OneRoyal direct referral URL', 'direct-referral', 'https?:\\/\\/vc\\.cabinet\\.oneroyal\\.com(?:\\/|\\b)', 'giu'],
+
+  // OneRoyal operational controls are forbidden on every shipping source and
+  // compiled bundle while the product contract is referral-only. Disabled
+  // explanatory copy is allowed; these patterns target callable routes/state.
+  ['OneRoyal operational account-link API', 'oneroyal-operational', '\\/user\\/account\\/link\\b', 'giu'],
+  ['OneRoyal operational copy API', 'oneroyal-operational', '\\/user\\/copy(?:-config|-status|\\/(?:stop|close-all))\\b', 'giu'],
+  ['OneRoyal operational admin EA API', 'oneroyal-operational', '\\/admin\\/ea-(?:config|status|close-all|account)\\b', 'giu'],
+  ['OneRoyal operational MT5 activation state', 'oneroyal-operational', `\\bkind\\s*={2,3}\\s*["']mt5["']`, 'giu'],
 ].map(([provider, category, source, flags]) => Object.freeze({ provider, category, source, flags })));
 
 const DEFAULT_EXCLUDED_DIRECTORIES = Object.freeze([

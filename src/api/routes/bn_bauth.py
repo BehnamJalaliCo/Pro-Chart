@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.deps import get_db
 from src.api.routes.academy import current_student
+from src.api.routes.referrals import internal_referral_path
 from src.core.database import AcademyStudent, BnExchangeAccount
 from src.core.logger import get_logger
 from src.core.security import hash_password, verify_password
@@ -402,10 +403,6 @@ async def kyc_save(payload: dict = Body(...),
 
 
 # ── ۴) رفرال ──
-_LBANK_REF = os.getenv("LBANK_REFERRAL_LINK", "https://lbank.com/ref/TRADEYAR")
-_ONEROYAL_REF = os.getenv("BROKER_REFERRAL_URL", "https://vc.cabinet.oneroyal.com/links/go/12412")
-
-
 @router.get("/referral/crypto")
 async def referral_crypto(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
     acc = (await db.execute(select(BnExchangeAccount).where(
@@ -416,22 +413,26 @@ async def referral_crypto(st: AcademyStudent = Depends(current_student), db: Asy
         uid_status = "pending"
     else:
         uid_status = "none"
-    return {"lbank_ref_link": _LBANK_REF, "uid_status": uid_status,
-            "steps": ["در LBank با لینکِ رفرالِ ما ثبت‌نام کن",
+    return {"lbank_ref_link": internal_referral_path("lbank"), "uid_status": uid_status,
+            "steps": ["شرایط محل اقامت و ارائه‌دهنده را بررسی کن",
+                      "از مسیر «لینک معرفی» وارد وب‌سایت LBank شو",
                       "UIDِ حسابت را در بخشِ «اتصال» وارد کن",
-                      "حداقلِ واریز/فعال‌سازی را انجام بده",
                       "«تأیید» را بزن تا سیگنالِ کریپتو باز شود"]}
 
 
 @router.get("/referral/forex")
-async def referral_forex(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    acc = (await db.execute(select(BnExchangeAccount).where(
-        BnExchangeAccount.student_id == st.id, BnExchangeAccount.kind == "mt5"))).scalars().first()
-    account_status = "linked" if (acc and acc.status == "connected") else ("pending" if acc else "none")
-    return {"oneroyal_ref_link": _ONEROYAL_REF, "account_status": account_status,
-            "steps": ["در OneRoyal با لینکِ رفرالِ ما حساب باز کن",
-                      "حسابِ MT5 را در بخشِ «اتصال» ثبت کن",
-                      "«تأیید» را بزن تا سیگنالِ فارکس + کپی‌ترید باز شود"]}
+async def referral_forex(
+    st: AcademyStudent = Depends(current_student),
+    db: AsyncSession = Depends(get_db),
+):
+    return {"oneroyal_ref_link": internal_referral_path("oneroyal"),
+            "referral_path": internal_referral_path("oneroyal"),
+            "account_status": "none",
+            "integration_level": "referral_only",
+            "referral_only": True, "connected": False, "eligible": False, "enabled": False,
+            "steps": ["شرایط محل اقامت و ارائه‌دهنده را بررسی کن",
+                      "از مسیر «لینک معرفی» وارد وب‌سایت OneRoyal شو",
+                      "ادامهٔ ثبت‌نام و ارائهٔ خدمت تابع شرایط OneRoyal است"]}
 
 
 @router.post("/referral/verify")
@@ -439,10 +440,11 @@ async def referral_verify(payload: dict = Body(default={}),
                           st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
     kind = payload.get("kind", "crypto")
     if kind == "forex":
-        acc = (await db.execute(select(BnExchangeAccount).where(
-            BnExchangeAccount.student_id == st.id, BnExchangeAccount.kind == "mt5"))).scalars().first()
-        status = "linked" if (acc and acc.status == "connected") else ("pending" if acc else "none")
-        return {"account_status": status, "verified": status == "linked"}
+        raise HTTPException(410, {
+            "reason": "oneroyal_referral_only", "referral_only": True,
+            "integration_level": "referral_only", "referral_path": internal_referral_path("oneroyal"),
+            "connected": False, "eligible": False, "enabled": False,
+        })
     acc = (await db.execute(select(BnExchangeAccount).where(
         BnExchangeAccount.student_id == st.id, BnExchangeAccount.kind == "lbank"))).scalars().first()
     if not acc:

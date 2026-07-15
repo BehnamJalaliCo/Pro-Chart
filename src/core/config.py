@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import List
+from typing import ClassVar, List
 from urllib.parse import quote
 
 from pydantic import field_validator, model_validator
@@ -102,7 +102,10 @@ class Settings(BaseSettings):
     SUPPORT_HANDLE: str = "@CoinePro_Admin"
     # ── بروکر معرفی‌شده (OneRoyal) — لینک رفرال و سایت رسمی فارسی ──
     BROKER_NAME: str = "OneRoyal"
-    BROKER_REFERRAL_URL: str = "https://vc.cabinet.oneroyal.com/links/go/12412"
+    # سازگاری با envهای قدیمی: این ورودی همچنان parse می‌شود اما هیچ UI نباید
+    # آن را مستقیماً مصرف کند؛ مقصد نهایی فقط در api.routes.referrals ثابت است.
+    BROKER_REFERRAL_URL: str = ""
+    ONEROYAL_REFERRAL_REDIRECT_URL: ClassVar[str] = "https://pro-chart.ir/go/oneroyal"
     BROKER_SITE_FA_URL: str = "https://www.oneroyal.com/fa/"
     # حداقل شارژِ حساب برای دریافتِ اشتراکِ رایگانِ همیشگیِ VIP (دلار)
     BROKER_FREE_VIP_DEPOSIT_USD: int = 500
@@ -127,7 +130,13 @@ class Settings(BaseSettings):
     COPY_ENGINE_TOKEN: str = ""                    # توکنِ احرازِ کپی‌انجین (از env)
     USER_PANEL_URL: str = "https://user.fx.trade-future.ir"  # آدرسِ پنلِ کاربری (WebApp)
     # ── کپیِ زنده: ترمینالِ MT5 جدا per-user روی سرورِ خودمان ──
-    COPY_LIVE_ENABLED: bool = False                # تا اعتبارسنجیِ کامل، خاموش (امن)
+    COPY_LIVE_ENABLED: bool = False                # OneRoyal تا API رسمی فقط referral-only است
+
+    @field_validator("COPY_LIVE_ENABLED", mode="before")
+    @classmethod
+    def _lock_copy_live_off(cls, _value) -> bool:
+        """Legacy env values must never reopen the OneRoyal execution adapter."""
+        return False
     MT5_USERS_DIR: str = "/mt5_users"              # محلِ نسخه‌های portable per-user
     COPY_MAX_USERS: int = 20                       # سقفِ ترمینال‌های هم‌زمان (محدودیتِ RAM)
     PANEL_FEE_MONTHLY: int = 30                     # هزینهٔ ماهانهٔ پنلِ کاربری ($) — رایگان برای OneRoyal

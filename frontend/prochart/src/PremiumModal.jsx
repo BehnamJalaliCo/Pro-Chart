@@ -1,7 +1,7 @@
 import React from 'react';
 
 // مودالِ ارتقاء به پرمیوم — با رویدادِ سراسریِ `bn:premium` (از اینترسپتورِ axios روی ۴۰۳)
-// باز می‌شود. قابلیت‌های پرمیوم: هوشِ مصنوعی، اسکریپت‌نویسی، ترید روی چارت (البنک/وان‌رویال).
+// باز می‌شود. قابلیت‌های پرمیوم: هوش مصنوعی، اسکریپت‌نویسی و قابلیت‌های مجاز حساب LBank.
 export default function PremiumModal() {
   const [open, setOpen] = React.useState(false);
   const [msg, setMsg] = React.useState('');
@@ -25,7 +25,7 @@ export default function PremiumModal() {
           <div className="flex justify-between"><span>اشتراکِ ماهانه</span><b className="text-indigo-300">۲۵ تتر (USDT)</b></div>
           <div className="flex justify-between"><span>اشتراکِ سالانه</span><b className="text-indigo-300">۲۰۰ تتر (USDT)</b></div>
           <p className="text-[12px] text-gray-400 pt-1 leading-6">
-            با اشتراک، قفلِ <b>هوشِ مصنوعی</b>، <b>اسکریپت‌نویسی</b> و <b>ترید روی چارت</b> (البنک/وان‌رویال) باز می‌شود.
+            با اشتراک، قفلِ <b>هوش مصنوعی</b>، <b>اسکریپت‌نویسی</b> و قابلیت‌های مجاز حساب <b>LBank</b> باز می‌شود. OneRoyal در Pro Chart فقط مسیر معرفی است.
             فعال‌سازی پس از ثبت‌نام، واریز و تأییدِ مدیر.
           </p>
         </div>

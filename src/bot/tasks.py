@@ -373,6 +373,10 @@ def panel_resource_sweep() -> dict:
 
 
 async def _panel_resource_sweep() -> dict:
+    """Disabled while OneRoyal remains referral-only; performs no DB or bot I/O."""
+    return {"warned": 0, "removed": 0, "disabled": True, "integration_level": "referral_only"}
+
+    # Historical cleanup implementation retained below for migration archaeology.
     now = datetime.now(timezone.utc)
     warn_h = settings.PANEL_IDLE_WARN_HOURS
     remove_h = settings.PANEL_IDLE_REMOVE_HOURS

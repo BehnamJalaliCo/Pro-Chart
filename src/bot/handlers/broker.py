@@ -52,6 +52,16 @@ async def broker_home(callback: CallbackQuery) -> None:
     await callback.answer()
 
 
+@broker_router.callback_query(F.data == "broker:referral:notice")
+async def broker_referral_notice(callback: CallbackQuery) -> None:
+    """نمایش شرایط پیش از آشکارشدن مسیر خروج ثابت OneRoyal."""
+    await callback.message.answer(
+        texts.BROKER_REFERRAL_NOTICE,
+        reply_markup=kb.broker_referral_ack_keyboard(),
+    )
+    await callback.answer()
+
+
 @broker_router.callback_query(F.data == "broker:guide")
 async def broker_guide(callback: CallbackQuery) -> None:
     text = f"{texts.BROKER_GUIDE}\n\n{texts.BROKER_NO_VIDEO_NOTE}"

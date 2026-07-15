@@ -1,7 +1,8 @@
 // اردر تیکتِ حرفه‌ای — سطحِ صرافی/بروکر (Binance/OKX/MT5-گونه).
 // خرید/فروش · بازار/حدی/توقف/توقف-حدی/دنباله‌رو · بریکت(OCO) · اسلایدرِ درصدِ موجودی · اهرم ·
 // حدِ سود/ضرر · R:R زنده (با ریسک/ریوارد به‌USDT) · خلاصهٔ مارجین/کارمزد/لیکویید · اعتبارسنجی.
-// توکن‌محورِ TH (تمِ چارت) + دوزبانه (useT + fallbackِ محلیِ tx). اجرای واقعی از همان bnRealOrder/submitOrder.
+// توکن‌محورِ TH (تمِ چارت) + دوزبانه (useT + fallbackِ محلیِ tx).
+// اجرای واقعی فقط برای LBank است؛ سفارش فارکس صرفاً پیش‌نمایش محلی می‌ماند.
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, AlertTriangle } from 'lucide-react';
 import { useT } from '../i18n';
@@ -65,8 +66,10 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
   // با تغییرِ اهرم، در order هم نگه‌داریم (برای اجرای واقعیِ آینده)
   useEffect(() => { if (order && order.leverage !== leverage) setOrder((o) => (o ? { ...o, leverage } : o)); /* eslint-disable-next-line */ }, [leverage]);
 
-  // آیا برای این نماد اتصالِ زنده هست؟ (کریپتو→LBank، فارکس→MT5)
-  const connected = isCrypto ? !!(conn && (conn.lbank || conn.lbank_connected)) : !!(conn && (conn.mt5 || conn.mt5_connected));
+  // اجرای واقعی فقط برای LBank مجاز است؛ OneRoyal/فارکس referral-only است.
+  const connected = !!(
+    isCrypto && (conn?.accounts?.lbank?.connected || conn?.lbank || conn?.lbank_connected)
+  );
 
   // ── اعتبارسنجی: خطاهای مسدودکننده (errs) + هشدارهای نرم (warns) ──
   const errs = [];
@@ -99,6 +102,13 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
     : tx('دنباله‌رو', 'Trailing');
 
   const placeReal = async () => {
+    if (!isCrypto) {
+      window.alert(tx(
+        'OneRoyal فقط مسیر معرفی است و معاملهٔ مستقیم فارکس در Pro Chart فعال نیست.',
+        'OneRoyal is referral-only; direct forex trading is not available in Pro Chart.'
+      ));
+      return;
+    }
     if (blocking) { window.alert(errs.join('\n')); return; }
     const priceArg = isLimitish ? limitPx : 0; // فقط سفارش‌های حدی قیمت می‌گیرند (رفتارِ فعلیِ bnRealOrder حفظ شد)
     const lines = [
@@ -286,7 +296,13 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
         style={{ height: 50, border: 0, cursor: (connected && blocking) ? 'not-allowed' : 'pointer', opacity: (connected && blocking) ? .55 : 1, fontFamily: 'inherit', fontWeight: 800, fontSize: 15, color: '#fff', background: side === 'buy' ? TH.up : TH.down, boxShadow: '0 10px 22px -8px rgba(0,0,0,.3)' }}>
         <ShoppingCart size={17} /> {side === 'buy' ? t('trade.buy') : t('trade.sell')} {baseUnit}
       </button>
-      {!connected && <div className="text-center" style={{ fontSize: 10.5, color: TH.text, opacity: .7, marginTop: -4 }}>{t('trade.connect')}</div>}
+      {!connected && (
+        <div className="text-center" style={{ fontSize: 10.5, color: TH.text, opacity: .7, marginTop: -4 }}>
+          {isCrypto
+            ? t('trade.connect')
+            : tx('OneRoyal فقط مسیر معرفی است؛ این سفارش پیش‌نمایش محلی است.', 'OneRoyal is referral-only; this order is a local preview.')}
+        </div>
+      )}
     </div>
   );
 }

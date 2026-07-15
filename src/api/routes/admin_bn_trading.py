@@ -144,6 +144,7 @@ async def list_exchange_accounts(
     stmt = (
         select(BnExchangeAccount, AcademyStudent.username, AcademyStudent.email)
         .join(AcademyStudent, AcademyStudent.id == BnExchangeAccount.student_id, isouter=True)
+        .where(BnExchangeAccount.kind == "lbank")
         .order_by(BnExchangeAccount.id.desc())
     )
     if q:
@@ -186,6 +187,12 @@ async def set_exchange_referral(
     ).scalar_one_or_none()
     if acc is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="حساب یافت نشد.")
+    if acc.kind != "lbank":
+        raise HTTPException(status_code=410, detail={
+            "reason": "oneroyal_referral_only", "referral_only": True,
+            "integration_level": "referral_only", "referral_path": "/go/oneroyal",
+            "connected": False, "eligible": False, "enabled": False,
+        })
     acc.referral_verified = bool(verified)
     await db.flush()
     return {"ok": True, "id": acc.id, "referralVerified": acc.referral_verified}
@@ -204,6 +211,12 @@ async def set_exchange_status(
     ).scalar_one_or_none()
     if acc is None:
         raise HTTPException(status_code=404, detail="حساب یافت نشد.")
+    if acc.kind != "lbank":
+        raise HTTPException(status_code=410, detail={
+            "reason": "oneroyal_referral_only", "referral_only": True,
+            "integration_level": "referral_only", "referral_path": "/go/oneroyal",
+            "connected": False, "eligible": False, "enabled": False,
+        })
     acc.status = status
     await db.flush()
     return {"ok": True, "id": acc.id, "status": acc.status}

@@ -99,7 +99,10 @@ async def overview(st: AcademyStudent = Depends(current_student), db=Depends(get
     conns = []
     try:
         for a in (await db.execute(
-            select(BnExchangeAccount).where(BnExchangeAccount.student_id == st.id)
+            select(BnExchangeAccount).where(
+                BnExchangeAccount.student_id == st.id,
+                BnExchangeAccount.kind == "lbank",
+            )
         )).scalars().all():
             conns.append({
                 "kind": a.kind,
@@ -114,7 +117,10 @@ async def overview(st: AcademyStudent = Depends(current_student), db=Depends(get
     recent = []
     try:
         for o in (await db.execute(
-            select(BnOrder).where(BnOrder.student_id == st.id).order_by(BnOrder.id.desc()).limit(5)
+            select(BnOrder).where(
+                BnOrder.student_id == st.id,
+                BnOrder.market == "crypto",
+            ).order_by(BnOrder.id.desc()).limit(5)
         )).scalars().all():
             recent.append(_order_dict(o))
     except Exception:  # noqa: BLE001

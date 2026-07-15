@@ -9,7 +9,6 @@ import {
   Power,
   PowerOff,
   Bitcoin,
-  CandlestickChart,
   Lock,
   Info,
 } from 'lucide-react';
@@ -31,13 +30,12 @@ import { toPersianDigits, formatDateTime } from '../utils/formatters';
 
 // ─────────────────────────────────────────────────────────────
 // اتصال صرافی — bn_exchange_accounts
-// حساب‌های واقعیِ متصلِ کاربران (LBank/MT5) با وضعیت اتصال و
+// حساب‌های واقعیِ متصلِ کاربران LBank با وضعیت اتصال و
 // راستی‌آزماییِ رفرال. کلید/سکرت هرگز از سرور نمی‌آید و نمایش داده نمی‌شود.
 // ─────────────────────────────────────────────────────────────
 
 const KIND_META = {
   lbank: { label: 'LBank (کریپتو)', short: 'LBank', icon: Bitcoin, variant: 'warning' },
-  mt5: { label: 'MT5 (فارکس)', short: 'MT5', icon: CandlestickChart, variant: 'info' },
 };
 
 function KindBadge({ kind }) {
@@ -75,7 +73,7 @@ export default function ExchangePage() {
     queryFn: () => bnAPI.getExchangeAccounts(search || undefined),
   });
 
-  const accounts = Array.isArray(data) ? data : [];
+  const accounts = Array.isArray(data) ? data.filter((account) => account.kind === 'lbank') : [];
 
   const stats = useMemo(() => {
     return {
@@ -83,7 +81,6 @@ export default function ExchangePage() {
       verified: accounts.filter((a) => a.referralVerified).length,
       active: accounts.filter((a) => a.status === 'active').length,
       lbank: accounts.filter((a) => a.kind === 'lbank').length,
-      mt5: accounts.filter((a) => a.kind === 'mt5').length,
     };
   }, [accounts]);
 
@@ -305,7 +302,7 @@ export default function ExchangePage() {
           اتصال صرافی
         </h1>
         <p className="text-sm text-text-muted mt-1">
-          حساب‌های واقعیِ متصلِ کاربران (LBank / MT5) و مدیریت راستی‌آزماییِ رفرال.
+          حساب‌های واقعی LBank و مدیریت راستی‌آزمایی رفرال. OneRoyal فقط مسیر معرفی است.
         </p>
       </div>
       <div className="w-full sm:w-72">
@@ -361,8 +358,8 @@ export default function ExchangePage() {
           />
           <StatCard
             icon={Bitcoin}
-            title="LBank / MT5"
-            value={`${toPersianDigits(stats.lbank)} / ${toPersianDigits(stats.mt5)}`}
+            title="LBank"
+            value={toPersianDigits(stats.lbank)}
             variant="warning"
           />
         </div>

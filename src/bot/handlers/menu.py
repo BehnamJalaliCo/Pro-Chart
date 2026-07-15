@@ -86,33 +86,16 @@ async def my_signals(message: Message, state: FSMContext) -> None:
 @menu_router.message(F.text == texts.BTN_COPY)
 async def copy_trade(message: Message, state: FSMContext) -> None:
     await state.clear()
-    from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
     user = await users.get_user(message.from_user.id)
     if user is None or user.registration_date is None:
         await message.answer(texts.NEED_ONBOARDING)
         return
-    sub = await get_active_subscription(user.telegram_id)
-    if sub is None:
-        await message.answer(
-            "🔁 <b>کپی‌ترید ویژهٔ اعضای VIP است</b>\n\n"
-            "با کپی‌ترید، معاملاتِ سیستم به‌صورتِ خودکار و زنده روی حسابِ متاتریدرِ شما اجرا می‌شود.\n"
-            "برای استفاده، ابتدا اشتراک VIP تهیه کنید 👇",
-            reply_markup=kb.buy_subscription_keyboard(),
-        )
-        return
-    kbd = InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text="🚀 بازکردنِ پنلِ کاربری", web_app=WebAppInfo(url=settings.USER_PANEL_URL))
-    ]])
     await message.answer(
-        "🔁 <b>کپی‌ترید — پنلِ کاربری</b>\n"
+        "🔗 <b>معرفی OneRoyal</b>\n"
         "━━━━━━━━━━━━━━━━━━━━\n"
-        "پنل مثلِ یک اپلیکیشن داخلِ تلگرام باز می‌شود. در آنجا می‌توانید:\n"
-        "• حساب متاتریدرِ خود را وصل کنید\n"
-        "• کپی‌ترید را روشن/خاموش و ریسک را تنظیم کنید\n"
-        "• معاملاتِ زنده و وضعیتِ حساب را ببینید\n\n"
-        "🔒 ورود امن با همین حساب تلگرام انجام می‌شود؛ نیازی به رمز نیست.\n"
-        "روی دکمهٔ زیر بزنید 👇",
-        reply_markup=kbd,
+        "OneRoyal در Pro Chart فقط مسیر معرفی است؛ اتصال حساب، دریافت رمز و "
+        "معاملهٔ مستقیم فعال نیست. شرایط جاری و محل اقامت را پیش از ادامه بررسی کنید.",
+        reply_markup=kb.broker_section_keyboard(),
     )
 
 

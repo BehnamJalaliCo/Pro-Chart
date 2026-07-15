@@ -7,7 +7,6 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     KeyboardButton,
     ReplyKeyboardMarkup,
-    WebAppInfo,
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -53,8 +52,6 @@ def quiz_intro_keyboard() -> InlineKeyboardMarkup:
 def main_menu_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
-            # پنلِ کاربری به‌صورتِ WebApp (مثلِ اپلیکیشن، داخلِ تلگرام باز می‌شود)
-            [KeyboardButton(text=texts.BTN_COPY, web_app=WebAppInfo(url=settings.USER_PANEL_URL))],
             [KeyboardButton(text=texts.BTN_SIGNALS), KeyboardButton(text=texts.BTN_VIP)],
             [KeyboardButton(text=texts.BTN_MARKET), KeyboardButton(text=texts.BTN_EDU)],
             [KeyboardButton(text=texts.BTN_AI), KeyboardButton(text=texts.BTN_BROKER)],
@@ -80,10 +77,7 @@ def vip_plans_keyboard() -> InlineKeyboardMarkup:
 # ── اشتراک رایگانِ همیشگی (از طریق بروکر) ──
 def free_subscription_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="🚀 ثبت‌نام در OneRoyal", url=settings.BROKER_REFERRAL_URL)
-    _h = (settings.SUPPORT_HANDLE or "").lstrip("@")
-    if _h:
-        builder.button(text="💬 ارسال شناسه به پشتیبانی", url=f"https://t.me/{_h}")
+    builder.button(text="🔎 شرایط لینک معرفی OneRoyal", callback_data="broker:referral:notice")
     builder.button(text="🔙 بازگشت به پلن‌ها", callback_data="sub:plans")
     builder.adjust(1)
     return builder.as_markup()
@@ -197,7 +191,7 @@ def settings_keyboard(notify_enabled: bool, language: str = "fa") -> InlineKeybo
 # ── بروکر OneRoyal ──
 def broker_home_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="🚀 ثبت‌نام در OneRoyal", url=settings.BROKER_REFERRAL_URL)
+    builder.button(text="🔎 شرایط لینک معرفی OneRoyal", callback_data="broker:referral:notice")
     builder.button(text="📋 راهنمای ثبت‌نام", callback_data="broker:guide")
     builder.button(text="💳 واریز و برداشت", callback_data="broker:funding")
     builder.button(text="⭐ امکانات و اعتبار", callback_data="broker:why")
@@ -213,7 +207,19 @@ def broker_home_keyboard() -> InlineKeyboardMarkup:
 def broker_section_keyboard() -> InlineKeyboardMarkup:
     """زیرصفحه‌های بروکر: دکمهٔ ثبت‌نام + بازگشت."""
     builder = InlineKeyboardBuilder()
-    builder.button(text="🚀 ثبت‌نام در OneRoyal", url=settings.BROKER_REFERRAL_URL)
+    builder.button(text="🔎 شرایط لینک معرفی OneRoyal", callback_data="broker:referral:notice")
+    builder.button(text="🔙 بازگشت به معرفی بروکر", callback_data="broker:home")
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+def broker_referral_ack_keyboard() -> InlineKeyboardMarkup:
+    """لینک ثابت فقط پس از نمایش disclosure/eligibility آشکار می‌شود."""
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text="✅ شرایط را بررسی کرده‌ام — لینک معرفی",
+        url=settings.ONEROYAL_REFERRAL_REDIRECT_URL,
+    )
     builder.button(text="🔙 بازگشت به معرفی بروکر", callback_data="broker:home")
     builder.adjust(1)
     return builder.as_markup()

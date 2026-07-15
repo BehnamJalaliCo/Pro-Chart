@@ -22,6 +22,27 @@ from src.core.redis_client import redis_client
 logger = get_logger(__name__)
 router = APIRouter()
 
+_ONEROYAL_REFERRAL_PATH = "/go/oneroyal"
+
+
+def _oneroyal_referral_state(**extra) -> dict:
+    return {
+        "referral_only": True,
+        "integration_level": "referral_only",
+        "referral_path": _ONEROYAL_REFERRAL_PATH,
+        "enabled": False,
+        "connected": False,
+        "eligible": False,
+        **extra,
+    }
+
+
+def _reject_oneroyal_operation() -> None:
+    raise HTTPException(
+        status_code=410,
+        detail=_oneroyal_referral_state(reason="oneroyal_referral_only"),
+    )
+
 
 def _ea_token_ok(token: str | None) -> bool:
     """مقایسهٔ امنِ توکنِ EA (constant-time؛ جلوگیری از timing attack)."""
@@ -60,23 +81,11 @@ EA_STATUS_KEY = "ea:status"
 
 
 async def get_ea_settings() -> dict:
-    try:
-        data = await redis_client.get_json(EA_SETTINGS_KEY)
-    except Exception:
-        data = None
-    merged = dict(EA_DEFAULTS)
-    if isinstance(data, dict):
-        merged.update({k: v for k, v in data.items() if k in EA_DEFAULTS})
-    return merged
+    return dict(EA_DEFAULTS)
 
 
 async def set_ea_settings(patch: dict) -> dict:
-    cur = await get_ea_settings()
-    for k, v in patch.items():
-        if k in EA_DEFAULTS:
-            cur[k] = v
-    await redis_client.client.set(EA_SETTINGS_KEY, __import__("json").dumps(cur))
-    return cur
+    _reject_oneroyal_operation()
 
 
 def _settings_to_kv(s: dict) -> str:
@@ -189,11 +198,7 @@ async def _detect_dismissed_atomic(uid: int, cur_ids: set) -> None:
 
 
 async def get_ea_status() -> dict:
-    try:
-        data = await redis_client.get_json(EA_STATUS_KEY)
-    except Exception:
-        data = None
-    return data if isinstance(data, dict) else {}
+    return {}
 
 
 def _action(direction: str | None) -> str:
@@ -254,6 +259,10 @@ async def ea_signals(
     None = کلاینتِ قدیمی (تشخیص از مسیرِ status)."""
     if not _ea_token_ok(token):
         raise HTTPException(status_code=403, detail="forbidden")
+
+    return _oneroyal_referral_state(signals=[], count=0)
+
+    # Historical implementation retained below but unreachable while referral-only.
 
     # ── تشخیصِ اتمیکِ بستنِ دستی (هم‌زمان با فید → بدونِ race) ──
     if open_ids is not None:
@@ -334,6 +343,12 @@ async def ea_config(token: str = Query(...), uid: int = Query(0),
     if not _ea_token_ok(token):
         raise HTTPException(status_code=403, detail="forbidden")
     from fastapi.responses import PlainTextResponse
+    return PlainTextResponse(
+        "enabled=0\nintegration_level=referral_only\nreferral_path=/go/oneroyal\n",
+        headers={"Cache-Control": "no-store"},
+    )
+
+    # Historical implementation retained below but unreachable while referral-only.
     if uid and uid > 0:
         kv = await _user_settings_kv(uid)
         base = kv if kv is not None else _settings_to_kv(await get_ea_settings())
@@ -351,6 +366,7 @@ async def ea_heartbeat(token: str = Query(...), uid: int = Query(0), body: dict 
     """دریافتِ وضعیتِ EA. uid>0 → وضعیتِ همان کاربر در ea:status:user:<uid>."""
     if not _ea_token_ok(token):
         raise HTTPException(status_code=403, detail="forbidden")
+    _reject_oneroyal_operation()
     raw = (body or {}).get("raw", "")
     if uid and uid > 0:
         await _store_user_status(uid, raw)
@@ -365,6 +381,7 @@ async def ea_diag(token: str = Query(...), uid: int = Query(0), body: dict = Non
     نگه می‌دارد تا برای رفعِ اشکالِ از راه دور خوانده شود (هرگز عمومی نشود)."""
     if not _ea_token_ok(token):
         raise HTTPException(status_code=403, detail="forbidden")
+    _reject_oneroyal_operation()
     import json as _json
     payload = dict(body or {})
     payload["_server_ts"] = int(datetime.now(timezone.utc).timestamp())
@@ -391,18 +408,8 @@ MASTER_REV_KEY = "ea:master:rev"
 
 
 async def get_master_account() -> dict | None:
-    """مشخصاتِ ذخیره‌شدهٔ حسابِ مستر (رمز هنوز رمزنگاری‌شده)."""
-    import json as _json
-    try:
-        raw = await redis_client.client.get(MASTER_ACCT_KEY)
-    except Exception:  # noqa: BLE001
-        raw = None
-    if not raw:
-        return None
-    try:
-        return _json.loads(raw)
-    except Exception:  # noqa: BLE001
-        return None
+    """OneRoyal is referral-only; stored legacy credentials are never read."""
+    return None
 
 
 async def _bump_master_rev() -> int:
@@ -413,20 +420,13 @@ async def _bump_master_rev() -> int:
 
 
 async def set_master_account(server: str, login: str, password: str) -> int:
-    import json as _json
-    from src.core.crypto import encrypt_secret
-    data = {"server": server.strip(), "login": str(login).strip(),
-            "password_enc": encrypt_secret(password)}
-    await redis_client.client.set(MASTER_ACCT_KEY, _json.dumps(data))
-    return await _bump_master_rev()
+    _reject_oneroyal_operation()
 
 
 async def clear_master_account() -> int:
     """خروجِ صریح: نشانهٔ logout ذخیره می‌شود تا کانتینرِ مستر واقعاً از حساب خارج شود
     (با لاگینِ ماندگارِ قبلی دوباره وصل نشود)."""
-    import json as _json
-    await redis_client.client.set(MASTER_ACCT_KEY, _json.dumps({"logout": True}))
-    return await _bump_master_rev()
+    _reject_oneroyal_operation()
 
 
 @router.get("/master-account")
@@ -435,6 +435,9 @@ async def ea_master_account(token: str = Query(...)):
     هرگز عمومی نشود."""
     if not _ea_token_ok(token):
         raise HTTPException(status_code=403, detail="forbidden")
+    return _oneroyal_referral_state(configured=False, rev=0)
+
+    # Historical implementation retained below but unreachable while referral-only.
     from src.core.crypto import decrypt_secret
     acct = await get_master_account()
     try:
@@ -643,8 +646,9 @@ async def ea_users(token: str = Query(...), ip: str = Query(""), host: str = Que
     (محافظت در برابرِ اجرای یک حساب روی چند سرور = تریدِ دوبل)."""
     if not _ea_token_ok(token):
         raise HTTPException(status_code=403, detail="forbidden")
-    if not settings.COPY_LIVE_ENABLED:
-        return {"users": [], "live": False}
+    return _oneroyal_referral_state(users=[], live=False)
+
+    # Historical implementation retained below but unreachable while referral-only.
     from src.core.crypto import decrypt_secret
     from src.core.database import TradingAccount
 
@@ -709,6 +713,7 @@ async def ea_deals(
     close_time, profit (ناخالص), commission, swap, reason, balance."""
     if not _ea_token_ok(token):
         raise HTTPException(status_code=403, detail="forbidden")
+    _reject_oneroyal_operation()
     deals = body.get("deals") or []
     if not isinstance(deals, list) or not deals:
         return {"ok": True, "inserted": 0}
@@ -794,6 +799,7 @@ async def ea_symbols(body: dict, token: str = Query(...), uid: int = Query(0)):
     برای کشفِ نامِ واقعیِ نزدک/نفت/گاز روی OneRoyal و نگاشتِ نام."""
     if not _ea_token_ok(token):
         raise HTTPException(status_code=403, detail="forbidden")
+    _reject_oneroyal_operation()
     raw = str(body.get("symbols") or "")
     n = len([x for x in raw.splitlines() if x.strip()])
     try:
@@ -812,6 +818,7 @@ async def ea_specs(body: dict, token: str = Query(...), uid: int = Query(0),
     سرور pip_size/pip_dollar/spread_pips/min_stop_pips را محاسبه و در redis ذخیره می‌کند."""
     if not _ea_token_ok(token):
         raise HTTPException(status_code=403, detail="forbidden")
+    _reject_oneroyal_operation()
     specs = body.get("specs") or []
     if not isinstance(specs, list):
         return {"ok": True, "stored": 0}

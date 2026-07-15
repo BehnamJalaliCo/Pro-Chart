@@ -149,23 +149,16 @@ async def servers_report(payload: dict = Body(...), x_internal_token: str = Head
     return {"ok": True, "count": len(doc["servers"])}
 
 
-# ── تکمیلِ کپیِ فارکس: وضعیتِ زندهٔ config/حساب از realm کاربرِ اپ ──
+# ── مرزِ سازگاریِ legacy: OneRoyal فقط مسیرِ معرفی است ──
 @router.get("/copytrade/forex/config")
-async def forex_copy_config(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    from src.core.database import BnExchangeAccount
-    from sqlalchemy import select as _select
-    mt5 = (await db.execute(_select(BnExchangeAccount).where(
-        BnExchangeAccount.student_id == st.id, BnExchangeAccount.kind == "mt5"))).scalars().first()
-    if not mt5:
-        return {"connected": False, "note": "حسابِ MT5 متصل نیست."}
-    import os as _os, httpx as _httpx
-    base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
-    try:
-        async with _httpx.AsyncClient(timeout=6.0) as cx:
-            r = await cx.get(base + "/user/copy-svc-status", params={"login": mt5.account_ref},
-                             headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")})
-            if r.status_code == 200:
-                return r.json()
-    except Exception as e:  # noqa: BLE001
-        logger.warning("forex_copy_config_failed", error=str(e))
-    return {"connected": False, "note": "دریافت از سرورِ فارکس ناموفق بود."}
+async def forex_copy_config(st: AcademyStudent = Depends(current_student)):
+    """Return a static, non-actionable referral contract without DB or network I/O."""
+    del st
+    return {
+        "referral_only": True,
+        "integration_level": "referral_only",
+        "referral_path": "/go/oneroyal",
+        "connected": False,
+        "eligible": False,
+        "enabled": False,
+    }

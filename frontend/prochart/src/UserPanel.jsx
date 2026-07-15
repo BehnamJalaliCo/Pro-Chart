@@ -6,6 +6,7 @@ import {
   Sparkles, Zap, TrendingUp, Headset, ArrowLeft, Gem, BarChart3,
 } from 'lucide-react';
 import { api, tokenStore } from './api/client';
+import ReferralDeparture from './components/ReferralDeparture';
 
 // ───────────────────────── تمِ مشترک (توکن‌های موجود) ─────────────────────────
 const FS = { background: '#0f1117', border: '1px solid #2a2e3d', color: '#e4e6ed' };
@@ -402,7 +403,7 @@ function RegisterForm({ onAuthed }) {
         </button>
         <button onClick={() => { setAcct('broker'); setStep(2); }} className="group w-full flex items-center gap-3 p-4 rounded-2xl bg-indigo-500/[0.07] hover:bg-indigo-500/15 border border-indigo-500/25 hover:border-indigo-500/50 transition text-right">
           <div className="w-11 h-11 rounded-xl bg-indigo-500/15 grid place-items-center shrink-0"><LineChart size={22} className="text-indigo-400" /></div>
-          <div className="flex-1"><div className="font-bold">کاربرِ فارکس</div><div className="text-[12px] opacity-65 mt-0.5">تریدِ واقعیِ فارکس روی بروکرِ وان‌رویال (MT5)</div></div>
+          <div className="flex-1"><div className="font-bold">کاربرِ فارکس</div><div className="text-[12px] opacity-65 mt-0.5">مسیر معرفی OneRoyal؛ اتصال و معاملهٔ مستقیم فعال نیست</div></div>
           <ArrowLeft size={16} className="opacity-30 group-hover:opacity-70 transition" />
         </button>
       </div>
@@ -499,7 +500,7 @@ function PanelShell({ auth, me, reloadMe, logout }) {
     return () => window.removeEventListener('hashchange', onHash);
   }, []); // eslint-disable-line
 
-  const connected = conn?.accounts && (conn.accounts.lbank || conn.accounts.mt5);
+  const connected = !!conn?.accounts?.lbank;
 
   const badgeFor = (id) => {
     if (id === 'alerts' && alertCount) return <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-indigo-500/25 text-indigo-200 tabular-nums">{alertCount}</span>;
@@ -621,7 +622,7 @@ function DashboardTab({ ctx }) {
   const { auth, me, tier, conn, go } = ctx;
   const isVip = tier === 'vip' || tier === 'premium';
   const acct = auth.account_type || me?.account_type;
-  const connected = conn?.accounts && (conn.accounts.lbank || conn.accounts.mt5);
+  const connected = !!conn?.accounts?.lbank;
   const [counts, setCounts] = React.useState({ alerts: null, scripts: null, layouts: null, watch: null });
   const [news, setNews] = React.useState(null);
 
@@ -669,8 +670,18 @@ function DashboardTab({ ctx }) {
 
         <div className="rounded-2xl border border-white/10 bg-[#161923] p-5">
           <div className="flex items-center justify-between mb-2"><div className="flex items-center gap-2 font-bold">{acct === 'crypto' ? <Bitcoin size={16} className="text-amber-400" /> : <LineChart size={16} className="text-indigo-400" />} اتصالِ حساب</div><CircleDot size={14} className={connected ? 'text-green-400' : 'text-gray-500'} /></div>
-          <div className="text-sm opacity-80">{connected ? 'حسابِ معاملاتی وصل است.' : (acct ? 'هنوز حسابِ معاملاتی وصل نکرده‌ای.' : 'نوعِ حساب مشخص نیست.')}</div>
-          <button onClick={() => go('connect')} className="mt-3 inline-flex items-center gap-1 text-sm text-indigo-300 hover:underline">مدیریتِ اتصال <ChevronLeft size={14} /></button>
+          <div className="text-sm opacity-80">
+            {acct === 'broker'
+              ? 'OneRoyal فقط مسیر معرفی است؛ اتصال مستقیم فعال نیست.'
+              : connected
+                ? 'حساب LBank وصل است.'
+                : acct
+                  ? 'هنوز حساب LBank را وصل نکرده‌ای.'
+                  : 'نوعِ حساب مشخص نیست.'}
+          </div>
+          <button onClick={() => go('connect')} className="mt-3 inline-flex items-center gap-1 text-sm text-indigo-300 hover:underline">
+            {acct === 'broker' ? 'مشاهدهٔ معرفی' : 'مدیریتِ اتصال'} <ChevronLeft size={14} />
+          </button>
         </div>
       </div>
 
@@ -926,31 +937,6 @@ function ConnectLbank({ conn, onDone }) {
   </div>);
 }
 
-function ConnectMt5({ conn, onDone }) {
-  const [login, setLogin] = React.useState(''); const [pass, setPass] = React.useState(''); const [server, setServer] = React.useState('');
-  const [busy, setBusy] = React.useState(false); const [msg, setMsg] = React.useState(null); const [edit, setEdit] = React.useState(false);
-  const save = async () => {
-    setMsg(null); setBusy(true);
-    try { await api.bnConnectMt5(login.trim(), pass.trim(), server.trim()); setMsg({ ok: true, text: 'حسابِ MT5 ذخیره شد ✅' }); setEdit(false); onDone && onDone(); }
-    catch (e) { setMsg({ ok: false, text: e?.premium ? 'ابتدا اشتراکِ پرمیوم تهیه کن.' : (e?.message || 'خطا') }); }
-    finally { setBusy(false); }
-  };
-  if (conn && !edit) {
-    return (<div className="rounded-xl bg-white/5 p-3 text-[12px] space-y-1">
-      <div className="flex items-center gap-2 text-green-400"><Check size={14} /> حسابِ MT5 وصل است (#{conn.account_ref})</div>
-      <button onClick={() => setEdit(true)} className="text-indigo-300 hover:underline">ویرایش</button>
-    </div>);
-  }
-  return (<div className="rounded-xl bg-white/5 p-3 text-[12px] space-y-2">
-    <div className="opacity-80">حسابِ MT5ِ وان‌رویال را وارد کن (برای تریدِ واقعی روی حسابِ خودت):</div>
-    <input className={inp} style={FS} placeholder="شمارهٔ حساب (Login)" value={login} onChange={(e) => setLogin(e.target.value)} dir="ltr" />
-    <PwInput value={pass} onChange={(e) => setPass(e.target.value)} placeholder="رمزِ معاملاتی" />
-    <input className={inp} style={FS} placeholder="سرور (مثلاً OneRoyal-Live)" value={server} onChange={(e) => setServer(e.target.value)} dir="ltr" />
-    {msg && <div className={msg.ok ? 'text-green-400' : 'text-red-400'}>{msg.text}</div>}
-    <button onClick={save} disabled={busy || !login || !pass} className="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-bold flex items-center justify-center gap-2 disabled:opacity-50">{busy && <Loader2 size={14} className="animate-spin" />} ذخیرهٔ امن</button>
-  </div>);
-}
-
 function ConnectTab({ ctx }) {
   const { auth, me, tier, conn, loadConn } = ctx;
   const acct = auth.account_type || me?.account_type;
@@ -964,21 +950,30 @@ function ConnectTab({ ctx }) {
 
       {!isVip && (
         <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-[13px] text-amber-200 flex items-center gap-2">
-          <ShieldCheck size={16} /> تریدِ واقعی روی چارت ویژهٔ کاربرانِ پرمیومِ زیرمجموعهٔ رفرال است.
+          <ShieldCheck size={16} /> {acct === 'broker' ? 'OneRoyal در Pro Chart فقط به‌عنوان مسیر معرفی نمایش داده می‌شود.' : 'اتصال حساب LBank فقط پس از بررسی شرایط و کنترل‌های حساب انجام می‌شود.'}
         </div>
       )}
 
       {acct === 'crypto' ? (
         <Card title="اتصال به صرافیِ LBank (البنک)" icon={<Bitcoin size={16} className="text-amber-400" />}>
-          <p className="text-sm opacity-80 leading-7 mb-3">برای تریدِ واقعیِ کریپتو روی چارت، باید حسابِ LBankِ خودت را وصل کنی و <b>زیرمجموعهٔ رفرالِ ما</b> باشی (شرطِ تریدِ واقعی).</p>
-          <a href={refUrl || 'https://www.lbank.com'} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 text-sm mb-3"><Link2 size={14} /> ساختِ حساب با لینکِ رفرالِ ما <ExternalLink size={12} /></a>
+          <p className="text-sm opacity-80 leading-7 mb-3">اتصال حساب LBank از کنترل‌های جداگانهٔ حساب و ارائه‌دهنده پیروی می‌کند.</p>
+          <ReferralDeparture
+            provider="LBank"
+            href={refUrl}
+            buttonLabel="لینک معرفی — ورود به وب‌سایت LBank"
+            buttonClassName="w-full px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 text-sm font-bold"
+          />
           <ConnectLbank conn={conn?.accounts?.lbank} isVip={isVip} onDone={loadConn} />
         </Card>
       ) : acct === 'broker' ? (
-        <Card title="اتصال به بروکرِ وان‌رویال (MT5)" icon={<LineChart size={16} className="text-indigo-400" />}>
-          <p className="text-sm opacity-80 leading-7 mb-3">برای تریدِ واقعیِ فارکس روی چارت، باید حسابِ MT5ِ وان‌رویالِ خودت را وصل کنی و <b>زیرمجموعهٔ رفرالِ ما</b> باشی.</p>
-          <a href={refUrl || 'https://www.oneroyal.com'} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 text-sm mb-3"><Link2 size={14} /> ساختِ حساب با لینکِ رفرالِ ما <ExternalLink size={12} /></a>
-          <ConnectMt5 conn={conn?.accounts?.mt5} isVip={isVip} onDone={loadConn} />
+        <Card title="معرفی بروکر OneRoyal" icon={<LineChart size={16} className="text-indigo-400" />}>
+          <p className="text-sm opacity-80 leading-7 mb-3">OneRoyal در Pro Chart در سطح معرفی است؛ اتصال حساب و معاملهٔ مستقیم از این بخش فعال نیست.</p>
+          <ReferralDeparture
+            provider="OneRoyal"
+            href={refUrl}
+            buttonLabel="لینک معرفی — ورود به وب‌سایت OneRoyal"
+            buttonClassName="w-full px-4 py-2 rounded-xl bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 text-sm font-bold"
+          />
         </Card>
       ) : (
         <Card title="اتصالِ حساب" icon={<Link2 size={16} />}><p className="text-sm opacity-70">نوعِ حساب مشخص نیست. لطفاً دوباره ثبت‌نام کن و کریپتو یا فارکس را انتخاب کن.</p></Card>
@@ -986,8 +981,11 @@ function ConnectTab({ ctx }) {
 
       <Card title="تریدِ واقعی روی چارت" icon={<ShieldCheck size={16} className="text-green-400" />}>
         <p className="text-sm opacity-80 leading-7">
-          {isVip ? 'اشتراکت فعال است. پس از اتصالِ حساب و تأییدِ رفرال، می‌توانی مستقیم از روی چارت سفارشِ واقعی باز کنی.'
-                 : 'این قابلیت ویژهٔ کاربرانِ پرمیومِ زیرمجموعهٔ رفرال است. ابتدا اشتراک تهیه کن.'}
+          {acct === 'broker'
+            ? 'OneRoyal در حال حاضر فقط مسیر معرفی است و معاملهٔ مستقیم از Pro Chart فعال نیست.'
+            : isVip
+              ? 'اشتراکت فعال است؛ فعال‌شدن هر قابلیت حساب به کنترل‌های اتصال و شرایط ارائه‌دهنده بستگی دارد.'
+              : 'قابلیت‌های حساب LBank به اشتراک، کنترل‌های اتصال و شرایط ارائه‌دهنده بستگی دارد.'}
         </p>
         <a href={CHART_URL} className="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-sm">رفتن به چارتِ بازارنما <ExternalLink size={12} /></a>
       </Card>
@@ -1270,23 +1268,22 @@ function SecurityTab() {
 
 // ───────────────────────── تب: معرفی (رفرال) ─────────────────────────
 
-function ReferralTab() {
+function ReferralTab({ ctx }) {
   const [ref, setRef] = React.useState(null);
   React.useEffect(() => { api.bnReferralLink().then(setRef).catch(() => setRef({})); }, []);
-  const url = ref?.url;
+  const accountType = ctx?.auth?.account_type || ctx?.me?.account_type;
+  const provider = ref?.broker === 'OneRoyal' || accountType === 'broker' ? 'OneRoyal' : 'LBank';
   return (
     <div>
       <h2 className="text-lg font-extrabold mb-4">معرفی</h2>
-      <Card title="لینکِ رفرالِ من" icon={<Share2 size={16} className="text-indigo-300" />}>
+      <Card title={`لینک معرفی ${provider}`} icon={<Share2 size={16} className="text-indigo-300" />}>
         {ref == null ? <Spinner /> : (
-          <>
-            <p className="text-sm opacity-80 leading-7 mb-3">با این لینک، دوستانت حساب می‌سازند و زیرمجموعهٔ تو می‌شوند ({ref.broker || 'صرافی/بروکر'}).</p>
-            <div className="flex items-center gap-2">
-              <code className="flex-1 break-all bg-black/30 rounded px-3 py-2 text-[12px]" dir="ltr">{url || '—'}</code>
-              {url && <CopyButton text={url} k="ref" />}
-              {url && <a href={url} target="_blank" rel="noreferrer" className="p-1.5 rounded bg-white/10 hover:bg-white/20 text-indigo-300 shrink-0"><ExternalLink size={14} /></a>}
-            </div>
-          </>
+          <ReferralDeparture
+            provider={provider}
+            href={ref?.url}
+            buttonLabel={`لینک معرفی — ورود به وب‌سایت ${provider}`}
+            buttonClassName="w-full px-4 py-2.5 rounded-xl bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 text-sm font-bold"
+          />
         )}
       </Card>
       <Card title="آمارِ زیرمجموعه" icon={<Mail size={16} className="text-gray-300" />} action={<SoonBadge />}>

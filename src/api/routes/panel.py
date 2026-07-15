@@ -43,6 +43,27 @@ from src.core.redis_client import redis_client
 logger = get_logger(__name__)
 router = APIRouter()
 
+_ONEROYAL_REFERRAL_PATH = "/go/oneroyal"
+
+
+def _oneroyal_referral_state(**extra) -> dict:
+    return {
+        "referral_only": True,
+        "integration_level": "referral_only",
+        "referral_path": _ONEROYAL_REFERRAL_PATH,
+        "enabled": False,
+        "connected": False,
+        "eligible": False,
+        **extra,
+    }
+
+
+def _reject_oneroyal_operation() -> None:
+    raise HTTPException(
+        status_code=410,
+        detail=_oneroyal_referral_state(reason="oneroyal_referral_only"),
+    )
+
 
 async def _live_ea_metrics(uid: int) -> dict:
     """مارجین/اکوییتی/سود/پوزیشن‌های زندهٔ کاربر (در نبودِ داده dict خالی)."""
@@ -1009,42 +1030,17 @@ async def message_user(
     return {"success": True, "delivered": True}
 
 
-# ───────────────────── اتو-ترید (تنظیماتِ EA) ─────────────────────
-
-class EAConfigBody(BaseModel):
-    enabled: Optional[bool] = None
-    risk_percent: Optional[float] = Field(default=None, ge=0.01, le=20)
-    fixed_lots: Optional[float] = Field(default=None, ge=0, le=100)
-    max_lot: Optional[float] = Field(default=None, ge=0.01, le=100)
-    max_open_trades: Optional[int] = Field(default=None, ge=1, le=100)
-    symbol_suffix: Optional[str] = None
-    set_tp_tp3: Optional[bool] = None
-    breakeven_at_tp1: Optional[bool] = None
-    breakeven_buffer_frac: Optional[float] = Field(default=None, ge=0, le=1)
-    use_trailing: Optional[bool] = None
-    trail_start_frac: Optional[float] = Field(default=None, ge=0, le=5)
-    trail_distance_frac: Optional[float] = Field(default=None, ge=0.05, le=5)
-    close_on_signal_gone: Optional[bool] = None
-    max_spread_points: Optional[int] = Field(default=None, ge=0, le=1000)
-    allowed_symbols: Optional[str] = None
+# ───────────────────── OneRoyal/EA compatibility boundary ─────────────────────
 
 
 @router.get("/ea-config")
 async def ea_config_get(admin: Admin = Depends(get_current_admin)):
-    from src.api.routes.ea import get_ea_settings
-    return await get_ea_settings()
+    return _oneroyal_referral_state(settings_available=False)
 
 
 @router.post("/ea-config")
-async def ea_config_set(
-    body: EAConfigBody,
-    admin: Admin = Depends(get_current_admin),
-):
-    from src.api.routes.ea import set_ea_settings
-    patch = {k: v for k, v in body.model_dump().items() if v is not None}
-    updated = await set_ea_settings(patch)
-    logger.info("ea_config_updated", admin=admin.username, enabled=updated.get("enabled"))
-    return updated
+async def ea_config_set(admin: Admin = Depends(get_current_admin)):
+    _reject_oneroyal_operation()
 
 
 def _num(v, d=0.0):
@@ -1055,85 +1051,21 @@ def _num(v, d=0.0):
 
 
 @router.get("/ea-status")
-async def ea_status(admin: Admin = Depends(get_current_admin), db=Depends(get_db)):
-    """وضعیتِ کاملِ اتو-ترید: اتصال به MT5 + حساب + پوزیشن‌های باز + خلاصه."""
-    from src.api.routes.ea import get_ea_settings, get_ea_status, get_master_account
-    import time
-
-    s = await get_ea_settings()
-    # اگر صریحاً logout شده، وضعیتِ کش‌شدهٔ قبلی را نادیده بگیر و «خارج‌شده» نشان بده
-    macct = await get_master_account()
-    if macct and macct.get("logout"):
-        return {
-            "enabled": bool(s.get("enabled")), "logged_out": True, "active_signals": 0,
-            "connected": False, "ea_running": False, "mt5_connected": False,
-            "trade_allowed": False, "account": "", "broker": "", "currency": "",
-            "balance": 0, "equity": 0, "margin": 0, "free_margin": 0, "margin_level": 0,
-            "floating_pnl": 0, "open_count": 0, "positions": [],
-        }
-    raw = await get_ea_status()
-    active = int((await db.execute(
-        select(func.count(Signal.id)).where(Signal.status == "active")
-    )).scalar() or 0)
-
-    server_ts = int(raw.get("_server_ts", 0) or 0)
-    age = int(time.time()) - server_ts if server_ts else 999999
-    connected = bool(raw) and age <= 20      # هارت‌بیت در ۲۰ ثانیهٔ اخیر
-
-    # پارسِ پوزیشن‌ها: "SYM;DIR;LOTS;PROFIT|..."
-    positions = []
-    praw = raw.get("positions", "")
-    if praw:
-        for chunk in praw.split("|"):
-            parts = chunk.split(";")
-            if len(parts) >= 4:
-                positions.append({
-                    "symbol": parts[0], "direction": parts[1],
-                    "lots": _num(parts[2]), "profit": _num(parts[3]),
-                })
-
-    return {
-        "enabled": bool(s.get("enabled")),
-        "active_signals": active,
-        "connected": connected,
-        "ea_running": bool(raw),
-        "last_seen_age": age if server_ts else None,
-        "trade_allowed": raw.get("trade_allowed") == "1",
-        "term_algo": raw.get("term_algo") == "1",      # دکمهٔ Algo Trading ترمینال
-        "ea_algo": raw.get("ea_algo") == "1",          # تیکِ الگو روی خودِ EA
-        "acct_trade": raw.get("acct_trade") == "1",    # حساب اجازهٔ ترید دارد (نه investor)
-        "acct_expert": raw.get("acct_expert") == "1",  # سرور اجازهٔ EA می‌دهد
-        "mt5_connected": raw.get("connected") == "1",
-        "account": raw.get("account", ""),
-        "broker": raw.get("broker", ""),
-        "currency": raw.get("currency", ""),
-        "balance": _num(raw.get("balance")),
-        "equity": _num(raw.get("equity")),
-        "margin": _num(raw.get("margin")),
-        "free_margin": _num(raw.get("free_margin")),
-        "margin_level": _num(raw.get("margin_level")),
-        "floating_pnl": _num(raw.get("profit")),
-        "open_count": int(_num(raw.get("open"))),
-        "positions": positions,
-    }
+async def ea_status(admin: Admin = Depends(get_current_admin)):
+    return _oneroyal_referral_state(
+        active_signals=0,
+        ea_running=False,
+        mt5_connected=False,
+        trade_allowed=False,
+        account="",
+        broker="",
+        positions=[],
+    )
 
 
 @router.post("/ea-close-all")
 async def ea_close_all(admin: Admin = Depends(get_current_admin)):
-    """بستنِ همهٔ معاملاتِ اتو-ترید (افزایشِ close_all_id؛ EA در سیکلِ بعد می‌بندد)."""
-    from src.api.routes.ea import get_ea_settings, set_ea_settings
-    s = await get_ea_settings()
-    new_id = int(s.get("close_all_id", 0)) + 1
-    await set_ea_settings({"close_all_id": new_id})
-    logger.info("ea_close_all", admin=admin.username, close_all_id=new_id)
-    return {"ok": True, "close_all_id": new_id}
-
-
-# ── حسابِ معاملاتیِ اتو-ترید (ورود/خروج از پنل) ──
-class EAAccountBody(BaseModel):
-    server: str = Field(min_length=2, max_length=120)
-    login: str = Field(min_length=2, max_length=40)
-    password: str = Field(min_length=2, max_length=120)
+    _reject_oneroyal_operation()
 
 
 def _mask_login_str(login: str) -> str:
@@ -1143,32 +1075,17 @@ def _mask_login_str(login: str) -> str:
 
 @router.get("/ea-account")
 async def ea_account_get(admin: Admin = Depends(get_current_admin)):
-    """حسابِ معاملاتیِ پیکربندی‌شدهٔ مستر (بدونِ رمز)."""
-    from src.api.routes.ea import get_master_account
-    acct = await get_master_account()
-    if not acct or acct.get("logout"):
-        return {"configured": False}
-    return {"configured": True, "server": acct.get("server", ""),
-            "login_masked": _mask_login_str(acct.get("login", ""))}
+    return _oneroyal_referral_state(configured=False)
 
 
 @router.post("/ea-account")
-async def ea_account_set(body: EAAccountBody, admin: Admin = Depends(get_current_admin)):
-    """ورود به حساب: مشخصات رمزنگاری‌شده ذخیره می‌شود؛ مستر خودکار با آن لاگین می‌کند."""
-    from src.api.routes.ea import set_master_account
-    rev = await set_master_account(body.server, body.login, body.password)
-    logger.info("ea_account_login", admin=admin.username, server=body.server,
-                login=_mask_login_str(body.login), rev=rev)
-    return {"ok": True, "rev": rev, "note": "حساب ثبت شد؛ تا چند لحظه مستر با حسابِ جدید لاگین می‌کند."}
+async def ea_account_set(admin: Admin = Depends(get_current_admin)):
+    _reject_oneroyal_operation()
 
 
 @router.post("/ea-account/logout")
 async def ea_account_logout(admin: Admin = Depends(get_current_admin)):
-    """خروج از حساب: مشخصات پاک می‌شود و مستر از حساب خارج می‌شود."""
-    from src.api.routes.ea import clear_master_account
-    rev = await clear_master_account()
-    logger.info("ea_account_logout", admin=admin.username, rev=rev)
-    return {"ok": True, "rev": rev}
+    _reject_oneroyal_operation()
 
 
 # ───────────────────────── مقالات ─────────────────────────
@@ -2091,21 +2008,15 @@ async def panel_users(
     admin: Admin = Depends(get_current_admin),
     db=Depends(get_db),
 ):
-    """فهرستِ کاربرانِ پنل (هرکس حسابِ متصل دارد یا اشتراکِ پولی) + رصدِ کامل."""
-    accs = (await db.execute(select(TradingAccount).order_by(TradingAccount.id.desc()))).scalars().all()
-    acc_by_uid = {a.user_id: a for a in accs}
-    uids = set(acc_by_uid.keys())
-    # کاربرانِ دارایِ اشتراکِ پولیِ فعال هم اضافه شوند
+    """فهرست کاربران اشتراک؛ داده اتصال/کپی OneRoyal عمداً redacted است."""
     paid_rows = (await db.execute(text(
         "SELECT DISTINCT u.id FROM users u JOIN subscriptions s ON s.telegram_id=u.telegram_id "
         "WHERE s.status='active' AND s.expires_at>now() AND s.plan IN ('monthly','quarterly','biannual')"
     ))).all()
-    uids |= {r[0] for r in paid_rows}
+    uids = {r[0] for r in paid_rows}
     if not uids:
         return {"items": [], "total": 0}
     users = (await db.execute(select(User).where(User.id.in_(uids)))).scalars().all()
-    cs_rows = (await db.execute(select(CopySettings).where(CopySettings.user_id.in_(uids)))).scalars().all()
-    cs_by_uid = {c.user_id: c for c in cs_rows}
     now = datetime.now(timezone.utc)
     items = []
     for u in users:
@@ -2113,8 +2024,6 @@ async def panel_users(
             hay = f"{u.first_name or ''} {u.last_name or ''} {u.username or ''} {u.email or ''} {u.telegram_id}".lower()
             if q.lower() not in hay:
                 continue
-        a = acc_by_uid.get(u.id)
-        cs = cs_by_uid.get(u.id)
         sub = (await db.execute(text(
             "SELECT plan, expires_at FROM subscriptions WHERE telegram_id=:t AND status='active' AND expires_at>now() "
             "AND plan IN ('monthly','quarterly','biannual') ORDER BY expires_at DESC LIMIT 1"
@@ -2122,7 +2031,6 @@ async def panel_users(
         days_left = None
         if sub and sub[1]:
             days_left = max(0, int((sub[1] - now).total_seconds() // 86400))
-        live = await _live_ea_metrics(u.id)
         items.append({
             "user_id": u.id,
             "telegram_id": u.telegram_id,
@@ -2139,29 +2047,9 @@ async def panel_users(
             "kyc_full_name": u.kyc_full_name,
             "kyc_country": getattr(u, "kyc_country", None),
             "skill_level": u.skill_level,
-            "account": ({
-                "broker": a.broker, "server": a.server, "login_masked": _mask(a.login),
-                "is_oneroyal": bool(a.is_oneroyal), "status": a.status,
-                # موجودی/اکوییتی: اولویت با دادهٔ زندهٔ EA، در نبودش از DB
-                "balance": live.get("balance") if live else (float(a.balance) if a.balance is not None else None),
-                "equity": live.get("equity") if live else (float(a.equity) if a.equity is not None else None),
-                "margin": live.get("margin"),
-                "free_margin": live.get("free_margin"),
-                "margin_level": live.get("margin_level"),
-                "floating_pnl": live.get("floating_pnl"),
-                "open_count": live.get("open_count", 0),
-                "currency": live.get("currency") or a.currency,
-                "live": bool(live),
-                "last_seen_min": (int((now - a.last_seen).total_seconds() // 60) if a.last_seen else None),
-                "last_trade_min": (int((now - a.last_trade_at).total_seconds() // 60) if a.last_trade_at else None),
-                "warned": a.warned_at is not None,
-            } if a else None),
-            "copy": ({
-                "enabled": bool(cs.enabled), "risk_mode": cs.risk_mode,
-                "risk_value": float(cs.risk_value), "max_lot": float(cs.max_lot),
-                "max_open_trades": cs.max_open_trades, "max_daily_loss_pct": float(cs.max_daily_loss_pct),
-            } if cs else None),
-            "copy_enabled": bool(cs.enabled) if cs else False,
+            "account": None,
+            "copy": _oneroyal_referral_state(settings_available=False),
+            "copy_enabled": False,
         })
     return {"items": items, "total": len(items)}
 
@@ -2170,6 +2058,12 @@ async def panel_users(
 async def trailing_monitor(admin: Admin = Depends(get_current_admin)):
     """نظارتِ زنده: SLِ واقعیِ هر پوزیشن (مَستر + کاربران) را با trailing_slِ انتظاریِ
     سرور می‌سنجد تا مطمئن شویم سربه‌سر/تریلینگ واقعاً روی حساب اعمال شده."""
+    return _oneroyal_referral_state(
+        positions=[], total_open=0, armed=0, protected_ok=0,
+        unprotected=[], ea_pending_update=False, healthy=True,
+    )
+
+    # Historical implementation retained below for migration archaeology only.
     # نقشهٔ سیگنال‌های فعال بر اساسِ id
     by_id: dict[int, dict] = {}
     try:
@@ -2261,14 +2155,10 @@ async def trailing_monitor(admin: Admin = Depends(get_current_admin)):
 
 @router.get("/panel-users/{telegram_id}")
 async def panel_user_detail(telegram_id: int, admin: Admin = Depends(get_current_admin), db=Depends(get_db)):
-    """جزئیاتِ کاملِ یک کاربرِ پنل: حسابِ زنده + پوزیشن‌ها + اشتراک + KYC + تنظیماتِ کپی."""
+    """جزئیات اشتراک/KYC؛ داده اتصال و اجرای OneRoyal عمداً redacted است."""
     u = (await db.execute(select(User).where(User.telegram_id == telegram_id))).scalar_one_or_none()
     if not u:
         raise HTTPException(status_code=404, detail="کاربر یافت نشد.")
-    a = (await db.execute(select(TradingAccount).where(TradingAccount.user_id == u.id)
-                          .order_by(TradingAccount.id.desc()))).scalars().first()
-    cs = (await db.execute(select(CopySettings).where(CopySettings.user_id == u.id))).scalar_one_or_none()
-    live = await _live_ea_metrics(u.id)
     now = datetime.now(timezone.utc)
     subs = (await db.execute(text(
         "SELECT plan, status, started_at, expires_at, amount_usdt FROM subscriptions "
@@ -2281,16 +2171,6 @@ async def panel_user_detail(telegram_id: int, admin: Admin = Depends(get_current
         "days_left": (max(0, int((s[3] - now).total_seconds() // 86400)) if s[3] and s[1] == "active" and s[3] > now else None),
         "amount_usdt": float(s[4]) if s[4] is not None else None,
     } for s in subs]
-    acc_dict = ({
-        "broker": a.broker, "server": a.server, "login_masked": _mask(a.login),
-        "is_oneroyal": bool(a.is_oneroyal), "status": a.status, "last_error": a.last_error,
-        "balance": live.get("balance") if live else (float(a.balance) if a.balance is not None else None),
-        "equity": live.get("equity") if live else (float(a.equity) if a.equity is not None else None),
-        "margin": live.get("margin"), "free_margin": live.get("free_margin"),
-        "margin_level": live.get("margin_level"), "floating_pnl": live.get("floating_pnl"),
-        "open_count": live.get("open_count", 0), "currency": live.get("currency") or a.currency,
-        "live": bool(live),
-    } if a else None)
     return {
         "user_id": u.id, "telegram_id": u.telegram_id,
         "name": f"{u.first_name or ''} {u.last_name or ''}".strip() or u.username or "کاربر",
@@ -2304,16 +2184,12 @@ async def panel_user_detail(telegram_id: int, admin: Admin = Depends(get_current
             "country": getattr(u, "kyc_country", None), "dob": getattr(u, "kyc_dob", None),
             "nationality": getattr(u, "kyc_nationality", None),
         },
-        "account": acc_dict,
-        "positions": live.get("positions", []),
-        "copy": ({
-            "enabled": bool(cs.enabled), "risk_mode": cs.risk_mode, "risk_value": float(cs.risk_value),
-            "max_lot": float(cs.max_lot), "max_open_trades": cs.max_open_trades,
-            "copy_sl_tp": bool(cs.copy_sl_tp), "max_daily_loss_pct": float(cs.max_daily_loss_pct),
-        } if cs else None),
+        "account": None,
+        "positions": [],
+        "copy": _oneroyal_referral_state(settings_available=False),
         "subscriptions": sub_list,
-        "performance": await _copy_perf(u.id),
-        "risk_flags": _risk_flags(acc_dict, cs),
+        "performance": {"total": 0, "wins": 0, "win_rate": 0.0, "total_profit": 0.0},
+        "risk_flags": [],
     }
 
 
@@ -2480,48 +2356,18 @@ async def panel_user_message(telegram_id: int, body: MessageBody, admin: Admin =
 
 
 @router.post("/panel-users/{telegram_id}/copy")
-async def panel_user_copy_toggle(telegram_id: int, body: ToggleBody, admin: Admin = Depends(get_current_admin), db=Depends(get_db)):
-    """روشن/خاموش‌کردنِ کپیِ کاربر از سمتِ مدیریت."""
-    u = await _get_user_or_404(db, telegram_id)
-    cs = (await db.execute(select(CopySettings).where(CopySettings.user_id == u.id))).scalar_one_or_none()
-    if not cs:
-        cs = CopySettings(user_id=u.id, enabled=body.enabled)
-        db.add(cs)
-    else:
-        cs.enabled = body.enabled
-    await db.commit()
-    return {"enabled": body.enabled}
+async def panel_user_copy_toggle(telegram_id: int, admin: Admin = Depends(get_current_admin)):
+    _reject_oneroyal_operation()
 
 
 @router.post("/panel-users/{telegram_id}/stop")
-async def panel_user_stop(telegram_id: int, admin: Admin = Depends(get_current_admin), db=Depends(get_db)):
-    """توقفِ اضطراریِ کپیِ کاربر (خاموش + فرمان به موتور)."""
-    u = await _get_user_or_404(db, telegram_id)
-    cs = (await db.execute(select(CopySettings).where(CopySettings.user_id == u.id))).scalar_one_or_none()
-    if cs:
-        cs.enabled = False
-        await db.commit()
-    try:
-        await redis_client.client.rpush(f"copy:user:{u.id}:command", json.dumps({"cmd": "stop", "ts": int(time.time())}))
-        await redis_client.client.expire(f"copy:user:{u.id}:command", 3600)
-    except Exception:  # noqa: BLE001
-        pass
-    logger.info("panel_user_stopped", telegram_id=telegram_id, admin=admin.username)
-    return {"stopped": True}
+async def panel_user_stop(telegram_id: int, admin: Admin = Depends(get_current_admin)):
+    _reject_oneroyal_operation()
 
 
 @router.post("/panel-users/{telegram_id}/close-all")
-async def panel_user_close_all(telegram_id: int, admin: Admin = Depends(get_current_admin), db=Depends(get_db)):
-    """فرمانِ بستنِ همهٔ پوزیشن‌های بازِ کاربر (افزایشِ close_all_idِ per-user → EAِ کاربر می‌بندد)."""
-    u = await _get_user_or_404(db, telegram_id)
-    try:
-        await redis_client.client.incr(f"ea:user:{u.id}:close_all_id")
-        await redis_client.client.rpush(f"copy:user:{u.id}:command", json.dumps({"cmd": "close_all", "ts": int(time.time())}))
-        await redis_client.client.expire(f"copy:user:{u.id}:command", 3600)
-    except Exception:  # noqa: BLE001
-        pass
-    logger.info("panel_user_close_all", telegram_id=telegram_id, admin=admin.username)
-    return {"requested": True}
+async def panel_user_close_all(telegram_id: int, admin: Admin = Depends(get_current_admin)):
+    _reject_oneroyal_operation()
 
 
 @router.post("/panel-users/{telegram_id}/kyc")

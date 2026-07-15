@@ -1,4 +1,4 @@
-// پروفایل — زبان، تم، اتصالِ واقعیِ بروکر/صرافی (LBank/MT5)، قفلِ اپ (PIN)، دربارهٔ اپ.
+// پروفایل — زبان، تم، اتصال مجاز LBank، معرفی OneRoyal، قفل اپ (PIN)، درباره اپ.
 import React, { useEffect, useState } from 'react';
 import { User, Globe, Sun, Moon, Link2, Info, Lock, ChevronDown, Check } from 'lucide-react';
 import { api } from '../../api/client';
@@ -9,6 +9,7 @@ import { hasPin, setPin, clearPin } from '../lock';
 import { bioEnabled, setBioEnabled, bioAvailable, bioVerify } from '../biometric';
 import { Fingerprint, Crown, ChevronLeft } from 'lucide-react';
 import SubscribeScreen from './SubscribeScreen';
+import ReferralDeparture from '../../components/ReferralDeparture';
 
 function Segmented({ options, value, onChange }) {
   return (
@@ -42,9 +43,8 @@ export default function ProfileScreen() {
   const t = useT();
   const { lang, theme, setLang, setTheme } = useApp();
   const [conn, setConn] = useState(null);
-  const [open, setOpen] = useState(null); // 'lbank' | 'mt5' | null
+  const [open, setOpen] = useState(null); // 'lbank' | 'oneroyal' | null
   const [lb, setLb] = useState({ api_key: '', api_secret: '', uid: '' });
-  const [mt, setMt] = useState({ login: '', password: '', server: '' });
   const [busy, setBusy] = useState(false);
   const [pinOn, setPinOn] = useState(hasPin());
   const [bioOn, setBioOn] = useState(bioEnabled());
@@ -61,20 +61,16 @@ export default function ProfileScreen() {
   const refresh = () => api.bnConnectStatus().then((r) => setConn(r || {})).catch(() => setConn({}));
   useEffect(() => { let a = true; api.bnConnectStatus().then((r) => { if (a) setConn(r || {}); }).catch(() => { if (a) setConn({}); }); return () => { a = false; }; }, []);
 
-  const lbConnected = !!(conn && (conn.lbank || conn.lbank_connected));
-  const mtConnected = !!(conn && (conn.mt5 || conn.mt5_connected));
+  const lbConnected = !!(
+    conn?.accounts?.lbank?.connected || conn?.lbank || conn?.lbank_connected
+  );
 
   const saveLbank = async () => {
     setBusy(true);
     try { await api.bnConnectLbank(lb.api_key.trim(), lb.api_secret.trim(), lb.uid.trim()); window.alert(t('connect.saved')); setOpen(null); setLb({ api_key: '', api_secret: '', uid: '' }); refresh(); }
     catch (e) { window.alert(e?.message || t('connect.error')); } finally { setBusy(false); }
   };
-  const saveMt5 = async () => {
-    setBusy(true);
-    try { await api.bnConnectMt5(mt.login.trim(), mt.password, mt.server.trim()); window.alert(t('connect.saved')); setOpen(null); setMt({ login: '', password: '', server: '' }); refresh(); }
-    catch (e) { window.alert(e?.message || t('connect.error')); } finally { setBusy(false); }
-  };
-  const remove = async (kind) => { try { await api.bnConnectRemove(kind); refresh(); } catch (e) { /* noop */ } };
+  const removeLbank = async () => { try { await api.bnDisconnectLbank(); refresh(); } catch (e) { /* noop */ } };
 
   const toggleLock = () => {
     if (pinOn) { clearPin(); setPinOn(false); setBioEnabled(false); setBioOn(false); return; } // خاموش‌کردنِ PIN بیومتریک را هم غیرفعال می‌کند
@@ -105,9 +101,9 @@ export default function ProfileScreen() {
         <div className="pc-screen-in" style={{ padding: '0 14px 14px' }}>
           {body}
           <div className="flex gap-2 mt-3">
-            <button onClick={kind === 'lbank' ? saveLbank : saveMt5} disabled={busy} className="flex-1 font-bold active:scale-[.98] transition-transform"
+            <button onClick={saveLbank} disabled={busy} className="flex-1 font-bold active:scale-[.98] transition-transform"
               style={{ height: 44, borderRadius: 11, border: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, color: '#fff', background: ACCENT, opacity: busy ? .6 : 1 }}>{t('connect.save')}</button>
-            {connected && <button onClick={() => remove(kind)} className="font-bold" style={{ height: 44, padding: '0 14px', borderRadius: 11, border: '1px solid var(--surface-border)', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, color: 'var(--down)', background: 'transparent' }}>{t('connect.remove')}</button>}
+            {connected && <button onClick={removeLbank} className="font-bold" style={{ height: 44, padding: '0 14px', borderRadius: 11, border: '1px solid var(--surface-border)', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, color: 'var(--down)', background: 'transparent' }}>{t('connect.remove')}</button>}
           </div>
           <p style={{ fontSize: 10.5, color: 'var(--text-muted)', lineHeight: 1.7, marginTop: 8 }}>{t('connect.hint')}</p>
         </div>
@@ -163,18 +159,35 @@ export default function ProfileScreen() {
         <div className="flex items-center gap-2 mt-1 px-1" style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700 }}><Link2 size={15} color={ACCENT} /> {t('profile.connect')}</div>
         {connCard('lbank', t('connect.lbankTitle'), lbConnected, (
           <div className="flex flex-col gap-2.5">
+            <ReferralDeparture provider="LBank" buttonLabel="لینک معرفی — ورود به وب‌سایت LBank" compact
+              buttonClassName="w-full font-bold" buttonStyle={{ minHeight: 42, borderRadius: 10, border: '1px solid var(--surface-border)', color: 'var(--text-primary)', background: 'var(--surface-elevated)' }} />
             <Field label={t('connect.apiKey')} value={lb.api_key} onChange={(e) => setLb({ ...lb, api_key: e.target.value })} dir="ltr" autoComplete="off" />
             <Field label={t('connect.apiSecret')} type="password" value={lb.api_secret} onChange={(e) => setLb({ ...lb, api_secret: e.target.value })} dir="ltr" autoComplete="off" />
             <Field label={t('connect.uid')} value={lb.uid} onChange={(e) => setLb({ ...lb, uid: e.target.value })} dir="ltr" autoComplete="off" />
           </div>
         ))}
-        {connCard('mt5', t('connect.mt5Title'), mtConnected, (
-          <div className="flex flex-col gap-2.5">
-            <Field label={t('connect.login')} value={mt.login} onChange={(e) => setMt({ ...mt, login: e.target.value })} dir="ltr" inputMode="numeric" autoComplete="off" />
-            <Field label={t('connect.password')} type="password" value={mt.password} onChange={(e) => setMt({ ...mt, password: e.target.value })} dir="ltr" autoComplete="off" />
-            <Field label={t('connect.server')} value={mt.server} onChange={(e) => setMt({ ...mt, server: e.target.value })} dir="ltr" autoComplete="off" />
-          </div>
-        ))}
+        <div style={card}>
+          <button type="button" onClick={() => setOpen((value) => (value === 'oneroyal' ? null : 'oneroyal'))}
+            className="w-full flex items-center justify-between" style={{ padding: '13px 14px' }}>
+            <span className="flex items-center gap-3" style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 700 }}>
+              <span className="flex items-center justify-center" style={{ width: 34, height: 34, borderRadius: 10, background: 'var(--surface-elevated)', color: ACCENT }}><Link2 size={17} /></span>
+              معرفی OneRoyal
+            </span>
+            <span className="flex items-center gap-2" style={{ color: 'var(--text-secondary)', fontSize: 11.5, fontWeight: 700 }}>
+              فقط معرفی
+              <ChevronDown size={16} style={{ transform: open === 'oneroyal' ? 'rotate(180deg)' : 'none', transition: 'transform .25s' }} />
+            </span>
+          </button>
+          {open === 'oneroyal' && (
+            <div className="pc-screen-in" style={{ padding: '0 14px 14px' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 12, lineHeight: 1.9, marginBottom: 8 }}>
+                OneRoyal در Pro Chart فقط به‌عنوان مسیر معرفی نمایش داده می‌شود؛ اتصال حساب و معاملهٔ مستقیم فعال نیست.
+              </p>
+              <ReferralDeparture provider="OneRoyal" buttonLabel="لینک معرفی — ورود به وب‌سایت OneRoyal" compact
+                buttonClassName="w-full font-bold" buttonStyle={{ minHeight: 42, borderRadius: 10, border: '1px solid var(--surface-border)', color: 'var(--text-primary)', background: 'var(--surface-elevated)' }} />
+            </div>
+          )}
+        </div>
 
         {/* امنیت — قفلِ اپ */}
         <div style={card}>

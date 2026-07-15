@@ -1,11 +1,7 @@
-"""پنلِ کاربریِ VIP — user.fx.trade-future.ir
+"""پنلِ کاربریِ VIP — OneRoyal در این محصول فقط مسیر معرفی است.
 
-ورود: تلگرام (احرازِ امن) + تأییدِ ایمیل با OTP. دسترسی به پنل فقط برای VIP
-(اشتراکِ فعال). کپی‌ترید: همه زیرِ سرورِ اصلیِ ما، بدونِ ترمینالِ جداگانه.
-
-قانونِ بروکر:
-  - اشتراکِ پولی (monthly/quarterly/biannual) فعال → هر بروکری مجاز است.
-  - در غیرِ این صورت (trial/free) → فقط OneRoyal.
+مسیرهای تاریخی account/copy برای سازگاری URL باقی مانده‌اند، اما هیچ payload،
+credential، وضعیت اتصال یا فرمان معامله‌ای را دریافت، ذخیره یا اجرا نمی‌کنند.
 """
 
 from __future__ import annotations
@@ -27,8 +23,7 @@ from src.api.deps import get_db
 from src.api.routes.live import _is_vip, _verify_telegram_login
 from src.core import email_otp
 from src.core.config import settings
-from src.core.crypto import encrypt_secret
-from src.core.database import CopySettings, DisclaimerAcceptance, TradingAccount, User
+from src.core.database import DisclaimerAcceptance, User
 from src.core.disclaimer import current_disclaimer
 from src.core.logger import get_logger
 from src.core.redis_client import redis_client
@@ -103,21 +98,26 @@ class AcceptDisclaimer(BaseModel):
     full_name: Optional[str] = None
 
 
-class LinkAccount(BaseModel):
-    broker: str = Field(min_length=2, max_length=80)
-    server: str = Field(min_length=2, max_length=120)
-    login: str = Field(min_length=2, max_length=40)
-    password: str = Field(min_length=2, max_length=120)
+_ONEROYAL_REFERRAL_PATH = "/go/oneroyal"
 
 
-class CopyConfigReq(BaseModel):
-    enabled: Optional[bool] = None
-    risk_mode: Optional[str] = Field(default=None, pattern="^(proportional|fixed_lot|risk_percent)$")
-    risk_value: Optional[float] = Field(default=None, ge=0.01, le=100)
-    max_lot: Optional[float] = Field(default=None, ge=0.01, le=100)
-    max_open_trades: Optional[int] = Field(default=None, ge=1, le=100)
-    copy_sl_tp: Optional[bool] = None
-    max_daily_loss_pct: Optional[float] = Field(default=None, ge=0, le=90)
+def _oneroyal_referral_state(**extra) -> dict:
+    return {
+        "referral_only": True,
+        "integration_level": "referral_only",
+        "referral_path": _ONEROYAL_REFERRAL_PATH,
+        "enabled": False,
+        "connected": False,
+        "eligible": False,
+        **extra,
+    }
+
+
+def _reject_oneroyal_operation() -> None:
+    raise HTTPException(
+        status_code=410,
+        detail=_oneroyal_referral_state(reason="oneroyal_referral_only"),
+    )
 
 
 # ════════════════════════════════════════════════════════════
@@ -201,10 +201,6 @@ async def _profile_dict(db: AsyncSession, u: User) -> dict:
     panel_approved = admin or bool(u.panel_approved)
     panel_allowed = paid and panel_approved
     panel_state = "approved" if panel_allowed else ("pending" if paid else "buy")
-    acc = (await db.execute(
-        select(TradingAccount).where(TradingAccount.user_id == u.id)
-        .order_by(TradingAccount.id.desc())
-    )).scalars().first()
     disclaimer_ok = (await db.execute(
         select(DisclaimerAcceptance.id).where(
             DisclaimerAcceptance.user_id == u.id,
@@ -236,13 +232,8 @@ async def _profile_dict(db: AsyncSession, u: User) -> dict:
         "plan_expires_at": (sub[1].isoformat() if sub and sub[1] else None),
         "disclaimer_accepted": disclaimer_ok,
         "disclaimer_version": settings.DISCLAIMER_VERSION,
-        "account": ({
-            "broker": acc.broker, "server": acc.server, "login_masked": _mask_login(acc.login),
-            "status": acc.status, "is_oneroyal": bool(acc.is_oneroyal),
-            "balance": float(acc.balance) if acc.balance is not None else None,
-            "equity": float(acc.equity) if acc.equity is not None else None,
-            "currency": acc.currency,
-        } if acc else None),
+        "account": None,
+        "oneroyal": _oneroyal_referral_state(),
     }
 
 
@@ -387,203 +378,38 @@ async def submit_kyc(body: KycReq, user: User = Depends(require_vip), db: AsyncS
 
 
 # ════════════════════════════════════════════════════════════
-#  حسابِ بروکر (لینک برای کپی‌ترید)
+#  قرارداد سازگاری account/copy — OneRoyal فقط referral-only
 # ════════════════════════════════════════════════════════════
 @router.post("/account/link")
-async def link_account(body: LinkAccount, user: User = Depends(require_vip), db: AsyncSession = Depends(get_db)) -> dict:
-    # پیش‌نیازها: ایمیلِ تأییدشده + پذیرشِ سلبِ مسئولیت
-    if not user.email_verified:
-        raise HTTPException(status_code=400, detail="ابتدا ایمیلِ خود را تأیید کنید.")
-    accepted = (await db.execute(
-        select(DisclaimerAcceptance.id).where(
-            DisclaimerAcceptance.user_id == user.id,
-            DisclaimerAcceptance.version == settings.DISCLAIMER_VERSION,
-        ).limit(1)
-    )).scalar_one_or_none() is not None
-    if not accepted:
-        raise HTTPException(status_code=400, detail="ابتدا سلبِ مسئولیت را بپذیرید.")
-
-    # فقط حسابِ واقعی (Real) مجاز است — حسابِ دمو هرگز نباید وارد کپی‌ترید شود.
-    _haystack = f"{body.server} {body.broker} {body.login}".lower()
-    if any(k in _haystack for k in ("demo", "دمو", "trial", "practice", "contest", "test")):
-        raise HTTPException(
-            status_code=400,
-            detail="فقط حسابِ واقعی (Real/Live) برای کپی‌ترید مجاز است؛ حسابِ دمو پذیرفته نمی‌شود. "
-                   "نام سرورِ حسابِ واقعی معمولاً «Live/Real» یا نامِ بروکر است.",
-        )
-
-    is_oneroyal = settings.ONEROYAL_SERVER_KEYWORD.lower() in body.server.lower() \
-        or settings.ONEROYAL_SERVER_KEYWORD.lower() in body.broker.lower()
-    paid = await _has_paid_plan(db, user.telegram_id)
-    if not paid and not is_oneroyal:
-        raise HTTPException(
-            status_code=403,
-            detail="در پلنِ رایگان فقط حسابِ بروکرِ OneRoyal مجاز است. برای استفاده از سایر بروکرها اشتراکِ پولی تهیه کنید.",
-        )
-
-    # یک حسابِ فعال به‌ازای هر کاربر — حذفِ قبلی‌ها و افزودنِ جدید
-    existing = (await db.execute(select(TradingAccount).where(TradingAccount.user_id == user.id))).scalars().all()
-    for e in existing:
-        await db.delete(e)
-    acc = TradingAccount(
-        user_id=user.id, telegram_id=user.telegram_id, broker=body.broker.strip(),
-        server=body.server.strip(), login=body.login.strip(),
-        password_enc=encrypt_secret(body.password), is_oneroyal=is_oneroyal, status="pending",
-    )
-    db.add(acc)
-    # تنظیماتِ کپیِ پیش‌فرض اگر نبود
-    cs = (await db.execute(select(CopySettings).where(CopySettings.user_id == user.id))).scalar_one_or_none()
-    if not cs:
-        db.add(CopySettings(user_id=user.id))
-    await db.commit()
-    # ریستِ فلگ‌های دمو — حسابِ تازه باید دوباره با trade_mode سنجیده شود
-    try:
-        await redis_client.client.delete(f"ea:user:{user.id}:demo_blocked", f"ea:user:{user.id}:demo_notified")
-    except Exception:  # noqa: BLE001
-        pass
-    logger.info("account_linked", telegram_id=user.telegram_id, oneroyal=is_oneroyal)
-    return {"status": "pending", "is_oneroyal": is_oneroyal,
-            "message": "حساب ثبت شد و در صفِ اتصال است. وضعیتِ اتصال در داشبورد نمایش داده می‌شود."}
+async def link_account(user: User = Depends(require_vip)) -> dict:
+    """Bodyless compatibility route; credentials are never parsed."""
+    _reject_oneroyal_operation()
 
 
 @router.delete("/account")
-async def unlink_account(user: User = Depends(require_vip), db: AsyncSession = Depends(get_db)) -> dict:
-    accs = (await db.execute(select(TradingAccount).where(TradingAccount.user_id == user.id))).scalars().all()
-    for a in accs:
-        await db.delete(a)
-    await db.commit()
-    return {"unlinked": True}
-
-
-# ════════════════════════════════════════════════════════════
-#  تنظیماتِ کپی‌ترید
-# ════════════════════════════════════════════════════════════
-async def _get_or_create_copy(db: AsyncSession, user: User) -> CopySettings:
-    cs = (await db.execute(select(CopySettings).where(CopySettings.user_id == user.id))).scalar_one_or_none()
-    if not cs:
-        cs = CopySettings(user_id=user.id)
-        db.add(cs)
-        await db.commit()
-        await db.refresh(cs)
-    return cs
-
-
-def _copy_dict(cs: CopySettings) -> dict:
-    return {
-        "enabled": bool(cs.enabled), "risk_mode": cs.risk_mode,
-        "risk_value": float(cs.risk_value), "max_lot": float(cs.max_lot),
-        "max_open_trades": cs.max_open_trades, "copy_sl_tp": bool(cs.copy_sl_tp),
-        "max_daily_loss_pct": float(cs.max_daily_loss_pct),
-    }
+async def unlink_account(user: User = Depends(require_vip)) -> dict:
+    _reject_oneroyal_operation()
 
 
 @router.get("/copy-config")
-async def get_copy_config(user: User = Depends(require_vip), db: AsyncSession = Depends(get_db)) -> dict:
-    return _copy_dict(await _get_or_create_copy(db, user))
+async def get_copy_config(user: User = Depends(require_vip)) -> dict:
+    return _oneroyal_referral_state(settings_available=False)
 
 
 @router.post("/copy-config")
-async def set_copy_config(body: CopyConfigReq, user: User = Depends(require_vip), db: AsyncSession = Depends(get_db)) -> dict:
-    cs = await _get_or_create_copy(db, user)
-    for field in ("enabled", "risk_mode", "risk_value", "max_lot", "max_open_trades", "copy_sl_tp", "max_daily_loss_pct"):
-        val = getattr(body, field)
-        if val is not None:
-            setattr(cs, field, val)
-    await db.commit()
-    return _copy_dict(cs)
+async def set_copy_config(user: User = Depends(require_vip)) -> dict:
+    _reject_oneroyal_operation()
 
 
 @router.get("/copy-status")
-async def copy_status(user: User = Depends(require_vip), db: AsyncSession = Depends(get_db)) -> dict:
-    """وضعیتِ زندهٔ کپی‌ترید: حسابِ متصل + تنظیمات + معاملاتِ مَستر (از وضعیتِ EA)."""
-    acc = (await db.execute(
-        select(TradingAccount).where(TradingAccount.user_id == user.id)
-        .order_by(TradingAccount.id.desc())
-    )).scalars().first()
-    cs = await _get_or_create_copy(db, user)
-    # معاملاتِ مَستر از وضعیتِ EAِ سرور (همان اتو-تریدِ ادمین)
-    master = {"open": 0, "positions": []}
-    try:
-        from src.api.routes.ea import get_ea_status
-        raw = await get_ea_status()
-        master["open"] = int(float(raw.get("open", 0) or 0))
-        praw = raw.get("positions", "")
-        if praw:
-            for chunk in praw.split("|"):
-                parts = chunk.split(";")
-                if len(parts) >= 4:
-                    master["positions"].append({
-                        "symbol": parts[0], "direction": parts[1],
-                        "lots": float(parts[2] or 0), "profit": float(parts[3] or 0),
-                    })
-    except Exception:  # noqa: BLE001
-        pass
-    # پوزیشن‌های خودِ کاربر — اول وضعیتِ واقعیِ ترمینالِ زندهٔ کاربر، در نبودش حالتِ آزمایشی
-    mirrored = []
-    mode = None
-    live = {}  # متریک‌های لحظه‌ایِ حسابِ کاربر از وضعیتِ EAِ ترمینالِ او
-    try:
-        import json as _json
-        live_raw = await redis_client.client.get(f"ea:status:user:{user.id}")
-        if live_raw:
-            st = _json.loads(live_raw)
-            mode = "live"
-            live = st
-            praw = st.get("positions", "")
-            if praw:
-                for chunk in praw.split("|"):
-                    p = chunk.split(";")
-                    if len(p) >= 4:
-                        mirrored.append({"symbol": p[0], "direction": p[1],
-                                         "lots": float(p[2] or 0), "profit": float(p[3] or 0)})
-        else:
-            raw = await redis_client.client.get(f"copy:user:{user.id}:positions")
-            if raw:
-                d = _json.loads(raw)
-                mirrored = d.get("positions", [])
-                mode = d.get("mode")
-    except Exception:  # noqa: BLE001
-        pass
-
-    def _lf(k):
-        try:
-            return float(live.get(k)) if live.get(k) not in (None, "") else None
-        except (TypeError, ValueError):
-            return None
-
-    # هشدارِ سلامتِ حساب: اگر سطحِ مارجین پایین آمد، یک اعلان (با dedupِ ۶ساعته)
-    ml = _lf("margin_level")
-    if live and ml is not None and 0 < ml < settings.PANEL_MARGIN_ALERT_LEVEL:
-        try:
-            dk = f"panel:notif:margin_alert:{user.id}"
-            if await redis_client.client.set(dk, "1", nx=True, ex=21600):
-                await push_notification(
-                    user.id, "margin_alert", "⚠️ سطحِ مارجینِ حساب پایین است",
-                    f"سطحِ مارجین به {ml:.0f}٪ رسیده؛ برای جلوگیری از مارجین‌کال، ریسک را کاهش دهید یا پوزیشن ببندید.",
-                    telegram_id=user.telegram_id, tg_push=True,
-                )
-        except Exception:  # noqa: BLE001
-            pass
-
-    return {
-        "account": ({
-            "broker": acc.broker, "server": acc.server, "login_masked": _mask_login(acc.login),
-            "status": acc.status, "last_error": acc.last_error,
-            "balance": _lf("balance") if live else (float(acc.balance) if acc.balance is not None else None),
-            "equity": _lf("equity") if live else (float(acc.equity) if acc.equity is not None else None),
-            "margin": _lf("margin"),
-            "free_margin": _lf("free_margin"),
-            "margin_level": _lf("margin_level"),
-            "floating_pnl": _lf("profit"),
-            "open_count": int(_lf("open") or 0) if live else 0,
-            "currency": (live.get("currency") if live else None) or acc.currency,
-            "last_seen": acc.last_seen.isoformat() if acc.last_seen else None,
-        } if acc else None),
-        "copy": _copy_dict(cs),
-        "master": master,
-        "mirrored": mirrored,
-        "mode": mode,
-    }
+async def copy_status(user: User = Depends(require_vip)) -> dict:
+    return _oneroyal_referral_state(
+        account=None,
+        positions=[],
+        master={"open": 0, "positions": []},
+        mirrored=[],
+        mode=None,
+    )
 
 
 # ════════════════════════════════════════════════════════════
@@ -651,57 +477,21 @@ async def mark_notifications_read(user: User = Depends(require_vip)) -> dict:
 #  کنترلِ آنیِ کپی — توقفِ اضطراری و بستنِ همهٔ پوزیشن‌ها
 # ════════════════════════════════════════════════════════════
 @router.post("/copy/stop")
-async def copy_emergency_stop(user: User = Depends(require_vip), db: AsyncSession = Depends(get_db)) -> dict:
-    """توقفِ فوریِ کپی: کپی خاموش می‌شود (پوزیشن‌های جدید باز نمی‌شوند)."""
-    cs = await _get_or_create_copy(db, user)
-    cs.enabled = False
-    await db.commit()
-    try:
-        await redis_client.client.rpush(f"copy:user:{user.id}:command", json.dumps(
-            {"cmd": "stop", "ts": int(time.time())}))
-        await redis_client.client.expire(f"copy:user:{user.id}:command", 3600)
-    except Exception:  # noqa: BLE001
-        pass
-    logger.info("copy_emergency_stop", user_id=user.id)
-    await push_notification(user.id, "copy_stop", "کپی‌ترید متوقف شد",
-                            "به‌درخواستِ شما کپی خاموش شد؛ پوزیشنِ جدیدی باز نمی‌شود.")
-    return {"enabled": False, "stopped": True}
+async def copy_emergency_stop(user: User = Depends(require_vip)) -> dict:
+    _reject_oneroyal_operation()
 
 
 @router.post("/copy/close-all")
 async def copy_close_all(user: User = Depends(require_vip)) -> dict:
-    """بستنِ همهٔ پوزیشن‌های بازِ کاربر روی حسابِ او (افزایشِ close_all_id که EAِ کاربر
-    از /ea/config می‌خواند → همه را می‌بندد و سرکوب می‌کند؛ همان مکانیزمِ مَستر، per-user)."""
-    try:
-        await redis_client.client.incr(f"ea:user:{user.id}:close_all_id")
-        await redis_client.client.rpush(f"copy:user:{user.id}:command", json.dumps(
-            {"cmd": "close_all", "ts": int(time.time())}))
-        await redis_client.client.expire(f"copy:user:{user.id}:command", 3600)
-    except Exception:  # noqa: BLE001
-        pass
-    logger.info("copy_close_all_requested", user_id=user.id)
-    await push_notification(user.id, "close_all", "درخواستِ بستنِ همهٔ پوزیشن‌ها ثبت شد",
-                            "فرمان به سرورِ اجرا ارسال شد؛ ظرفِ چند لحظه اعمال می‌شود.")
-    return {"requested": True}
+    _reject_oneroyal_operation()
 
 
 # ════════════════════════════════════════════════════════════
-#  تاریخچهٔ معاملات — کپی‌شده‌های کاربر + کارنامهٔ راهبرد (سیگنال‌های بسته‌شده)
+#  تاریخچهٔ legacy — عمداً خالی و بدون I/O
 # ════════════════════════════════════════════════════════════
 @router.get("/history")
 async def trade_history(user: User = Depends(require_vip)) -> dict:
-    """تاریخچهٔ کپیِ خودِ کاربر (در صورت وجود) + کارنامهٔ واقعیِ راهبرد از سیگنال‌های بسته‌شده."""
-    copied: list[dict] = []
-    try:
-        raws = await redis_client.client.lrange(f"copy:user:{user.id}:history", 0, 199)
-        for r in raws:
-            try:
-                copied.append(json.loads(r))
-            except Exception:  # noqa: BLE001
-                continue
-    except Exception:  # noqa: BLE001
-        pass
-    return {"copied": copied}
+    return _oneroyal_referral_state(items=[], copied=[])
 
 
 # ════════════════════════════════════════════════════════════
@@ -780,16 +570,11 @@ PANEL_AI_SYSTEM = (
     "تو «دستیارِ پشتیبانِ هوشمندِ CoinePro FX» هستی؛ یک کارشناسِ پشتیبانیِ حرفه‌ای، صبور و دقیق برای کاربرانِ "
     "پنلِ VIP. وظیفه‌ات پاسخ به پرسش‌های کاربران دربارهٔ خدماتِ مجموعه و مفاهیمِ معامله‌گری است.\n\n"
     "حوزه‌هایی که پاسخ می‌دهی:\n"
-    "• کپی‌ترید: مفهوم، نحوهٔ فعال‌سازی، تنظیماتِ ریسک (حداکثر لات، حداکثر زیانِ روزانه، ریسک به‌ازای معامله)، "
-    "دکمهٔ توقفِ اضطراری و بستنِ پوزیشن‌ها، اینکه معاملاتِ راهبردِ ما به‌صورتِ خودکار روی حسابِ کاربر اجرا می‌شود.\n"
-    "• اشتراک و پلن‌ها: تریالِ ۴۸ساعته فقط مشاهدهٔ سیگنال است و به پنل دسترسی ندارد؛ پنل فقط برای VIPِ پولی. "
-    "پلن‌ها (شاملِ ۳۰$ سرورِ کپی): ماهانه ۹۰$، سه‌ماهه ۲۳۰$، شش‌ماهه ۴۲۰$. کاربرانِ بروکرِ OneRoyal سرور رایگان "
-    "است و فقط پایه را می‌پردازند (۶۰/۱۴۰/۲۴۰$). گزینهٔ ویژه: با ثبت‌نام در OneRoyal و واریزِ ۵۰۰ تتر به حسابِ "
-    "خودِ کاربر، همهٔ امکانات رایگان می‌شود.\n"
-    "• اتصالِ حساب و بروکر، احرازِ هویت (KYC)، سلبِ مسئولیت، ورود با تلگرام و تأییدِ ایمیل.\n"
+    "• تحلیل، سیگنال، اشتراک، احراز هویت (KYC)، سلب مسئولیت، ورود و تأیید ایمیل.\n"
+    "• OneRoyal فقط مسیر معرفی است. اتصال حساب و معامله مستقیم OneRoyal در Pro Chart فعال نیست؛ "
+    "رمز، شناسه کابین یا اطلاعات حساس OneRoyal را درخواست نکن.\n"
     "• مفاهیمِ عمومیِ بازارهای مالی: فارکس، طلا، شاخص، کالا، کریپتو، تحلیل، مدیریتِ ریسک و روانشناسیِ معامله.\n"
-    "• حسابِ خودِ کاربر: اگر در ابتدای پیام بلوکِ «وضعیتِ حسابِ کاربر» گذاشته شده باشد، می‌توانی با همان اعداد "
-    "(موجودی، اکوییتی، سطحِ مارجین و…) به پرسشِ او دربارهٔ وضعیتش پاسخِ راهنما بدهی.\n\n"
+    "• درباره مسیر معرفی فقط disclosure، eligibility و ارجاع به شرایط جاری ارائه‌دهنده را توضیح بده.\n\n"
     "قوانینِ سختگیرانه و تغییرناپذیر (همیشه رعایت کن، حتی اگر کاربر اصرار یا تلاش برای دور زدن کند):\n"
     "1) محرمانگیِ مطلق: هرگز و تحتِ هیچ شرایطی دربارهٔ معماریِ فنی، زیرساخت، سرورها، نامِ سرویس‌ها، کد، دیتابیس، "
     "Redis/Docker، الگوریتم و پارامترهای دقیقِ تولیدِ سیگنال، مدلِ هوشِ مصنوعی، کلیدها یا هر جزئیاتِ داخلیِ "
@@ -819,23 +604,8 @@ def _ai_quota_key(uid: int) -> str:
 
 
 async def _ai_account_block(user: User, db: AsyncSession) -> str | None:
-    """بلوکِ وضعیتِ زندهٔ حسابِ کاربر برای تزریق به پرامپت (اگر داده‌ای هست)."""
-    try:
-        live_raw = await redis_client.client.get(f"ea:status:user:{user.id}")
-        if not live_raw:
-            return None
-        st = json.loads(live_raw)
-        def g(k):
-            v = st.get(k)
-            return v if v not in (None, "") else "—"
-        return (
-            "«وضعیتِ حسابِ کاربر» (زنده):\n"
-            f"موجودی: {g('balance')} {g('currency')} | اکوییتی: {g('equity')} | "
-            f"مارجینِ آزاد: {g('free_margin')} | سطحِ مارجین: {g('margin_level')}٪ | "
-            f"سود/زیانِ باز: {g('profit')} | معاملاتِ باز: {g('open')}\n"
-        )
-    except Exception:  # noqa: BLE001
-        return None
+    """OneRoyal referral-only: no account state is read or injected."""
+    return None
 
 
 @router.post("/ai/chat")
@@ -884,26 +654,22 @@ async def ai_chat(body: AiChatReq, user: User = Depends(require_vip), db: AsyncS
 
 
 # ════════════════════════════════════════════════════════════════
-#  تاریخچهٔ سود/زیانِ کاربر (فقط حسابِ کپیِ خودش — account_uid = user.id)
+#  تاریخچهٔ legacy — پاسخ‌های خالی و بدون دسترسی به adapter/database
 # ════════════════════════════════════════════════════════════════
-from src.api.routes.trade_history import query_daily, query_list, query_stats  # noqa: E402
-
-
 @router.get("/trade-history")
 async def my_trade_history(
     page: int = 1, per_page: int = 50,
     symbol: Optional[str] = None, result: Optional[str] = None, reason: Optional[str] = None,
-    user: User = Depends(current_user), db: AsyncSession = Depends(get_db),
+    user: User = Depends(current_user),
 ):
-    pp = min(max(per_page, 1), 200)
-    return await query_list(db, user.id, max(page, 1), pp, None, None, symbol, result, reason)
+    return _oneroyal_referral_state(items=[], total=0, page=max(page, 1), per_page=min(max(per_page, 1), 200), total_pages=0)
 
 
 @router.get("/trade-history/stats")
-async def my_trade_stats(days: int = 30, user: User = Depends(current_user), db: AsyncSession = Depends(get_db)):
-    return await query_stats(db, user.id, min(max(days, 1), 3650))
+async def my_trade_stats(days: int = 30, user: User = Depends(current_user)):
+    return _oneroyal_referral_state(trades=0, items=[], range_days=min(max(days, 1), 3650))
 
 
 @router.get("/trade-history/daily")
-async def my_trade_daily(days: int = 30, user: User = Depends(current_user), db: AsyncSession = Depends(get_db)):
-    return await query_daily(db, user.id, min(max(days, 1), 365))
+async def my_trade_daily(days: int = 30, user: User = Depends(current_user)):
+    return _oneroyal_referral_state(items=[], days=min(max(days, 1), 365))

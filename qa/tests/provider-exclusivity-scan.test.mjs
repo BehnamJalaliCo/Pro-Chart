@@ -43,6 +43,23 @@ test('comments do not create provider false positives while product strings rema
   );
 });
 
+test('OneRoyal operational routes and MT5 activation state are blocking findings', () => {
+  const source = [
+    'client.post("/user/account/link", credentials);',
+    'client.post("/user/copy-config", settings);',
+    'client.get("/admin/ea-config");',
+    'const active = account.kind === "mt5";',
+    'const allowed = "OneRoyal فقط مسیر معرفی است";',
+  ].join('\n');
+  const findings = findForbiddenProviders(source, {
+    relativePath: 'src/legacy-controls.jsx',
+    surface: 'source',
+  });
+  assert.equal(findings.length, 4);
+  assert.ok(findings.every(({ category }) => category === 'oneroyal-operational'));
+  assert.ok(findings.every(({ provider }) => provider.startsWith('OneRoyal operational')));
+});
+
 test('source, fixtures, bundles, URLs, and binary asset names are scanned', async () => {
   await withTree({
     'src/App.jsx': 'export const providers = ["LBank", "OneRoyal"]; // Binance is non-shipping\n',

@@ -435,7 +435,8 @@ async def pricing():
             {"key": "premium", "name": "پرمیوم", "price_monthly": settings.ACADEMY_PRICE_PREMIUM_MONTHLY,
              "tagline": "حرفه‌ای + معاملهٔ واقعی",
              "perks": ["همه‌چیزِ VIP", "سیگنال‌های هوشِ مصنوعی — ۵ در روز",
-                       "اتصالِ صرافی (LBank/MT5) + معاملهٔ واقعی", "پشتیبانیِ اولویت‌دار"]},
+                       "اتصال و معاملهٔ واقعی فقط با صرافی LBank",
+                       "OneRoyal فقط مسیر معرفی", "پشتیبانیِ اولویت‌دار"]},
         ],
     }
 

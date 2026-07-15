@@ -43,7 +43,8 @@ logger = get_logger(__name__)
 _AI_QUOTA = {"vip": 2, "premium": 5}
 
 # قابلیت‌های پرمیومِ بازارنما (کاربرِ عادی/free قفل است): اسکریپت‌نویسی، هوشِ مصنوعی،
-# و ترید روی چارت (البنک/وان‌رویال). فعال‌سازی: ثبت‌نام → واریز → تأییدِ مدیر (tier=vip/premium).
+# و ترید روی چارت (LBank). OneRoyal فقط مسیرِ معرفی است.
+# فعال‌سازی: ثبت‌نام → واریز → تأییدِ مدیر (tier=vip/premium).
 _PREMIUM_MSG = "این قابلیت ویژهٔ کاربرانِ پرمیومِ بازارنماست؛ پس از ثبت‌نام، واریز و تأییدِ مدیر فعال می‌شود."
 _VIP_MSG = "این قابلیت با اشتراکِ پرو-چارت (VIP) فعال می‌شود."
 
@@ -119,7 +120,7 @@ async def bn_signals(market: str = "crypto", limit: int = 50,
 
 @router.get("/copytrade/status")
 async def bn_copytrade_status(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    """وضعیتِ کپی‌تریدِ per-user برای هر دو بازار + صلاحیت."""
+    """وضعیتِ کپی‌ترید؛ فارکس همیشه fail-closed و OneRoyal referral-only است."""
     from src.core.database import BnExchangeAccount
     accs = (await db.execute(select(BnExchangeAccount).where(BnExchangeAccount.student_id == st.id))).scalars().all()
     lbank = next((a for a in accs if a.kind == "lbank"), None)
@@ -127,28 +128,18 @@ async def bn_copytrade_status(st: AcademyStudent = Depends(current_student), db:
     now = datetime.now(timezone.utc)
     fx_sub = bool(getattr(st, "forex_copy_until", None) and st.forex_copy_until > now)
     ref_ok = bool(lbank and getattr(lbank, "referral_verified", False))
-    kyc_ok = (getattr(st, "kyc_status", None) == "approved")
-    forex = {"enabled": bool(getattr(st, "copy_forex", False)),
-             "risk_pct": float(getattr(st, "copy_forex_risk", 1.0) or 1.0),
-             "connected": bool(mt5), "subscription": fx_sub, "kyc": bool(kyc_ok),
-             "eligible": bool(mt5 and fx_sub)}
-    if mt5:
-        try:
-            import os as _os, httpx as _httpx
-            base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
-            async with _httpx.AsyncClient(timeout=6.0) as _cx:
-                _r = await _cx.get(base + "/user/copy-svc-status", params={"login": mt5.account_ref},
-                                   headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")})
-                if _r.status_code == 200:
-                    d = _r.json()
-                    if d.get("connected"):
-                        for k in ("master_ok", "dd_paused", "equity", "margin", "margin_free", "positions",
-                                  "risk_mode", "risk_value", "max_lot", "max_open_trades", "copy_sl_tp",
-                                  "max_daily_loss_pct", "symbols"):
-                            if d.get(k) is not None:
-                                forex[k] = d[k]
-        except Exception as _e:  # noqa: BLE001
-            logger.warning("copytrade_status_forex_live_failed", error=str(_e))
+    forex = {
+        "enabled": False,
+        "connected": False,
+        "subscription": False,
+        "eligible": False,
+        "integration_level": "referral_only",
+        "referral_path": "/go/oneroyal",
+        # فقط برای اطلاعِ خودِ کاربر؛ هیچ شناسه یا اتصالِ زنده‌ای بازگردانده نمی‌شود.
+        "legacy_connection_present": bool(mt5),
+        "legacy_subscription_active": fx_sub,
+        "legacy_copy_was_enabled": bool(getattr(st, "copy_forex", False)),
+    }
     return {
         "crypto": {"enabled": bool(getattr(st, "copy_crypto", False)),
                    "risk_pct": float(getattr(st, "copy_crypto_risk", 1.0) or 1.0),
@@ -157,12 +148,22 @@ async def bn_copytrade_status(st: AcademyStudent = Depends(current_student), db:
     }
 
 
-@router.post("/copytrade/{market}")
-async def bn_copytrade_set(market: str, payload: dict = Body(...),
-                           st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    """روشن/خاموشِ کپی‌تریدِ per-user. فارکس=اشتراکِ کپی‌فارکس+MT5؛ کریپتو=LBank+رفرال."""
+@router.post("/copytrade/forex")
+async def bn_copytrade_forex_disabled(st: AcademyStudent = Depends(current_student)):
+    """Bodyless compatibility route: OneRoyal is referral-only."""
+    del st
+    raise HTTPException(status_code=410, detail={
+        "msg": "کپی‌ترید OneRoyal/MT5 در بازارنما ارائه نمی‌شود؛ OneRoyal فقط لینک معرفی است.",
+        "oneroyal_referral_only": True,
+        "referral_path": "/go/oneroyal",
+    })
+
+
+@router.post("/copytrade/crypto")
+async def bn_copytrade_set_crypto(payload: dict = Body(...),
+                                  st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """روشن/خاموش‌کردن کپی‌ترید کریپتو؛ این مسیر هیچ بازار دیگری را نمی‌پذیرد."""
     from src.core.database import BnExchangeAccount
-    market = market if market in ("crypto", "forex") else "crypto"
     enabled = bool(payload.get("enabled"))
     if enabled:
         try:
@@ -179,38 +180,13 @@ async def bn_copytrade_set(market: str, payload: dict = Body(...),
         risk = 1.0
     risk = max(0.1, min(risk, 100.0))
     accs = (await db.execute(select(BnExchangeAccount).where(BnExchangeAccount.student_id == st.id))).scalars().all()
-    now = datetime.now(timezone.utc)
-    if market == "crypto":
-        lbank = next((a for a in accs if a.kind == "lbank"), None)
-        if not (lbank and getattr(lbank, "referral_verified", False)):
-            raise HTTPException(403, {"msg": "کپیِ کریپتو نیازمندِ اتصالِ LBank + تأییدِ رفرال است.", "premium_required": True})
-        st.copy_crypto = enabled; st.copy_crypto_risk = risk
-        await db.commit()
-        return {"ok": True, "market": "crypto", "enabled": enabled, "risk_pct": risk,
-                "note": "ثبت شد؛ اجرا با سیگنال‌های بعدیِ کریپتو"}
-    mt5 = next((a for a in accs if a.kind == "mt5"), None)
-    fx_sub = bool(getattr(st, "forex_copy_until", None) and st.forex_copy_until > now)
-    if not mt5:
-        raise HTTPException(403, {"msg": "کپیِ فارکس نیازمندِ اتصالِ MT5 است.", "premium_required": True})
-    if not fx_sub:
-        raise HTTPException(403, {"msg": "کپیِ فارکس نیازمندِ اشتراکِ کپی‌تریدِ فارکس است.", "premium_required": True})
-    st.copy_forex = enabled; st.copy_forex_risk = risk
+    lbank = next((a for a in accs if a.kind == "lbank"), None)
+    if not (lbank and getattr(lbank, "referral_verified", False)):
+        raise HTTPException(403, {"msg": "کپیِ کریپتو نیازمندِ اتصالِ LBank + تأییدِ رفرال است.", "premium_required": True})
+    st.copy_crypto = enabled; st.copy_crypto_risk = risk
     await db.commit()
-    fwd_ok = False
-    try:
-        import os as _os, httpx as _httpx
-        base = _os.getenv("BN_FOREX_SVC_URL", "http://10.10.1.3:8000")
-        async with _httpx.AsyncClient(timeout=6.0) as cx:
-            _cfg = {"mt5_login": mt5.account_ref, "enabled": enabled, "risk_value": risk}
-            for _k in ("risk_mode", "max_lot", "max_open_trades", "copy_sl_tp", "max_daily_loss_pct"):
-                if payload.get(_k) is not None:
-                    _cfg[_k] = payload.get(_k)
-            r = await cx.post(base + "/user/copy-svc",
-                              headers={"X-Internal-Token": _os.getenv("BN_BRIDGE_TOKEN", "")}, json=_cfg)
-            fwd_ok = (r.status_code == 200)
-    except Exception as e:  # noqa: BLE001
-        logger.warning("bn_copy_forward_failed", error=str(e))
-    return {"ok": True, "market": "forex", "enabled": enabled, "risk_pct": risk, "forwarded": fwd_ok}
+    return {"ok": True, "market": "crypto", "enabled": enabled, "risk_pct": risk,
+            "note": "ثبت شد؛ اجرا با سیگنال‌های بعدیِ کریپتو"}
 
 
 def _now():
@@ -221,15 +197,24 @@ def _now():
 
 @router.get("/referral-link")
 async def referral_link(st: AcademyStudent = Depends(current_student)):
-    """لینکِ رفرالِ مناسبِ نوعِ حساب — کریپتو→LBank، فارکس→وان‌رویال.
-    شرطِ تریدِ واقعی: کاربر باید با همین لینک زیرمجموعهٔ ما ثبت‌نام کند."""
+    """مسیر معرفی داخلی مناسب نوع حساب؛ OneRoyal صرفاً referral-only است."""
     import os as _o
+    from src.api.routes.referrals import (
+        REFERRAL_DISCLOSURE,
+        REFERRAL_ELIGIBILITY,
+        internal_referral_path,
+    )
     at = getattr(st, "account_type", None)
     if at == "broker":
         return {"account_type": "broker", "broker": "OneRoyal",
-                "url": _o.getenv("BN_ONEROYAL_REFERRAL_LINK", "https://www.oneroyal.com")}
+                "url": internal_referral_path("oneroyal"),
+                "integration_level": "referral_only",
+                "disclosure": REFERRAL_DISCLOSURE,
+                "eligibility": REFERRAL_ELIGIBILITY}
     return {"account_type": "crypto", "broker": "LBank",
-            "url": _o.getenv("LBANK_REFERRAL_LINK", "https://www.lbank.com"),
+            "url": internal_referral_path("lbank"),
+            "disclosure": REFERRAL_DISCLOSURE,
+            "eligibility": REFERRAL_ELIGIBILITY,
             "min_deposit": _o.getenv("LBANK_REFERRAL_MIN_DEPOSIT", "")}
 
 
@@ -1072,6 +1057,13 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
                          db: AsyncSession = Depends(get_db)):
     """کاربر هشِ تراکنشِ USDT (BEP-20) را می‌فرستد → تأییدِ خودکار روی BSC →
     ارتقاء به پرمیوم + اطلاع به پشتیبانی. (پلن: monthly=۱۵ USDT/۳۰روز، yearly=۲۰۰/۳۶۵)"""
+    if product == "forex_copy":
+        # پیش از بررسی tx، ثبتِ پرداخت یا تغییرِ اشتراک رد شود.
+        raise HTTPException(status_code=410, detail={
+            "msg": "اشتراک کپی‌ترید OneRoyal/MT5 ارائه نمی‌شود؛ وجهی برای این محصول ارسال نکنید.",
+            "oneroyal_referral_only": True,
+            "referral_path": "/go/oneroyal",
+        })
     from src.core.config import settings
     from src.core.redis_client import redis_client
     from src.api.routes._bsc import verify_usdt_payment
@@ -1081,7 +1073,6 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
         "prochart":        {"monthly": (25.0, 30),  "yearly": (200.0, 365)},
         "academy_vip":     {"monthly": (25.0, 30),  "yearly": (250.0, 365)},
         "academy_premium": {"monthly": (60.0, 30),  "yearly": (600.0, 365)},
-        "forex_copy":      {"monthly": (90.0, 30),  "quarterly": (200.0, 90)},
     }
     product = product if product in _PRODUCT_PRICES else "prochart"
     _plans = _PRODUCT_PRICES[product]
@@ -1116,8 +1107,6 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
         st.tier = "vip"; st.expires_at = until
     elif product == "academy_premium":
         st.tier = "premium"; st.expires_at = until
-    elif product == "forex_copy":
-        st.forex_copy_until = until
     await db.commit()
     await _notify_support(
         "💰 پرداختِ اشتراکِ بازارنما\n"
@@ -1129,13 +1118,23 @@ async def payment_submit(tx_hash: str = Body(..., embed=True),
     return {"ok": True, "product": product, "days": days, "amount": res.get("amount"), "until": until.isoformat()}
 
 
-# ═══════════════ اتصالِ حسابِ واقعیِ کاربر (LBank / MT5) #217 #218 ═══════════════
+# ═══════════════ اتصالِ حسابِ واقعیِ کاربر (LBank) #217 #218 ═══════════════
 @router.get("/connect/status")
 async def connect_status(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
     from src.core.database import BnExchangeAccount
     rows = (await db.execute(select(BnExchangeAccount).where(BnExchangeAccount.student_id == st.id))).scalars().all()
     out = {}
     for a in rows:
+        if a.kind == "mt5":
+            # رکوردِ تاریخی فقط برای اطلاع/امکانِ پاک‌سازی؛ شناسهٔ حساب بازگردانده نمی‌شود.
+            out[a.kind] = {
+                "connected": False,
+                "legacy_record_present": True,
+                "status": "referral_only",
+                "integration_level": "referral_only",
+                "referral_path": "/go/oneroyal",
+            }
+            continue
         out[a.kind] = {"connected": True, "account_ref": a.account_ref, "server": a.server,
                        "referral_verified": a.referral_verified, "status": a.status, "note": a.note}
     return {"accounts": out, "account_type": getattr(st, "account_type", None)}
@@ -1175,27 +1174,13 @@ async def connect_lbank(api_key: str = Body(..., embed=True), api_secret: str = 
 
 
 @router.post("/connect/mt5")
-async def connect_mt5(login: str = Body(..., embed=True), password: str = Body(..., embed=True),
-                      server: str = Body("", embed=True),
-                      st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    """ذخیرهٔ امنِ حسابِ MT5ِ وان‌رویالِ کاربر (Fernet). تریدِ واقعی پس از اتصال + پرمیوم."""
-    _require_premium(st)
-    from src.core.database import BnExchangeAccount
-    from src.core.crypto import encrypt_secret
-    if not (login or "").strip() or not (password or "").strip():
-        raise HTTPException(status_code=400, detail="لاگین و رمزِ MT5 لازم است.")
-    a = (await db.execute(select(BnExchangeAccount).where(
-        BnExchangeAccount.student_id == st.id, BnExchangeAccount.kind == "mt5"))).scalar_one_or_none()
-    if not a:
-        a = BnExchangeAccount(student_id=st.id, kind="mt5"); db.add(a)
-    a.enc_key = encrypt_secret(login.strip())
-    a.enc_secret = encrypt_secret(password.strip())
-    a.account_ref = login.strip()
-    a.server = (server or "").strip() or None
-    a.status = "active"
-    a.note = "ذخیره شد — اتصالِ MT5 پس از دسترسیِ بروکر"
-    await db.commit()
-    return {"ok": True, "kind": "mt5", "account_ref": a.account_ref}
+async def connect_mt5(st: AcademyStudent = Depends(current_student)):
+    """MT5/OneRoyal یک integration محصولی نیست؛ payload این مسیر هرگز پردازش یا ذخیره نمی‌شود."""
+    raise HTTPException(status_code=410, detail={
+        "msg": "اتصال MT5 در بازارنما ارائه نمی‌شود؛ OneRoyal فقط لینک معرفی است.",
+        "oneroyal_referral_only": True,
+        "referral_path": "/go/oneroyal",
+    })
 
 
 @router.delete("/connect/{kind}")
@@ -1214,8 +1199,8 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
                      amount: float = Body(..., embed=True), price: float = Body(0, embed=True),
                      leverage: int = Body(5, embed=True),
                      st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    """سفارشِ واقعی روی حسابِ خودِ کاربر — کریپتو→LBankِ کاربر، فارکس→MT5ِ کاربر.
-    ویژهٔ پرمیومِ متصل. (نه کپی‌ترید — تریدِ مستقیمِ حسابِ کاربر.)"""
+    """سفارشِ واقعی فقط روی حساب LBank خودِ کاربر.
+    OneRoyal referral-only است و هیچ سفارشِ غیرکریپتو وارد DB یا صفِ اجرا نمی‌شود."""
     _require_premium(st)
     try:
         from src.core.redis_client import redis_client as _rc_ks
@@ -1233,89 +1218,55 @@ async def real_order(side: str = Body(..., embed=True), symbol: str = Body(..., 
     sym = (symbol or "").upper()
     await ensure_pairs()
     crypto = is_crypto(sym)
-    kind = "lbank" if crypto else "mt5"
+    if not crypto:
+        raise HTTPException(status_code=403, detail={
+            "msg": "ترید مستقیم OneRoyal/MT5 در بازارنما ارائه نمی‌شود؛ OneRoyal فقط لینک معرفی است.",
+            "oneroyal_referral_only": True,
+            "referral_path": "/go/oneroyal",
+        })
+    kind = "lbank"
     a = (await db.execute(select(BnExchangeAccount).where(
         BnExchangeAccount.student_id == st.id, BnExchangeAccount.kind == kind))).scalar_one_or_none()
     if not a or a.status != "active":
         raise HTTPException(status_code=400, detail={
-            "msg": f"ابتدا حسابِ {'LBank' if crypto else 'MT5'} خود را در پنلِ کاربری وصل کن.",
+            "msg": "ابتدا حساب LBank خود را در پنلِ کاربری وصل کن.",
             "connect_required": True, "kind": kind})
-    if crypto and not a.referral_verified:
+    if not a.referral_verified:
         raise HTTPException(status_code=403, detail={
             "msg": "برای تریدِ واقعی باید با لینکِ رفرالِ ما زیرمجموعه شوی و تأیید شود.",
             "referral_required": True})
-    import os as _os
     from src.core.database import BnOrder
-    if crypto:
-        # موتورِ مستقلِ فیوچرزِ Pro-Chart (مستقیم به LBank با کلیدِ کاربر؛ مستقل از تریدیار)
-        from src.api.routes import crypto_exec
-        from src.core.crypto import decrypt_secret
-        key = decrypt_secret(a.enc_key or "") or ""
-        sec = decrypt_secret(a.enc_secret or "") or ""
-        if not key or not sec:
-            raise HTTPException(status_code=400, detail="کلیدِ API نامعتبر؛ دوباره وصل کن.")
-        order = BnOrder(student_id=st.id, market="crypto", broker="LBank",
-                        account_ref=a.account_ref, symbol=sym, side=side,
-                        amount=float(amount), price=float(price) or None, status="pending")
-        db.add(order)
-        await db.flush()
-        res = await crypto_exec.open_market(key, sec, sym, side, float(amount), int(leverage or 5))
-        if res.get("disabled"):
-            order.status = "failed"; order.error = "crypto_exec_disabled"
-            await db.commit()
-            raise HTTPException(status_code=503, detail={
-                "msg": "اجرای واقعیِ کریپتو در حالِ راه‌اندازیِ نهایی است؛ به‌زودی فعال می‌شود.",
-                "crypto_exec_disabled": True})
-        if res.get("ok"):
-            order.status = "filled"
-            _r = res.get("resp") or {}
-            order.broker_order_id = str(_r.get("orderId") or _r.get("data") or _r.get("clientOrderId") or "")[:64]
-            await db.commit()
-            logger.info("bn_real_order_lbank_futures", sid=st.id, sym=sym, side=side)
-            return {"placed": True, "broker": "LBank", "market": "futures",
-                    "symbol": sym, "side": side, "amount": amount, "leverage": int(leverage or 5)}
-        order.status = "failed"
-        order.error = str(res.get("error") or "")[:255]
-        await db.commit()
-        raise HTTPException(status_code=502, detail=res.get("error", "سفارشِ فیوچرزِ LBank ناموفق بود."))
-
-    # فارکس → MT5ِ خودِ کاربر روی سرورِ اجرا (per-user؛ هرگز روی مَستر).
-    # سفارش در صفِ مستقلِ pro-chart می‌نشیند؛ اجرای زنده با فلگِ BN_FOREX_LIVE + سرورِ اجرا.
-    order = BnOrder(student_id=st.id, market="forex", broker="OneRoyal",
-                    account_ref=a.account_ref, server=a.server, symbol=sym, side=side,
+    # موتورِ مستقلِ فیوچرزِ Pro-Chart (مستقیم به LBank با کلیدِ کاربر؛ مستقل از تریدیار)
+    from src.api.routes import crypto_exec
+    from src.core.crypto import decrypt_secret
+    key = decrypt_secret(a.enc_key or "") or ""
+    sec = decrypt_secret(a.enc_secret or "") or ""
+    if not key or not sec:
+        raise HTTPException(status_code=400, detail="کلیدِ API نامعتبر؛ دوباره وصل کن.")
+    order = BnOrder(student_id=st.id, market="crypto", broker="LBank",
+                    account_ref=a.account_ref, symbol=sym, side=side,
                     amount=float(amount), price=float(price) or None, status="pending")
     db.add(order)
+    await db.flush()
+    res = await crypto_exec.open_market(key, sec, sym, side, float(amount), int(leverage or 5))
+    if res.get("disabled"):
+        order.status = "failed"; order.error = "crypto_exec_disabled"
+        await db.commit()
+        raise HTTPException(status_code=503, detail={
+            "msg": "اجرای واقعیِ کریپتو در حالِ راه‌اندازیِ نهایی است؛ به‌زودی فعال می‌شود.",
+            "crypto_exec_disabled": True})
+    if res.get("ok"):
+        order.status = "filled"
+        _r = res.get("resp") or {}
+        order.broker_order_id = str(_r.get("orderId") or _r.get("data") or _r.get("clientOrderId") or "")[:64]
+        await db.commit()
+        logger.info("bn_real_order_lbank_futures", sid=st.id, sym=sym, side=side)
+        return {"placed": True, "broker": "LBank", "market": "futures",
+                "symbol": sym, "side": side, "amount": amount, "leverage": int(leverage or 5)}
+    order.status = "failed"
+    order.error = str(res.get("error") or "")[:255]
     await db.commit()
-    await db.refresh(order)
-    live = _os.getenv("BN_FOREX_LIVE") == "1"
-    exec_url = _os.getenv("BN_FOREX_EXEC_URL", "").rstrip("/")
-    if live and exec_url:
-        from src.core.crypto import decrypt_secret
-        pwd = decrypt_secret(a.enc_secret or "") or ""
-        try:
-            import httpx
-            async with httpx.AsyncClient(timeout=8.0) as cli:
-                r = await cli.post(
-                    f"{exec_url}/bn-forex-open",
-                    json={"order_id": order.id, "login": a.account_ref, "password": pwd,
-                          "server": a.server, "side": side, "symbol": sym,
-                          "amount": float(amount), "price": float(price) or 0,
-                          "sl": 0, "tp": 0},
-                    headers={"X-Exec-Token": _os.getenv("BN_EXEC_TOKEN", "")},
-                )
-            if r.status_code == 200:
-                order.status = "sent"
-                await db.commit()
-                logger.info("bn_real_order_forex_sent", sid=st.id, sym=sym, side=side, oid=order.id)
-                return {"placed": True, "queued": True, "broker": "OneRoyal", "order_id": order.id,
-                        "status": "sent", "symbol": sym, "side": side, "amount": amount,
-                        "msg": "سفارش به سرورِ اجرای MT5 ارسال شد."}
-        except Exception:  # noqa: BLE001
-            logger.warning("bn_real_order_forex_exec_fail", oid=order.id)
-    # اجرای زنده هنوز فعال نیست → در صف می‌ماند تا پلِ MT5 فعال شود
-    return {"placed": False, "queued": True, "broker": "OneRoyal", "order_id": order.id,
-            "status": "pending",
-            "msg": "سفارشِ فارکس در صفِ اجرا ثبت شد؛ اجرای زندهٔ MT5 پس از فعال‌سازیِ پلِ بروکرِ وان‌رویال انجام می‌شود."}
+    raise HTTPException(status_code=502, detail=res.get("error", "سفارشِ فیوچرزِ LBank ناموفق بود."))
 
 
 # ═══════════ فیدِ دادهٔ زندهٔ فارکس از حسابِ مَسترِ MT5 (اکسپورترِ سرورِ کپی) ═══════════
