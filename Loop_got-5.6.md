@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T09:40:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T10:00:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۹` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۷` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۴۸` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۲`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۳`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1239,6 +1239,15 @@
 - build/deploy: runtime تغییری نکرد؛ لازم نیست.
 - اثر: vhost-aware gating هم suite عمومی را پایدار و هم اجرای مقصدی را الزام‌آور نگه داشت.
 - blocker: Golden/Motion کامل، manual accessibility، full clean Python و provenance/security rotation باز هستند.
+
+### GOV-089 — همگام‌سازی Visual Matrix و Evidence Index
+
+- زمان UTC: `2026-07-16T10:00:00Z`.
+- فایل‌ها: `docs/qa/VISUAL_MATRIX.md` و `docs/qa/EVIDENCE_INDEX.md`.
+- تغییر: capture-only full gate با `VISUAL_RUN_ID=20260716T090000Z` به‌عنوان rerun جدید ثبت شد؛ وضعیت همچنان `DETERMINISTIC_CAPTURE_PASS; GOLDEN_NOT_APPROVED` است و هیچ candidate به Golden تبدیل نشده.
+- شاهد: full Playwright gate برابر `27 passed / 25 skipped`؛ visual targetها `3 passed` و skipها intentional.
+- build/deploy: مستنداتی/QA؛ build و deploy runtime لازم نیست.
+- blocker: approval انسانی Golden، diff threshold مصوب و پوشش کامل Route/State/Theme هنوز باز است.
 
 ## وضعیت فعلی production
 
