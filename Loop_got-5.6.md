@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T06:40:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T07:00:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۳۹` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۴۰` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۳`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۴`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1165,6 +1165,15 @@
 - build/deploy: runtime تغییری نکرد؛ لازم نیست.
 - اثر: مسیرهای فعلی کد و UI clean هستند؛ historical secret scan/rotation و artifact provenance همچنان gate مستقل دارند.
 - blocker: revoke/rotate تاریخی و release provenance نیازمند اقدام/تصمیم بیرونی است؛ visual/motion نیز باز است.
+
+### GOV-081 — همگام‌سازی digest مستندات و DOCX checksum
+
+- زمان UTC: `2026-07-16T07:00:00Z`.
+- فایل: `docs/EXECUTION_STATE.md`؛ digest Panel از مقدار قدیمی به live image `sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd` اصلاح شد.
+- کنترل: `cd docs/source && sha256sum -c SHA256SUMS` برای Master و Requirements هر دو `OK`؛ `docker inspect prochart-admin-frontend` برابر `healthy` و همان digest.
+- build/deploy: تغییر مستنداتی؛ build/deploy لازم نیست.
+- اثر: وضعیت اجرایی و artifactهای DOCX اکنون با runtime live همخوان هستند.
+- blocker: Golden/Motion کامل، historical secret rotation و release provenance همچنان باز هستند.
 
 ## وضعیت فعلی production
 
