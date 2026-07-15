@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T08:40:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T09:20:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۵` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۷۹` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۴۶` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۹`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۱`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1219,6 +1219,17 @@
 - build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
 - اثر: vhost واقعی Panel هم navigation contract و هم CSP boundary را هم‌زمان پاس می‌کند.
 - blocker: visual/motion golden، accessibility manual، historical secret rotation و release provenance باقی است.
+
+### CHG-086 / GOV-087 — vhost-aware full Playwright gate
+
+- زمان UTC: `2026-07-16T09:20:00Z`.
+- فایل‌ها: `qa/tests/panel-navigation.spec.mjs` و `qa/tests/user-referral-compliance.spec.mjs`؛ تست‌های vhost-specific خارج از hostname مقصد به‌صورت صریح skip می‌شوند و اجرای مقصدی با resolver همچنان اجباری است.
+- علت: اجرای suite عمومی روی `https://localhost` نباید به‌عنوان Panel/User vhost تفسیر شود؛ پیش از این دو false failure محیطی ایجاد می‌کردند.
+- فرمان gate: `PROCHART_BASE_URL=https://localhost VISUAL_CAPTURE_ONLY=1 VISUAL_RUN_ID=20260716T090000Z PLAYWRIGHT_IMAGE_DIGEST=sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a npm test -- --reporter=line`.
+- نتیجه: `27 passed / 25 skipped`، retry/flaky=`0`، هر ۵۲ test جمع‌بندی شد؛ visualها capture-only بودند و Golden approval همچنان فعال نشده است.
+- build/deploy: فقط QA تغییر کرد؛ build/deploy runtime لازم نیست.
+- اثر: full harness با پارامترهای attribution و capture صحیح، بدون failure محیطی اجرا شد؛ این نتیجه Release/COMPLETE نیست.
+- blocker: Golden تصویب‌شده صفر، Motion کامل، manual accessibility، full clean Python suite و release provenance/secret rotation باز هستند.
 
 ## وضعیت فعلی production
 
