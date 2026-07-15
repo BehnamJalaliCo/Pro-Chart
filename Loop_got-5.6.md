@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T03:55:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T04:15:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۶` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۳۲` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۳۳` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۴`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۵`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1098,6 +1098,16 @@
 - آزمون/شاهد: اجرای ثبت‌شده در CHG-083 (`2 passed / 2 skipped` عمدی).
 - build/deploy: تغییر مستنداتی است؛ build و deploy لازم نیست.
 - blocker: MOT-001..006/009/010 و تأیید دستی golden همچنان باز است.
+
+### GOV-074 — اجرای کامل A11Y mobile matrix پس از بازتولید hang
+
+- زمان UTC: `2026-07-16T04:15:00Z`.
+- فایل/شاهد: `qa/tests/a11y-matrix.spec.mjs` و `artifacts/qa/a11y-matrix/working-tree/20260716T041000Z/`.
+- فرمان: `PROCHART_BASE_URL=https://localhost A11Y_MATRIX_RUN_ID=20260716T041000Z npm run test:a11y-matrix -- --project=chromium-mobile --reporter=line`.
+- نتیجه: هر پنج state (`chart`, `watchlist`, `ai`, `markets`, `profile`) برابر `5 passed`؛ retry/flaky=`0`، زمان کل `41.5s`. اجرای جداگانه profile نیز `1 passed` بود.
+- build/deploy: تغییر runtime انجام نشد؛ build و deploy لازم نیست.
+- اثر: hang قبلی در این run بازتولید نشد؛ این نتیجه ادعای رفع ریشه‌ای timing را نمی‌دهد و contrast/manual review همچنان مستقل است.
+- blocker: Motion gestureهای اصلی و visual golden approval هنوز باز هستند.
 
 ## وضعیت فعلی production
 
