@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T08:20:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T08:40:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۴` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۴۵` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۸`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۹`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1210,6 +1210,15 @@
 - build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
 - اثر: تنها referralهای مجاز در User Portal live vhost قابل‌مشاهده و gated هستند.
 - blocker: visual/motion golden، manual accessibility، historical secret rotation و release provenance باز هستند.
+
+### GOV-086 — Panel navigation + CSP integration gate
+
+- زمان UTC: `2026-07-16T08:40:00Z`.
+- فرمان‌ها با resolver محلی `panel.pro-chart.com → 127.0.0.1`: `npm run test:panel-navigation -- --reporter=line` و `npm run test:security-headers -- --reporter=line`.
+- نتیجه: Panel legacy aliases/command palette `1 passed` و runtime CSP worker/block probe `1 passed`؛ retry/flaky=`0`.
+- build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
+- اثر: vhost واقعی Panel هم navigation contract و هم CSP boundary را هم‌زمان پاس می‌کند.
+- blocker: visual/motion golden، accessibility manual، historical secret rotation و release provenance باقی است.
 
 ## وضعیت فعلی production
 
