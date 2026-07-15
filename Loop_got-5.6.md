@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T03:05:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T03:25:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۷۴` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۲۹` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۷۵` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۳۰` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۰۹`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۱`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1063,6 +1063,19 @@
 - deploy/smoke: deploy لازم نبود؛ vhost محلی پیش‌تر `200` و container healthy ثبت شده است.
 - commit/rollback: commit بعدی همین increment؛ rollback فقط حذف env/config جدید است.
 - blocker: Visual/Motion golden approval، performance budget مستقل، و secret-history/release-provenance همچنان باز هستند.
+
+### CHG-082 / GOV-071 — اصلاح fixture آزمون CSP بدون unsafe-eval
+
+- زمان UTC: `2026-07-16T03:25:00Z`.
+- فایل‌ها/سرویس: `qa/tests/security-headers.spec.mjs`؛ policy runtime بدون تغییر.
+- شرح دقیق: probe worker از `new Function` به expression ثابت `postMessage(6 * 7)` تغییر کرد؛ آزمون اکنون capability مجاز blob worker را می‌سنجد و با `script-src 'self'` سازگار است.
+- اثر بنیادی: false negative حذف شد بدون تضعیف CSP یا افزودن `unsafe-eval`.
+- build: build محصول لازم نبود؛ تست harness syntax و runtime را پوشش داد.
+- تست‌ها: روی vhost Panel با resolver محلی `security-headers` برابر `1 passed`؛ retry/flaky=`0`.
+- image/fingerprint: runtime image تغییری نکرد؛ policy همان `portal-security-boundary.conf` باقی است.
+- deploy/smoke: deploy لازم نبود؛ edge و health قبلی پایدار.
+- commit/rollback: commit همین increment؛ rollback با برگرداندن fixture ممکن است اما آزمون دوباره false negative می‌شود.
+- blocker: visual/motion matrix، performance budget مستقل و release provenance هنوز تکمیل نشده‌اند.
 
 ## وضعیت فعلی production
 
