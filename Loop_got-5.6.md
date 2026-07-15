@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T11:20:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T11:40:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۹` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۵۲` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۵۳` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۷`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۸`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1284,6 +1284,16 @@
 - build/deploy: artifact validation؛ build/deploy لازم نیست.
 - اثر: علاوه بر hash identity، سلامت فیزیکی بسته‌های DOCX تأیید شد.
 - blocker: تحقق تمام الزام‌های محتوایی/QA مستقل از سلامت ZIP است و هنوز کامل نشده.
+
+### GOV-094 — dependency audit فرانت‌اندهای production
+
+- زمان UTC: `2026-07-16T11:40:00Z`.
+- سرویس‌ها: `frontend/prochart`، `frontend/panel` و `frontend/user`.
+- فرمان: `npm audit --omit=dev --audit-level=high --json` برای هر سه lockfile.
+- نتیجه: هر سه exit=`0` و vulnerabilityهای production در همه سطوح `info/low/moderate/high/critical=0`؛ تعداد dependencyهای production به‌ترتیب ProChart=`47`، Panel=`85` و User=`79`.
+- build/deploy: read-only dependency gate؛ build/deploy لازم نیست.
+- اثر: dependency graph فعلی سه UI production در audit npm finding ندارد؛ SBOM/image scan و artifact signing همچنان gateهای جدا هستند.
+- blocker: scan image/SBOM تاریخی، signing/provenance، Golden/Motion و manual accessibility باز هستند.
 
 ## وضعیت فعلی production
 
