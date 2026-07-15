@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T03:25:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T03:45:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۷۵` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۳۰` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۷۶` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۳۱` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۱`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۳`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1076,6 +1076,19 @@
 - deploy/smoke: deploy لازم نبود؛ edge و health قبلی پایدار.
 - commit/rollback: commit همین increment؛ rollback با برگرداندن fixture ممکن است اما آزمون دوباره false negative می‌شود.
 - blocker: visual/motion matrix، performance budget مستقل و release provenance هنوز تکمیل نشده‌اند.
+
+### CHG-083 / GOV-072 — اجرای reduced-motion برای مسیر onboarding
+
+- زمان UTC: `2026-07-16T03:45:00Z`.
+- فایل‌ها/سرویس: `qa/playwright.config.mjs` و `qa/tests/onboarding-focus.spec.mjs`؛ runtime محصول بدون تغییر.
+- شرح دقیق: گزینهٔ `PLAYWRIGHT_REDUCED_MOTION` به harness اضافه شد و مسیر onboarding با `reduce` اجرا شد تا focus trap، inert background، Escape و restore focus در محیط کم‌حرکت ثبت شود.
+- اثر بنیادی: شواهد قابل‌بازتولید برای MOT-007/MOT-008 و الزامات دسترس‌پذیری تولید شد؛ این شواهد جایگزین کل Motion Matrix نیست.
+- build: build محصول لازم نبود؛ config توسط Playwright load و اجرا شد.
+- تست‌ها: `PROCHART_BASE_URL=https://localhost PLAYWRIGHT_REDUCED_MOTION=reduce npm run test:onboarding-focus -- --reporter=line` برابر `2 passed / 2 skipped` عمدی، retry/flaky=`0`.
+- image/fingerprint: بدون تغییر runtime image.
+- deploy/smoke: deploy لازم نبود؛ live edge `200` و smoke قبلی حفظ شد.
+- commit/rollback: commit همین increment؛ rollback با حذف env/config fallback به `no-preference`.
+- blocker: MOT-001..006/009/010 و golden approval هنوز ثبت‌نشده‌اند؛ performance/release provenance نیز باز است.
 
 ## وضعیت فعلی production
 

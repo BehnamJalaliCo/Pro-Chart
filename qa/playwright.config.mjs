@@ -29,7 +29,7 @@ export default defineConfig({
     locale: 'fa-IR',
     timezoneId: 'UTC',
     colorScheme: 'dark',
-    reducedMotion: 'no-preference',
+    reducedMotion: process.env.PLAYWRIGHT_REDUCED_MOTION || 'no-preference',
     ignoreHTTPSErrors: true,
     serviceWorkers: 'block',
     trace: 'on',
