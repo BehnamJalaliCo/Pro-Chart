@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T02:45:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T03:05:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۷۳` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۲۸` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۷۴` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۲۹` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۰۷`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۰۹`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1050,6 +1050,19 @@
 - rollback: image قبلی `sha256:3bcc9375d0553154cb8eb0e2635caf18cfa70fda3b0a0206b655bf5f5709fb32` برای rollback نگه داشته شد.
 - blocker: اجرای Playwright panel با DNS عمومی Cloudflare به vhost محلی وصل نمی‌شود؛ برای release evidence باید runner با host mapping `panel.pro-chart.com → 127.0.0.1` اجرا شود.
 - commit: `ffc3cf8` (`fix(panel): deploy legacy navigation routes`)، unit navigation `5/5 PASS` پس از commit.
+
+### CHG-081 / GOV-070 — پشتیبانی harness از vhost محلی Panel
+
+- زمان UTC: `2026-07-16T03:05:00Z`.
+- فایل‌ها/سرویس: `qa/playwright.config.mjs` و تست `qa/tests/panel-navigation.spec.mjs`؛ بدون تغییر runtime.
+- شرح دقیق: متغیر `PLAYWRIGHT_HOST_RESOLVER_RULES` به launch configuration اضافه شد تا runner بتواند vhost production را به edge محلی pin کند؛ DNS عمومی یا مسیر تست دور زده نشد.
+- اثر بنیادی: legacy aliasها و command-palette اکنون روی vhost واقعی Panel قابل‌راستی‌آزمایی‌اند.
+- build: build محصول لازم نبود؛ syntax/config load با Playwright اجرا شد.
+- تست‌ها: `PROCHART_BASE_URL=https://panel.pro-chart.com PLAYWRIGHT_HOST_RESOLVER_RULES='MAP panel.pro-chart.com 127.0.0.1' npm run test:panel-navigation -- --reporter=line` برابر `1 passed`؛ retry/flaky=`0`.
+- image/fingerprint: runner با `PANEL_SOURCE_FINGERPRINT=sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd`؛ image production تغییری نکرد.
+- deploy/smoke: deploy لازم نبود؛ vhost محلی پیش‌تر `200` و container healthy ثبت شده است.
+- commit/rollback: commit بعدی همین increment؛ rollback فقط حذف env/config جدید است.
+- blocker: Visual/Motion golden approval، performance budget مستقل، و secret-history/release-provenance همچنان باز هستند.
 
 ## وضعیت فعلی production
 
