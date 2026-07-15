@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T09:20:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T09:40:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۹` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۶` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۴۷` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۱`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۲`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1230,6 +1230,15 @@
 - build/deploy: فقط QA تغییر کرد؛ build/deploy runtime لازم نیست.
 - اثر: full harness با پارامترهای attribution و capture صحیح، بدون failure محیطی اجرا شد؛ این نتیجه Release/COMPLETE نیست.
 - blocker: Golden تصویب‌شده صفر، Motion کامل، manual accessibility، full clean Python suite و release provenance/secret rotation باز هستند.
+
+### GOV-088 — مقصد واقعی Panel و User پس از vhost-aware تغییر
+
+- زمان UTC: `2026-07-16T09:40:00Z`.
+- فرمان‌ها: Panel با `PROCHART_BASE_URL=https://panel.pro-chart.com` و resolver محلی، `npm run test:panel-navigation`؛ User با `PROCHART_BASE_URL=https://user.pro-chart.com` و resolver محلی، تست referral.
+- نتیجه: Panel `1 passed`؛ User Portal `4 passed` (desktop/mobile و LBank/OneRoyal)؛ skip خارج از مقصد باعث تضعیف این اجرا نشد.
+- build/deploy: runtime تغییری نکرد؛ لازم نیست.
+- اثر: vhost-aware gating هم suite عمومی را پایدار و هم اجرای مقصدی را الزام‌آور نگه داشت.
+- blocker: Golden/Motion کامل، manual accessibility، full clean Python و provenance/security rotation باز هستند.
 
 ## وضعیت فعلی production
 
