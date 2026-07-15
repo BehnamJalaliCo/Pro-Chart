@@ -1,0 +1,27 @@
+{
+  "name": "prochart-quality-harness",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:baseline": "playwright test tests/baseline.spec.mjs",
+    "test:baseline:desktop": "playwright test tests/baseline.spec.mjs --project=chromium-desktop",
+    "test:baseline:mobile": "playwright test tests/baseline.spec.mjs --project=chromium-mobile",
+    "test:visual-reference": "playwright test tests/visual-reference.spec.mjs",
+    "test:performance": "playwright test tests/performance-baseline.spec.mjs",
+    "test:quote-commit": "playwright test tests/chart-quote-commit.spec.mjs --project=chromium-desktop",
+    "test:a11y-states": "playwright test tests/a11y-states.spec.mjs --project=chromium-mobile",
+    "test:a11y-matrix": "playwright test tests/a11y-matrix.spec.mjs --project=chromium-mobile",
+    "test:onboarding-focus": "playwright test tests/onboarding-focus.spec.mjs",
+    "test:watchlist": "playwright test tests/watchlist-interactions.spec.mjs --project=chromium-desktop",
+    "test:motion-chart": "playwright test tests/motion-chart.spec.mjs",
+    "test:panel-navigation": "playwright test tests/panel-navigation.spec.mjs --project=chromium-desktop",
+    "test:referral-compliance": "playwright test tests/referral-compliance.spec.mjs",
+    "test:security-headers": "playwright test tests/security-headers.spec.mjs --project=chromium-desktop"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@playwright/test": "1.61.0"
+  }
+}

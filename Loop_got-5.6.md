@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T04:15:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T04:40:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۷۶` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۳۳` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۷۷` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۳۴` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۵`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۱۷`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1108,6 +1108,18 @@
 - build/deploy: تغییر runtime انجام نشد؛ build و deploy لازم نیست.
 - اثر: hang قبلی در این run بازتولید نشد؛ این نتیجه ادعای رفع ریشه‌ای timing را نمی‌دهد و contrast/manual review همچنان مستقل است.
 - blocker: Motion gestureهای اصلی و visual golden approval هنوز باز هستند.
+
+### CHG-084 / GOV-075 — آزمون wheel چارت و عدم تداخل scroll
+
+- زمان UTC: `2026-07-16T04:40:00Z`.
+- فایل‌ها: `qa/tests/motion-chart.spec.mjs`، `qa/package.json`؛ runtime محصول بدون تغییر.
+- شرح: تست desktop با fixture واقعی، canvas chart را load می‌کند، wheel `deltaY=240` را روی ناحیه چارت اعمال می‌کند، event trace می‌گیرد و ثابت می‌کند URL و `scrollX/scrollY` تغییر نکرده‌اند.
+- build: build محصول لازم نبود؛ Playwright harness اجرا شد.
+- تست: `PROCHART_BASE_URL=https://localhost npm run test:motion-chart -- --reporter=line` برابر `1 passed / 1 skipped` عمدی؛ retry/flaky=`0`.
+- deploy/smoke: deploy لازم نیست؛ edge smoke موجود حفظ شد.
+- اثر: MOT-002 اکنون شواهد رفتاری اولیه دارد؛ anchor geometry/zoom scale هنوز باید تکمیل شود.
+- commit/rollback: commit همین increment؛ rollback حذف test/script.
+- blocker: MOT-001/003/004/005/006/009/010 و golden approval باز هستند.
 
 ## وضعیت فعلی production
 
