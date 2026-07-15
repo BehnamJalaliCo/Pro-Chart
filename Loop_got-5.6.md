@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T12:00:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T12:30:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۸۰` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۵۴` بستهٔ بنیادیِ حاکمیت/شواهد؛
-- `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۴۰`؛
+- `۸۱` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۵۵` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۷` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۴۳`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1306,10 +1306,23 @@
 - اثر: MOT-008 اکنون evidence فنی `duration≤0.01ms`، `iteration≤1` و `scroll=auto` دارد؛ Matrix بدون ادعای پوشش همه gestureها همچنان PARTIAL است.
 - rollback: حذف test/assertion و بازگرداندن سطر Matrix؛ blockerهای MOT-001/003/004/005/006/009/010 و Golden approval باقی است.
 
+### CHG-088 / GOV-096 / DEPLOY-007 — اصلاح زمان motion آنبوردینگ به 240ms
+
+- زمان UTC: `2026-07-16T12:30:00Z`.
+- فایل‌ها/سرویس: `frontend/prochart/src/index.css`، `qa/tests/onboarding-focus.spec.mjs`، `docs/qa/MOTION_MATRIX.md` و سرویس `frontend-prochart`.
+- بازتولید: assertion جدید بازهٔ سند `200–280ms` را سنجید و روی production قبلی با مقدار واقعی `340ms` شکست خورد (`1 failed / 1 skipped`).
+- تغییر بنیادی: duration کلاس مشترک `.pc-screen-in` از `340ms` به `240ms` کاهش یافت؛ focus trap، inert background و restore behavior دست‌نخورده ماند.
+- build: `docker compose -f docker-compose.prochart.yml build frontend-prochart` موفق؛ Vite `1786 modules`، image جدید `sha256:15caec11c79251276b4d429bf772589a4b6c78b63df5d7fdd64ca54e86726443`؛ هشدار bundle بزرگ همچنان ثبت‌شده و پنهان نشد.
+- تست‌ها پس از deploy: onboarding mobile `1 passed / 1 skipped` عمدی؛ motion suite `3 passed / 1 skipped` عمدی؛ visual capture-only `3 passed / 3 skipped` عمدی با run=`20260716T123000Z`؛ retry/flaky=`0`.
+- deploy production: `docker compose ... up -d --no-build frontend-prochart` موفق؛ کانتینر recreate/start شد.
+- smoke/health: `frontend-prochart` برابر `healthy`، restart=`0` و `https://localhost/` برابر `200`.
+- rollback: image قبلی `sha256:20e2ad31c1280f44850530a7ac12456f4817da8f163fdd230defe0436f7fa3ec` نگه داشته شد؛ rollback با retag/recreate همان image ممکن است.
+- blocker: MOT-007 فقط برای onboarding اندازه‌گیری شده و سایر Dialog/Sheetها pending؛ MOT-001/003/004/005/006/009/010، Golden approval و bundle budget باز هستند.
+
 ## وضعیت فعلی production
 
 - API و چهار worker Python: image `sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e`، همگی non-root/running، restart=`0` و smoke پاس.
-- Frontend ProChart/edge: image `sha256:20e2ad31c1280f44850530a7ac12456f4817da8f163fdd230defe0436f7fa3ec`، Nginx `1.30.3`، healthy و browser/performance smoke پاس.
+- Frontend ProChart/edge: image `sha256:15caec11c79251276b4d429bf772589a4b6c78b63df5d7fdd64ca54e86726443`، Nginx `1.30.3`، healthy و onboarding/motion smoke پاس.
 - User Portal: image `sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216`، referral-gated، healthy و browser `4/4 PASS`.
 - Panel: image `sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd`، healthy، hash برابر build؛ panel browser gate به‌دلیل DNS عمومی هنوز قابل‌اجرا نیست.
 - Edge پرتال‌ها: Panel و User هر دو دقیقاً هفت security header و CSP محدود live دارند؛ دو referral redirect ثابت روی origin و public پاس هستند.

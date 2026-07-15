@@ -20,7 +20,7 @@ Candidate فعلی به commit مبنا محدود نیست: فایل‌های t
 ## وضعیت پس از rollout referral-only و runtime supply
 
 - API و چهار worker Python: image=`sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e`، user=`1000:1000`، restart=`0`.
-- Main edge: image=`sha256:20e2ad31c1280f44850530a7ac12456f4817da8f163fdd230defe0436f7fa3ec`؛ User Portal=`sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216`؛ Panel=`sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd`.
+- Main edge: image=`sha256:15caec11c79251276b4d429bf772589a4b6c78b63df5d7fdd64ca54e86726443`؛ User Portal=`sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216`؛ Panel=`sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd`.
 - همهٔ `۱۱` سرویس compose running؛ API/Main/User/Panel و زیرساخت healthcheckها healthy؛ هشت کانتینر rolloutشده critical-log-pattern=`0`.
 - User/Panel هرکدام هفت security header؛ `/go/lbank` و `/go/oneroyal` روی origin و public مقصد ثابت و status=`302` دارند؛ browser production=`۹/۹ PASS` و performance measured=`۶/۶ PASS`.
 - شواهد canonical: `artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/`؛ checksum=`PASS` و rollback=`NO`.
