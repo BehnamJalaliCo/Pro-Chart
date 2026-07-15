@@ -26,6 +26,14 @@ function isTypingTarget(el) {
   return false;
 }
 
+// Space روی کنترلِ فوکوس‌پذیر متعلق به همان کنترل است، نه میان‌بُر Replay.
+// target ممکن است فرزند SVG/Span دکمه باشد، پس closest لازم است.
+function ownsNativeSpaceActivation(el, event) {
+  if (!el || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return false;
+  if (!(event.key === ' ' || event.code === 'Space')) return false;
+  return Boolean(el.closest && el.closest('button, [role="button"], summary, a[href]'));
+}
+
 // نمایشِ خوانا برای دیالوگِ راهنما (مثلِ «Alt+T» یا «⌥T»)
 function fmtKey(combo) {
   if (isMac) {
@@ -102,10 +110,12 @@ export const SHORTCUTS = [
   { id: 'typeHeikin',  group: 'نوعِ چارت', combo: 'Alt+5', label: 'هایکین‌آشی',  match: (e) => altOnly(e) && (e.code === 'Digit5' || e.key === '5') },
 
   // ── ناوبری / زوم ──
-  { id: 'scrollLeft',  group: 'ناوبری', combo: '←', label: 'اسکرول به چپ',   match: (e) => noMods(e) && k(e) === 'arrowleft' },
-  { id: 'scrollRight', group: 'ناوبری', combo: '→', label: 'اسکرول به راست', match: (e) => noMods(e) && k(e) === 'arrowright' },
-  { id: 'zoomIn',  group: 'ناوبری', combo: '↑ / +', label: 'بزرگ‌نمایی', match: (e) => noMods(e) && (k(e) === 'arrowup' || e.key === '+' || e.key === '=') },
-  { id: 'zoomOut', group: 'ناوبری', combo: '↓ / −', label: 'کوچک‌نمایی', match: (e) => noMods(e) && (k(e) === 'arrowdown' || e.key === '-' || e.key === '_') },
+  { id: 'scrollLeft',  group: 'ناوبری', combo: '←', label: 'حرکت ترسیم / اسکرول به چپ',   match: (e) => noMods(e) && k(e) === 'arrowleft' },
+  { id: 'scrollRight', group: 'ناوبری', combo: '→', label: 'حرکت ترسیم / اسکرول به راست', match: (e) => noMods(e) && k(e) === 'arrowright' },
+  { id: 'zoomIn',  group: 'ناوبری', combo: '↑ / +', label: 'حرکت ترسیم / بزرگ‌نمایی', match: (e) => noMods(e) && (k(e) === 'arrowup' || e.key === '+' || e.key === '=') },
+  { id: 'zoomOut', group: 'ناوبری', combo: '↓ / −', label: 'حرکت ترسیم / کوچک‌نمایی', match: (e) => noMods(e) && (k(e) === 'arrowdown' || e.key === '-' || e.key === '_') },
+  { id: 'nudgeUpFast', group: 'ناوبری', combo: 'Shift+↑', label: 'حرکت سریع ترسیم به بالا', match: (e) => shiftOnly(e) && k(e) === 'arrowup' },
+  { id: 'nudgeDownFast', group: 'ناوبری', combo: 'Shift+↓', label: 'حرکت سریع ترسیم به پایین', match: (e) => shiftOnly(e) && k(e) === 'arrowdown' },
   { id: 'scrollEnd',  group: 'ناوبری', combo: 'End',  label: 'پرش به جدیدترین', match: (e) => noMods(e) && k(e) === 'end' },
   { id: 'scrollHome', group: 'ناوبری', combo: 'Home', label: 'پرش به قدیمی‌ترین', match: (e) => noMods(e) && k(e) === 'home' },
   { id: 'fit',        group: 'ناوبری', combo: 'Ctrl+Alt+0', label: 'هم‌اندازه‌سازیِ چارت', match: (e) => ctrlAlt(e) && (e.code === 'Digit0' || e.key === '0') },
@@ -124,7 +134,6 @@ export const SHORTCUTS = [
   // ── چیدمان / چند-چارت ──
   { id: 'saveLayout', group: 'چیدمان', combo: 'Ctrl+S', label: 'ذخیرهٔ چیدمان', allowInInput: true, match: (e) => ctrlOnly(e) && k(e) === 's' },
   { id: 'cycleGrid',  group: 'چیدمان', combo: 'Ctrl+Alt+G', label: 'تعویضِ چیدمانِ شبکه', match: (e) => ctrlAlt(e) && k(e) === 'g' },
-  { id: 'nextCell',   group: 'چیدمان', combo: 'Tab', label: 'سلولِ بعدی (چند-چارت)', match: (e) => noMods(e) && k(e) === 'tab' },
 
   // ── ترید / آلارم ──
   { id: 'newAlert', group: 'ترید', combo: 'Alt+A', label: 'آلارمِ جدید روی قیمتِ نشانگر', match: (e) => altOnly(e) && k(e) === 'a' },
@@ -134,8 +143,8 @@ export const SHORTCUTS = [
   // ── بازپخش (Bar Replay) ──
   { id: 'replayToggle', group: 'بازپخش', combo: 'Ctrl+Alt+P', label: 'ورود/خروجِ بازپخش', match: (e) => ctrlAlt(e) && k(e) === 'p' },
   { id: 'replayPlay',   group: 'بازپخش', combo: 'Space', label: 'پخش/مکث', match: (e) => noMods(e) && (e.key === ' ' || e.code === 'Space') },
-  { id: 'replayStep',    group: 'بازپخش', combo: 'Shift+→', label: 'گامِ بعدیِ بازپخش', match: (e) => shiftOnly(e) && k(e) === 'arrowright' },
-  { id: 'replayStepBack', group: 'بازپخش', combo: 'Shift+←', label: 'گامِ قبلیِ بازپخش', match: (e) => shiftOnly(e) && k(e) === 'arrowleft' },
+  { id: 'replayStep',    group: 'بازپخش', combo: 'Shift+→', label: 'حرکت سریع ترسیم / گام بعدی بازپخش', match: (e) => shiftOnly(e) && k(e) === 'arrowright' },
+  { id: 'replayStepBack', group: 'بازپخش', combo: 'Shift+←', label: 'حرکت سریع ترسیم / گام قبلی بازپخش', match: (e) => shiftOnly(e) && k(e) === 'arrowleft' },
 
   // ── اسکریپت ──
   { id: 'screenshot', group: 'دیگر', combo: 'S', label: 'اسکرین‌شاتِ چارت', match: (e) => noMods(e) && k(e) === 's' },
@@ -175,7 +184,9 @@ export function attachHotkeys(handlers, opts = {}) {
 
   const onKeyDown = (e) => {
     if (!isEnabled()) return;
-    const typing = isTypingTarget(e.target || document.activeElement);
+    const eventTarget = e.target || document.activeElement;
+    if (ownsNativeSpaceActivation(eventTarget, e)) return;
+    const typing = isTypingTarget(eventTarget);
     for (const s of SHORTCUTS) {
       const fn = handlers[s.id];
       if (!fn) continue;

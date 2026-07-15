@@ -219,6 +219,7 @@ export default function BazaarNama() {
   const auxSeriesRef = useRef([]); // سری‌های فرعیِ انواعِ چندسری (HLC Area / Kagi yang-yin / P&F)
   const volSeriesRef = useRef(null); // سریِ حجمِ هیستوگرام پایینِ چارت (overlay، مثلِ TradingView)
   const drawRef = useRef(null);
+  const drawClipRef = useRef(null);
   const overlaySeries = useRef({});
   const subChartsRef = useRef({});
   const scriptSeries = useRef([]);
@@ -1347,7 +1348,12 @@ export default function BazaarNama() {
   };
   const loadExample = (ex) => { setCode(ex.code); setScriptName(ex.name); setScInputs({}); setScInputDecls([]); };
 
-  const onSaveScript = async () => { try { const r = await api.bnScriptSave({ name: scriptName, source: code }); setScripts((s) => [{ id: r.id, name: scriptName }, ...s.filter((x) => x.id !== r.id)]); } catch (e) {} };
+  const onSaveScript = useCallback(async () => {
+    try {
+      const r = await api.bnScriptSave({ name: scriptName, source: code });
+      setScripts((s) => [{ id: r.id, name: scriptName }, ...s.filter((x) => x.id !== r.id)]);
+    } catch (e) { /* graceful */ }
+  }, [scriptName, code]);
   const loadScript = async (id) => { try { const r = await api.bnScriptGet(id); setCode(r.source || ''); setScriptName(r.name || 'اسکریپت'); } catch (e) {} };
 
   const addInd = (key) => { const def = REGISTRY[key]; const item = { id: uid(), key, inputs: { ...def.inputs }, color: def.color }; if (def.pane === 'main') setOverlays((o) => [...o, item]); else setSubs((s) => [...s, item]); setIndMenu(false); };
@@ -1419,11 +1425,20 @@ export default function BazaarNama() {
     if (!ok && blob) downloadBlob(blob, `${cap.name}.png`);
   }, [getCapture]);
 
+  // Arrowها یک مالک دارند: اگر ترسیمی انتخاب شده باشد همان را حرکت می‌دهند؛
+  // وگرنه handler مربوط، Pan/Zoom یا Replay را انجام می‌دهد.
+  const nudgeDrawing = useCallback((key, large = false) => {
+    const dl = drawRef.current;
+    if (!dl || !dl.nudgeSelected(key, large)) return false;
+    treeRefresh();
+    return true;
+  }, [treeRefresh]);
+
   // ── لایهٔ میان‌بُرهای صفحه‌کلید (فصل ۱۰) — فقط هندلرهایی که از قبل وجود دارند نگاشت می‌شوند ──
   useEffect(() => {
     const detach = attachHotkeys({
       // ابزارها
-      cursor: () => setTool('cursor'),
+      cursor: () => { setTool('cursor'); if (drawRef.current) drawRef.current.cancelInteraction(); treeRefresh(); },
       trend: () => setTool('trend'), hline: () => setTool('hline'), vline: () => setTool('vline'),
       ray: () => setTool('ray'), rect: () => setTool('rect'), fib: () => setTool('fib'),
       channel: () => setTool('channel'), text: () => setTool('text'), longshort: () => setTool('longshort'),
@@ -1431,7 +1446,11 @@ export default function BazaarNama() {
       // ویرایش
       undo: () => { drawRef.current && drawRef.current.undo(); treeRefresh(); },
       redo: () => { drawRef.current && drawRef.current.redo(); treeRefresh(); },
-      deleteSel: () => { if (selDraw >= 0 && drawRef.current) { drawRef.current.removeAt(selDraw); treeRefresh(); } },
+      deleteSel: () => { if (drawRef.current) { drawRef.current.removeSelected(); treeRefresh(); } },
+      cloneSel: () => { if (selDraw >= 0 && drawRef.current) { drawRef.current.clone(selDraw); treeRefresh(); } },
+      selectAll: () => { if (drawRef.current) { drawRef.current.selectAll(); treeRefresh(); } },
+      copySel: () => { if (selDraw >= 0 && drawRef.current) { const copy = drawRef.current.copy(selDraw); if (copy) drawClipRef.current = copy; } },
+      pasteSel: () => { if (drawClipRef.current && drawRef.current) { drawRef.current.paste(drawClipRef.current); treeRefresh(); } },
       clearChart: () => clearScreen(),
       removeAll: () => { drawRef.current && drawRef.current.clearAll(); treeRefresh(); },
       lockSel: () => { if (selDraw >= 0 && drawRef.current) { drawRef.current.toggleLock(selDraw); treeRefresh(); } },
@@ -1444,12 +1463,14 @@ export default function BazaarNama() {
       typeCandles: () => setChartType('candles'), typeBars: () => setChartType('bars'),
       typeLine: () => setChartType('line'), typeArea: () => setChartType('area'), typeHeikin: () => setChartType('heikin'),
       // ناوبری / مقیاس
-      scrollLeft: () => { try { const ts = chartRef.current.timeScale(); ts.scrollToPosition(ts.scrollPosition() - 5, false); } catch (e) {} },
-      scrollRight: () => { try { const ts = chartRef.current.timeScale(); ts.scrollToPosition(ts.scrollPosition() + 5, false); } catch (e) {} },
+      scrollLeft: () => { if (nudgeDrawing('ArrowLeft')) return; try { const ts = chartRef.current.timeScale(); ts.scrollToPosition(ts.scrollPosition() - 5, false); } catch (e) {} },
+      scrollRight: () => { if (nudgeDrawing('ArrowRight')) return; try { const ts = chartRef.current.timeScale(); ts.scrollToPosition(ts.scrollPosition() + 5, false); } catch (e) {} },
       scrollEnd: () => { try { chartRef.current.timeScale().scrollToRealTime(); } catch (e) {} },
       scrollHome: () => { try { chartRef.current.timeScale().scrollToPosition(-1e6, false); } catch (e) {} },
-      zoomIn: () => { try { const ts = chartRef.current.timeScale(); const bs = (ts.options().barSpacing || 8); ts.applyOptions({ barSpacing: Math.min(60, bs * 1.25) }); } catch (e) {} },
-      zoomOut: () => { try { const ts = chartRef.current.timeScale(); const bs = (ts.options().barSpacing || 8); ts.applyOptions({ barSpacing: Math.max(1.5, bs * 0.8) }); } catch (e) {} },
+      zoomIn: (e) => { if (e.key === 'ArrowUp' && nudgeDrawing('ArrowUp')) return; try { const ts = chartRef.current.timeScale(); const bs = (ts.options().barSpacing || 8); ts.applyOptions({ barSpacing: Math.min(60, bs * 1.25) }); } catch (err) {} },
+      zoomOut: (e) => { if (e.key === 'ArrowDown' && nudgeDrawing('ArrowDown')) return; try { const ts = chartRef.current.timeScale(); const bs = (ts.options().barSpacing || 8); ts.applyOptions({ barSpacing: Math.max(1.5, bs * 0.8) }); } catch (err) {} },
+      nudgeUpFast: () => { nudgeDrawing('ArrowUp', true); },
+      nudgeDownFast: () => { nudgeDrawing('ArrowDown', true); },
       fit: () => { try { chartRef.current.timeScale().fitContent(); } catch (e) {} },
       resetScale: () => { try { chartRef.current.priceScale('right').applyOptions({ autoScale: true }); setScaleLocked(false); } catch (e) {} },
       invertScale: () => setScaleInvert((v) => !v),
@@ -1458,21 +1479,25 @@ export default function BazaarNama() {
       fullscreen: () => { try { if (document.fullscreenElement) document.exitFullscreen(); else rootRef.current && rootRef.current.requestFullscreen(); } catch (e) {} },
       toggleTheme: () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')),
       indicators: () => setIndDlg(true),
+      symbolSearch: () => setSymModal(true),
       settings: () => setChartSettingsOpen(true),
       newAlert: () => { setRightTab('alerts'); setShowRight(true); },
       help: () => setShowShortcuts((v) => !v),
       screenshot: () => quickScreenshot(),
+      saveScript: () => { if (editorOpen) onSaveScript(); },
       // چیدمان
       saveLayout: () => saveLayout(),
       cycleGrid: () => setGrid((g) => (g === 1 ? 2 : g === 2 ? 4 : 1)),
       // ترید / بازپخش
       buy: () => quickTrade('buy'), sell: () => quickTrade('sell'),
       replayToggle: () => (replay.on ? exitReplay() : enterReplay()),
-      replayStep: () => replayStep(),
+      replayStep: () => { if (!nudgeDrawing('ArrowRight', true)) replayStep(); },
+      replayPlay: () => replayToggle(),
+      replayStepBack: () => { if (!nudgeDrawing('ArrowLeft', true)) replayStepBack(); },
     }, { target: window });
     return detach;
     // eslint-disable-next-line
-  }, [selDraw, replay.on, treeRefresh, replayStep, quickScreenshot]);
+  }, [selDraw, replay.on, treeRefresh, replayStep, replayStepBack, replayToggle, quickScreenshot, nudgeDrawing, editorOpen, onSaveScript]);
 
   // جمع‌کردنِ پنلِ کناری هنگامِ ورود به چیدمانِ فشرده (تبلت/گوشی) — افزایشی و کم‌ریسک
   // (در حالتِ فشرده پنل به overlay تبدیل می‌شود؛ بسته‌نگه‌داشتنِ پیش‌فرض جلوی پوششِ چارت را می‌گیرد)
@@ -1485,19 +1510,6 @@ export default function BazaarNama() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [showShortcuts, editInd]);
-
-  // #7 میان‌بُرِ سراسری: Ctrl/⌘+K → مدالِ جستجوی نماد (مثلِ TradingView).
-  //   نکته: «/» عمداً حذف شد — در hotkeys.js به «بازکردنِ اندیکاتورها» اختصاص دارد (طبقِ راهنمای میان‌بُرها)؛
-  //   داشتنِ هر دو باعث می‌شد «/» هم دیالوگِ اندیکاتور و هم مدالِ جستجو را باز کند (تداخل).
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault(); setSymModal(true);
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
 
   // §۱۶ منوها: بستن با کلیکِ بیرون یا Escape (رفتارِ استانداردِ Dropdown)
   useEffect(() => {

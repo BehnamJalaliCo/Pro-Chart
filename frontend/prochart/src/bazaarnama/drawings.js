@@ -63,6 +63,29 @@ export class DrawingLayer {
   // ── API برای Object Tree / نوارِ استایل ──
   selectAt(i) { this.selected = (i >= 0 && i < this.drawings.length) ? i : -1; this.render(); this.onSelect && this.onSelect(this.selected); }
   getSelected() { return this.selected >= 0 ? this.drawings[this.selected] : null; }
+  // فرمان‌های صفحه‌کلید فقط از dispatcher سراسری BazaarNama وارد می‌شوند. این دو
+  // متد رفتارهای داخلی Canvas را بدون نصب keydown دوم در اختیار آن dispatcher می‌گذارند.
+  cancelInteraction() {
+    this.selected = -1; this.multiSel = new Set(); this.marquee = null;
+    this.pending = null; this.tmp = null; this.twoClick = false;
+    this.dragging = false; this.measuring = false;
+    this.render(); this.onSelect && this.onSelect(-1);
+  }
+  nudgeSelected(key, large = false) {
+    if (this.selected < 0) return false;
+    const d = this.drawings[this.selected]; if (!d || d.locked) return false;
+    const h = this._handlePoints(d).find((p) => p.x != null && p.y != null); if (!h) return false;
+    const step = large ? 8 : 1;
+    let dt = 0, dp = 0;
+    if (key === 'ArrowUp') dp = this._p(h.y - step) - this._p(h.y);
+    else if (key === 'ArrowDown') dp = this._p(h.y + step) - this._p(h.y);
+    else if (key === 'ArrowLeft') dt = this._t(h.x - step) - this._t(h.x);
+    else if (key === 'ArrowRight') dt = this._t(h.x + step) - this._t(h.x);
+    else return false;
+    if (!Number.isFinite(dt) || !Number.isFinite(dp) || (!dt && !dp)) return false;
+    this._pushUndo(); this._moveBy(d, dt, dp); this._changed();
+    return true;
+  }
   // انتخابِ همهٔ ترسیم‌های قفل‌نشده (Ctrl+Aِ TV) — به multiSel می‌ریزد تا move/delete/styleِ گروهی کار کند.
   selectAll() {
     this.multiSel = new Set();
@@ -437,26 +460,7 @@ export class DrawingLayer {
     const key = (e) => {
       const tag = e.target && e.target.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
-      if ((e.key === 'Delete' || e.key === 'Backspace') && (this.multiSel.size > 0 || this.selected >= 0)) { if (this.multiSel.size > 0) this.removeSelected(); else this.removeAt(this.selected); return; }
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd' && this.selected >= 0) { e.preventDefault(); this.clone(this.selected); return; }
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); this.undo(); return; }
-      if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); this.redo(); return; }
       if (e.key === 'Enter' && this.pending && (this.pending.type === 'polyline' || this.pending.type === 'path')) { e.preventDefault(); this._finishPoly && this._finishPoly(); return; }
-      // جابه‌جاییِ ظریفِ ترسیمِ انتخاب‌شده با کلیدهای جهت (سبکِ TV): بالا/پایین=قیمت، چپ/راست=زمان؛ Shift=گامِ بزرگ‌تر.
-      if (this.selected >= 0 && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-        const d = this.drawings[this.selected]; if (!d || d.locked) return;
-        const h = this._handlePoints(d).find((p) => p.x != null && p.y != null); if (!h) return;
-        e.preventDefault();
-        const step = e.shiftKey ? 8 : 1;
-        let dt = 0, dp = 0;
-        if (e.key === 'ArrowUp') dp = this._p(h.y - step) - this._p(h.y);
-        else if (e.key === 'ArrowDown') dp = this._p(h.y + step) - this._p(h.y);
-        else if (e.key === 'ArrowLeft') dt = this._t(h.x - step) - this._t(h.x);
-        else if (e.key === 'ArrowRight') dt = this._t(h.x + step) - this._t(h.x);
-        if (Number.isFinite(dt) && Number.isFinite(dp) && (dt || dp)) { this._pushUndo(); this._moveBy(d, dt, dp); this.render(); this._changed(); }
-        return;
-      }
-      if (e.key === 'Escape') { this.selected = -1; this.multiSel = new Set(); this.marquee = null; this.pending = null; this.tmp = null; this.twoClick = false; this.dragging = false; this.measuring = false; this.render(); this.onSelect && this.onSelect(-1); }
     };
     // پایان‌دادنِ خطِ چندتکه (دابل‌کلیک یا Enter). دابل‌کلیک دو mousedown می‌زند ⇒ رأسِ تکراریِ انتهایی حذف می‌شود.
     const finishPoly = () => {
