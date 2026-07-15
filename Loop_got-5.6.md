@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T07:40:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T08:00:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۲` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۴۳` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۶`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۷`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1192,6 +1192,15 @@
 - build/deploy: تغییر runtime/سند انجام نشد؛ build/deploy لازم نیست.
 - اثر: منبع Matrix و دو deliverable DOCX قابل‌خواندن و hash-verified هستند؛ وضعیت requirementها هنوز عمدتاً PARTIAL/NOT_STARTED است و ادعای completion مجاز نیست.
 - blocker: visual/motion، accessibility manual، full clean suite و release/security provenance باز هستند.
+
+### GOV-084 — accessibility state smoke روی live edge
+
+- زمان UTC: `2026-07-16T08:00:00Z`.
+- فرمان: `PROCHART_BASE_URL=https://localhost npm run test:a11y-states -- --reporter=line`.
+- نتیجه: مسیر mobile chart پس از onboarding برابر `1 passed`؛ retry/flaky=`0`؛ canvas و named main region قابل‌دسترسی ثبت شد.
+- build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
+- اثر: یک state دسترس‌پذیری live به شواهد فعلی اضافه شد؛ این نتیجه جایگزین matrix کامل و audit دستی نیست.
+- blocker: contrast/manual screen-reader، visual/motion و full clean suite هنوز باز هستند.
 
 ## وضعیت فعلی production
 
