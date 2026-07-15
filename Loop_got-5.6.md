@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T10:20:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T10:40:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۹` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۹` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۵۰` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۴`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۳۵`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1257,6 +1257,15 @@
 - build/deploy: فقط validation؛ build/deploy لازم نیست.
 - اثر: gate پیکربندی قبل از هر rollout بعدی سبز است.
 - blocker: Golden/Motion، manual accessibility، full clean Python، historical secret rotation و release provenance باز هستند.
+
+### GOV-091 — اجباری‌بودن deliverableهای Goal
+
+- زمان UTC: `2026-07-16T10:40:00Z`.
+- کنترل: وجود و non-empty بودن ۱۵ فایل اجباری شامل Execution State، Requirements Status، Baseline/Architecture، Visual/Motion/Evidence/Regression، Security، Performance، Providers و Release/Rollback.
+- نتیجه: `required_docs=ok count=15`.
+- build/deploy: کنترل مستنداتی؛ build/deploy لازم نیست.
+- اثر: مجموعه خروجی‌های موردنیاز Goal حاضر و قابل‌خواندن است؛ کامل‌بودن محتوای هر معیار جداگانه همچنان باید از Matrix اثبات شود.
+- blocker: معیارهای Visual/Motion/GOLDEN، manual accessibility، full clean suite و release provenance/security rotation هنوز بسته نشده‌اند.
 
 ## وضعیت فعلی production
 
