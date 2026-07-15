@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T07:00:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T07:20:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۰` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۴۱` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۴`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۵`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1174,6 +1174,15 @@
 - build/deploy: تغییر مستنداتی؛ build/deploy لازم نیست.
 - اثر: وضعیت اجرایی و artifactهای DOCX اکنون با runtime live همخوان هستند.
 - blocker: Golden/Motion کامل، historical secret rotation و release provenance همچنان باز هستند.
+
+### GOV-082 — live integration health gate
+
+- زمان UTC: `2026-07-16T07:20:00Z`.
+- فرمان‌ها: `docker compose -f docker-compose.prochart.yml ps`، `curl http://127.0.0.1:8000/health` و HTTPS smoke با SNI/Host برای main، Panel و User.
+- نتیجه: ۱۱ کانتینر running؛ API `200` با `database=connected` و `redis=connected`؛ main/Panel/User هر سه `200`؛ سرویس‌های دارای healthcheck healthy.
+- build/deploy: تغییر runtime انجام نشد؛ لازم نیست.
+- اثر: integration smoke فعلی سبز است؛ این gate جایگزین full clean suite یا release approval نیست.
+- blocker: visual/motion matrix، historical secret rotation، performance budget مستقل و release provenance باقی است.
 
 ## وضعیت فعلی production
 
