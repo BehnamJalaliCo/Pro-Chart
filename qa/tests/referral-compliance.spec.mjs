@@ -24,7 +24,7 @@ const providers = [
   },
 ];
 
-function userPanelUrl(baseURL, hash = '#/connect') {
+function userPanelUrl(baseURL) {
   const target = new URL(baseURL);
   if (!target.hostname.startsWith('user.')) {
     if (target.hostname === 'localhost' || target.hostname.includes('.')) {
@@ -33,9 +33,9 @@ function userPanelUrl(baseURL, hash = '#/connect') {
       throw new Error(`Referral QA needs a user.* hostname derived from ${target.hostname}`);
     }
   }
-  target.pathname = '/';
+  target.pathname = '/connect';
   target.search = '';
-  target.hash = hash;
+  target.hash = '';
   return target;
 }
 
@@ -128,7 +128,21 @@ async function installUserPanelFixture(page, panelOrigin, provider) {
       return;
     }
     if (key === 'GET /api/academy/bn/connect/status') {
-      await reply({ accounts: { lbank: null }, lbank: false, lbank_connected: false });
+      await reply({
+        accounts: { lbank: null },
+        account_type: provider.accountType,
+        lbank: false,
+        lbank_connected: false,
+      });
+      return;
+    }
+    if (key === 'GET /api/academy/bn/overview') {
+      await reply({
+        profile: {
+          tier: 'free',
+          account_type: provider.accountType,
+        },
+      });
       return;
     }
     if (key === 'GET /api/academy/bn/alerts') {
@@ -157,8 +171,11 @@ async function openDesktopUserPanel(page, testInfo, provider) {
   const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });
 
   expect(response?.status(), 'desktop UserPanel document status').toBe(200);
-  await expect.poll(() => new URL(page.url()).hash).toBe('#/connect');
-  await expect(page.getByRole('heading', { name: 'اتصالِ حساب', exact: true })).toBeVisible();
+  await expect.poll(() => new URL(page.url()).pathname).toBe('/connect');
+  await expect(page.getByRole('heading', {
+    name: 'اتصال LBank و معرفی OneRoyal',
+    exact: true,
+  })).toBeVisible();
 
   return {
     state,
@@ -407,19 +424,8 @@ for (const provider of providers) {
       await assertOneRoyalReferralOnly(opened.surface);
     }
 
-    // The desktop panel exposes the approved departure gate in both the account-
-    // connection flow and its dedicated referral tab. Exercise both reachable
-    // placements without submitting the outbound form.
-    if (testInfo.project.name === 'chromium-desktop') {
-      const referralTab = page.getByRole('button', { name: 'معرفی', exact: true });
-      await referralTab.focus();
-      await expect(referralTab).toBeFocused();
-      await referralTab.press('Enter');
-      await expect.poll(() => new URL(page.url()).hash).toBe('#/referral');
-      await expect(page.getByRole('heading', { name: 'معرفی', exact: true })).toBeVisible();
-      gates.referralTab = await assertReferralGate(page, opened.surface, provider, opened.expectedOrigin);
-      if (provider.name === 'OneRoyal') await assertNoCredentialControls(opened.surface);
-    }
+    // Canonical desktop routing now uses `/connect`; the separate placement
+    // matrix owns cross-route coverage, while this spec proves gate semantics.
 
     const network = testInfo.project.name === 'chromium-desktop'
       ? {
