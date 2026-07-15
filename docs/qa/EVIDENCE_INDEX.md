@@ -1,6 +1,6 @@
 # فهرست شواهد
 
-آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:08:21Z`
+آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:25:58Z`
 
 Commit مبنا: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
@@ -23,6 +23,7 @@ Commit مبنا: `080033ae56e3c793ba3a998276cac5daeb969d50`
 | QA-INT-002 | PC-003، PC-147، PC-148، PC-159 | `artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/` | شش case هدف PASS + شش device skip عمدی؛ Watchlist mouse/keyboard و onboarding focus؛ walkthrough کامل P0 نیست |
 | QA-MOT-006 | PC-030 | `qa/tests/drawing-history.test.mjs`، `qa/tests/drawing-history-e2e.spec.mjs` و `artifacts/qa/playwright/test-results/drawing-history-e2e-MOT-00-08fbe--persistence-survive-reload-chromium-desktop/` | Property برابر 3/3 PASS؛ E2E برابر 1/1 PASS در 12.7s: 50 create + 50 toolbar undo + 50 toolbar redo، state دقیق، reload hydration و post-reload create/undo؛ retry/flaky=0 |
 | QA-REF-UI-001 | PC-118–123، PC-126، PC-147، PC-159 | `artifacts/qa/referral-compliance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012118Z/` | ۴/۴ LBank/OneRoyal در desktop/mobile PASS؛ متن/ترتیب/keyboard gate و فقط `/go/*`؛ direct bypass/window.open=0؛ undeployed/untracked candidate |
+| QA-PROVIDER-001 | PC-118، PC-120 | `artifacts/qa/provider-exclusivity/worktree/20260715T082200Z/`؛ scanner/test در commit `28226c3` | ۵/۵ scanner contract؛ دو run candidate byte-identical و یک live run PASS؛ ۹۹۰ source + ۶۱۷ bundle + ۱۲ edge با finding مسدودکننده صفر؛ User ignored پوشش داده شد؛ سه bundle candidate/live hash برابر؛ ۷۱ occurrence QA/test/legacy جدا و non-shipping ثبت شد؛ seal سه report PASS |
 | QA-VIS-003 | PC-153–155، PC-159 | `artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012203Z/`، `.../20260715T012250Z/` و capture-only rerun `20260716T090000Z` | هر run سه pass + سه project skip عمدی؛ candidateهای deterministic؛ Golden تصویب‌شده=۰ و approval دستی pending |
 | PERF-003 | PC-138، PC-140، PC-141، PC-159 | `artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T013244Z/` | FAIL: Desktop LCP=۴۳۴۴ms/frame=۲۸ms و Mobile LCP=۴۱۸۸ms؛ CLS/TTFB/restore و Mobile frame pass؛ RUM نیست |
 | PERF-004 | PC-141، PC-159 | `artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T013516Z/` | ۳/۳ `MEASURED_UNGATED`؛ p95 quote→canvas=۱۷۹٫۴ms و quote→next-rAF=۱۹۸٫۷ms؛ visible-pixel/60fps/threshold PASS نیست |

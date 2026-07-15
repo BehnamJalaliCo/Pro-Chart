@@ -10,8 +10,8 @@
 | Repository | `/home/bazaarnama/Pro-Chart/app` |
 | Branch / Commit مبنا | `claude/pro-chart-tradingview-parity-ewbpoy` / `080033ae56e3c793ba3a998276cac5daeb969d50` |
 | ماتریس | ۱۶۲ الزام؛ P0=85، P1=77، P2=0 |
-| Status / Gate | `IN_PROGRESS`؛ PC-030 پاس و VERIFIED است، اما visual/motion و supply-chain/release gates باز |
-| VERIFIED | `۱/۱۶۲`: فقط PC-030 با Property + E2E پنجاه‌فرمانی و reload؛ Release/Goal هنوز COMPLETE نیست |
+| Status / Gate | `IN_PROGRESS`؛ PC-030، PC-118 و PC-120 پاس و VERIFIED هستند، اما visual/motion و supply-chain/release gates باز |
+| VERIFIED | `۳/۱۶۲`: PC-030، PC-118 و PC-120؛ Release/Goal هنوز COMPLETE نیست |
 | Deploy | rollout production در `2026-07-15T04:22:41Z–04:22:53Z` انجام شد؛ ۸ سرویس با digestهای دقیق، rollback آماده و بدون rollback فعال |
 | وضعیت کلی | `IN_PROGRESS`؛ سه clean run سبز است، اما Secret history/rotation، امضای artifact، visual/motion و دسترس‌پذیری کامل هنوز باز هستند |
 
@@ -78,7 +78,7 @@ Candidate فعلی به commit مبنا محدود نیست: فایل‌های t
 
 ## Referral candidate
 
-دو GET عمومی exact برای `/go/lbank` و `/go/oneroyal` در Backend candidate به مقصدهای ثابت، پاسخ 302 و `no-store/no-cache` contract شده‌اند. UI در desktop UserPanel و mobile Profile متن دقیق disclosure و eligibility را پیش از خروج نشان می‌دهد؛ submit native تا تأیید keyboard غیرفعال است و فقط action هم‌مبدأ `/go/lbank` یا `/go/oneroyal` دارد. OneRoyal در UI مورد آزمون Referral-only است و credential/order UI ندارد. Bot نیز فقط پس از دو مرحله متن و آدرس داخلی OneRoyal را ارائه می‌کند. این slice ۱۳/۱۳ Backend/Bot و ۴/۴ browser پاس دارد، اما فایل‌های جدید untracked و هیچ‌یک deploy نشده‌اند؛ `PC-118` تا `PC-123` و `PC-126` فقط `PARTIAL` هستند.
+دو GET عمومی exact برای `/go/lbank` و `/go/oneroyal` مقصد ثابت و پاسخ 302 دارند. UI در Main و User Portal متن disclosure/eligibility را پیش از خروج نشان می‌دهد و فقط action هم‌مبدأ دارد. scanner متصل به compose روی ۹۹۰ فایل source، ۶۱۷ فایل bundle candidate/live، edge و User ignored-but-deployed هیچ provider مسدودکننده‌ای نیافت؛ سه bundle candidate/live نیز hash برابر دارند. بنابراین `PC-118` و `PC-120` VERIFIED هستند؛ وضعیت PC-119/121/122 و PC-123/126 مستقل از این دو الزام پیگیری می‌شود.
 
 ## Security و Supply-chain
 

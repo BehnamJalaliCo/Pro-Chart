@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:25:58Z`
+آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:29:23Z`
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۸۴` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۶۰` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۶۱` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۸` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۵۲`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۵۳`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1382,6 +1382,18 @@
 - deploy production: انجام نشد؛ فقط QA/harness تغییر کرد و runtime source/bundle محصول تغییر نکرد. DEPLOY count همان `۸` است.
 - smoke/health: Main/Panel/User هر سه HTTPS=`200`، health=`healthy` و restart=`0`؛ compose همچنان `۱۱` سرویس running دارد.
 - rollback: حذف scanner/test و دو script در `qa/package.json`؛ image rollback لازم نیست. پس از commit، PC-118/PC-120 باید با همین Evidence به Matrix همگام شوند؛ Golden، accessibility دستی، performance، supply-chain و سایر Requirementها باز می‌مانند.
+
+### GOV-102 — VERIFIEDشدن PC-118 و PC-120 با audit compose-aware
+
+- زمان UTC میزبان: `2026-07-15T08:29:23Z`.
+- فایل‌ها/سرویس: `docs/REQUIREMENTS_STATUS.csv`، `docs/EXECUTION_STATE.md`، `docs/qa/EVIDENCE_INDEX.md`، `docs/qa/REGRESSION_REPORT.md` و `Loop_got-5.6.md`؛ runtime تغییر نکرد.
+- تغییر/اثر بنیادی: PC-118 و PC-120 از `IN_PROGRESS/EVIDENCE_READY/PARTIAL` به `VERIFIED/EVIDENCE_READY/PASS` ارتقا یافتند و به QA-PROVIDER-001، artifact seal و commit=`28226c3` متصل شدند. شمار VERIFIED واقعی Matrix از `۱` به `۳/۱۶۲` رسید و گزارش‌های Execution/Regression دیگر ادعای stale «source untracked و undeployed» برای این دو الزام ندارند.
+- build: سه image frontend پس از تغییر مستندات با `docker compose ... build --provenance=false` دوباره و کاملاً cached ساخته شدند؛ digestها بدون تغییر ماندند: Main=`43a857…fa4`، Panel=`8dbab5…42b` و User=`c0db88…6f9`.
+- تست/اعتبارسنجی: CSV برابر `162×19`؛ statusها `NOT_STARTED=126`، `IN_PROGRESS=33` و `VERIFIED=3`. هر سه report provider برابر PASS و blocking finding=`0`؛ `SHA256SUMS` سه‌به‌سه `OK`. نخستین validation از cwd محاسبه‌شدهٔ اشتباه artifact به `FileNotFoundError` خورد؛ همان کنترل از ریشهٔ app اصلاح و سبز شد و failure پنهان نشد.
+- image/fingerprint live: Main=`4e6130…0350`، Panel=`f3b22c…39bd`، User=`6a5c25…6216`؛ runtime bundle نسبت به Evidence hash برابر و دست‌نخورده است.
+- deploy production: لازم نبود و انجام نشد؛ فقط governance تغییر کرد و DEPLOY count همان `۸` است.
+- smoke/health: Main/Panel/User HTTPS=`200`، health=`healthy`، restart=`0` و کل compose=`۱۱` سرویس running.
+- rollback: بازگرداندن دو ردیف Matrix و سطرهای Evidence/Execution/Regression؛ rollback image لازم نیست. blocker: PC-119/121/122 با وجود gate PASS هنوز status مستقل دارند و ۱۵۹ الزام دیگر باید جداگانه اثبات شوند.
 
 ## وضعیت فعلی production
 
