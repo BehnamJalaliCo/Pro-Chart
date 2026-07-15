@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore, useThemeStore } from '../../store';
 import useMediaQuery from '../../hooks/useMediaQuery';
+import { PANEL_ROUTES } from '../../navigation';
 import {
   LayoutDashboard,
   Users,
@@ -22,18 +23,18 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { to: '/dashboard', label: 'داشبورد', icon: LayoutDashboard },
-  { to: '/users', label: 'کاربران', icon: Users },
-  { to: '/subscriptions', label: 'اشتراک‌ها و پرداخت‌ها', icon: CreditCard },
-  { to: '/orders', label: 'سفارش‌ها', icon: ShoppingCart },
-  { to: '/exchange', label: 'اتصال صرافی', icon: Wallet },
-  { to: '/ai-signals', label: 'سیگنال‌های AI', icon: Sparkles },
-  { to: '/charts', label: 'چارت‌ها و واچ‌لیست', icon: CandlestickChart },
-  { to: '/ads', label: 'تبلیغات', icon: Megaphone },
-  { to: '/news', label: 'اخبار و تقویم', icon: Newspaper },
-  { to: '/broadcasts', label: 'پیام‌رسانی', icon: Send },
-  { to: '/analytics', label: 'آنالیتیکس', icon: BarChart3 },
-  { to: '/settings', label: 'تنظیمات', icon: Settings },
+  { to: PANEL_ROUTES.dashboard, label: 'داشبورد', icon: LayoutDashboard },
+  { to: PANEL_ROUTES.users, label: 'کاربران', icon: Users },
+  { to: PANEL_ROUTES.subscriptions, label: 'اشتراک‌ها و پرداخت‌ها', icon: CreditCard },
+  { to: PANEL_ROUTES.orders, label: 'سفارش‌ها', icon: ShoppingCart },
+  { to: PANEL_ROUTES.exchange, label: 'اتصال صرافی', icon: Wallet },
+  { to: PANEL_ROUTES['ai-signals'], label: 'سیگنال‌های AI', icon: Sparkles },
+  { to: PANEL_ROUTES.charts, label: 'چارت‌ها و واچ‌لیست', icon: CandlestickChart },
+  { to: PANEL_ROUTES.ads, label: 'تبلیغات', icon: Megaphone },
+  { to: PANEL_ROUTES.news, label: 'اخبار و تقویم', icon: Newspaper },
+  { to: PANEL_ROUTES.broadcasts, label: 'پیام‌رسانی', icon: Send },
+  { to: PANEL_ROUTES.analytics, label: 'آنالیتیکس', icon: BarChart3 },
+  { to: PANEL_ROUTES.settings, label: 'تنظیمات', icon: Settings },
 ];
 
 /**
@@ -49,7 +50,7 @@ function SidebarContent({ collapsed, onNavigate, showCloseButton, onClose }) {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate(PANEL_ROUTES.login);
   };
 
   return (

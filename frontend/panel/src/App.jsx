@@ -2,6 +2,11 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store';
 import AdminLayout from './components/Layout/AdminLayout';
+import {
+  LEGACY_PANEL_REDIRECTS,
+  PANEL_ROUTES,
+  PROTECTED_PANEL_ROUTES,
+} from './navigation';
 
 // اگر بعد از دیپلوی، چانکِ هش‌دارِ قدیمی ۴۰۴ شد (index.htmlِ کهنه)، یک‌بار صفحه را
 // ریلود می‌کنیم تا نسخهٔ تازه بارگذاری شود (گاردِ sessionStorage مانعِ حلقه).
@@ -31,10 +36,25 @@ const BroadcastsPage = lazy_(() => import('./pages/BroadcastsPage'));
 const AnalyticsPage = lazy_(() => import('./pages/AnalyticsPage'));
 const SettingsPage = lazy_(() => import('./pages/SettingsPage'));
 
+const PROTECTED_PAGE_COMPONENTS = Object.freeze({
+  dashboard: DashboardPage,
+  users: UsersPage,
+  subscriptions: SubscriptionsPage,
+  orders: OrdersPage,
+  exchange: ExchangePage,
+  'ai-signals': AiSignalsPage,
+  charts: ChartsPage,
+  ads: AdsPage,
+  news: NewsPage,
+  broadcasts: BroadcastsPage,
+  analytics: AnalyticsPage,
+  settings: SettingsPage,
+});
+
 function ProtectedRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={PANEL_ROUTES.login} replace />;
   }
   return children;
 }
@@ -42,7 +62,7 @@ function ProtectedRoute({ children }) {
 function PublicRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={PANEL_ROUTES.dashboard} replace />;
   }
   return children;
 }
@@ -64,7 +84,7 @@ export default function App() {
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
         <Route
-          path="/login"
+          path={PANEL_ROUTES.login}
           element={
             <PublicRoute>
               <LoginPage />
@@ -78,20 +98,15 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/users" element={<UsersPage />} />
-          <Route path="/subscriptions" element={<SubscriptionsPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/exchange" element={<ExchangePage />} />
-          <Route path="/ai-signals" element={<AiSignalsPage />} />
-          <Route path="/charts" element={<ChartsPage />} />
-          <Route path="/ads" element={<AdsPage />} />
-          <Route path="/news" element={<NewsPage />} />
-          <Route path="/broadcasts" element={<BroadcastsPage />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          {PROTECTED_PANEL_ROUTES.map(({ id, path }) => {
+            const Page = PROTECTED_PAGE_COMPONENTS[id];
+            return <Route key={id} path={path} element={<Page />} />;
+          })}
+          {LEGACY_PANEL_REDIRECTS.map(({ id, from, to }) => (
+            <Route key={`legacy-${id}`} path={from} element={<Navigate to={to} replace />} />
+          ))}
         </Route>
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to={PANEL_ROUTES.dashboard} replace />} />
       </Routes>
     </Suspense>
   );

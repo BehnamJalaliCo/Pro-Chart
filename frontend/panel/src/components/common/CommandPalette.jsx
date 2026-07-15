@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
+import {
+  DEFAULT_NAV_COMMANDS,
+  getEnabledNavCommands,
+} from '../../navigation';
+
+export { DEFAULT_NAV_COMMANDS } from '../../navigation';
 
 /**
  * Command palette (Cmd+K / Ctrl+K) — برای navigation سریع.
@@ -9,24 +15,8 @@ import { Search, X } from 'lucide-react';
  *   <CommandPalette commands={navCommands} />
  *
  * هر command:
- *   { id, label, hint, icon, action: () => void, keywords: string[] }
+ *   { id, label, hint, icon, action: () => void, keywords: string[], enabled }
  */
-
-export const DEFAULT_NAV_COMMANDS = [
-  { id: 'dashboard', label: 'داشبورد', hint: 'صفحه اصلی', path: '/dashboard', keywords: ['home', 'main'] },
-  { id: 'signals', label: 'سیگنال‌ها', hint: 'مدیریت سیگنال', path: '/signals', keywords: ['signal'] },
-  { id: 'backtest', label: 'بک‌تست', hint: 'اجرا و مرور', path: '/backtest', keywords: ['backtest', 'test'] },
-  { id: 'risk', label: 'مدیریت ریسک', hint: 'circuit breaker', path: '/risk', keywords: ['risk', 'limit'] },
-  { id: 'users', label: 'کاربران', hint: 'مدیریت اشتراک', path: '/users', keywords: ['user', 'subscriber'] },
-  { id: 'performance', label: 'عملکرد', hint: 'win-rate, PnL', path: '/performance', keywords: ['perf', 'pnl'] },
-  { id: 'reports', label: 'گزارش‌های پیشرفته', hint: 'MAR, Omega, heatmap', path: '/reports', keywords: ['report', 'heatmap'] },
-  { id: 'ml-models', label: 'مدل‌های ML', hint: 'training و وزن', path: '/ml-models', keywords: ['ml', 'model'] },
-  { id: 'monitoring', label: 'مانیتورینگ', hint: 'system + feeds', path: '/monitoring', keywords: ['monitor', 'health'] },
-  { id: 'visitors', label: 'بازدیدکنندگان', hint: 'آنالیتیکس ترافیک', path: '/visitors', keywords: ['visitor', 'analytics', 'traffic', 'بازدید'] },
-  { id: 'articles', label: 'مقالات', hint: 'CMS', path: '/articles', keywords: ['article', 'cms'] },
-  { id: 'broadcasts', label: 'پیام‌ها', hint: 'broadcast', path: '/broadcasts', keywords: ['broadcast', 'msg'] },
-  { id: 'settings', label: 'تنظیمات', hint: 'پارامترها', path: '/settings', keywords: ['settings', 'config'] },
-];
 
 function fuzzyMatch(text, query) {
   if (!query) return true;
@@ -63,13 +53,15 @@ export default function CommandPalette({ commands = DEFAULT_NAV_COMMANDS, onClos
     return () => window.removeEventListener('keydown', handler);
   }, [open, onClose]);
 
+  const enabledCommands = useMemo(() => getEnabledNavCommands(commands), [commands]);
+
   const filtered = useMemo(() => {
-    if (!query) return commands;
-    return commands.filter((cmd) => {
+    if (!query) return enabledCommands;
+    return enabledCommands.filter((cmd) => {
       const haystack = [cmd.label, cmd.hint, cmd.id, ...(cmd.keywords || [])].join(' ');
       return fuzzyMatch(haystack, query);
     });
-  }, [commands, query]);
+  }, [enabledCommands, query]);
 
   const runCommand = useCallback((cmd) => {
     if (cmd.action) {
