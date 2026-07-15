@@ -1,6 +1,6 @@
 # وضعیت اجرای Pro Chart
 
-آخرین به‌روزرسانی: `2026-07-15T21:35:00Z`
+آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:10:16Z`
 
 ## خلاصه تصمیم
 
@@ -10,8 +10,8 @@
 | Repository | `/home/bazaarnama/Pro-Chart/app` |
 | Branch / Commit مبنا | `claude/pro-chart-tradingview-parity-ewbpoy` / `080033ae56e3c793ba3a998276cac5daeb969d50` |
 | ماتریس | ۱۶۲ الزام؛ P0=85، P1=77، P2=0 |
-| Status / Gate | `IN_PROGRESS`؛ clean full-suite سه بار متوالی `542/542 PASS`، اما visual/motion و supply-chain/release gates باز |
-| VERIFIED | صفر؛ هیچ الزام یا Release به‌عنوان VERIFIED/COMPLETE اعلام نشده است |
+| Status / Gate | `IN_PROGRESS`؛ PC-030 پاس و VERIFIED است، اما visual/motion و supply-chain/release gates باز |
+| VERIFIED | `۱/۱۶۲`: فقط PC-030 با Property + E2E پنجاه‌فرمانی و reload؛ Release/Goal هنوز COMPLETE نیست |
 | Deploy | rollout production در `2026-07-15T04:22:41Z–04:22:53Z` انجام شد؛ ۸ سرویس با digestهای دقیق، rollback آماده و بدون rollback فعال |
 | وضعیت کلی | `IN_PROGRESS`؛ سه clean run سبز است، اما Secret history/rotation، امضای artifact، visual/motion و دسترس‌پذیری کامل هنوز باز هستند |
 

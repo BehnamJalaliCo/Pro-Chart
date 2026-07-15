@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:10:16Z`
+آخرین ثبت این اجرا بر پایهٔ ساعت UTC میزبان: `2026-07-15T08:12:14Z`
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۸۳` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۵۸` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۵۹` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۸` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۴۹`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۵۰`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1349,12 +1349,24 @@
 - تغییر بنیادی: fixture به حالت opt-in seed-once با guard در `sessionStorage` مجهز شد تا فقط اولین navigation state مصنوعی را seed کند و reload واقعی workspace را پاک نکند. تست MOT-006 اکنون ۵۰ خط افقی را از UI می‌سازد، ۵۰ بار دکمهٔ toolbar واگرد و ۵۰ بار ازنو را اجرا می‌کند، state نهایی را دقیق مقایسه می‌کند، reload را انجام می‌دهد و با create/undo پس از reload ثابت می‌کند DrawingLayer واقعاً ۵۰ drawing را hydrate کرده است.
 - بازتولید/اصلاح: اجرای test-first در reload با `Expected 1 drawing / Received []` شکست خورد و علت `localStorage.clear()` در هر navigation بود. نسخهٔ seed-once پاس شد. تلاش بهینه‌سازی مستقیم `page.mouse.click` نیز با `Expected 50 / Received 0` شکست خورد و حفظ شد؛ مسیر دقیق locator جایگزین و زمان تست از `56.7s` به `12.7s` بدون حذف هیچ‌یک از ۱۵۰ عملیات کاهش یافت.
 - اثر بنیادی: Acceptance الزام PC-030 اکنون هم Property و هم E2E مرورگر واقعی دارد؛ فساد ترتیب، deep-copy، redo invalidation، cap=100، toolbar state و ماندگاری reload همگی پوشش داده شدند. MOT-006 در Motion Matrix به `PASS` ارتقا یافت.
-- build: `docker compose -f docker-compose.prochart.yml build frontend-prochart` موفق و کاملاً cached بود؛ image tag محلی=`sha256:c8c4ced6372cbd7b8f408f77daf2e6b3afd440b8aa1409614526860ae7578cde`. چون source runtime تغییر نکرد، payload build همان نسخهٔ live باقی ماند.
+- build: buildهای معمول compose کاملاً cached و موفق بودند؛ digestهای manifest-list میانی به‌علت attestation زمانی `c8c4…` و `5336…` شدند. اجرای canonical با `docker compose ... build --provenance=false frontend-prochart` نیز cached و موفق بود و digest تکرارپذیر payload=`sha256:43a857dd9f79f4912326c8898034f5844fdeb585e9bbb4aae6effafe1bfe4fa4` را داد. چون source runtime تغییر نکرد، payload live دست‌نخورده ماند.
 - تست‌ها: Property Node برابر `3/3 PASS`؛ اجرای مشترک Drawing E2E + Motion برابر `4 passed / 2 skipped` عمدی و retry/flaky=`0`؛ Visual capture-only برابر `3 passed / 3 skipped` عمدی با run=`20260715T081100Z`. اجرای نهایی MOT-006 برابر `1/1 PASS` در `12.7s` است و trace/video در `artifacts/qa/playwright/test-results/drawing-history-e2e-MOT-00-08fbe--persistence-survive-reload-chromium-desktop/` ثبت شد.
 - image/fingerprint: runtime live بدون تغییر روی `sha256:4e6130e6caecfeacc3260a134b1a0c20e32e81f3ab2d9aaf570d3e3269f30350` است؛ build QA/docs هیچ asset runtime را تغییر نداد.
 - deploy production: انجام نشد؛ این increment فقط QA و governance است و طبق قانون Goal deploy فقط در صورت تغییر runtime الزامی است. رویداد DEPLOY جدید شمرده نشد.
 - smoke/health: container=`healthy`، restart=`0` و `https://localhost/` برابر `200`؛ همهٔ ۱۱ سرویس compose در حالت running باقی ماندند.
 - rollback: بازگرداندن دو فایل QA و دو سطر سند کافی است و rollback image لازم نیست. blockerهای MOT-001/003/004/005/009/010، Golden approval، accessibility دستی، performance و supply-chain همچنان باز هستند.
+
+### GOV-100 — ارتقای PC-030 به نخستین Requirement واقعاً VERIFIED
+
+- زمان UTC میزبان: `2026-07-15T08:12:14Z`.
+- فایل‌ها/سرویس: `docs/REQUIREMENTS_STATUS.csv`، `docs/EXECUTION_STATE.md` و `Loop_got-5.6.md`؛ runtime تغییر نکرد.
+- تغییر/اثر بنیادی: PC-030 از `IN_PROGRESS/BASELINED/PARTIAL` به `VERIFIED/EVIDENCE_READY/PASS` منتقل و به Property، E2E، trace/video و commit=`a29a579` متصل شد. Execution State اکنون شمار دقیق `۱/۱۶۲ VERIFIED` را نشان می‌دهد و دیگر ادعای متناقض «VERIFIED صفر» ندارد.
+- build: build canonical بدون provenance زمانی موفق و cached؛ image payload محلی=`sha256:43a857dd9f79f4912326c8898034f5844fdeb585e9bbb4aae6effafe1bfe4fa4`.
+- تست/اعتبارسنجی: CSV برابر `162` ردیف × `19` فیلد parse شد؛ statusها `NOT_STARTED=126`، `IN_PROGRESS=35` و `VERIFIED=1`؛ PC-030 دقیقاً `VERIFIED/EVIDENCE_READY/PASS` و commit=`a29a579` دارد.
+- image/fingerprint: live همچنان `sha256:4e6130e6caecfeacc3260a134b1a0c20e32e81f3ab2d9aaf570d3e3269f30350`؛ تغییر governance وارد bundle runtime نمی‌شود.
+- deploy production: لازم نبود و انجام نشد؛ DEPLOY count همان `۸` است.
+- smoke/health: `۱۱` سرویس running، frontend health=`healthy`، restart=`0` و HTTPS=`200`.
+- rollback: بازگرداندن ردیف PC-030 و دو سطر Execution State. blocker: ۱۶۱ Requirement دیگر و همهٔ gateهای سراسری Goal هنوز باید مستقل بسته شوند؛ Goal `IN_PROGRESS` می‌ماند.
 
 ## وضعیت فعلی production
 
