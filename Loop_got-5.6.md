@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T12:30:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T12:40:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۸۱` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۵۵` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۵۶` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۷` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۴۳`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۴۴`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1318,6 +1318,16 @@
 - smoke/health: `frontend-prochart` برابر `healthy`، restart=`0` و `https://localhost/` برابر `200`.
 - rollback: image قبلی `sha256:20e2ad31c1280f44850530a7ac12456f4817da8f163fdd230defe0436f7fa3ec` نگه داشته شد؛ rollback با retag/recreate همان image ممکن است.
 - blocker: MOT-007 فقط برای onboarding اندازه‌گیری شده و سایر Dialog/Sheetها pending؛ MOT-001/003/004/005/006/009/010، Golden approval و bundle budget باز هستند.
+
+### GOV-097 — همگام‌سازی Requirements Status برای PC-032/PC-033
+
+- زمان UTC: `2026-07-16T12:40:00Z`.
+- فایل: `docs/REQUIREMENTS_STATUS.csv`.
+- تغییر: PC-032 و PC-033 از `NOT_STARTED/NOT_ASSESSED` به `IN_PROGRESS/BASELINED/PARTIAL` منتقل و به MOT-007/MOT-008، Motion Matrix، commit=`a41fb88` و artifactهای Playwright متصل شدند.
+- اعتبارسنجی: CSV با `162` ردیف و `19` فیلد parse شد؛ هیچ ردیف malformed نبود و دو status دقیقاً خوانده شدند.
+- build/deploy: تغییر governance؛ build/deploy runtime لازم نیست.
+- اثر: Matrix اکنون evidence واقعی motion را منعکس می‌کند و بدون پوشش سراسری ادعای VERIFIED ندارد.
+- blocker: سایر Dialog/Sheetها، gestureهای باقی‌مانده و Golden approval هنوز باز هستند.
 
 ## وضعیت فعلی production
 
