@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T05:15:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T05:35:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۳۶` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۳۷` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۰`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۱`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1138,6 +1138,15 @@
 - build/deploy: runtime تغییری نکرد؛ build و deploy لازم نیست.
 - اثر: مسیر characterization اصلی پس از incrementهای QA بدون regression قابل‌مشاهده باقی ماند.
 - blocker: visual golden و Motion gestureهای باقی‌مانده همچنان باز هستند.
+
+### GOV-078 — visual determinism پس از آخرین incrementها
+
+- زمان UTC: `2026-07-16T05:35:00Z`.
+- فرمان: `PROCHART_BASE_URL=https://localhost VISUAL_CAPTURE_ONLY=1 VISUAL_RUN_ID=20260716T053000Z npm run test:visual-reference -- --reporter=line`.
+- نتیجه: `3 passed / 3 skipped` عمدی بر اساس project/device matrix، retry/flaky=`0`؛ سه سناریوی هدف capture شدند.
+- build/deploy: runtime تغییری نکرد؛ build/deploy لازم نیست.
+- اثر: determinism capture پس از تغییرات QA تأیید شد؛ Golden approval و full viewport/state matrix هنوز ادعا نشده است.
+- blocker: Expected/Golden تصویب‌شده صفر، Motion gestureهای کامل و performance budget مستقل هنوز باز هستند.
 
 ## وضعیت فعلی production
 
