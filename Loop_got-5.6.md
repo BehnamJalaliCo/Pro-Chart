@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T12:40:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T13:15:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
-- `۸۱` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۵۶` بستهٔ بنیادیِ حاکمیت/شواهد؛
-- `۷` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۴۴`؛
+- `۸۲` تغییر بنیادیِ کد، پیکربندی یا QA؛
+- `۵۷` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۸` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۴۷`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1329,10 +1329,23 @@
 - اثر: Matrix اکنون evidence واقعی motion را منعکس می‌کند و بدون پوشش سراسری ادعای VERIFIED ندارد.
 - blocker: سایر Dialog/Sheetها، gestureهای باقی‌مانده و Golden approval هنوز باز هستند.
 
+### CHG-089 / GOV-098 / DEPLOY-008 — DrawingHistory پایدار برای 50 Undo/Redo
+
+- زمان UTC: `2026-07-16T13:15:00Z`.
+- فایل‌ها/سرویس: `frontend/prochart/src/bazaarnama/drawing_history.js`، `drawings.js`، `qa/tests/drawing-history.test.mjs`، Motion/Requirements Matrix و `frontend-prochart`.
+- تغییر بنیادی: history از آرایه‌های پراکنده به `DrawingHistory` خالص با snapshot عمیق، cap=100، invalidation صریح redo و aliasهای سازگار منتقل شد؛ رفتار UI همان API قبلی `undo/redo/canUndo/canRedo` را حفظ می‌کند.
+- build: `docker compose ... build frontend-prochart` موفق؛ Vite `1787 modules`؛ image=`sha256:4e6130e6caecfeacc3260a134b1a0c20e32e81f3ab2d9aaf570d3e3269f30350`. هشدار bundle >500kB ثبت و پنهان نشد.
+- تست‌ها: Node property suite `3/3 PASS` شامل 60 command و 50 undo+50 redo، deep-copy، redo invalidation و cap=100؛ motion browser `3 passed / 1 skipped` عمدی؛ visual capture-only `3 passed / 3 skipped` عمدی، run=`20260716T131500Z`.
+- harness incident: نخستین فرمان browser از cwd ریشهٔ app به‌علت نبود `package.json` با ENOENT شکست خورد؛ همان تست‌ها از `app/qa` اصلاح و سبز اجرا شدند؛ failure حذف یا پنهان نشد.
+- deploy production: `docker compose ... up -d --no-build frontend-prochart` موفق؛ container recreate/start.
+- smoke/health: image live همان digest، `healthy`، restart=`0` و main HTTPS=`200`.
+- rollback: image قبلی `sha256:15caec11c79251276b4d429bf772589a4b6c78b63df5d7fdd64ca54e86726443` نگه داشته شد.
+- blocker: MOT-006 property کامل است اما E2E toolbar/reload persistence هنوز pending؛ MOT-001/003/004/005/009/010 و Golden approval باز هستند.
+
 ## وضعیت فعلی production
 
 - API و چهار worker Python: image `sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e`، همگی non-root/running، restart=`0` و smoke پاس.
-- Frontend ProChart/edge: image `sha256:15caec11c79251276b4d429bf772589a4b6c78b63df5d7fdd64ca54e86726443`، Nginx `1.30.3`، healthy و onboarding/motion smoke پاس.
+- Frontend ProChart/edge: image `sha256:4e6130e6caecfeacc3260a134b1a0c20e32e81f3ab2d9aaf570d3e3269f30350`، Nginx `1.30.3`، healthy و drawing-history/motion/visual smoke پاس.
 - User Portal: image `sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216`، referral-gated، healthy و browser `4/4 PASS`.
 - Panel: image `sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd`، healthy، hash برابر build؛ panel browser gate به‌دلیل DNS عمومی هنوز قابل‌اجرا نیست.
 - Edge پرتال‌ها: Panel و User هر دو دقیقاً هفت security header و CSP محدود live دارند؛ دو referral redirect ثابت روی origin و public پاس هستند.
