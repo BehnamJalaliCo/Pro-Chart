@@ -1,15 +1,15 @@
 # دفتر تغییرات Loop — GPT-5.6
 
-آخرین به‌روزرسانی: `2026-07-16T07:20:00Z`  
+آخرین به‌روزرسانی: `2026-07-16T07:40:00Z`  
 منطقهٔ زمانی همهٔ ساعت‌ها: `UTC`  
 مبنای کد: `080033ae56e3c793ba3a998276cac5daeb969d50`
 
 ## شمارش تا این لحظه
 
 - `۷۸` تغییر بنیادیِ کد، پیکربندی یا QA؛
-- `۴۱` بستهٔ بنیادیِ حاکمیت/شواهد؛
+- `۴۲` بستهٔ بنیادیِ حاکمیت/شواهد؛
 - `۶` رویداد دیپلوی production با image قبلی، image جدید، rollback و smoke ثبت‌شده؛
-- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۵`؛
+- جمع تغییرات/رویدادهای بنیادی تا این لحظه: `۱۲۶`؛
 - ایجاد همین دفتر: رویداد متادیتای `LOG-020` و خارج از شمار تغییرات محصول.
 
 «تغییر بنیادی» در این دفتر یعنی یک تغییر مستقل در رفتار محصول، امنیت، کارایی، وابستگی، QA یا وضعیت production. اجرای صرفِ یک probe یا تکرار یک تست، تغییر محصول شمرده نمی‌شود؛ نتیجهٔ آن در همان ردیف تغییر مربوط ثبت می‌شود.
@@ -1183,6 +1183,15 @@
 - build/deploy: تغییر runtime انجام نشد؛ لازم نیست.
 - اثر: integration smoke فعلی سبز است؛ این gate جایگزین full clean suite یا release approval نیست.
 - blocker: visual/motion matrix، historical secret rotation، performance budget مستقل و release provenance باقی است.
+
+### GOV-083 — Matrix JSON/DOCX traceability check
+
+- زمان UTC: `2026-07-16T07:40:00Z`.
+- فرمان‌ها: parse با `python3` روی `docs/03_REQUIREMENTS_MATRIX.json` و `cd docs/source && sha256sum -c SHA256SUMS`.
+- نتیجه: JSON معتبر، `162` requirement (P0=`85`, P1=`77`, P2=`0`) و source hash=`6708022c13c9b07656825043d671d822545c773fae13a9c1b59cf35e42e71955`; هر دو DOCX checksum `OK`.
+- build/deploy: تغییر runtime/سند انجام نشد؛ build/deploy لازم نیست.
+- اثر: منبع Matrix و دو deliverable DOCX قابل‌خواندن و hash-verified هستند؛ وضعیت requirementها هنوز عمدتاً PARTIAL/NOT_STARTED است و ادعای completion مجاز نیست.
+- blocker: visual/motion، accessibility manual، full clean suite و release/security provenance باز هستند.
 
 ## وضعیت فعلی production
 
