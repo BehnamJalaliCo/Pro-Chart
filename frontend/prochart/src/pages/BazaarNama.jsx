@@ -2918,7 +2918,7 @@ export default function BazaarNama() {
             </div>
           ) : (
             <Legend legend={_legendShown} TH={TH} symbol={symbol} tf={TF_LABEL[tf] || tf}
-              chartType={chartType} priceDir={priceDir} sl={chartSettingsOverrides}
+              chartType={chartType} priceDir={priceDir} sl={chartSettingsOverrides} prevClose={_legPrevClose}
               onChartSettings={() => setChartSettingsOpen(true)}
               volume={(legend && legend.volume != null) ? legend.volume : (_lastCandle ? _lastCandle.v : undefined)} />
           )}
