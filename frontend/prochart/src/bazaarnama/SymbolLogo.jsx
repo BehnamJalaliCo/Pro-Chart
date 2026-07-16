@@ -364,7 +364,9 @@ function pair(sym = '') {
 // انتخابِ رنگ/برچسبِ بَج برای شاخص/انرژی/کریپتو-fallback/فلز/ناشناخته.
 function badgeFor(sym = '') {
   const s = String(sym).toUpperCase();
-  const base = s.replace(/USDT$|USD$/, '');
+  // ارزِ مبنا را جدا کن (طولانی‌ترین اول تا USDT پیش از USD مطابقت کند) — قبلاً فقط USDT/USD جدا می‌شد،
+  // پس جفت‌های USDC/BUSD/FDUSD/BTC/… بَجِ برندی‌شان را از دست می‌دادند و به بَجِ خاکستری می‌افتادند.
+  const base = s.replace(/(FDUSD|BUSD|USDT|USDC|TUSD|DAI|USD|EUR|BTC|ETH|BNB|TRY)$/, '');
   if (CRYPTO[base]) return { color: CRYPTO[base][0], txt: CRYPTO[base][1] };
   const stk = s.split(':').pop();                                     // 'NASDAQ:AAPL' → 'AAPL'
   if (STOCKS[stk]) return { color: STOCKS[stk], txt: stk.length > 4 ? stk.slice(0, 4) : stk, stock: true };
