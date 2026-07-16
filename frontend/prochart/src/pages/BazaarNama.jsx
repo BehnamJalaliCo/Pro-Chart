@@ -29,7 +29,7 @@ import MiniChart from '../bazaarnama/MiniChart';
 import { parseSymbolExpr, computeSpread } from '../bazaarnama/symbolExpr';
 import { resampleCandles } from '../bazaarnama/resample';
 import { computeProfile } from '../bazaarnama/volumeProfile';
-import { CROSSHAIR_MODES, crosshairModeById, crosshairOptions, paintCrosshairGlyph, PRICE_SCALE_MODES, priceScaleOptions, resetPriceScaleOptions, priceScaleCornerButtons, applyCornerButton, SESSIONS, sessionBands, paintSessions, secondsToClose, formatCountdown, countdownTint, TIMEZONES, timeZoneOptions, CH3_DEFAULTS } from '../bazaarnama/scales_crosshair';
+import { CROSSHAIR_MODES, crosshairModeById, crosshairOptions, paintCrosshairGlyph, PRICE_SCALE_MODES, priceScaleOptions, resetPriceScaleOptions, priceScaleCornerButtons, applyCornerButton, axisBottomControls, SESSIONS, sessionBands, paintSessions, secondsToClose, formatCountdown, countdownTint, TIMEZONES, timeZoneOptions, CH3_DEFAULTS } from '../bazaarnama/scales_crosshair';
 import { attachHotkeys, SHORTCUT_GROUPS } from '../bazaarnama/hotkeys';
 import { useBreakpoint, MobileToolSheet, CompactTopBar, BREAKPOINTS } from '../bazaarnama/mobile';
 import { useViewport } from '../bazaarnama/useViewport';
@@ -3214,6 +3214,13 @@ export default function BazaarNama() {
                     // (نه handlerِ imperative که با styleِ declarativeِ حالتِ فعال تداخل می‌کرد و رنگِ اکسنت را می‌پوشاند).
                     className={`px-1 h-6 min-w-6 rounded text-[10px] font-semibold leading-none tabular-nums flex items-center justify-center transition-colors duration-[120ms] ${btn.active ? '' : 'opacity-55 hover:opacity-100 hover:bg-black/[0.06]'}`}
                     style={btn.active ? { background: TH.accent, color: '#fff' } : { color: TH.text }}>{btn.label}</button>
+                ))}
+                {/* چرخ‌دندهٔ تنظیماتِ محور در گوشهٔ پایین-راست (هم‌ترازِ TV) — توصیف‌گرِ axisBottomControls که تا کنون وصل نشده بود. افزایشی: دیالوگِ تنظیماتِ چارتِ موجود را باز می‌کند. */}
+                {axisBottomControls().map((btn) => (
+                  <button key={btn.id} type="button" title={btn.title} aria-label={btn.title}
+                    onClick={() => { if (btn.action) setChartSettingsOpen(true); }}
+                    className="px-1 h-6 min-w-6 rounded flex items-center justify-center transition-colors duration-[120ms] opacity-55 hover:opacity-100 hover:bg-black/[0.06]"
+                    style={{ color: TH.text }}><Settings2 size={12} /></button>
                 ))}
               </div>
             )}
