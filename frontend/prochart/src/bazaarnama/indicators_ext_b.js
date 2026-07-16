@@ -793,6 +793,27 @@ const volumeOsc = (c, i) => {
   return { line, guides: [0] };
 };
 
+// 65) استاپِ نوسانی (Volatility Stop) — استاپِ دنبال‌کنندهٔ ATRِ وایلدر با فلیپِ روند (کلاسیک، متمایز از
+//   Chandelier/Supertrend/PSAR). روندِ صعودی → خطِ سبزِ زیرِ قیمت؛ نزولی → خطِ قرمزِ بالای قیمت. عبورِ قیمت از استاپ = فلیپ.
+const volatilityStop = (c, i) => {
+  const src = c.close, n = src.length;
+  const period = Math.max(1, Math.round(i.period || 20)), mult = i.mult || 2;
+  const atr = _atr(c.high, c.low, c.close, period);
+  const up = new Array(n).fill(null), dn = new Array(n).fill(null);
+  let uptrend = true, stop = null, max = src[0], min = src[0];
+  for (let k = 0; k < n; k++) {
+    if (atr[k] == null) { max = src[k]; min = src[k]; continue; }
+    const atrM = mult * atr[k];
+    max = Math.max(max, src[k]); min = Math.min(min, src[k]);
+    stop = stop == null ? (uptrend ? max - atrM : min + atrM)
+      : (uptrend ? Math.max(stop, max - atrM) : Math.min(stop, min + atrM));
+    const nu = (src[k] - stop) >= 0;
+    if (nu !== uptrend) { uptrend = nu; max = src[k]; min = src[k]; stop = uptrend ? max - atrM : min + atrM; }
+    if (uptrend) up[k] = stop; else dn[k] = stop;
+  }
+  return { lines: [{ data: up, color: '#22c55e', gaps: true }, { data: dn, color: '#ef4444', gaps: true }] };
+};
+
 export const EXT_REGISTRY_B = {
   // — اندیکاتورهای غایبِ TV (batch ۱) —
   aroonOsc:   { label: 'اسیلاتورِ آرون (Aroon Oscillator)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e', calc: aroonOsc },
@@ -809,6 +830,7 @@ export const EXT_REGISTRY_B = {
   mom:        { label: 'مومنتوم', pane: 'sub', inputs: { period: 10, source: 'close' }, color: '#60a5fa', calc: mom },
   // — استاپ‌های نوسانی / ریسک (افزودهٔ پانچ‌لیست #۴۶۱) —
   chandelier: { label: 'خروجِ چاندلیر (Chandelier Exit)', pane: 'main', inputs: { period: 22, mult: 3 }, color: '#22c55e', calc: chandelierExit },
+  volatilityStop: { label: 'استاپِ نوسانی (Volatility Stop)', pane: 'main', inputs: { period: 20, mult: 2 }, color: '#f59e0b', calc: volatilityStop },
   ulcer:      { label: 'شاخصِ آلسر (Ulcer Index)', pane: 'sub', inputs: { period: 14 }, color: '#f59e0b', calc: ulcerIndex },
   roc:        { label: 'ROC (نرخِ تغییر)', pane: 'sub', inputs: { period: 9, source: 'close' }, color: '#f472b6', calc: roc },
   trix:       { label: 'TRIX', pane: 'sub', inputs: { period: 18, sig: 9, source: 'close' }, color: '#34d399', calc: trix },
