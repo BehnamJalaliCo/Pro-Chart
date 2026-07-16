@@ -129,5 +129,56 @@ const elem = (name, got, ref) => { let ok = true, bad = -1; for (let k = 0; k < 
   ck('median(4) of [4,8,2,6] = (4+6)/2 = 5', near(g4[3], 5), g4[3], 5);
 }
 
+// ═════════ اندیکاتورهای غایبِ TradingView — batch ۲ ═════════
+const _refEmaAlpha = (src, period) => { const out = new Array(src.length).fill(null), a = 2 / period; let prev = null; for (let k = 0; k < src.length; k++) { const v = src[k]; if (v == null) { out[k] = prev; continue; } prev = prev == null ? v : prev + a * (v - prev); out[k] = prev; } return out; };
+const _refStdev = (src, p) => { const out = new Array(src.length).fill(null); for (let i = p - 1; i < src.length; i++) { let m = 0; for (let j = 0; j < p; j++) m += src[i - j]; m /= p; let s = 0; for (let j = 0; j < p; j++) { const d = src[i - j] - m; s += d * d; } out[i] = Math.sqrt(s / p); } return out; };
+const _refCci = (high, low, close, p) => { const n = close.length, tp = new Array(n); for (let k = 0; k < n; k++) tp[k] = (high[k] + low[k] + close[k]) / 3; const ma = _refSma(tp, p), out = new Array(n).fill(null); for (let k = p - 1; k < n; k++) { let md = 0; for (let j = 0; j < p; j++) md += Math.abs(tp[k - j] - ma[k]); md /= p; out[k] = md ? (tp[k] - ma[k]) / (0.015 * md) : 0; } return out; };
+
+// بارهای مصنوعی مشترک
+const _bars = (n) => { const high = [], low = [], close = [], volume = []; let x = 100; const seed = [3, -2, 5, -7, 1, 4, -6, 2, -3, 8, -1, -4, 6, -2, 3, -9, 5, 1, -2, 7, -5, 2, 4, -8, 3, -1, 6, -3, 2, 5, -7, 4, -2, 1, -6, 3, 8, -4, 2, -5]; for (let k = 0; k < n; k++) { x += seed[k % seed.length]; close.push(x); high.push(x + 2); low.push(x - 2); volume.push(100 + ((k * 37) % 90)); } return { high, low, close, volume }; };
+
+// ───────── Woodies CCI ─────────
+{
+  const w = REG.woodiesCci.calc, b = _bars(40);
+  const r = w(b, { slow: 14, fast: 6 });
+  elem('woodiesCci line == CCI(14) reference', r.line, _refCci(b.high, b.low, b.close, 14));
+  elem('woodiesCci signal == CCI(6) reference', r.signal, _refCci(b.high, b.low, b.close, 6));
+  ck('woodiesCci finite', r.line.concat(r.signal).every(v => v == null || Number.isFinite(v)), 'ok', 'finite');
+}
+
+// ───────── PMO ─────────
+{
+  const pmo = REG.pmo.calc, b = _bars(60), cl = b.close, n = cl.length;
+  const roc = new Array(n).fill(null); for (let k = 1; k < n; k++) if (cl[k - 1]) roc[k] = (cl[k] / cl[k - 1] - 1) * 100 * 10;
+  const refLine = _refEmaAlpha(_refEmaAlpha(roc, 35), 20), refSig = _refEma(refLine, 10);
+  const r = pmo(b, { len1: 35, len2: 20, sig: 10 });
+  elem('pmo line == independent reference', r.line, refLine);
+  elem('pmo signal == EMA(pmo,10) reference', r.signal, refSig);
+}
+
+// ───────── PVI / NVI ─────────
+{
+  const pvi = REG.pvi.calc, nvi = REG.nvi.calc;
+  const close = [100, 102, 101, 105, 103, 108], volume = [10, 20, 15, 25, 12, 30]; // up/down volume pattern
+  // reference PVI: changes only when volume[k] > volume[k-1]
+  const refPVI = [1000]; for (let k = 1; k < close.length; k++) { let v = refPVI[k - 1]; if (volume[k] > volume[k - 1]) v += (close[k] - close[k - 1]) / close[k - 1] * v; refPVI.push(v); }
+  const refNVI = [1000]; for (let k = 1; k < close.length; k++) { let v = refNVI[k - 1]; if (volume[k] < volume[k - 1]) v += (close[k] - close[k - 1]) / close[k - 1] * v; refNVI.push(v); }
+  elem('pvi == cumulative reference (up-volume days)', pvi({ close, volume }).line, refPVI);
+  elem('nvi == cumulative reference (down-volume days)', nvi({ close, volume }).line, refNVI);
+  ck('pvi seed = 1000', near(pvi({ close, volume }).line[0], 1000), pvi({ close, volume }).line[0], 1000);
+}
+
+// ───────── RVI (Relative Volatility Index) ─────────
+{
+  const rvi = REG.rviVol.calc, b = _bars(40), src = b.close, n = src.length;
+  const sd = _refStdev(src, 10), up = new Array(n).fill(null), dn = new Array(n).fill(null);
+  for (let k = 1; k < n; k++) { if (sd[k] == null) continue; if (src[k] > src[k - 1]) { up[k] = sd[k]; dn[k] = 0; } else if (src[k] < src[k - 1]) { up[k] = 0; dn[k] = sd[k]; } else { up[k] = 0; dn[k] = 0; } }
+  const ua = _refEma(up, 14), da = _refEma(dn, 14), ref = new Array(n).fill(null);
+  for (let k = 0; k < n; k++) if (ua[k] != null && da[k] != null) { const s = ua[k] + da[k]; ref[k] = s ? 100 * ua[k] / s : 0; }
+  const got = rvi(b, { length: 14, stdevLen: 10, source: 'close' }).line;
+  elem('rviVol == independent reference', got, ref);
+  ck('rviVol within [0,100]', got.filter(v => v != null).every(v => v >= 0 && v <= 100), 'ok', 'bounded');
+}
+
 console.log(`\n=== ${pass} passed, ${fail} failed ===`);
 if (fail) process.exit(1);

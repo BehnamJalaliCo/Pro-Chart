@@ -707,6 +707,56 @@ const medianInd = (c, i) => {
   return { line: out };
 };
 
+// ───── اندیکاتورهای غایبِ TradingView (batch ۲، تست‌شده) ─────
+// CCI helper (برای Woodies): (TP − SMA(TP)) / (۰٫۰۱۵ × میانگینِ قدرمطلقِ انحراف).
+const _cciSeries = (c, p) => {
+  const n = c.close.length, tp = new Array(n);
+  for (let k = 0; k < n; k++) tp[k] = (c.high[k] + c.low[k] + c.close[k]) / 3;
+  const ma = _sma(tp, p), out = new Array(n).fill(null);
+  for (let k = p - 1; k < n; k++) { let md = 0; for (let j = 0; j < p; j++) md += Math.abs(tp[k - j] - ma[k]); md /= p; out[k] = md ? (tp[k] - ma[k]) / (0.015 * md) : 0; }
+  return out;
+};
+// CCIِ وودی: خطِ اصلی CCI(۱۴) + خطِ توربوی CCI(۶).
+const woodiesCci = (c, i) => ({ line: _cciSeries(c, i.slow), signal: _cciSeries(c, i.fast), guides: [100, 0, -100] });
+
+// EMA با ضریبِ سفارشی (alpha=۲/period؛ سبکِ DecisionPoint برای PMO).
+const _emaAlpha = (src, period) => {
+  const out = new Array(src.length).fill(null), a = 2 / period; let prev = null;
+  for (let k = 0; k < src.length; k++) { const v = src[k]; if (v == null) { out[k] = prev; continue; } prev = prev == null ? v : prev + a * (v - prev); out[k] = prev; }
+  return out;
+};
+// PMO (نوسان‌گرِ مومنتومِ قیمت): ROC×۱۰ ← هموارسازیِ ۳۵ ← هموارسازیِ ۲۰ ← سیگنالِ EMA(۱۰).
+const pmo = (c, i) => {
+  const cl = c.close, n = cl.length, roc = new Array(n).fill(null);
+  for (let k = 1; k < n; k++) if (cl[k - 1]) roc[k] = (cl[k] / cl[k - 1] - 1) * 100 * 10;
+  const s1 = _emaAlpha(roc, i.len1), line = _emaAlpha(s1, i.len2), signal = _ema(line, i.sig);
+  return { line, signal, guides: [0] };
+};
+
+// PVI/NVI (شاخصِ حجمِ مثبت/منفی): تجمعی، seed=۱۰۰۰؛ فقط در روزهای حجم‌بالا (PVI) یا حجم‌پایین (NVI) تغییر می‌کند.
+const _volIndex = (c, positive) => {
+  const cl = c.close, vol = _hasVol(c.volume) ? c.volume : cl.map(() => 1), n = cl.length, out = new Array(n).fill(null);
+  let idx = 1000; if (n) out[0] = 1000;
+  for (let k = 1; k < n; k++) {
+    const up = vol[k] > vol[k - 1], dn = vol[k] < vol[k - 1];
+    if (((positive && up) || (!positive && dn)) && cl[k - 1]) idx += (cl[k] - cl[k - 1]) / cl[k - 1] * idx;
+    out[k] = idx;
+  }
+  return out;
+};
+const pvi = (c) => ({ line: _volIndex(c, true) });
+const nvi = (c) => ({ line: _volIndex(c, false) });
+
+// RVI (شاخصِ نوسان‌پذیریِ نسبیِ دورسی): مثلِ RSI ولی روی انحرافِ معیار به‌جای تغییرِ قیمت.
+const rviVol = (c, i) => {
+  const src = _srcOf(c, i.source), n = src.length, sd = _stdev(src, i.stdevLen);
+  const up = new Array(n).fill(null), dn = new Array(n).fill(null);
+  for (let k = 1; k < n; k++) { if (sd[k] == null) continue; if (src[k] > src[k - 1]) { up[k] = sd[k]; dn[k] = 0; } else if (src[k] < src[k - 1]) { up[k] = 0; dn[k] = sd[k]; } else { up[k] = 0; dn[k] = 0; } }
+  const ua = _ema(up, i.length), da = _ema(dn, i.length), out = new Array(n).fill(null);
+  for (let k = 0; k < n; k++) if (ua[k] != null && da[k] != null) { const s = ua[k] + da[k]; out[k] = s ? 100 * ua[k] / s : 0; }
+  return { line: out, guides: [20, 50, 80], range: [0, 100] };
+};
+
 // ───────────────────────────── رجیستریِ افزونه ─────────────────────────────
 export const EXT_REGISTRY_B = {
   // — اندیکاتورهای غایبِ TV (batch ۱) —
@@ -714,6 +764,12 @@ export const EXT_REGISTRY_B = {
   pvo:        { label: 'نوسان‌گرِ حجمیِ درصدی (PVO)', pane: 'sub', inputs: { fast: 12, slow: 26, sig: 9 }, color: '#60a5fa', calc: pvo },
   adr:        { label: 'میانگینِ محدودهٔ روزانه (ADR)', pane: 'sub', inputs: { period: 14 }, color: '#f59e0b', calc: adr },
   median:     { label: 'قیمتِ میانه (Median)', pane: 'main', inputs: { period: 3, source: 'hl2' }, color: '#a78bfa', calc: medianInd },
+  // — اندیکاتورهای غایبِ TV (batch ۲) —
+  woodiesCci: { label: 'CCIِ وودی (Woodies CCI)', pane: 'sub', inputs: { slow: 14, fast: 6 }, color: '#f59e0b', calc: woodiesCci },
+  pmo:        { label: 'نوسان‌گرِ مومنتومِ قیمت (PMO)', pane: 'sub', inputs: { len1: 35, len2: 20, sig: 10 }, color: '#60a5fa', calc: pmo },
+  pvi:        { label: 'شاخصِ حجمِ مثبت (PVI)', pane: 'sub', inputs: {}, color: '#22c55e', calc: pvi },
+  nvi:        { label: 'شاخصِ حجمِ منفی (NVI)', pane: 'sub', inputs: {}, color: '#ef4444', calc: nvi },
+  rviVol:     { label: 'شاخصِ نوسان‌پذیریِ نسبی (RVI)', pane: 'sub', inputs: { length: 14, stdevLen: 10, source: 'close' }, color: '#a78bfa', calc: rviVol },
   // — §5.2 مومنتوم / اسیلاتورها —
   mom:        { label: 'مومنتوم', pane: 'sub', inputs: { period: 10, source: 'close' }, color: '#60a5fa', calc: mom },
   // — استاپ‌های نوسانی / ریسک (افزودهٔ پانچ‌لیست #۴۶۱) —
