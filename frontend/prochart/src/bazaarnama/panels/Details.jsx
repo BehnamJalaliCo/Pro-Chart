@@ -155,6 +155,9 @@ function newsKW(symbol = '') {
 
 export default function Details({ symbol, TH, prices = {}, techRating = null }) {
   const [day, setDay] = useState(null); // {o,h,l,c,v} کندلِ روز
+  // نشانگرِ بارگذاری: فقط به واکشیِ هستهٔ روزانه (D1) بسته است — که برای هر نمادِ معتبر داده برمی‌گرداند —
+  // تا نوارِ shimmer پس از settle حتماً پاک شود (بنیادی/اخبار عمداً برای کریپتو/فارکس خالی می‌مانند، پس ملاکِ loading نیستند).
+  const [loading, setLoading] = useState(false);
   const [yr, setYr] = useState(null);   // {hi52,lo52,avgVol} از یک سالِ کندلِ روزانه
   const [news, setNews] = useState(null); // آخرین خبرِ مرتبط (کارتِ News سبکِ TV)
   const [ratingTf, setRatingTf] = useState(null); // تایم‌فریمِ انتخابیِ امتیازِ تکنیکال (Technical Ratingِ TV دارد)؛ null = تایم‌فریمِ چارت (propِ techRating)
@@ -185,7 +188,8 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
   useEffect(() => {
     let on = true;
     setDay(null);
-    if (!symbol) return;
+    if (!symbol) { setLoading(false); return; }
+    setLoading(true);
     (async () => {
       try {
         const res = await api.chart(symbol, 'D1', undefined, 2);
@@ -195,6 +199,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
         const prev = arr.length >= 2 ? arr[arr.length - 2] : null;
         if (on && last && last.o != null) setDay({ o: last.o, h: last.h, l: last.l, c: last.c, v: last.v ?? last.volume ?? null, prevClose: prev && prev.c != null ? prev.c : null, t: last.t ?? last.time ?? null });
       } catch { if (on) setDay(null); }
+      finally { if (on) setLoading(false); }
     })();
     return () => { on = false; };
   }, [symbol]);
@@ -357,7 +362,14 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
   );
 
   return (
-    <div className="p-3 text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
+    <div className="relative p-3 text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
+      {/* نوارِ بارگذاریِ نامعین (سبکِ اسکلتِ Symbol Infoِ TV): هنگامِ سوئیچِ نماد تا رسیدنِ کندلِ روزانه
+          یک نوارِ باریکِ لغزان بالای پنل نشان می‌دهد تا «—»های گذرا مثلِ پنلِ خراب به‌نظر نرسند. */}
+      {loading && (
+        <div className="absolute top-0 left-0 right-0 h-[2px] overflow-hidden" style={{ background: TH.chipBg }} aria-hidden="true">
+          <div className="h-full w-1/4 rounded-full" style={{ background: TH.accent, animation: 'pcSlide 1.1s ease-in-out infinite' }} />
+        </div>
+      )}
       {/* سربرگ: آیکون + نماد + نامِ کامل + بازار + آیکون‌های عملیاتِ راست (سبکِ سرتیترِ نمادِ TV) */}
       <div className="mb-3">
         <div className="flex items-center gap-2">
