@@ -814,12 +814,19 @@ const volatilityStop = (c, i) => {
   return { lines: [{ data: up, color: '#22c55e', gaps: true }, { data: dn, color: '#ef4444', gaps: true }] };
 };
 
+// 66) قیمتِ تیپیک (Typical Price = HLC3) و قیمتِ وزنیِ بسته (Weighted Close = HLCC4) —
+//   اورلی‌های price-transformِ استانداردِ TV؛ خطِ خامِ هر کندل، بدونِ هموارسازی (مثلِ TradingView).
+const typicalPrice = (c) => ({ line: _hlc3(c) });
+const weightedClose = (c) => ({ line: _hlcc4(c) });
+
 export const EXT_REGISTRY_B = {
   // — اندیکاتورهای غایبِ TV (batch ۱) —
   aroonOsc:   { label: 'اسیلاتورِ آرون (Aroon Oscillator)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e', calc: aroonOsc },
   pvo:        { label: 'نوسان‌گرِ حجمیِ درصدی (PVO)', pane: 'sub', inputs: { fast: 12, slow: 26, sig: 9 }, color: '#60a5fa', calc: pvo },
   adr:        { label: 'میانگینِ محدودهٔ روزانه (ADR)', pane: 'sub', inputs: { period: 14 }, color: '#f59e0b', calc: adr },
   median:     { label: 'قیمتِ میانه (Median)', pane: 'main', inputs: { period: 3, source: 'hl2' }, color: '#a78bfa', calc: medianInd },
+  typicalPrice:  { label: 'قیمتِ تیپیک (Typical Price)', pane: 'main', inputs: {}, color: '#a78bfa', calc: typicalPrice },
+  weightedClose: { label: 'قیمتِ وزنیِ بسته (Weighted Close)', pane: 'main', inputs: {}, color: '#fb923c', calc: weightedClose },
   // — اندیکاتورهای غایبِ TV (batch ۲) —
   woodiesCci: { label: 'CCIِ وودی (Woodies CCI)', pane: 'sub', inputs: { slow: 14, fast: 6 }, color: '#f59e0b', calc: woodiesCci },
   pmo:        { label: 'نوسان‌گرِ مومنتومِ قیمت (PMO)', pane: 'sub', inputs: { len1: 35, len2: 20, sig: 10 }, color: '#60a5fa', calc: pmo },
