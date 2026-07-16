@@ -3150,7 +3150,7 @@ export default function BazaarNama() {
                     <button onClick={() => { const nv = !allHidden; drawRef.current.hideAll(nv); setAllHidden(nv); treeRefresh(); }} title={allHidden ? 'نمایشِ همه' : 'پنهان‌کردنِ همه'} className="opacity-60 hover:opacity-100">{allHidden ? <Eye size={13} /> : <EyeOff size={13} />}</button>
                     <button onClick={() => { const nv = !allLocked; drawRef.current.lockAll(nv); setAllLocked(nv); treeRefresh(); }} title={allLocked ? 'بازکردنِ قفلِ همه' : 'قفلِ همه'} className="opacity-60 hover:opacity-100">{allLocked ? <Unlock size={13} /> : <Lock size={13} />}</button>
                     <button onClick={() => { drawRef.current.clearAll(); treeRefresh(); }} title="حذفِ همه" className="opacity-60 hover:text-red-400"><Trash2 size={13} /></button>
-                    <button onClick={() => setShowTree(false)} className="opacity-60 hover:opacity-100"><X size={13} /></button>
+                    <button onClick={() => setShowTree(false)} title="بستن" aria-label="بستنِ درختِ اشیا" className="opacity-60 hover:opacity-100"><X size={13} /></button>
                   </div>
                 </div>
                 <div className="max-h-64 overflow-auto text-xs">
@@ -4022,9 +4022,9 @@ export default function BazaarNama() {
                     <div key={it.id} className="flex items-center gap-2 rounded-lg px-3" style={{ minHeight: 44, background: TH.chipBg }}>
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: it.color }} />
                       <span className="flex-1 text-sm" style={{ color: TH.textStrong, opacity: it.visible === false ? 0.45 : 1 }}>{it.label}</span>
-                      <button onClick={() => toggleIndVisible(it)} className="p-1" style={{ color: TH.text }}>{it.visible === false ? <EyeOff size={18} /> : <Eye size={18} />}</button>
-                      <button onClick={() => { setEditInd({ scope: it.scope, id: it.id }); setSheet('none'); }} className="p-1" style={{ color: TH.text }}><Settings2 size={18} /></button>
-                      <button onClick={() => rmInd(it.scope, it.id)} className="p-1 text-red-400"><X size={18} /></button>
+                      <button onClick={() => toggleIndVisible(it)} title={it.visible === false ? 'نمایش' : 'پنهان‌کردن'} aria-label={it.visible === false ? 'نمایشِ اندیکاتور' : 'پنهان‌کردنِ اندیکاتور'} className="p-1" style={{ color: TH.text }}>{it.visible === false ? <EyeOff size={18} /> : <Eye size={18} />}</button>
+                      <button onClick={() => { setEditInd({ scope: it.scope, id: it.id }); setSheet('none'); }} title="تنظیمات" aria-label="تنظیماتِ اندیکاتور" className="p-1" style={{ color: TH.text }}><Settings2 size={18} /></button>
+                      <button onClick={() => rmInd(it.scope, it.id)} title="حذف" aria-label="حذفِ اندیکاتور" className="p-1 text-red-400"><X size={18} /></button>
                     </div>
                   ))}
                 </div>
