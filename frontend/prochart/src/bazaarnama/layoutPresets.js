@@ -23,10 +23,14 @@ export const GRID_LAYOUTS = {
   '4':  { id: '4',  cells: 4, cols: '1fr 1fr',     rows: '1fr 1fr', label: 'چهارتایی',     legacyGrid: 4 },
   '6':  { id: '6',  cells: 6, cols: '1fr 1fr 1fr', rows: '1fr 1fr', label: 'شش‌تایی',      legacyGrid: 4 },
   '8':  { id: '8',  cells: 8, cols: '1fr 1fr 1fr 1fr', rows: '1fr 1fr', label: 'هشت‌تایی', legacyGrid: 4 },
+  // چیدمان‌های متقارنِ افزوده (هم‌ترازِ منوی چند-چارتِ TradingView): سه‌تاییِ عمودی، چهارتاییِ افقی/عمودی.
+  '3v': { id: '3v', cells: 3, cols: '1fr',             rows: '1fr 1fr 1fr',         label: 'سه‌تاییِ عمودی',   legacyGrid: 4 },
+  '4h': { id: '4h', cells: 4, cols: '1fr 1fr 1fr 1fr', rows: '1fr',                 label: 'چهارتاییِ افقی',   legacyGrid: 4 },
+  '4v': { id: '4v', cells: 4, cols: '1fr',             rows: '1fr 1fr 1fr 1fr',     label: 'چهارتاییِ عمودی',  legacyGrid: 4 },
 };
 
 // ترتیبِ نمایش در انتخابگرِ پریست (سبکِ TradingView)
-export const GRID_PRESET_ORDER = ['1', '2h', '2v', '3', '4', '6', '8'];
+export const GRID_PRESET_ORDER = ['1', '2h', '2v', '3', '3v', '4', '4h', '4v', '6', '8'];
 
 // گرفتنِ پریست با fallbackِ امن
 export function getGridLayout(id) {
