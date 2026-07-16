@@ -6,8 +6,14 @@
 // ستون‌های ٪/سقف/کف/دامنه از streamِ زندهٔ همین سشن ساخته می‌شوند (دادهٔ واقعی، نه ساختگی)،
 // چون payloadِ سرور فقط { mid, dir } دارد — دقیقاً هم‌منطق با واچ‌لیست.
 import React, { useMemo, useRef, useState } from 'react';
-import { Star, SlidersHorizontal, Columns3, Check, Filter } from 'lucide-react';
+import { Star, SlidersHorizontal, Columns3, Check, Filter } from '../tvIcons';
 import SymbolLogo from '../SymbolLogo';
+import { api } from '../../api/client';
+
+// سقفِ واکشیِ prevCloseِ روزانه در اسکنر — چون جهانِ نماد برای کاربرِ واردشده صدها نماد است،
+// فقط برای N نمادِ اولِ (رتبه‌بندی‌شده = مهم‌ترین‌ها) prevClose می‌گیریم تا از fetch-storm جلوگیری شود؛
+// بقیه graceful به baselineِ سشن برمی‌گردند. (واچ‌لیست چون فهرستِ کوچکِ کاربر است سقف نمی‌خواهد.)
+const PREVCLOSE_CAP = 50;
 
 // تبدیلِ مطمئنِ mid به عدد (mid ممکن است رشته باشد)
 const num = (v) => { const n = typeof v === 'number' ? v : parseFloat(v); return Number.isFinite(n) ? n : null; };
@@ -26,11 +32,13 @@ const digits = (sym = '') => {
   if (/US30|US500|US100|NAS100|NAS|SPX|DJI|NDX|UK100|DE40|GER40|JP225|FRA40|HK50|AUS200|EU50/.test(s)) return 2;
   return 5;
 };
-const fmtP = (sym, v) => { const n = num(v); return n == null ? '—' : n.toFixed(digits(sym)); };
+// جداکنندهٔ هزارگان + دقتِ نماد — هم‌راستا با محور/لجند/واچ‌لیست و TradingView.
+const grp = (n, d) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmtP = (sym, v) => { const n = num(v); return n == null ? '—' : grp(n, digits(sym)); };
 // درصد با علامت و دو رقم (سبکِ فارسیِ واچ‌لیست)
 const fmtPct = (n) => (n == null ? '—' : `${n > 0 ? '+' : ''}${n.toFixed(2)}٪`);
 // تغییرِ مطلق با علامت و دقتِ نماد (ستونِ Chg عینِ TV)
-const fmtAbs = (sym, n) => (n == null ? '—' : `${n > 0 ? '+' : ''}${n.toFixed(digits(sym))}`);
+const fmtAbs = (sym, n) => (n == null ? '—' : `${n > 0 ? '+' : ''}${grp(n, digits(sym))}`);
 
 // پس‌زمینهٔ نیمه‌شفافِ سلولِ تغییر (پیلِ سبز/قرمزِ کم‌رنگ عینِ اسکرینرِ TV)
 const tint = (color, n) => (n == null || n === 0 ? 'transparent' : `color-mix(in srgb, ${color} 14%, transparent)`);
@@ -100,6 +108,25 @@ const PRESETS = [
   ['crypto', 'کریپتو'],
 ];
 
+// ارزهای مبنایِ رایجِ کریپتو برای تفکیکِ نمایشی (طولانی‌ترین اول تا USDT پیش از USD مطابقت کند).
+const _QUOTES = ['FDUSD', 'BUSD', 'USDT', 'USDC', 'TUSD', 'DAI', 'USD', 'EUR', 'BTC', 'ETH', 'BNB', 'TRY'];
+// نمایشِ خواناترِ جفت‌ارز/فلز/کریپتو → EUR/USD ، XAU/USD ، BTC/USDT ، ETH/USD (هم‌راستا با واچ‌لیست و TradingView).
+// قبلاً فقط جفت‌ارزِ ۶-حرفی تفکیک می‌شد و کریپتوی خام مثلِ BTCUSDT بریده و «BTCUS…» دیده می‌شد. حالا پسوندِ ارزِ مبنا هم جدا می‌شود.
+// شاخص‌ها (US30/NAS100/…) هرگز تفکیک نمی‌شوند. فقط نمایش؛ CSV/سرچ روی نمادِ خام می‌مانند.
+const prettySym = (s = '') => {
+  const u = String(s).toUpperCase();
+  if (u.length === 6 && _CCY3.includes(u.slice(0, 3)) && _CCY3.includes(u.slice(3, 6))) return `${u.slice(0, 3)}/${u.slice(3, 6)}`;
+  if (symbolKind(u) !== 'index') {
+    for (const q of _QUOTES) {
+      if (u.endsWith(q) && u.length > q.length + 1) {
+        const base = u.slice(0, -q.length);
+        if (/^[A-Z0-9]{2,}$/.test(base)) return `${base}/${q}`;
+      }
+    }
+  }
+  return s;
+};
+
 // ستون‌های عددیِ اختیاری (قیمت همیشه هست) — تکنیکال/قیمتیِ ساخته‌شده از سشنِ زنده
 const OPT_COLS = [
   ['change', 'تغییر٪'],
@@ -113,7 +140,8 @@ const OPT_COLS = [
 // persist محلیِ ترجیحاتِ اسکنر (کلیدِ مستقل تا چیزی از واچ‌لیست/ورک‌اسپیس دست‌نخورده بماند)
 const SC_KEY = 'bn_screener_prefs';
 const loadPrefs = () => {
-  const base = { preset: 'all', changeDir: 'all', minChg: '', columns: ['change'], sortBy: 'value', sortDir: 'asc' };
+  // پیش‌فرضِ ستون‌ها هم‌راستا با واچ‌لیست و اسکرینرِ TV: تغییر (Chg) + تغییر٪ (Chg%) در کنارِ قیمت.
+  const base = { preset: 'all', changeDir: 'all', minChg: '', columns: ['chgAbs', 'change'], sortBy: 'value', sortDir: 'asc' };
   try {
     const raw = JSON.parse(localStorage.getItem(SC_KEY) || 'null');
     if (!raw || typeof raw !== 'object') return base;
@@ -138,6 +166,27 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
   const baseRef = useRef({});
   const sessRef = useRef({});
 
+  // بستهٔ روزِ قبلِ واقعی (کندلِ روزانه) برای «تغییر٪»ِ روزِ واقعی مثلِ واچ‌لیست/Details/TV — به‌جای ۰٫۰۰٪ِ baselineِ سشن.
+  // فقط برای PREVCLOSE_CAP نمادِ اول (رتبه‌بندی‌شده)، یک‌بار، کش‌شده؛ خطا/نبود ⇒ fallback به baselineِ سشن.
+  const prevCloseRef = useRef({});
+  const [prevTick, bumpPrev] = useState(0);
+  const capKey = symbols.slice(0, PREVCLOSE_CAP).join(',');
+  React.useEffect(() => {
+    let on = true;
+    const syms = symbols.slice(0, PREVCLOSE_CAP).filter((s) => prevCloseRef.current[s] === undefined);
+    if (!syms.length) return undefined;
+    syms.forEach((s) => { prevCloseRef.current[s] = null; }); // «در حالِ واکشی»
+    Promise.allSettled(syms.map((s) => api.chart(s, 'D1', undefined, 2).then((res) => {
+      const cs = res?.candles || res?.data || res || [];
+      const arr = Array.isArray(cs) ? cs : [];
+      const prev = arr.length >= 2 ? arr[arr.length - 2] : null;
+      const pc = prev && prev.c != null ? Number(prev.c) : null;
+      if (pc != null && Number.isFinite(pc)) prevCloseRef.current[s] = pc;
+    }))).then(() => { if (on) bumpPrev((n) => (n + 1) % 1e6); });
+    return () => { on = false; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [capKey]);
+
   // persist هر تغییرِ ترجیحات
   React.useEffect(() => {
     try { localStorage.setItem(SC_KEY, JSON.stringify({ preset, changeDir, minChg, columns, sortBy, sortDir })); } catch (e) { /* noop */ }
@@ -159,7 +208,9 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
       if (mid > ss.hi) ss.hi = mid;
       if (mid < ss.lo) ss.lo = mid;
     }
-    const base = baseRef.current[s];
+    // تغییرِ روزِ واقعی (نسبت به بستهٔ روزِ قبل) اگر prevCloseِ روزانه آمده؛ وگرنه baselineِ سشن (fallback).
+    const pc = prevCloseRef.current[s];
+    const base = (pc != null && Number.isFinite(pc)) ? pc : baseRef.current[s];
     const sess = sessRef.current[s] || null;
     const hi = sess ? sess.hi : null;
     const lo = sess ? sess.lo : null;
@@ -206,9 +257,11 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
     });
     return list.map((s) => ({ s, m: M[s] }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbols, prices, q, onlyMovers, preset, changeDir, minChg, sortBy, sortDir]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symbols, prices, q, onlyMovers, preset, changeDir, minChg, sortBy, sortDir, prevTick]);
 
-  const arrow = (col) => (sortBy === col ? (sortDir === 'asc' ? '↑' : '↓') : '');
+  // فلشِ مرتب‌سازی: مثلثِ توپر ▲/▼ هم‌سبکِ واچ‌لیست (یکدستیِ دو جدولِ مرتب‌شونده در پنلِ راست).
+  const arrow = (col) => (sortBy === col ? (sortDir === 'asc' ? '▲' : '▼') : '');
   const inWatch = (s) => (watch || []).includes(s);
   // خروجی به واچ‌لیست: افزودنِ همهٔ نمادهای نمایان که هنوز در واچ نیستند
   const addVisible = () => {
@@ -216,6 +269,20 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
     rows.forEach(({ s }) => { if (!inWatch(s)) toggleWatch(s); });
   };
   const missingCount = (rows || []).filter(({ s }) => !inWatch(s)).length;
+
+  // خروجیِ CSV از نتایجِ فعلیِ اسکنر (هم‌ترازِ Export screener resultsِ TV) — نماد + قیمت + ستون‌های فعال.
+  const exportCsv = () => {
+    try {
+      const labelOf = (k) => (OPT_COLS.find(([kk]) => kk === k) || [k, k])[1];
+      const cell = (m, k) => { const v = k === 'change' ? m.chg : k === 'chgAbs' ? m.chgAbs : k === 'high' ? m.hi : k === 'low' ? m.lo : k === 'range' ? m.range : k === 'spread' ? m.spread : null; return v != null ? v : ''; };
+      const lines = [['Symbol', 'Last', ...columns.map(labelOf)].join(',')];
+      (rows || []).forEach(({ s, m }) => { lines.push([s, m.last != null ? m.last : '', ...columns.map((k) => cell(m, k))].join(',')); });
+      const blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'screener.csv'; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (e) { /* noop */ }
+  };
 
   // سرستونِ قابلِ‌مرتب‌سازی با اکسنتِ ظریفِ ستونِ فعال
   const HCell = ({ col, children, className = '', ...rest }) => {
@@ -332,6 +399,17 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
             <Star size={11} /> +واچ
           </button>
         )}
+        {/* خروجیِ CSV از نتایجِ اسکنر (هم‌ترازِ Exportِ اسکنرِ TV) */}
+        {(rows || []).length > 0 && (
+          <button onClick={exportCsv} title="خروجیِ نتایجِ اسکنر به CSV"
+            className="flex items-center gap-1 px-2 h-[24px] rounded-full text-[10px] whitespace-nowrap shrink-0 transition-colors"
+            style={{ background: TH.chipBg, color: TH.text }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
+            onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="M7 10l5 5 5-5M12 15V3" /></svg>
+            CSV
+          </button>
+        )}
       </div>
 
       {/* بدنه + سرستونِ هم‌عرض (اسکرولِ افقی برای ستون‌های اضافه) */}
@@ -370,7 +448,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
                 dir="ltr"
               >
                 <SymbolLogo symbol={s} size={20} />
-                <span className="text-left truncate" style={{ color: active ? TH.accent : TH.textStrong, fontWeight: active ? 600 : 400 }}>{s}</span>
+                <span className="text-left truncate" style={{ color: active ? TH.accent : TH.textStrong, fontWeight: active ? 600 : 400 }}>{prettySym(s)}</span>
                 <FlashNum value={m.last} dir={dir} className="tnum text-right rounded px-0.5 -mx-0.5" style={{ color: col }}>
                   {m.last != null ? fmtP(s, m.last) : '—'}
                 </FlashNum>
@@ -396,6 +474,11 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
             );
           })}
         </div>
+      </div>
+      {/* فوترِ شمارشِ نتایج — هم‌ترازِ «N matches»ِ فوترِ اسکرینرِ TV */}
+      <div className="flex items-center justify-between px-3 h-6 border-t text-[10px] shrink-0 select-none" style={{ borderColor: TH.border, color: TH.text, opacity: 0.6 }}>
+        <span className="tabular-nums">{rows.length} نماد</span>
+        {(onlyMovers || changeDir !== 'all' || (minChg && minChg !== '0') || q.trim() || preset !== 'all') && <span className="opacity-80">فیلترشده</span>}
       </div>
     </div>
   );
