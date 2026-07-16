@@ -180,5 +180,54 @@ const _bars = (n) => { const high = [], low = [], close = [], volume = []; let x
   ck('rviVol within [0,100]', got.filter(v => v != null).every(v => v >= 0 && v <= 100), 'ok', 'bounded');
 }
 
+// ───────── Typical Price (HLC3) & Weighted Close (HLCC4) — Loop #44 ─────────
+{
+  const high = [12, 15, 20], low = [8, 9, 10], close = [11, 12, 18];
+  const tp = REG.typicalPrice.calc({ high, low, close }).line;
+  const wc = REG.weightedClose.calc({ high, low, close }).line;
+  ck('typicalPrice == (H+L+C)/3', tp.every((v, k) => near(v, (high[k] + low[k] + close[k]) / 3)), tp, 'HLC3');
+  ck('weightedClose == (H+L+2C)/4', wc.every((v, k) => near(v, (high[k] + low[k] + 2 * close[k]) / 4)), wc, 'HLCC4');
+}
+
+// ───────── Volume Oscillator — Loop #40 ─────────
+{
+  const b = _bars(40), vol = b.volume;
+  const short = _refEma(vol, 5), long = _refEma(vol, 10);
+  const ref = short.map((s, k) => (s == null || long[k] == null || !long[k] ? null : (s - long[k]) / long[k] * 100));
+  elem('volumeOsc == (shortEMA-longEMA)/longEMA*100 reference', REG.volumeOsc.calc(b, { shortLen: 5, longLen: 10 }).line, ref);
+  const nz = REG.volumeOsc.calc({ high: [1, 2, 3], low: [1, 2, 3], close: [1, 2, 3], volume: [0, 0, 0] }, { shortLen: 5, longLen: 10 }).line;
+  ck('volumeOsc null without volume', nz.every(v => v == null), nz, 'all null');
+}
+
+// ───────── Linear Regression Channel — Loop #39 ─────────
+{
+  const n = 120, close = Array.from({ length: n }, (_, k) => 2 * k + 10), high = close.map(v => v + 0.1), low = close.map(v => v - 0.1);
+  const r = REG.linRegChannel.calc({ high, low, close }, { length: 100, mult: 2, source: 'close' });
+  ck('linRegChannel warmup null (<length-1)', r.basis.slice(0, 99).every(v => v == null), 'ok', 'null');
+  ck('linRegChannel basis==src on perfect linear', near(r.basis[119], close[119], 1e-6), r.basis[119], close[119]);
+  ck('linRegChannel sd~0 on linear => upper==basis', near(r.upper[119], r.basis[119], 1e-6), r.upper[119], r.basis[119]);
+  ck('linRegChannel bands symmetric', near(r.upper[119] - r.basis[119], r.basis[119] - r.lower[119]), 'ok', 'symmetric');
+}
+
+// ───────── Volatility Stop — Loop #41 ─────────
+{
+  const n = 40, close = Array.from({ length: n }, (_, k) => 100 + 2 * k), high = close.map(v => v + 1), low = close.map(v => v - 1);
+  const r = REG.volatilityStop.calc({ high, low, close }, { period: 14, mult: 2 }), up = r.lines[0].data, dn = r.lines[1].data, last = n - 1;
+  ck('volatilityStop green stop below price (uptrend)', up[last] != null && up[last] < close[last], up[last], '<' + close[last]);
+  ck('volatilityStop red null in uptrend', dn[last] == null, dn[last], null);
+  ck('volatilityStop green stop non-decreasing (uptrend)', up.filter(v => v != null).every((v, i, a) => i === 0 || v >= a[i - 1] - 1e-9), 'ok', 'monotone');
+}
+
+// ───────── warmup-contamination fix: EMA signals seed on first real value — Loop #45 ─────────
+// (regression guard: the map(null->0) anti-pattern used to drag the first ~p signal outputs toward 0)
+{
+  const b = _bars(120);
+  for (const key of ['smiErgodic', 'trix', 'klinger']) {
+    const r = REG[key].calc(b, REG[key].inputs), line = r.line, sig = r.signal;
+    const fl = line.findIndex(v => v != null), fs = sig.findIndex(v => v != null);
+    ck(`${key} signal seeds on first real line value (no null->0 drag)`, fs >= fl && near(sig[fs], line[fs], 1e-9), { line: line[fs], sig: sig[fs] }, 'equal');
+  }
+}
+
 console.log(`\n=== ${pass} passed, ${fail} failed ===`);
 if (fail) process.exit(1);
