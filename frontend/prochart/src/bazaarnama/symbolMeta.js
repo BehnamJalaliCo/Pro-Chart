@@ -4,13 +4,15 @@
 // اگر بعداً سرور فیلدها را داد، فقط buildMeta با merge جایگزین می‌شود.
 // ارزهای فیاتِ واقعیِ موجود روی حسابِ مَستر (میجرها + کراس‌ها + اگزوتیک‌های رایجِ OneRoyal).
 const CCY = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'NZD',
-  'NOK', 'SEK', 'SGD', 'HKD', 'TRY', 'ZAR', 'MXN', 'CNH', 'DKK', 'PLN'];
+  'NOK', 'SEK', 'SGD', 'HKD', 'TRY', 'ZAR', 'MXN', 'CNH', 'DKK', 'PLN',
+  'CNY', 'RUB', 'INR', 'KRW', 'BRL'];
 const CCY_FA = {
   USD: 'دلار آمریکا', EUR: 'یورو', GBP: 'پوند انگلیس', JPY: 'ین ژاپن',
   CHF: 'فرانک سوئیس', CAD: 'دلار کانادا', AUD: 'دلار استرالیا', NZD: 'دلار نیوزیلند',
   NOK: 'کرون نروژ', SEK: 'کرون سوئد', SGD: 'دلار سنگاپور', HKD: 'دلار هنگ‌کنگ',
   TRY: 'لیر ترکیه', ZAR: 'راند آفریقای جنوبی', MXN: 'پزو مکزیک', CNH: 'یوان چین',
   DKK: 'کرون دانمارک', PLN: 'زلوتی لهستان',
+  CNY: 'یوان چین', RUB: 'روبل روسیه', INR: 'روپیه هند', KRW: 'وون کره جنوبی', BRL: 'رئال برزیل',
 };
 // نامِ کاملِ انگلیسیِ استانداردِ ارزها (سبکِ سرتیترِ TradingView).
 const CCY_EN = {
@@ -19,6 +21,7 @@ const CCY_EN = {
   NOK: 'Norwegian Krone', SEK: 'Swedish Krona', SGD: 'Singapore Dollar', HKD: 'Hong Kong Dollar',
   TRY: 'Turkish Lira', ZAR: 'South African Rand', MXN: 'Mexican Peso', CNH: 'Chinese Yuan',
   DKK: 'Danish Krone', PLN: 'Polish Zloty',
+  CNY: 'Chinese Yuan', RUB: 'Russian Ruble', INR: 'Indian Rupee', KRW: 'South Korean Won', BRL: 'Brazilian Real',
 };
 const METAL = { XAU: ['طلا', 'metal'], XAG: ['نقره', 'metal'], XPT: ['پلاتین', 'metal'], XPD: ['پالادیوم', 'metal'], XCU: ['مس', 'metal'] };
 const METAL_EN = { XAU: 'Gold', XAG: 'Silver', XPT: 'Platinum', XPD: 'Palladium', XCU: 'Copper' };
@@ -249,6 +252,31 @@ export function classify(symRaw) {
   return enrich(classifyRaw(symRaw));
 }
 
+// ── سهام/ETFِ TV-دارای‌لوگو (هم‌ترازِ STOCKS_TOP بک‌اند + STOCK_LOGO در SymbolLogo). ──
+const STOCKS = new Set([
+  'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'AVGO', 'NFLX', 'AMD',
+  'INTC', 'CRM', 'ORCL', 'ADBE', 'CSCO', 'QCOM', 'TXN', 'AMAT', 'IBM', 'MU',
+  'ARM', 'PLTR', 'SMCI', 'DELL', 'UBER', 'PYPL', 'DIS', 'BABA', 'KO', 'PEP',
+  'MCD', 'NKE', 'V', 'MA', 'JPM', 'BAC', 'WMT', 'COST', 'PFE', 'BA',
+  'GS', 'SBUX', 'COIN', 'SHOP', 'ABNB', 'MSTR', 'HOOD',
+  'SPY', 'QQQ', 'IWM', 'DIA', 'GLD',
+]);
+// نامِ نمایشیِ سهام (برای desc در لیست/سرچ) — انگلیسی، شناخته‌شده.
+const STOCK_FA = {
+  AAPL: 'Apple', MSFT: 'Microsoft', GOOGL: 'Alphabet (Google)', AMZN: 'Amazon', NVDA: 'NVIDIA',
+  META: 'Meta Platforms', TSLA: 'Tesla', AVGO: 'Broadcom', NFLX: 'Netflix', AMD: 'AMD',
+  INTC: 'Intel', CRM: 'Salesforce', ORCL: 'Oracle', ADBE: 'Adobe', CSCO: 'Cisco',
+  QCOM: 'Qualcomm', TXN: 'Texas Instruments', AMAT: 'Applied Materials', IBM: 'IBM', MU: 'Micron',
+  ARM: 'Arm Holdings', PLTR: 'Palantir', SMCI: 'Super Micro', DELL: 'Dell', UBER: 'Uber',
+  PYPL: 'PayPal', DIS: 'Disney', BABA: 'Alibaba', KO: 'Coca-Cola', PEP: 'PepsiCo',
+  MCD: "McDonald's", NKE: 'Nike', V: 'Visa', MA: 'Mastercard', JPM: 'JPMorgan Chase',
+  BAC: 'Bank of America', WMT: 'Walmart', COST: 'Costco', PFE: 'Pfizer', BA: 'Boeing',
+  GS: 'Goldman Sachs', SBUX: 'Starbucks', COIN: 'Coinbase', SHOP: 'Shopify', ABNB: 'Airbnb',
+  MSTR: 'Strategy (MicroStrategy)', HOOD: 'Robinhood',
+  SPY: 'SPDR S&P 500 ETF', QQQ: 'Invesco QQQ ETF', IWM: 'iShares Russell 2000 ETF',
+  DIA: 'SPDR Dow Jones ETF', GLD: 'SPDR Gold Shares',
+};
+
 function classifyRaw(symRaw) {
   const sym = up(symRaw);
   const clean = sym.replace(/[^A-Z0-9]/g, '');
@@ -284,6 +312,10 @@ function classifyRaw(symRaw) {
   if (base && base !== clean) {
     const quote = clean.slice(base.length);
     return { symbol: sym, cat: 'crypto', base, quote, desc: CRYPTO_FA[base] ? `${CRYPTO_FA[base]} (${base})` : base };
+  }
+  // سهام/ETF (تیکرِ آلفا؛ فقط مجموعهٔ TV-دارای‌لوگو که فیدِ قیمت/کندل دارد) — قبل از fallbackِ «other».
+  if (STOCKS.has(clean)) {
+    return { symbol: sym, cat: 'stock', base: clean, quote: 'USD', desc: STOCK_FA[clean] || clean, enName: clean, country: 'US' };
   }
   return { symbol: sym, cat: 'other', desc: sym };
 }
@@ -321,7 +353,10 @@ export function isCleanSymbol(symbol) {
     case 'metal': return CLEAN_METAL.has(m.base);
     case 'index': return INDEX_FA[m.indexKey] != null;
     case 'energy': return true;
-    case 'crypto': return CLEAN_CRYPTO.has(m.base);
+    // کریپتو: بک‌اند دقیقاً «۱۰۰ کوینِ برترِ کیوریت‌شده» را برمی‌گرداند، پس همه را نگه می‌داریم
+    //   (کوین‌های خارج از CRYPTO_FA بَجِ رنگی/تیکر می‌گیرند تا هیچ‌کدام از ۱۰۰ تای برتر حذف نشوند).
+    case 'crypto': return true;
+    case 'stock': return true; // سهام/ETFِ TV-دارای‌لوگو (فیدِ finnhub + yfinance)
     default: return false; // 'other' = سهامِ تصادفیِ بی‌لوگو
   }
 }

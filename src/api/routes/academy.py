@@ -1502,13 +1502,29 @@ def _trendline(points):
     return {"i1": i1, "p1": round(m * i1 + b, 5), "i2": i2, "p2": round(m * i2 + b, 5)}
 
 
+# ثانیهٔ هر تایم‌فریم — برای ساختِ حدِ پایینِ زمانیِ کوئریِ کندل (هرسِ chunkهای TimescaleDB).
+_TF_SECONDS = {
+    "M1": 60, "M5": 300, "M15": 900, "M30": 1800,
+    "H1": 3600, "H2": 7200, "H3": 10800, "H4": 14400, "H6": 21600, "H8": 28800, "H12": 43200,
+    "D1": 86400, "D": 86400, "W1": 604800, "W": 604800, "MN": 2592000, "MN1": 2592000,
+}
+
+
 async def _chart_rows(db, symbol, tf, limit=130, before=None):
-    q = ("SELECT time,open,high,low,close,COALESCE(volume,0) FROM candles WHERE symbol=:s AND timeframe=:t "
-         + ("AND time <= to_timestamp(:b) " if before else "")
-         + "ORDER BY time DESC LIMIT :n")
-    params = {"s": symbol, "t": tf, "n": int(limit)}
+    n = int(limit)
+    conds = "symbol=:s AND timeframe=:t "
     if before:
-        params["b"] = int(before)
+        conds += f"AND time <= to_timestamp({int(before)}) "
+    # حدِ پایینِ زمانی به‌صورتِ ثابتِ درون‌خطی (نه پارامتر) تا TimescaleDB در زمانِ پلن
+    # chunkهای قدیمی را حذف کند. بدونِ این حد، کوئری روی هر ۷۰۰+ chunk قفل می‌گیرد و
+    # «out of shared memory / max_locks_per_transaction» می‌دهد. ضریبِ ۴ برای پوششِ
+    # آخرهفته/تعطیلات/شکافِ داده؛ اگر کمتر شد فقط چند کندلِ کمتر برمی‌گردد، نه خطا.
+    bs = _TF_SECONDS.get(str(tf).upper())
+    if bs:
+        upper = int(before) if before else int(datetime.now(timezone.utc).timestamp())
+        conds += f"AND time >= to_timestamp({upper - n * bs * 4}) "
+    q = "SELECT time,open,high,low,close,COALESCE(volume,0) FROM candles WHERE " + conds + "ORDER BY time DESC LIMIT :n"
+    params = {"s": symbol, "t": tf, "n": n}
     rows = (await db.execute(text(q), params)).fetchall()
     out = []
     for r in reversed(rows):
@@ -1674,6 +1690,11 @@ async def chart_symbols(st: AcademyStudent = Depends(current_student), db: Async
                 syms.append(sym); have.add(sym)
     except Exception:  # noqa: BLE001
         pass
+    # سهام/ETFِ TV-دارای‌لوگو (کندل از yfinance، قیمت از finnhub) را به دامنه اضافه کن
+    from src.api.routes._stock_feed import STOCKS_TOP
+    for ss in sorted(STOCKS_TOP):
+        if ss not in have:
+            syms.append(ss); have.add(ss)
     # نمادهای کریپتوی LBank (دینامیک، خودبه‌خود آپدیت) را هم به دامنه اضافه کن
     from src.api.routes._crypto_feed import ensure_pairs
     for cs in await ensure_pairs():
@@ -1702,10 +1723,17 @@ async def chart_data(symbol: str, tf: str = "H1", indicators: str = "", limit: i
                      db: AsyncSession = Depends(get_db)):
     # کریپتو → دادهٔ مستقل و دینامیک از LBank (بدونِ DB/کلید). فارکس → جدولِ candles.
     from src.api.routes._crypto_feed import is_crypto, crypto_klines, ensure_pairs
+    from src.api.routes._stock_feed import is_stock, stock_klines
     await ensure_pairs()
     if is_crypto(symbol):
         try:
             candles = await crypto_klines(symbol, tf, limit=max(50, min(int(limit), 2000)), before=before)
+        except Exception:  # noqa: BLE001
+            candles = []
+    elif is_stock(symbol):
+        # سهام/ETF → کندل از yfinance (candleِ finnhub در پلنِ رایگان بسته است). before پشتیبانی نمی‌شود (yfinance بازه‌ای است).
+        try:
+            candles = await stock_klines(symbol, tf, limit=max(50, min(int(limit), 2000)))
         except Exception:  # noqa: BLE001
             candles = []
     else:
@@ -3241,7 +3269,7 @@ async def tools_rr(entry: float, sl: float, tp: float, st: AcademyStudent = Depe
 
 @router.get("/tools/sessions")
 async def tools_sessions(st: AcademyStudent = Depends(require_vip)):
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     h = now.hour
     defs = [("Sydney", 22, 7), ("Tokyo", 0, 9), ("London", 7, 16), ("New York", 13, 22)]
     out, active = [], []

@@ -74,6 +74,25 @@ async def _rest_backup(cli: httpx.AsyncClient, get_set) -> None:
         await asyncio.sleep(10)
 
 
+async def _tv_catalog_sync(cli: httpx.AsyncClient) -> None:
+    """سینکِ افزایشیِ کاتالوگِ لوگوی TV: نمادهای تازهٔ LBank را با TV تطبیق می‌دهد (بارِ کم).
+    وقتی TV نمادی را با لوگو اضافه کند، خودبه‌خود (بدونِ بیلد) به جهانِ نمادهای سایت می‌آید."""
+    from src.api.routes._tv_catalog import ensure_seeded, sync_new
+    from src.api.routes._crypto_feed import LBANK_BASE
+    await ensure_seeded()
+    while True:
+        try:
+            r = await cli.get(f"{LBANK_BASE}/currencyPairs.do")
+            data = r.json().get("data") or []
+            pairs = [p for p in data if isinstance(p, str) and p.endswith("_usdt")]
+            n = await sync_new(pairs, limit=40)
+            if n:
+                log.info("tv-catalog: resolved %d new crypto logos", n)
+        except Exception as e:  # noqa: BLE001
+            log.warning("tv-catalog sync: %s", str(e)[:120])
+        await asyncio.sleep(600)  # هر ۱۰دقیقه یک دسته نمادِ جدید
+
+
 async def run() -> None:
     await redis_client.connect()
     import websockets
@@ -84,6 +103,7 @@ async def run() -> None:
         await _store_top(state["pairs"])
         log.info("top-100 crypto by volume ready (%d pairs)", len(state["pairs"]))
         asyncio.create_task(_rest_backup(cli, lambda: state["set"]))
+        asyncio.create_task(_tv_catalog_sync(cli))
         last = time.time()
         while True:
             try:

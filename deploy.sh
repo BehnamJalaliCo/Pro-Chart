@@ -16,7 +16,7 @@ cd "$(dirname "$0")"
 COMPOSE="docker compose -p prochart -f docker-compose.prochart.yml"
 
 if [ "${1:-}" = "--all" ]; then
-  SERVICES=(api admin-frontend frontend-prochart data-feed crypto-ws news-worker)
+  SERVICES=(api admin-frontend frontend-prochart data-feed crypto-ws stock-ws news-worker)
 else
   SERVICES=("$@")
   [ ${#SERVICES[@]} -eq 0 ] && SERVICES=(admin-frontend)

@@ -105,6 +105,22 @@ services:
           memory: 200M
           cpus: '0.2'
 
+  stock-ws:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python run_stock_ws.py
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file: .env
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.3'
+
   api:
     build:
       context: .
@@ -131,9 +147,7 @@ services:
       - "127.0.0.1:8000:8000"
     volumes:
       - ./logs:/app/logs
-      - ./ml_models:/app/ml_models
-      - ./scripts:/app/scripts
-      - ./alembic:/app/alembic
+      - ./ml_models:/app/ml_models:ro
       - ./secrets:/app/secrets:ro
     deploy:
       resources:
@@ -141,7 +155,7 @@ services:
           memory: 2G
           cpus: '2'
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).read()"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -164,6 +178,8 @@ services:
       - ./nginx/panel.conf:/etc/nginx/conf.d/panel.conf:ro
       # پنلِ کاربری (user.pro-chart.com)
       - ./nginx/user-panel.conf:/etc/nginx/conf.d/user-panel.conf:ro
+      # مرز امنیتی مشترک و محدود برای هر دو پرتال
+      - ./nginx/portal-security-boundary.conf:/etc/nginx/portal-security-boundary.conf:ro
     deploy:
       resources:
         limits:

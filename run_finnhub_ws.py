@@ -7,6 +7,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import time
 
 import httpx
 
@@ -31,8 +32,13 @@ async def main() -> None:
                 r = await cx.get(url, headers={"X-Internal-Token": _TOK})
                 if r.status_code == 200:
                     prices = (r.json() or {}).get("prices", {}) or {}
+                    now = int(time.time())
                     for sym, tick in prices.items():
                         if tick and tick.get("price"):
+                            # منبعِ اصلیِ فارکس؛ تگِ source/ts (epochِ لحظهٔ mirror) تا اینجستِ MT5 (فالبک)
+                            # بداند finnhub زنده است و رونویسی نکند.
+                            tick["ts"] = now
+                            tick["source"] = "finnhub"
                             await redis_client.set_price(sym, tick)
                     n += 1
                     if n % 60 == 1:

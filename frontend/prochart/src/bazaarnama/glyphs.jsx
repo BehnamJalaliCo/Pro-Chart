@@ -6,6 +6,7 @@
 // همهٔ کامپوننت‌ها امضای یکسان دارند: ({ size = 16, ...props }) → <svg .../>.
 // ─────────────────────────────────────────────────────────────────────────────
 import React from 'react';
+import { TV_GLYPH } from './tvGlyphs';
 
 // پوستهٔ مشترکِ SVG: سبکِ یکدست را روی همهٔ گلیف‌ها اعمال می‌کند.
 function S({ size = 16, children, ...props }) {
@@ -45,6 +46,14 @@ const Select = (p) => (
   <S {...p}>
     <path d="M4 4l5.2 12 1.6-4.8L15.6 9 4 4z" />
     <rect x="11" y="11" width="9" height="9" rx="1" strokeDasharray="2 2" />
+  </S>
+);
+
+// پاک‌کن (Eraserِ TV): سرِ پاک‌کنِ لوزی‌مانند روی خطِ زمین — کلیک روی ترسیم حذفش می‌کند.
+const Eraser = (p) => (
+  <S {...p}>
+    <path d="M8 20h12" />
+    <path d="M4.5 13.5l6-6 6 6-4 4h-4l-4-4z" strokeLinejoin="round" />
   </S>
 );
 
@@ -141,12 +150,75 @@ const Channel = (p) => (
   </S>
 );
 
+// کانالِ رگرسیون: دو خطِ موازیِ شیب‌دار + خطِ میانیِ نقطه‌چین.
+const RegChannel = (p) => (
+  <S {...p}>
+    <path d="M4 17L20 7M4 13L20 3" />
+    <path d="M4 15L20 5" strokeWidth="1" strokeDasharray="2 2" opacity="0.7" />
+  </S>
+);
+
+// کانالِ ناپیوسته (۴نقطه): دو قطعهٔ موازیِ جابه‌جا (offset).
+const DisjointChannel = (p) => (
+  <S {...p}>
+    <path d="M4 18L14 8M10 16L20 6" />
+    <Dot cx="4" cy="18" /><Dot cx="20" cy="6" />
+  </S>
+);
+
+// کانالِ سقف/کفِ صاف (۳نقطه): کانالِ افقیِ دو خطِ موازیِ صاف.
+const FlatChannel = (p) => (
+  <S {...p}>
+    <path d="M4 8h16M4 16h16" />
+    <Dot cx="4" cy="8" /><Dot cx="20" cy="16" />
+  </S>
+);
+
 // چنگال: یک دسته که به ۳ شاخهٔ موازی می‌رسد.
 const Pitchfork = (p) => (
   <S {...p}>
     <path d="M4 12h6" />
     <path d="M10 5v14" />
     <path d="M10 5l9 5M10 12h9M10 19l9-5" />
+    <Dot cx="4" cy="12" />
+  </S>
+);
+
+// چنگالِ شیف: دستهٔ موربِ گوشهٔ بالا-چپ.
+const Schiff = (p) => (
+  <S {...p}>
+    <path d="M4 8l6 4" />
+    <path d="M10 5v14" strokeWidth="1" opacity="0.55" />
+    <path d="M10 5l9 5M10 12h9M10 19l9-5" />
+    <Dot cx="4" cy="8" />
+  </S>
+);
+
+// چنگالِ شیفِ اصلاح‌شده: دستهٔ خم‌دار.
+const ModSchiff = (p) => (
+  <S {...p}>
+    <path d="M4 12h4l2-4" />
+    <path d="M10 8v11" strokeWidth="1" opacity="0.55" />
+    <path d="M10 8l9 4M10 13h9M10 18l9-4" />
+    <Dot cx="4" cy="12" />
+  </S>
+);
+
+// چنگالِ داخلی: شاخه‌های نزدیک‌ترِ باریک.
+const InsidePitchfork = (p) => (
+  <S {...p}>
+    <path d="M4 12h6" />
+    <path d="M10 8v8" />
+    <path d="M10 8l9 3M10 12h9M10 16l9-3" />
+    <Dot cx="4" cy="12" />
+  </S>
+);
+
+// پیچ‌فنِ فیبوناچی: پنج شاخهٔ بادبزنی.
+const Pitchfan = (p) => (
+  <S {...p}>
+    <path d="M4 12h6" />
+    <path d="M10 4l9 4M10 8l9 3M10 12h9M10 16l9-3M10 20l9-4" strokeWidth="1.1" />
     <Dot cx="4" cy="12" />
   </S>
 );
@@ -256,6 +328,22 @@ const GannFan = (p) => (
   </S>
 );
 
+// مربعِ گان: مربع با هر دو قطرِ گوشه‌به‌گوشه (زوایای ۴۵ درجه).
+const GannSquare = (p) => (
+  <S {...p}>
+    <rect x="4" y="4" width="16" height="16" rx="1" />
+    <path d="M4 4l16 16M20 4L4 20" strokeWidth="1.1" />
+  </S>
+);
+
+// مربعِ ثابتِ گان: مربع با شبکهٔ ۳×۳ (سلول‌های ثابت).
+const GannFixed = (p) => (
+  <S {...p}>
+    <rect x="4" y="4" width="16" height="16" rx="1" />
+    <path d="M9.3 4v16M14.7 4v16M4 9.3h16M4 14.7h16" strokeWidth="1.1" opacity="0.75" />
+  </S>
+);
+
 /* ─── patterns ─────────────────────────────────────────────────────────── */
 
 // XABCD: زیگزاگِ ۵نقطه‌ای.
@@ -348,6 +436,16 @@ const LongShort = (p) => (
   </S>
 );
 
+// موقعیتِ شورت — مثلِ لانگ ولی با فلشِ رو‌به‌پایین (جهتِ سود پایین)، تا در ریل از «لانگ» متمایز باشد.
+const ShortPos = (p) => (
+  <S {...p}>
+    <rect x="5" y="4" width="14" height="7" rx="1" />
+    <rect x="5" y="13" width="14" height="7" rx="1" />
+    <path d="M3 12h18" strokeWidth="1.8" />
+    <path d="M12 15v4M10 17l2 2 2-2" strokeWidth="1.6" />
+  </S>
+);
+
 // بازهٔ قیمت: فلشِ دوسرِ عمودی میانِ دو افقی.
 const PriceRange = (p) => (
   <S {...p}>
@@ -404,6 +502,39 @@ const Cyclic = (p) => (
 const Sine = (p) => (
   <S {...p}>
     <path d="M3 12q3 -7 6 0t6 0t6 0" />
+  </S>
+);
+
+// مارپیچِ فیبوناچی: منحنیِ مارپیچِ رو به بیرون.
+const FibSpiral = (p) => (
+  <S {...p}>
+    <path d="M13 13a2 2 0 1 0 -2 -2 4 4 0 0 0 4 4 6 6 0 0 0 6 -6 8 8 0 0 0 -8 -8" />
+  </S>
+);
+
+// گُوِهٔ فیبوناچی: دو پرتو از یک گوشه + کمانِ اتصال.
+const FibWedge = (p) => (
+  <S {...p}>
+    <path d="M4 20L20 5M4 20L20 12" />
+    <path d="M20 5A16 16 0 0 1 20 12" strokeWidth="1" opacity="0.6" />
+    <Dot cx="4" cy="20" />
+  </S>
+);
+
+// پروجکشن: دو ناحیهٔ رو به جلو (سود/ضرر) + پیکانِ جهت.
+const Projection = (p) => (
+  <S {...p}>
+    <rect x="4" y="6" width="9" height="5" opacity="0.5" />
+    <rect x="4" y="11" width="9" height="6" />
+    <path d="M14 9h5M17 7l2 2 -2 2" strokeWidth="1.4" />
+  </S>
+);
+
+// چرخه‌های زمانی: موجی از کمان‌ها روی محورِ زمان + تیک‌های عمودی.
+const TimeCycles = (p) => (
+  <S {...p}>
+    <path d="M3 15a3 3 0 0 1 6 0 3 3 0 0 1 6 0 3 3 0 0 1 6 0" />
+    <path d="M3 15v4M9 15v4M15 15v4M21 15v4" strokeWidth="1" opacity="0.55" />
   </S>
 );
 
@@ -505,6 +636,76 @@ const ArrowDir = (p) => (
   </S>
 );
 
+// پرچمِ نشانه: میلهٔ عمودی + بادبانِ مثلثیِ اصیل (هم‌ترازِ Flag Markِ TV، آرت‌ورکِ مستقل).
+const Flag = (p) => (
+  <S {...p}>
+    <path d="M6 21V4" strokeWidth="2.2" />
+    <path d="M6 5h12l-3 3.5L18 12H6z" strokeWidth="1.8" />
+  </S>
+);
+
+// تابلوِ راهنما: میله + تابلوِ مستطیلی با نوکِ پیکانی (Signpost، آرت‌ورکِ مستقل).
+const Signpost = (p) => (
+  <S {...p}>
+    <path d="M12 21V4" strokeWidth="2.2" />
+    <path d="M12 6l2-2h6v5h-6l-2-2" strokeWidth="1.8" />
+    <path d="M12 11l-2 2H4v-5h6" strokeWidth="1.8" />
+  </S>
+);
+
+// نشانگرِ فلشِ بالا: فلشِ چاقِ رو‌به‌بالا (Arrow mark up، سیگنالِ خرید).
+const ArrowMarkUp = (p) => (
+  <S {...p}>
+    <path d="M12 4l7 8h-4v8h-6v-8H5z" strokeWidth="1.8" />
+  </S>
+);
+
+// نشانگرِ فلشِ پایین: فلشِ چاقِ رو‌به‌پایین (Arrow mark down، سیگنالِ فروش).
+const ArrowMarkDown = (p) => (
+  <S {...p}>
+    <path d="M12 20l7-8h-4V4h-6v8H5z" strokeWidth="1.8" />
+  </S>
+);
+
+// خطِ چندتکه: چند قطعهٔ متصل با گِرهٔ رأس‌ها (Polyline، آرت‌ورکِ مستقل).
+const Polyline = (p) => (
+  <S {...p}>
+    <path d="M4 17l5-7 4 3 7-9" strokeWidth="2" />
+    <circle cx="4" cy="17" r="1.6" /><circle cx="9" cy="10" r="1.6" /><circle cx="13" cy="13" r="1.6" /><circle cx="20" cy="4" r="1.6" />
+  </S>
+);
+
+// مسیرِ پیکان‌دار: چند قطعه + سرپیکان در انتها (Path).
+const PathTool = (p) => (
+  <S {...p}>
+    <path d="M4 18l5-7 4 3 6-8" strokeWidth="2" />
+    <path d="M15 4l4 2-2 4" strokeWidth="1.8" />
+  </S>
+);
+
+// منحنی: کمانِ درجه۲ با نقطهٔ کنترل (Curve).
+const Curve = (p) => (
+  <S {...p}>
+    <path d="M4 19C4 8 20 16 20 5" strokeWidth="2" />
+    <circle cx="4" cy="19" r="1.6" /><circle cx="20" cy="5" r="1.6" />
+  </S>
+);
+
+// منحنیِ دوگانه: کمانِ درجه۳ موجی (Double curve).
+const DoubleCurve = (p) => (
+  <S {...p}>
+    <path d="M3 16C6 6 11 6 12 12S18 18 21 8" strokeWidth="2" />
+  </S>
+);
+
+// کمان: نیم‌کمانِ دایره‌ای با دو نقطهٔ انتهایی (Arc).
+const Arc = (p) => (
+  <S {...p}>
+    <path d="M4 18A9 9 0 0 1 20 12" strokeWidth="2" />
+    <circle cx="4" cy="18" r="1.6" /><circle cx="20" cy="12" r="1.6" />
+  </S>
+);
+
 /* ─── group glyphs ─────────────────────────────────────────────────────── */
 
 const GCursors = Cursor;
@@ -532,33 +733,71 @@ const GShapes = (p) => (
 );
 const GAnnotations = Text;
 
+// مثلثِ الیوت (ABCDE): زیگزاگِ منقبض‌شونده.
+const EllTriangle = (p) => (
+  <S {...p}>
+    <path d="M3 5l4 14 4-11 4 8 4-5 2 3" strokeWidth="1.3" />
+    <Dot cx="3" cy="5" /><Dot cx="21" cy="10" />
+  </S>
+);
+// ترکیبِ دوگانهٔ الیوت (WXY): سه‌لِنگه زیگزاگ.
+const EllWxy = (p) => (
+  <S {...p}>
+    <path d="M4 18l4-11 4 9 4-11 4 9" strokeWidth="1.3" />
+    <Dot cx="4" cy="18" /><Dot cx="20" cy="16" />
+  </S>
+);
+// ترکیبِ سه‌گانهٔ الیوت (WXYXZ): پنج‌لِنگه زیگزاگِ بلندتر.
+const EllWxyxz = (p) => (
+  <S {...p}>
+    <path d="M3 18l3-9 3 8 3-10 3 8 3-9 3 7" strokeWidth="1.2" />
+    <Dot cx="3" cy="18" /><Dot cx="21" cy="13" />
+  </S>
+);
+// الگوی سه‌حرکت: سه درایوِ صعودیِ پله‌ای.
+const ThreeDrives = (p) => (
+  <S {...p}>
+    <path d="M3 20l3-6 3 3 3-8 3 3 3-10 3 3" strokeWidth="1.3" />
+    <Dot cx="6" cy="14" /><Dot cx="12" cy="9" /><Dot cx="18" cy="4" />
+  </S>
+);
+
 /* ─── exports ──────────────────────────────────────────────────────────── */
 
-export const GLYPH = {
+const BASE_GLYPH = {
   // cursors
-  cursor: Cursor, select: Select,
+  cursor: Cursor, select: Select, eraser: Eraser,
   // lines
   trend: Trend, ray: Ray, extline: ExtLine, hray: HRay, hline: HLine,
   vline: VLine, crossline: CrossLine, angle: Angle, infoline: InfoLine,
   // channels
-  channel: Channel, pitchfork: Pitchfork,
+  channel: Channel, pitchfork: Pitchfork, regchannel: RegChannel, disjointchannel: DisjointChannel, flatchannel: FlatChannel,
+  schiff: Schiff, modschiff: ModSchiff, insidepitchfork: InsidePitchfork, pitchfan: Pitchfan,
   // fib
   fib: Fib, fibext: FibExt, fib3: Fib3, fibfan: FibFan, fibtime: FibTime,
   fibtimeext: FibTimeExt, fibchannel: FibChannel, fibcircles: FibCircles, fibarcs: FibArcs,
+  fibspiral: FibSpiral, fibwedge: FibWedge,
   // gann
-  gannbox: GannBox, gannfan: GannFan,
+  gannbox: GannBox, gannfan: GannFan, gannsquare: GannSquare, gannfixed: GannFixed,
   // patterns
   xabcd: Xabcd, abcd: Abcd, cypher: Cypher, tripattern: TriPattern, hns: Hns,
   ell_impulse: EllImpulse, ell_abc: EllAbc, triangle: Triangle,
+  ell_triangle: EllTriangle, ell_wxy: EllWxy, ell_wxyxz: EllWxyxz, threedrives: ThreeDrives,
   // projection
-  longshort: LongShort, pricerange: PriceRange, daterange: DateRange, dprange: DpRange,
-  forecast: Forecast, ruler: Ruler, cyclic: Cyclic, sine: Sine,
+  longshort: LongShort, short: ShortPos, pricerange: PriceRange, daterange: DateRange, dprange: DpRange,
+  forecast: Forecast, ruler: Ruler, cyclic: Cyclic, sine: Sine, projection: Projection, timecycles: TimeCycles,
   // shapes
   rect: Rect, rotrect: RotRect, circle: Circle, ellipse: Ellipse,
   arrow: Arrow, brush: Brush, highlighter: Highlighter,
   // annotations
-  text: Text, callout: Callout, pricelabel: PriceLabel, note: Note, arrowdir: ArrowDir,
+  text: Text, callout: Callout, pricelabel: PriceLabel, note: Note, arrowdir: ArrowDir, flag: Flag,
+  signpost: Signpost, arrowup: ArrowMarkUp, arrowdown: ArrowMarkDown,
+  // shapes (line-based)
+  polyline: Polyline, path: PathTool, curve: Curve, doublecurve: DoubleCurve, arc: Arc,
 };
+
+// آیکونِ رسمیِ TradingView جایگزینِ گلیفِ خودمان می‌شود هرجا معادل داشت؛ بقیه (cursor/eraser/ruler/…) اصیل می‌مانند.
+export const GLYPH = { ...BASE_GLYPH, ...TV_GLYPH };
 
 export const GROUP_GLYPH = {
   cursors: GCursors,

@@ -57,45 +57,60 @@ def _lbank_pair(symbol: str) -> str:
     return f"{base.lower()}_usdt"
 
 
-async def ensure_pairs() -> List[str]:
-    """لیستِ نمادهای USDTِ LBank را (با کش) برمی‌گرداند؛ خودبه‌خود آپدیت می‌شود."""
-    global _pairs_set, _pairs_list, _pairs_ts
-    now = time.time()
-    # اولویت: ۱۰۰ جفتِ برتر (که workerِ WS در Redis گذاشته) — trimِ کاتالوگ
+async def _tv_filter(syms: List[str]) -> List[str]:
+    """جهانِ نمادها را به «نمادهایی که TV لوگو دارد» فیلتر می‌کند (به‌خواستِ مالک).
+    گاردِ ایمنی: اگر کاتالوگِ TV هنوز آماده نبود (خالی/کوچک)، بدونِ فیلتر برمی‌گرداند تا لیست نشکند."""
     try:
-        from src.core.redis_client import redis_client
-        top = await redis_client.client.smembers("bn:crypto_top100")
-        top = [(x.decode() if isinstance(x, bytes) else x) for x in (top or [])]
-        if len(top) >= 50:
-            top.sort(key=lambda sym: (_MCAP_RANK.get(sym, 9999), sym))
-            _pairs_list = top
-            _pairs_set = set(top)
-            _pairs_ts = now
-            return _pairs_list
+        from src.api.routes._tv_catalog import tv_ok_symbols
+        ok = await tv_ok_symbols()
+        if ok and len(ok) >= 50:
+            filtered = [s for s in syms if s in ok]
+            if filtered:
+                return filtered
     except Exception:  # noqa: BLE001
         pass
+    return syms
+
+
+async def ensure_pairs() -> List[str]:
+    """لیستِ نمادهای USDTِ LBank را (با کش) برمی‌گرداند؛ خودبه‌خود آپدیت می‌شود.
+    فیلترشده به «نمادهایی که TradingView لوگو دارد» (بدونِ سقف — کلِ جهانِ TV-دارای‌لوگو)."""
+    global _pairs_set, _pairs_list, _pairs_ts
+    now = time.time()
     if _pairs_list and (now - _pairs_ts) < _PAIRS_TTL:
         return _pairs_list
+    # منبعِ اصلی: کاتالوگِ کاملِ LBank (بدونِ سقف)؛ اگر نشد، top100ِ Redis به‌عنوانِ fallback.
+    syms: List[str] = []
     try:
         async with httpx.AsyncClient(timeout=10.0) as cli:
             r = await cli.get(f"{LBANK_BASE}/currencyPairs.do")
             r.raise_for_status()
             data = r.json().get("data") or []
         usdt = [p for p in data if isinstance(p, str) and p.endswith("_usdt")]
-        if usdt:
-            syms = [_bn_symbol(p) for p in usdt]
-            # #۱ چیدمان بر اساسِ ارزشِ بازار: ارزها بر اساسِ رتبهٔ market-cap اول، بقیه الفبایی
-            syms.sort(key=lambda s: (_MCAP_RANK.get(s, 9999), s))
-            _pairs_list = syms
-            _pairs_set = set(syms)  # فقط *USDT — هیچ *USD کریپتویی پذیرفته نمی‌شود (#۶)
-            _pairs_ts = now
+        syms = [_bn_symbol(p) for p in usdt]
     except Exception:  # noqa: BLE001
-        pass
+        syms = []
+    if not syms:
+        try:
+            from src.core.redis_client import redis_client
+            top = await redis_client.client.smembers("bn:crypto_top100")
+            syms = [(x.decode() if isinstance(x, bytes) else x) for x in (top or [])]
+        except Exception:  # noqa: BLE001
+            syms = []
+    if syms:
+        syms = await _tv_filter(syms)                       # فقط نمادهای TV-دارای‌لوگو
+        # #۱ چیدمان بر اساسِ ارزشِ بازار: ارزها بر اساسِ رتبهٔ market-cap اول، بقیه الفبایی
+        syms.sort(key=lambda s: (_MCAP_RANK.get(s, 9999), s))
+        _pairs_list = syms
+        _pairs_set = set(syms)  # فقط *USDT — هیچ *USD کریپتویی پذیرفته نمی‌شود (#۶)
+        _pairs_ts = now
     return _pairs_list
 
 
 def is_crypto(symbol: str) -> bool:
-    return (symbol or "").upper() in _pairs_set
+    # مسیریابی (کندل/قیمت) از فیلترِ نمایش جداست: هر *USDT کریپتو است (فارکس به USD ختم می‌شود نه USDT).
+    s = (symbol or "").upper()
+    return s in _pairs_set or s.endswith("USDT")
 
 
 async def crypto_klines(symbol: str, tf: str, limit: int = 500,

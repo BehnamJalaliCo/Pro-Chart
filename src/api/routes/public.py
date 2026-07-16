@@ -211,6 +211,52 @@ async def public_icon(id: str = Query(...), h: int = Query(72), color: str = Que
     return Response(content=svg, media_type="image/svg+xml", headers={"Cache-Control": "public, max-age=86400"})
 
 
+_SYMLOGO_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9/_-]{0,80}$")
+
+
+@router.get("/symbol-logo")
+async def public_symbol_logo(id: str = Query(...)):
+    """پراکسی+کشِ لوگوی برندِ نماد (لایهٔ ۲) — لوگوی سهام/ETF/شاخص/کریپتو را از CDN عمومیِ نمادها
+    می‌گیرد و روی سرورِ خودمان کش می‌کند تا مرورگر مستقیم به CDN نزند و پایدار/بی‌فیلترینگ بماند.
+    لوگوها علامتِ تجاریِ خودِ شرکت/دارایی‌اند و برای شناساییِ نماد استفاده می‌شوند (استفادهٔ اسمی)."""
+    if not _SYMLOGO_ID.match(id or "") or ".." in id:
+        raise HTTPException(status_code=400, detail="شناسهٔ لوگو نامعتبر است.")
+    ckey = f"pc:symlogo:{id}"
+    cached = await redis_client.get_json(ckey)
+    if cached and cached.get("svg"):
+        return Response(content=cached["svg"], media_type="image/svg+xml", headers={"Cache-Control": "public, max-age=604800"})
+    svg = None
+    try:
+        async with httpx.AsyncClient(timeout=15) as cl:
+            for variant in (f"{id}--big.svg", f"{id}.svg"):
+                r = await cl.get(f"https://s3-symbol-logo.tradingview.com/{variant}")
+                if r.status_code == 200 and "svg" in r.headers.get("content-type", ""):
+                    svg = r.text
+                    break
+    except Exception:
+        svg = None
+    if not svg:
+        raise HTTPException(status_code=404, detail="لوگوی نماد یافت نشد.")
+    try:
+        await redis_client.set_json(ckey, {"svg": svg}, expire=604800)
+    except Exception:
+        pass
+    return Response(content=svg, media_type="image/svg+xml", headers={"Cache-Control": "public, max-age=604800"})
+
+
+@router.get("/symbol-catalog")
+async def public_symbol_catalog():
+    """نگاشتِ نمادِ کریپتو → logoidِ TradingView (برای فرانت تا لوگوی برندِ هر کوین را نشان دهد).
+    منبع: کاتالوگِ کش‌شدهٔ TV در Redis (که workerِ کریپتو خودبه‌خود با نمادهای جدید سینک می‌کند)."""
+    try:
+        from src.api.routes._tv_catalog import logoid_map
+        m = await logoid_map()
+    except Exception:  # noqa: BLE001
+        m = {}
+    from fastapi.responses import JSONResponse
+    return JSONResponse({"crypto": m}, headers={"Cache-Control": "public, max-age=3600"})
+
+
 @router.get("/go/{code}")
 async def go_link(code: str):
     """صفحهٔ واسطِ دکمهٔ دایرکت — اینستاگرام تگِ OG را می‌خواند و کارتِ کلیک‌شونده با «عنوانِ دکمه»

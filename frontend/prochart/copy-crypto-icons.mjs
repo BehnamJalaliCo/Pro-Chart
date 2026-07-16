@@ -7,14 +7,21 @@ import path from 'node:path';
 
 const src = path.resolve('node_modules/cryptocurrency-icons/svg/color');
 const dst = path.resolve('public/crypto-icons');
+// لوگوهای واقعیِ کوین‌هایی که در بستهٔ cryptocurrency-icons نیستند (PEPE/WIF/SUI/TIA/…)؛
+// committed در repo تا build داخل Docker/CI هم آن‌ها را داشته باشد (dir بالا gitignore است و بازتولید می‌شود).
+const extra = path.resolve('crypto-icons-extra');
 
 try {
-  if (!existsSync(src)) {
-    console.warn('[crypto-icons] package not found — skipping (badge fallback will be used)');
-    process.exit(0);
-  }
   await mkdir(dst, { recursive: true });
-  await cp(src, dst, { recursive: true });
+  if (existsSync(src)) {
+    await cp(src, dst, { recursive: true });
+  } else {
+    console.warn('[crypto-icons] package not found — using extras + badge fallback only');
+  }
+  // extraها بعد از بسته کپی می‌شوند تا لوگوی برندِ دقیقِ کوین‌های تازه غالب/اضافه شود.
+  if (existsSync(extra)) {
+    await cp(extra, dst, { recursive: true });
+  }
   const n = (await readdir(dst)).length;
   console.log(`[crypto-icons] copied ${n} coin logos → public/crypto-icons/`);
 } catch (e) {

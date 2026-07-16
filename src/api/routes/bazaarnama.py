@@ -35,6 +35,7 @@ from src.core.database import (
 )
 from src.core.logger import get_logger
 from src.core.security import create_access_token, verify_access_token
+from src.signals.candle_utils import drop_unclosed_candle_rows
 
 router = APIRouter()
 logger = get_logger(__name__)
@@ -526,6 +527,20 @@ async def save_layout(payload: dict = Body(...), st: AcademyStudent = Depends(cu
     return {"ok": True, "id": l.id}
 
 
+@router.post("/layouts/{layout_id}/rename")
+async def rename_layout(layout_id: int, payload: dict = Body(...), st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """تغییرِ نامِ یک لِی‌اوت بدونِ لمسِ دادهٔ چیدمان (افزایشی؛ ایمن‌تر از POST /layouts که کلِ data را بازمی‌نویسد)."""
+    l = await db.get(BnLayout, layout_id)
+    if not l or l.student_id != st.id:
+        raise HTTPException(404, "یافت نشد")
+    name = (payload.get("name") or "").strip()[:120]
+    if not name:
+        raise HTTPException(400, "نام لازم است")
+    l.name = name
+    await db.commit()
+    return {"ok": True, "id": l.id, "name": l.name}
+
+
 @router.delete("/layouts/{layout_id}")
 async def delete_layout(layout_id: int, st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
     l = await db.get(BnLayout, layout_id)
@@ -742,7 +757,10 @@ async def ai_signal(payload: dict = Body(...), st: AcademyStudent = Depends(curr
 
     symbol = (payload.get("symbol") or "EURUSD").upper()[:20]
     tf = (payload.get("tf") or "H1")[:8]
-    candles = await _chart_rows(db, symbol, tf, limit=220)
+    candles = drop_unclosed_candle_rows(
+        await _chart_rows(db, symbol, tf, limit=220),
+        tf,
+    )
     if len(candles) < 60:
         raise HTTPException(400, "دادهٔ کافی برای این نماد/تایم‌فریم نیست.")
 
@@ -1319,14 +1337,30 @@ async def feed_forex(payload: dict = Body(...),
     if n:
         await db.commit()
 
+    # MT5 (وان‌رویال) = فالبکِ فارکس: فقط وقتی finnhub برای این نماد غایب/کهنه است بنویس،
+    # تا وقتی finnhub زنده است منبعِ اصلی بماند (به‌خواستِ مالک: finnhub اصلی، MT5 فالبک).
+    import time as _t
+    _FX_FRESH = 8  # ثانیه — اگر tickِ finnhub تازه‌تر از این بود، MT5 دست نمی‌زند
+    now_e = int(_t.time())
     for q in quotes:
         sym = (q.get("symbol") or "")[:10]
         try:
             bid = float(q.get("bid") or 0); ask = float(q.get("ask") or bid)
         except Exception:  # noqa: BLE001
             continue
-        if sym and (bid or ask):
-            mid = (bid + ask) / 2 if (bid and ask) else (bid or ask)
-            await redis_client.set_price(sym, {"bid": bid, "ask": ask, "price": mid,
-                                               "ts": _now().isoformat()})
+        if not (sym and (bid or ask)):
+            continue
+        try:
+            cur = await redis_client.get_price(sym)
+        except Exception:  # noqa: BLE001
+            cur = None
+        if cur and cur.get("source") == "finnhub":
+            try:
+                if (now_e - int(cur.get("ts") or 0)) < _FX_FRESH:
+                    continue                      # finnhub زنده و تازه → نگذار MT5 رونویسی کند
+            except Exception:  # noqa: BLE001
+                pass
+        mid = (bid + ask) / 2 if (bid and ask) else (bid or ask)
+        await redis_client.set_price(sym, {"bid": bid, "ask": ask, "price": mid,
+                                           "ts": now_e, "source": "mt5"})
     return {"ok": True, "candles": n, "symbols": len(symbols), "quotes": len(quotes)}
