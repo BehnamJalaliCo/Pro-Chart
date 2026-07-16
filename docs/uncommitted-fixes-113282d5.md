@@ -121,4 +121,12 @@ export const VOL_DOWN = 'rgba(242,54,69,.5)';  // modern #f23645 — هم‌تر
 
 ---
 
-**وضعیت:** هر هشت رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
+## رفع ۹ — توگلِ «حجم»ِ خطِ وضعیت (slVolume) در نمای با-اندیکاتور مرده بود (Loop #96)
+فایل: `frontend/prochart/src/bazaarnama/overlays/ChartOverlays.jsx` — `ChartLegend` خط `hasVol`.
+باگ (تلهٔ dual-legend، چهارمین واگرایی): `Legend` (نمای پیش‌فرض) حجم را با `sl.slVolume` گِیت می‌کرد، ولی `ChartLegend` با `showVolume` (توگلِ **هیستوگرام**، نه متنِ خطِ وضعیت) ⇒ خاموش‌کردنِ `slVolume` در نمای با-اندیکاتور کاری نمی‌کرد.
+رفع: `const hasVol = showVolume && vol != null && sl.slVolume !== false;` (افزودنِ گِیتِ slVolume؛ رفتارِ پیش‌فرض بی‌تغییر چون slVolume پیش‌فرض true است).
+تأییدِ زنده (`index-B-d4aqsi.js`): نمای پیش‌فرض همچنان «Vol 0» دارد (بی‌رگرسیون)، ۰ خطای JS. سمتِ ChartLegend by-construction درست (همان گِیتِ اثبات‌شدهٔ Legend). فایلِ WIP ⇒ زنده-uncommitted (این لوپ کامیتِ کدِ تمیز نداشت؛ فقط doc).
+
+---
+
+**وضعیت:** هر نُه رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
