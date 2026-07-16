@@ -105,4 +105,12 @@ export const VOL_DOWN = 'rgba(242,54,69,.5)';  // modern #f23645 — هم‌تر
 
 ---
 
-**وضعیت:** هر شش رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
+## رفع ۷ — لجندِ پیش‌فرض (بدونِ اندیکاتور) «تغییر» را close-open می‌داد نه close-to-close (Loop #94)
+فایل: `frontend/prochart/src/bazaarnama/overlays/ChartOverlays.jsx` — کامپوننتِ `Legend` (خط ~۱۸۷)
+باگ (تلهٔ dual-legend): `ChartLegend` (نمای با-اندیکاتور) «تغییر» را close-to-close (نسبت به بستهٔ کندلِ قبل، عینِ TV) حساب می‌کرد، ولی `Legend` (نمای پیش‌فرضِ بدونِ اندیکاتور) چون `prevClose` نمی‌گرفت close-open (درون‌کندلی) می‌داد. (سمتِ پاس‌دادنِ `prevClose={_legPrevClose}` در `BazaarNama.jsx` **تمیز کامیت شد** — `7c5880d`.)
+رفع: `Legend` حالا `prevClose` می‌گیرد → `_base = prevClose ?? open`، `chAbs = close − _base`؛ و رنگِ O/H/L/C = جهتِ کندل (`ohlcCol`)، رنگِ «تغییر» = جهتِ close-to-close — دقیقاً مثلِ `ChartLegend`+TV.
+تأییدِ زنده (`index-Biy9JJlr.js`): لجند `C 1.14359  −0.00136075` نشان داد ⇒ base = ۱٫۱۴۴۹۵۰۷۵ = **بستهٔ کندلِ قبل** (نه open=۱٫۱۴۴۹۵) ⇒ close-to-close تأیید شد؛ ۰ خطای JS.
+
+---
+
+**وضعیت:** هر هفت رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
