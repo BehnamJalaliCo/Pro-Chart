@@ -99,6 +99,28 @@ Object.assign(CRYPTO_EN, {
   STRK: 'Starknet', W: 'Wormhole', TRB: 'Tellor', GMT: 'STEPN', MASK: 'Mask Network',
   AR: 'Arweave',
 });
+// دستهٔ کیوریت‌شدهٔ کوین‌های سرشناسِ کاتالوگِ زنده (LBank/TV) که نامِ فارسی نداشتند و desc خام (تیکر) می‌گرفتند.
+// فقط کوین‌های شناخته‌شده با نامِ استانداردِ فارسی اضافه شدند؛ میم‌کوین‌های مبهم و توکن‌های سهامِ آن‌چین (…ON/…X) عمداً کنار گذاشته شدند.
+Object.assign(CRYPTO_FA, {
+  QNT: 'کوانت', OKB: 'اوکی‌بی', GT: 'گیت‌توکن', BGB: 'بیت‌گت', MNT: 'مانتل',
+  CRO: 'کرونوس', KSM: 'کوساما', CELO: 'سلو', FLR: 'فلر', GLMR: 'مون‌بیم',
+  MOVR: 'مون‌ریور', EIGEN: 'ایگن‌لیر', ETHFI: 'اتر‌فای', ENJ: 'انجین', HOT: 'هولو',
+  IOTX: 'آیوتکس', QTUM: 'کوانتوم', RVN: 'ریون‌کوین', DGB: 'دیجی‌بایت', SUSHI: 'سوشی‌سواپ',
+  YFI: 'یرن‌فایننس', CVX: 'کانوکس', '1INCH': 'وان‌اینچ', BLUR: 'بلور', MANTA: 'مانتا',
+  PAXG: 'پکس‌گلد', WBTC: 'بیت‌کوینِ رَپ‌شده', XAUT: 'تتر‌گلد', NEXO: 'نکسو', STORJ: 'استورج',
+  BERA: 'براچین', OSMO: 'اوسموسیس', JTO: 'جیتو', RAY: 'ریدیوم', ILV: 'ایلوویوم',
+  YGG: 'ییلد‌گیلد', PEOPLE: 'کانستیتوشن‌دائو', BOME: 'بوک‌آف‌میم', TURBO: 'توربو', SAFE: 'سیف',
+});
+Object.assign(CRYPTO_EN, {
+  QNT: 'Quant', OKB: 'OKB', GT: 'GateToken', BGB: 'Bitget Token', MNT: 'Mantle',
+  CRO: 'Cronos', KSM: 'Kusama', CELO: 'Celo', FLR: 'Flare', GLMR: 'Moonbeam',
+  MOVR: 'Moonriver', EIGEN: 'EigenLayer', ETHFI: 'Ether.fi', ENJ: 'Enjin Coin', HOT: 'Holo',
+  IOTX: 'IoTeX', QTUM: 'Qtum', RVN: 'Ravencoin', DGB: 'DigiByte', SUSHI: 'SushiSwap',
+  YFI: 'yearn.finance', CVX: 'Convex Finance', '1INCH': '1inch', BLUR: 'Blur', MANTA: 'Manta Network',
+  PAXG: 'PAX Gold', WBTC: 'Wrapped Bitcoin', XAUT: 'Tether Gold', NEXO: 'Nexo', STORJ: 'Storj',
+  BERA: 'Berachain', OSMO: 'Osmosis', JTO: 'Jito', RAY: 'Raydium', ILV: 'Illuvium',
+  YGG: 'Yield Guild Games', PEOPLE: 'ConstitutionDAO', BOME: 'Book of Meme', TURBO: 'Turbo', SAFE: 'Safe',
+});
 // اعشارِ استانداردِ فلزات (اونسِ ترویِ TradingView): طلا/پلاتین/پالادیوم ۲، نقره ۳، مس ۴.
 const METAL_DIGITS = { XAU: 2, XAG: 3, XPT: 2, XPD: 2, XCU: 4 };
 // اعشارِ ثابتِ کریپتوهای گران/میان‌قیمت (وقتی قیمتِ زنده در دست نیست، مثلِ مدالِ جستجو).
