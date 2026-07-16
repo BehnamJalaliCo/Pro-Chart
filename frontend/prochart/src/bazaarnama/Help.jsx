@@ -449,7 +449,7 @@ function HelpModalInner({ entry, onClose, TH }) {
       <div className="w-full max-w-lg max-h-[88vh] overflow-auto rounded-xl pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}`, color: TH.text }}>
         <div className="flex items-center justify-between px-4 py-3 border-b sticky top-0" style={{ borderColor: TH.border, background: TH.panel }}>
           <div className="flex items-center gap-2"><HelpCircle size={17} style={{ color: TH.accent }} /><b style={{ color: TH.textStrong }}>{title}</b></div>
-          <button onClick={onClose} className="pc-iconbtn w-7 h-7"><X size={16} /></button>
+          <button onClick={onClose} title="بستنِ راهنما" aria-label="بستنِ راهنما" className="pc-iconbtn w-7 h-7"><X size={16} /></button>
         </div>
         <div className="px-4 py-3 space-y-3 text-[13px] leading-7">
           {what && <p style={{ color: TH.text }}>{what}</p>}
