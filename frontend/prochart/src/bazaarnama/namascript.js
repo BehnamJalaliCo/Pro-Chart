@@ -22,7 +22,7 @@ self.onmessage = function (e) {
   function and(a,b){return bin(a,b,function(x,y){return !!x&&!!y;});}
   function or(a,b){return bin(a,b,function(x,y){return !!x||!!y;});}
   function iff(c,a,b){ c=arr(c);a=arr(a);b=arr(b); var o=new Array(N); for(var i=0;i<N;i++)o[i]=c[i]?a[i]:b[i]; return o; }
-  function nz(a,r){ a=arr(a); return un(a,function(x){return x==null?(r||0):x;}); }
+  function nz(a,r){ a=arr(a); var o=new Array(N); for(var i=0;i<N;i++)o[i]=(a[i]==null)?(r||0):a[i]; return o; } // قبلاً از un می‌گذشت که روی nullها short-circuit می‌کرد ⇒ nz هرگز null را جایگزین نمی‌کرد (باگ).
   // برای نمایش (جدول/برچسب/رشته): از یک سری، آخرین مقدارِ معتبر را با گردکردنِ هوشمند بده
   function lastv(x){ if(Array.isArray(x)){ for(var i=x.length-1;i>=0;i--)if(x[i]!=null&&isFinite(x[i]))return x[i]; return null; } return x; }
   function disp(x){ var v=lastv(x); if(typeof v==='number'){ var a=Math.abs(v),d=a>=100?2:a>=1?3:5,m=Math.pow(10,d); return Math.round(v*m)/m; } return v==null?'':v; }
@@ -44,9 +44,9 @@ self.onmessage = function (e) {
   function tr(){var o=new Array(N);for(var i=0;i<N;i++)o[i]=i===0?H[i]-L[i]:Math.max(H[i]-L[i],Math.abs(H[i]-C[i-1]),Math.abs(L[i]-C[i-1]));return o;}
   function atr(p){p=p||14;return rma(tr(),p);}
   function cci(p){p=p||20;var tp=[];for(var i=0;i<N;i++)tp[i]=(H[i]+L[i]+C[i])/3;var m=sma(tp,p),o=new Array(N).fill(null);for(var i=p-1;i<N;i++){if(m[i]==null)continue;var md=0;for(var j=0;j<p;j++)md+=Math.abs(tp[i-j]-m[i]);md/=p;o[i]=md?(tp[i]-m[i])/(0.015*md):0;}return o;}
-  function macd(s,f,sl,sg){f=f||12;sl=sl||26;sg=sg||9;var ml=sub(ema(s,f),ema(s,sl));var sig=ema(nz(ml),sg).map(function(v,i){return ml[i]==null?null:v;});return {macd:ml,signal:sig,hist:sub(ml,sig)};}
+  function macd(s,f,sl,sg){f=f||12;sl=sl||26;sg=sg||9;var ml=sub(ema(s,f),ema(s,sl));var sig=ema(ml,sg).map(function(v,i){return ml[i]==null?null:v;});return {macd:ml,signal:sig,hist:sub(ml,sig)};}
   function bb(s,p,m){p=p||20;m=m||2;var b=sma(s,p),sd=stdev(s,p);return {mid:b,upper:add(b,mul(sd,m)),lower:sub(b,mul(sd,m))};}
-  function stoch(p,dd){p=p||14;dd=dd||3;var hh=highest(H,p),ll=lowest(L,p),k=new Array(N).fill(null);for(var i=0;i<N;i++)if(hh[i]!=null)k[i]=(hh[i]===ll[i])?50:((C[i]-ll[i])/(hh[i]-ll[i]))*100;return {k:k,d:sma(nz(k),dd).map(function(v,i){return k[i]==null?null:v;})};}
+  function stoch(p,dd){p=p||14;dd=dd||3;var hh=highest(H,p),ll=lowest(L,p),k=new Array(N).fill(null);for(var i=0;i<N;i++)if(hh[i]!=null)k[i]=(hh[i]===ll[i])?50:((C[i]-ll[i])/(hh[i]-ll[i]))*100;return {k:k,d:sma(k,dd).map(function(v,i){return k[i]==null?null:v;})};}
   function supertrend(p,m){p=p||10;m=m||3;var a=atr(p),line=new Array(N).fill(null),dir=new Array(N).fill(null),up=null,dn=null,d=1;for(var i=0;i<N;i++){if(a[i]==null)continue;var mid=(H[i]+L[i])/2,ub=mid+m*a[i],lb=mid-m*a[i];if(up!=null)ub=C[i-1]>up?Math.max(ub,up):ub;if(dn!=null)lb=C[i-1]<dn?Math.min(lb,dn):lb;if(d===1&&C[i]<(dn==null?lb:dn))d=-1;else if(d===-1&&C[i]>(up==null?ub:up))d=1;up=ub;dn=lb;dir[i]=d;line[i]=d===1?lb:ub;}return {line:line,dir:dir};}
   function crossover(a,b){a=arr(a);b=arr(b);var o=new Array(N).fill(false);for(var i=1;i<N;i++){if(a[i]!=null&&b[i]!=null&&a[i-1]!=null&&b[i-1]!=null)o[i]=a[i-1]<=b[i-1]&&a[i]>b[i];}return o;}
   function crossunder(a,b){a=arr(a);b=arr(b);var o=new Array(N).fill(false);for(var i=1;i<N;i++){if(a[i]!=null&&b[i]!=null&&a[i-1]!=null&&b[i-1]!=null)o[i]=a[i-1]>=b[i-1]&&a[i]<b[i];}return o;}
@@ -62,7 +62,7 @@ self.onmessage = function (e) {
   // agg: 'last'(پیش‌فرض/close) | 'max'(high) | 'min'(low) | 'sum'(volume). مقدارِ بستهٔ کاملِ قبل را برمی‌گرداند.
   function security(mult,s,agg){ mult=Math.max(1,Math.round(mult||1)); s=arr(s); agg=agg||'last'; var o=new Array(N).fill(null); for(var i=0;i<N;i++){ var k=Math.floor(i/mult); if(k<1){o[i]=null;continue;} var st=(k-1)*mult, en=k*mult-1, v=null; if(agg==='last'){v=s[en];} else if(agg==='max'){v=-Infinity;for(var j=st;j<=en;j++)if(s[j]!=null)v=Math.max(v,s[j]);v=isFinite(v)?v:null;} else if(agg==='min'){v=Infinity;for(var j=st;j<=en;j++)if(s[j]!=null)v=Math.min(v,s[j]);v=isFinite(v)?v:null;} else if(agg==='sum'){v=0;for(var j=st;j<=en;j++)if(s[j]!=null)v+=s[j];} o[i]=v; } return o; }
   var request={ security:function(mult,s,agg){ return security(mult,s,agg); } };
-  function naf(x){ var a=arr(x); return un(a,function(v){return v==null;}); }              // na(x) → بولین
+  function naf(x){ var a=arr(x); var o=new Array(N); for(var i=0;i<N;i++)o[i]=(a[i]==null); return o; }              // na(x) → بولین (قبلاً un روی null short-circuit می‌کرد ⇒ na هرگز true نمی‌شد)
   function toint(a){ return un(a,function(x){return Math.trunc(x);}); }
   function tofloat(a){ return un(a,function(x){return +x;}); }
   function tobool(a){ return un(a,function(x){return !!x;}); }
@@ -80,7 +80,7 @@ self.onmessage = function (e) {
   function wpr(p){ p=p||14; var hh=highest(H,p),ll=lowest(L,p),o=new Array(N).fill(null); for(var i=0;i<N;i++){ if(hh[i]!=null){ o[i]=(hh[i]===ll[i])?-50:(hh[i]-C[i])/(hh[i]-ll[i])*-100; } } return o; }
   function mfi(p){ p=p||14; var tp=[],rmf=[],pos=new Array(N).fill(0),neg=new Array(N).fill(0); for(var i=0;i<N;i++){ tp[i]=(H[i]+L[i]+C[i])/3; rmf[i]=tp[i]*(V[i]||0); if(i>0){ if(tp[i]>tp[i-1])pos[i]=rmf[i]; else if(tp[i]<tp[i-1])neg[i]=rmf[i]; } } var sp=sumf(pos,p),sn=sumf(neg,p),o=new Array(N).fill(null); for(var i=0;i<N;i++) if(sp[i]!=null) o[i]=sn[i]?100-100/(1+sp[i]/sn[i]):100; return o; }
   function cmo(s,p){ s=arr(s);p=p||9; var up=new Array(N).fill(0),dn=new Array(N).fill(0); for(var i=1;i<N;i++){ var ch=s[i]-s[i-1]; if(ch>0)up[i]=ch; else dn[i]=-ch; } var su=sumf(up,p),sd=sumf(dn,p),o=new Array(N).fill(null); for(var i=0;i<N;i++) if(su[i]!=null){ var t=su[i]+sd[i]; o[i]=t?100*(su[i]-sd[i])/t:0; } return o; }
-  function tsi(s,sh,lo){ s=arr(s);sh=sh||13;lo=lo||25; var m=change(s,1),dbl=ema(ema(nz(m),lo),sh),ab=ema(ema(un(nz(m),Math.abs),lo),sh),o=new Array(N).fill(null); for(var i=0;i<N;i++) if(dbl[i]!=null&&ab[i]) o[i]=100*dbl[i]/ab[i]; return o; }
+  function tsi(s,sh,lo){ s=arr(s);sh=sh||13;lo=lo||25; var m=change(s,1),dbl=ema(ema(m,lo),sh),ab=ema(ema(un(m,Math.abs),lo),sh),o=new Array(N).fill(null); for(var i=0;i<N;i++) if(dbl[i]!=null&&ab[i]) o[i]=100*dbl[i]/ab[i]; return o; }
   function ao(){ var mp=div(add(arr(H),arr(L)),2); return sub(sma(mp,5),sma(mp,34)); }
   function stochrsi(s,p,k,dd){ p=p||14;k=k||3;dd=dd||3; var r=rsi(s,p),hh=highest(r,p),ll=lowest(r,p),raw=new Array(N).fill(null); for(var i=0;i<N;i++){ if(hh[i]!=null) raw[i]=(hh[i]===ll[i])?0:100*(r[i]-ll[i])/(hh[i]-ll[i]); } var ks=sma(raw,k); return {k:ks,d:sma(ks,dd)}; }
   // ───────── روند/جهت ─────────
