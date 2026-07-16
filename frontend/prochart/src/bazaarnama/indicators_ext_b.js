@@ -758,6 +758,30 @@ const rviVol = (c, i) => {
 };
 
 // ───────────────────────────── رجیستریِ افزونه ─────────────────────────────
+// 63) کانالِ رگرسیونِ خطی (Linear Regression Channel) — پایه = خطِ رگرسیونِ کمترین‌مربعات (LSMA)
+//   روی پنجرهٔ length؛ باندها = basis ± mult × انحرافِ معیارِ باقی‌مانده‌ها (population). دورهٔ گرم‌شدن → null.
+//   x = ۰..len-۱ ثابت است، پس Σx و Σx² یک‌بار حساب می‌شوند. basis = مقدارِ خط در نقطهٔ انتهایی.
+const linRegChannel = (c, i) => {
+  const src = _srcOf(c, i.source);
+  const n = src.length, len = Math.max(2, Math.round(i.length || 100)), mult = i.mult || 2;
+  const basis = new Array(n).fill(null), upper = new Array(n).fill(null), lower = new Array(n).fill(null);
+  const sx = (len - 1) * len / 2;
+  const sxx = (len - 1) * len * (2 * len - 1) / 6;
+  const denom = (len * sxx - sx * sx) || 1e-9;
+  for (let k = len - 1; k < n; k++) {
+    let sy = 0, sxy = 0;
+    for (let j = 0; j < len; j++) { const y = src[k - len + 1 + j]; sy += y; sxy += j * y; }
+    const slope = (len * sxy - sx * sy) / denom;
+    const intercept = (sy - slope * sx) / len;
+    const b = intercept + slope * (len - 1);
+    let ss = 0;
+    for (let j = 0; j < len; j++) { const e = src[k - len + 1 + j] - (intercept + slope * j); ss += e * e; }
+    const sd = Math.sqrt(ss / len);
+    basis[k] = b; upper[k] = b + mult * sd; lower[k] = b - mult * sd;
+  }
+  return { upper, basis, lower, multi: true };
+};
+
 export const EXT_REGISTRY_B = {
   // — اندیکاتورهای غایبِ TV (batch ۱) —
   aroonOsc:   { label: 'اسیلاتورِ آرون (Aroon Oscillator)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e', calc: aroonOsc },
@@ -807,6 +831,9 @@ export const EXT_REGISTRY_B = {
   autoFib:     { label: 'فیبوناچیِ خودکار', pane: 'main', inputs: { dev: 5 }, color: '#22d3ee', calc: autoFib },
   srLevels:    { label: 'حمایت/مقاومت', pane: 'main', inputs: { lookback: 15, tol: 0.1 }, color: '#f59e0b', calc: srLevels },
   supplyDemand:{ label: 'نواحیِ عرضه/تقاضا', pane: 'main', inputs: { impulse: 2, atrLen: 14, maxZones: 5 }, color: '#22c55e', calc: supplyDemand },
+
+  // — کانالِ رگرسیونِ خطیِ TV (افزودهٔ Loop #39) —
+  linRegChannel: { label: 'کانالِ رگرسیونِ خطی (Linear Regression)', pane: 'main', inputs: { length: 100, mult: 2, source: 'close' }, color: '#22d3ee', calc: linRegChannel },
 };
 
 export default EXT_REGISTRY_B;
