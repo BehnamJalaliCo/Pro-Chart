@@ -1409,7 +1409,7 @@ export default function BazaarNama() {
     // رنگ/سبکِ دقیقِ کراس‌هیرِ TradingView: خاکستریِ خنثیِ #9598a1 نقطه‌چین (LineStyle.Dotted=1)
     // در هر دو تم؛ فقط ظاهرِ خط را روی خروجیِ crosshairOptions override می‌کند (visible/label حفظ می‌شود).
     const XH_COLOR = settingsRef.current.crosshairColor || '#9598a1'; // رنگِ کراس‌هیر از دیالوگِ تنظیمات (قبلاً مرده)؛ پیش‌فرض خاکستریِ خنثیِ TV
-    const XH_STYLE = 1;
+    const XH_STYLE = settingsRef.current.crosshairStyle != null ? settingsRef.current.crosshairStyle : 1; // سبکِ خطِ کراس‌هیر از دیالوگِ تنظیمات (۰=یکسره / ۱=نقطه‌چین)؛ پیش‌فرض ۱ نقطه‌چینِ TV. قبلاً هاردکد=۱ بود ⇒ کنترلِ «سبکِ خط»ِ دیالوگ مرده بود.
     const XH_WIDTH = Math.max(1, Math.min(4, settingsRef.current.crosshairWidth || 1)); // ضخامتِ کراس‌هیر از دیالوگ
     ch.applyOptions({ crosshair: { ...crosshair, vertLine: { ...crosshair.vertLine, color: XH_COLOR, style: XH_STYLE, width: XH_WIDTH, labelVisible: !useAxisTag && crosshair.vertLine.labelVisible }, horzLine: { ...crosshair.horzLine, color: XH_COLOR, style: XH_STYLE, width: XH_WIDTH, labelVisible: !useAxisTag && crosshair.horzLine.labelVisible } } });
     crosshairGlyphRef.current = _ui.glyph;
@@ -3930,6 +3930,11 @@ export default function BazaarNama() {
           if ('crosshairWidth' in patch) {
             const w = Math.max(1, Math.min(4, patch.crosshairWidth || 1));
             try { chartRef.current && chartRef.current.applyOptions({ crosshair: { vertLine: { width: w }, horzLine: { width: w } } }); } catch (e) {}
+          }
+          // سبکِ خطِ کراس‌هیر (یکسره/نقطه‌چین) — اعمالِ زندهٔ مستقیم مثلِ رنگ/ضخامت؛ قبلاً XH_STYLE هاردکد بود و این کنترل کاری نمی‌کرد.
+          if ('crosshairStyle' in patch) {
+            const st = patch.crosshairStyle === 0 ? 0 : 1; // 0=یکسره(Solid) / 1=نقطه‌چین(Dotted)
+            try { chartRef.current && chartRef.current.applyOptions({ crosshair: { vertLine: { style: st }, horzLine: { style: st } } }); } catch (e) {}
           }
           // حاشیه‌های مقیاسِ قیمت (Top/Bottom margin) — فضای خالیِ بالا/پایینِ محورِ قیمت (سبکِ TV).
           if ('marginTop' in patch || 'marginBottom' in patch) {
