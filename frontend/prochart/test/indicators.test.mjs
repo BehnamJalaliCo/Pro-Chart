@@ -229,5 +229,19 @@ const _bars = (n) => { const high = [], low = [], close = [], volume = []; let x
   }
 }
 
+// ───────── ROC / Momentum / BOP — added coverage (Loop #49) ─────────
+{
+  const b = _bars(40), close = b.close;
+  elem('roc == (c-c[p])/c[p]*100 reference', REG.roc.calc(b, { period: 9, source: 'close' }).line,
+    close.map((_, k) => (k >= 9 ? (close[k] - close[k - 9]) / close[k - 9] * 100 : null)));
+  elem('mom == c-c[p] reference', REG.mom.calc(b, { period: 10, source: 'close' }).line,
+    close.map((_, k) => (k >= 10 ? close[k] - close[k - 10] : null)));
+  // BOP needs open; smooth=1 => raw (c-o)/(h-l), zero-range guard -> 0
+  const n = 20, open = [], high = [], low = [], cl = [];
+  for (let k = 0; k < n; k++) { const x = 100 + Math.sin(k) * 5; open.push(x); high.push(x + 2); low.push(x - 2); cl.push(x + Math.cos(k)); }
+  elem('bop(smooth=1) == (c-o)/(h-l) reference', REG.bop.calc({ open, high, low, close: cl }, { smooth: 1 }).line,
+    cl.map((c, k) => { const r = high[k] - low[k]; return r ? (c - open[k]) / r : 0; }));
+}
+
 console.log(`\n=== ${pass} passed, ${fail} failed ===`);
 if (fail) process.exit(1);
