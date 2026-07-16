@@ -161,4 +161,13 @@ export const VOL_DOWN = 'rgba(242,54,69,.5)';  // modern #f23645 — هم‌تر
 
 ---
 
-**وضعیت:** هر سیزده رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
+## رفع ۱۴ — آیکونِ نوعِ چارت در لجند برای ۳ نوع غلط بود (Loop #117)
+فایل: `frontend/prochart/src/bazaarnama/overlays/ChartOverlays.jsx` — `CHART_TYPE_ICONS`.
+باگ: کلیدهای map با idهای واقعیِ `CHART_TYPES` فرق داشتند ⇒ `CHART_TYPE_ICONS[chartType]` برای ۳ نوع undefined می‌شد و به آیکونِ **کندل** fallback می‌کرد:
+- `volcandles` (id) vs `volcandle` (کلید) · `lwm` vs `linemarkers` · `highlow` vs `hilo`.
+رفع (افزایشی): الیاسِ id-درست اضافه شد — `highlow: BarChart3, volcandles: BarChart3, lwm: LineChart` (کلیدهای قدیمی هم بی‌ضرر ماندند).
+تأییدِ زنده (`index-C3p4RUl4.js`، lucide class): `volcandles→chart-column`، `lwm→chart-line`، `highlow→chart-column` (قبلاً هر سه `chart-candlestick`)؛ `candles→candlestick`/`line→chart-line` کنترل درست.
+
+---
+
+**وضعیت:** هر چهارده رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
