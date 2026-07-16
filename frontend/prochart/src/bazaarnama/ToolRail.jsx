@@ -30,8 +30,8 @@ const STAY_KEY = 'brn.toolrail.stayInDrawing';
 // هاتکیِ خواناشدهٔ هر ابزار (هم‌سطح با تعاریفِ hotkeys.js) — برای نمایش در تولتیپ.
 const HOTKEY = {
   trend: 'Alt+T', hline: 'Alt+H', vline: 'Alt+V', ray: 'Alt+R',
-  rect: 'Alt+E', fib: 'Alt+F', channel: 'Alt+P', text: 'Alt+X',
-  longshort: 'Alt+L',
+  rect: 'Alt+E', fib: 'Alt+F', text: 'Alt+X',
+  // channel/longshort عمداً هاتکی ندارند: Alt+P/Alt+L در #۴۴۴ به مقیاسِ درصدی/لگاریتمی رفتند (مثلِ TV). تولتیپِ این دو نباید هاتکیِ غلط نشان دهد.
 };
 // هاتکیِ آهنربا (هم‌سطح با hotkeys.js).
 const HOTKEY_MAGNET = 'Ctrl+Alt+M';
