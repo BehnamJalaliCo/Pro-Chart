@@ -121,6 +121,27 @@ Object.assign(CRYPTO_EN, {
   BERA: 'Berachain', OSMO: 'Osmosis', JTO: 'Jito', RAY: 'Raydium', ILV: 'Illuvium',
   YGG: 'Yield Guild Games', PEOPLE: 'ConstitutionDAO', BOME: 'Book of Meme', TURBO: 'Turbo', SAFE: 'Safe',
 });
+// دستهٔ دومِ کیوریت‌شده (Loop #36) — آلت‌کوین‌های سرشناسِ کاتالوگ که هنوز نامِ فارسی نداشتند.
+Object.assign(CRYPTO_FA, {
+  NMR: 'نومریر', UMA: 'یو‌ام‌ای', MAGIC: 'مجیک', SSV: 'اس‌اس‌وی', WING: 'وینگ',
+  BIGTIME: 'بیگ‌تایم', CHEQ: 'چک‌دی', PUFFER: 'پافر', MITO: 'میتوسیس', LUNA: 'ترا',
+  FTT: 'اف‌تی‌تی', LINEA: 'لینِا', STG: 'استارگیت', HIGH: 'های‌استریت', JST: 'جاست',
+  CETUS: 'ستوس', CKB: 'نروس', DEXE: 'دکسی', MLN: 'انزایم', AUDIO: 'آدیوس',
+  HFT: 'هش‌فلو', DODO: 'دودو', TWT: 'تراست‌ولت', CELR: 'سلر', TLM: 'الین‌ورلدز',
+  GAS: 'گس', ASTR: 'استار', ALICE: 'آلیس', CORE: 'کور', TAIKO: 'تایکو',
+  XVS: 'ونوس', SYN: 'سیناپس', METIS: 'متیس', ORCA: 'اورکا', MORPHO: 'مورفو',
+  SCRT: 'سکرت', MOODENG: 'مودنگ', RPL: 'راکت‌پول', ARKM: 'آرکهام', WOO: 'وو',
+});
+Object.assign(CRYPTO_EN, {
+  NMR: 'Numeraire', UMA: 'UMA', MAGIC: 'Magic', SSV: 'ssv.network', WING: 'Wing Finance',
+  BIGTIME: 'Big Time', CHEQ: 'Cheqd', PUFFER: 'Puffer Finance', MITO: 'Mitosis', LUNA: 'Terra',
+  FTT: 'FTX Token', LINEA: 'Linea', STG: 'Stargate Finance', HIGH: 'Highstreet', JST: 'JUST',
+  CETUS: 'Cetus Protocol', CKB: 'Nervos Network', DEXE: 'DeXe', MLN: 'Enzyme', AUDIO: 'Audius',
+  HFT: 'Hashflow', DODO: 'DODO', TWT: 'Trust Wallet Token', CELR: 'Celer Network', TLM: 'Alien Worlds',
+  GAS: 'Gas', ASTR: 'Astar', ALICE: 'My Neighbor Alice', CORE: 'Core', TAIKO: 'Taiko',
+  XVS: 'Venus', SYN: 'Synapse', METIS: 'Metis', ORCA: 'Orca', MORPHO: 'Morpho',
+  SCRT: 'Secret', MOODENG: 'Moo Deng', RPL: 'Rocket Pool', ARKM: 'Arkham', WOO: 'WOO Network',
+});
 // اعشارِ استانداردِ فلزات (اونسِ ترویِ TradingView): طلا/پلاتین/پالادیوم ۲، نقره ۳، مس ۴.
 const METAL_DIGITS = { XAU: 2, XAG: 3, XPT: 2, XPD: 2, XCU: 4 };
 // اعشارِ ثابتِ کریپتوهای گران/میان‌قیمت (وقتی قیمتِ زنده در دست نیست، مثلِ مدالِ جستجو).
