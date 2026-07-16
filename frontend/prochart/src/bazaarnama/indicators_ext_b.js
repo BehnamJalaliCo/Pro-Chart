@@ -782,6 +782,17 @@ const linRegChannel = (c, i) => {
   return { upper, basis, lower, multi: true };
 };
 
+// 64) نوسان‌گرِ حجم (Volume Oscillator) — اختلافِ درصدیِ دو EMAِ حجم (کوتاه/بلند)؛ تک‌خط بدونِ سیگنال
+//   (متمایز از PVOِ MACD-مانندِ موجود که سیگنال+هیستوگرام دارد). بدونِ حجمِ معنادار → null.
+const volumeOsc = (c, i) => {
+  if (!_hasVol(c.volume)) return _nullLine(c.close.length);
+  const vol = c.volume.map((v) => v || 0);
+  const short = _ema(vol, Math.max(1, Math.round(i.shortLen || 5)));
+  const long = _ema(vol, Math.max(2, Math.round(i.longLen || 10)));
+  const line = short.map((s, k) => (s == null || long[k] == null || !long[k] ? null : (s - long[k]) / long[k] * 100));
+  return { line, guides: [0] };
+};
+
 export const EXT_REGISTRY_B = {
   // — اندیکاتورهای غایبِ TV (batch ۱) —
   aroonOsc:   { label: 'اسیلاتورِ آرون (Aroon Oscillator)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e', calc: aroonOsc },
@@ -821,6 +832,7 @@ export const EXT_REGISTRY_B = {
   forceIndex: { label: 'شاخصِ نیرو (Force Index)', pane: 'sub', inputs: { period: 13 }, color: '#fb7185', calc: forceIndex },
   klinger:    { label: 'اسیلاتورِ کلینگر', pane: 'sub', inputs: { fast: 34, slow: 55, sig: 13 }, color: '#a855f7', calc: klinger },
   pvt:        { label: 'روندِ قیمت-حجم (PVT)', pane: 'sub', inputs: {}, color: '#10b981', calc: pvt },
+  volumeOsc:  { label: 'نوسان‌گرِ حجم (Volume Oscillator)', pane: 'sub', inputs: { shortLen: 5, longLen: 10 }, color: '#22c55e', calc: volumeOsc },
 
   // — §5.5 پیووت / ساختار —
   pivotsMulti: { label: 'پیووت (چندنوعه)', pane: 'main', inputs: { pivotType: 'Classic' }, color: '#94a3b8', calc: pivotsMulti },
