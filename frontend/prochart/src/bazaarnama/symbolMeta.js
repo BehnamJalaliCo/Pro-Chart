@@ -142,6 +142,23 @@ Object.assign(CRYPTO_EN, {
   XVS: 'Venus', SYN: 'Synapse', METIS: 'Metis', ORCA: 'Orca', MORPHO: 'Morpho',
   SCRT: 'Secret', MOODENG: 'Moo Deng', RPL: 'Rocket Pool', ARKM: 'Arkham', WOO: 'WOO Network',
 });
+// دستهٔ سومِ کیوریت‌شده (Loop #37) — فن‌توکن‌های باشگاهی/F1 (لوگوی برند دارند) + میم‌های سرشناسِ تلگرامی + چند آلتِ مطرح.
+Object.assign(CRYPTO_FA, {
+  BAR: 'بارسلونا', ASR: 'آ‌اس‌رم', ATM: 'اتلتیکو‌مادرید', LAZIO: 'لاتزیو', JUV: 'یوونتوس',
+  PSG: 'پاری‌سن‌ژرمن', SANTOS: 'سانتوس', ALPINE: 'آلپاین', NOT: 'نات‌کوین', HMSTR: 'همستر‌کامبت',
+  RENDER: 'رندر', VIRTUAL: 'ویرچوالز', PLUME: 'پلوم', KAIA: 'کایا', HEMI: 'همی',
+  MANTRA: 'مانترا', MEW: 'میو', MAV: 'ماوریک', ID: 'اسپیس‌آیدی', POND: 'مارلین',
+  RSR: 'ریزرو', USDD: 'یو‌اس‌دی‌دی', IOST: 'آی‌او‌اس‌تی', LPT: 'لایوپیر', JOE: 'تریدر‌جو',
+  RIF: 'روتستاک', FUN: 'فان‌توکن', KAITO: 'کایتو', REZ: 'رنزو', MINA: 'مینا',
+});
+Object.assign(CRYPTO_EN, {
+  BAR: 'FC Barcelona', ASR: 'AS Roma', ATM: 'Atlético Madrid', LAZIO: 'S.S. Lazio', JUV: 'Juventus',
+  PSG: 'Paris Saint-Germain', SANTOS: 'Santos FC', ALPINE: 'Alpine F1 Team', NOT: 'Notcoin', HMSTR: 'Hamster Kombat',
+  RENDER: 'Render', VIRTUAL: 'Virtuals Protocol', PLUME: 'Plume', KAIA: 'Kaia', HEMI: 'Hemi',
+  MANTRA: 'MANTRA', MEW: 'cat in a dogs world', MAV: 'Maverick Protocol', ID: 'SPACE ID', POND: 'Marlin',
+  RSR: 'Reserve Rights', USDD: 'USDD', IOST: 'IOST', LPT: 'Livepeer', JOE: 'Trader Joe',
+  RIF: 'Rootstock', FUN: 'FUN Token', KAITO: 'Kaito', REZ: 'Renzo', MINA: 'Mina Protocol',
+});
 // اعشارِ استانداردِ فلزات (اونسِ ترویِ TradingView): طلا/پلاتین/پالادیوم ۲، نقره ۳، مس ۴.
 const METAL_DIGITS = { XAU: 2, XAG: 3, XPT: 2, XPD: 2, XCU: 4 };
 // اعشارِ ثابتِ کریپتوهای گران/میان‌قیمت (وقتی قیمتِ زنده در دست نیست، مثلِ مدالِ جستجو).
