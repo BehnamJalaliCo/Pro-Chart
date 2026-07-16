@@ -3261,7 +3261,7 @@ export default function BazaarNama() {
             {showDataWin && (
               <DataWindow
                 dataWin={dataWin} TH={TH} symbol={symbol} tf={TF_LABEL[tf] || tf}
-                fmt={fmtPrice} fmtTime={winTimeFmt}
+                fmt={fmtPrice} fmtTime={winTimeFmt} prevClose={_legPrevClose}
                 lastDayChg={_lastDayChg} lastDayPct={_lastDayPct}
                 onClose={() => setShowDataWin(false)}
                 pos={{ top: 48, left: 12 }}
