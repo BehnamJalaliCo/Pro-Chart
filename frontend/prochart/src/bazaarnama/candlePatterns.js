@@ -58,6 +58,10 @@ export function detectCandlePatterns(cs) {
       if (trend < 0) push(c.t, 'bull', 'چکشِ معکوس');
       else if (trend > 0) push(c.t, 'bear', 'ستارهٔ دنباله‌دار');
     }
+    // Spinning Top — بدنهٔ کوچکِ میانی با دو سایهٔ بلند (بلاتکلیفی) — بزرگ‌تر از دوجی، هر دو سایه ≥ بدنه
+    else if (b <= r * 0.35 && uw >= b && lw >= b && uw > r * 0.2 && lw > r * 0.2) {
+      push(c.t, 'neutral', 'فرفره (Spinning Top)');
+    }
 
     // ── دو‌کندلی ──
     // Engulfing — بدنهٔ کندلِ فعلی، بدنهٔ کندلِ قبل را کاملاً می‌پوشاند
@@ -71,6 +75,11 @@ export function detectCandlePatterns(cs) {
     // Piercing / Dark Cloud — نفوذ به بیش از نیمهٔ بدنهٔ قبل
     if (isBear(p) && isBull(c) && c.o < p.l && c.c > (p.o + p.c) / 2 && c.c < p.o) push(c.t, 'bull', 'نفوذی (Piercing)');
     if (isBull(p) && isBear(c) && c.o > p.h && c.c < (p.o + p.c) / 2 && c.c > p.o) push(c.t, 'bear', 'ابرِ سیاه');
+    // Tweezer — دو کندلِ متوالی با کف/سقفِ تقریباً یکسان (بازگشتی)؛ بدنه‌های معنادار و رنگِ مخالف
+    if (b > r * 0.2 && body(p) > range(p) * 0.2) {
+      if (trend < 0 && isBear(p) && isBull(c) && Math.abs(c.l - p.l) <= r * 0.05) push(c.t, 'bull', 'انبرکِ کف');
+      if (trend > 0 && isBull(p) && isBear(c) && Math.abs(c.h - p.h) <= r * 0.05) push(c.t, 'bear', 'انبرکِ سقف');
+    }
 
     // ── سه‌کندلی ──
     if (i >= 2) {
@@ -94,4 +103,4 @@ export function detectCandlePatterns(cs) {
   return Array.from(byTime.values()).map((e) => ({ t: e.t, dir: e.dir, label: e.labels.join('، ') }));
 }
 
-export const PATTERN_COUNT = 16; // تعدادِ تقریبیِ الگوهای پوشش‌داده‌شده (برای نمایشِ UI)
+export const PATTERN_COUNT = 19; // تعدادِ تقریبیِ الگوهای پوشش‌داده‌شده (برای نمایشِ UI)
