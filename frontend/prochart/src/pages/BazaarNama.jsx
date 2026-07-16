@@ -996,7 +996,7 @@ export default function BazaarNama() {
           const [ai, bi] = r.cloud;
           const sA = r.lines[ai] && r.lines[ai].data, sB = r.lines[bi] && r.lines[bi].data;
           // r.cloudColors: [up] یا [up, down]. پیش‌فرض = سبز/قرمزِ جهت‌دار (ابرِ ایچیموکو).
-          const cc = Array.isArray(r.cloudColors) ? r.cloudColors : ['rgba(38,166,154,0.13)', 'rgba(239,83,80,0.13)'];
+          const cc = Array.isArray(r.cloudColors) ? r.cloudColors : ['rgba(8,153,129,0.13)', 'rgba(242,54,69,0.13)'];
           if (sA && sB && lineSeries[ai]) attachBandFill(lineSeries[ai], sA, sB, cc[0], cc[1] || null);
         }
       }
@@ -1053,7 +1053,7 @@ export default function BazaarNama() {
     try {
       volSeriesRef.current.setData((cs || []).map((c) => ({
         time: c.t, value: c.v || 0,
-        color: (c.c >= c.o) ? 'rgba(38,166,154,.5)' : 'rgba(239,83,80,.5)',
+        color: (c.c >= c.o) ? 'rgba(8,153,129,.5)' : 'rgba(242,54,69,.5)',
       })));
       if (volMaRef.current) {
         const P = 20, vols = (cs || []).map((c) => c.v || 0);
@@ -1229,8 +1229,8 @@ export default function BazaarNama() {
           const prev = i > 0 ? r.hist[i - 1] : null;
           const rising = prev == null ? true : v >= prev;
           const color = v >= 0
-            ? (rising ? 'rgba(38,166,154,.9)' : 'rgba(38,166,154,.32)')
-            : (rising ? 'rgba(239,83,80,.32)' : 'rgba(239,83,80,.9)');
+            ? (rising ? 'rgba(8,153,129,.9)' : 'rgba(8,153,129,.32)')
+            : (rising ? 'rgba(242,54,69,.32)' : 'rgba(242,54,69,.9)');
           return { time: cs[i].t, value: v, color };
         }).filter(Boolean)); arr.push(h);
         const mlc = sub.lineColors || {}; // رنگِ مجزای هر خط از تبِ Style (خطِ MACD=۰، سیگنال=۱)
@@ -1245,7 +1245,7 @@ export default function BazaarNama() {
           let green;
           if (r.histMode === 'sign') green = v >= 0;
           else { const prev = i > 0 ? r.hist[i - 1] : null; green = prev == null ? true : v >= prev; }
-          return { time: cs[i].t, value: v, color: green ? 'rgba(38,166,154,.9)' : 'rgba(239,83,80,.9)' };
+          return { time: cs[i].t, value: v, color: green ? 'rgba(8,153,129,.9)' : 'rgba(242,54,69,.9)' };
         }).filter(Boolean)); arr.push(h);
         (r.guides || []).forEach((g) => h.createPriceLine({ price: g, color: TH.text, lineWidth: 1, lineStyle: 2 }));
       } else if (r.hists) {
@@ -1756,7 +1756,7 @@ export default function BazaarNama() {
         else if (pp.tp != null && c.l <= pp.tp) practiceCloseAtRef.current(pp.tp);
       }
     }
-    if (volSeriesRef.current && showVolumeRef.current) { try { volSeriesRef.current.update({ time: c.t, value: c.v || 0, color: (c.c >= c.o) ? 'rgba(38,166,154,.5)' : 'rgba(239,83,80,.5)' }); } catch (e) {} }
+    if (volSeriesRef.current && showVolumeRef.current) { try { volSeriesRef.current.update({ time: c.t, value: c.v || 0, color: (c.c >= c.o) ? 'rgba(8,153,129,.5)' : 'rgba(242,54,69,.5)' }); } catch (e) {} }
     if (EXT_HISTOGRAM_TYPES.includes(chartType)) { // ستونی: رنگِ live لازم دارد — فقط در بارگذاریِ کاملِ بازپخش به‌روز می‌شود
       try { priceSeriesRef.current.update(columnsLivePoint(candlesRef.current, { up: TH.up, down: TH.down })); } catch (e) {}
       return;
