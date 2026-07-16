@@ -602,12 +602,12 @@ export default function BazaarNama() {
       grid: { vertLines: { color: TH.gridLine, style: 1 }, horzLines: { color: TH.gridLine, style: 1 } }, // style:1=Dotted — گریدِ نقطه‌چینِ کم‌رنگ مثلِ TradingView
       // مقیاسِ زمان سبکِ TV: قفلِ رِنج روی resize، آخرین کندل ثابت هنگام اسکرول، فاصلهٔ پایهٔ میله، بدونِ tickِ ریز
       timeScale: {
-        timeVisible: true, secondsVisible: false, borderColor: TH.grid, rightOffset: 6,
+        timeVisible: true, secondsVisible: false, borderColor: TH.border, rightOffset: 6,
         barSpacing: 8, minBarSpacing: 1.5, lockVisibleTimeRangeOnResize: true,
         rightBarStaysOnScroll: true, ticksVisible: false,
       },
       // مقیاسِ قیمت سبکِ TV: حاشیهٔ بالا/پایین تا کندل به لبه نچسبد، متنِ کامل، بدونِ tick
-      rightPriceScale: { borderColor: TH.grid, scaleMargins: { top: 0.12, bottom: 0.08 }, entireTextOnly: true, ticksVisible: false },
+      rightPriceScale: { borderColor: TH.border, scaleMargins: { top: 0.12, bottom: 0.08 }, entireTextOnly: true, ticksVisible: false },
       crosshair: { mode: 0 },
       // روانیِ تعامل سبکِ TV: کینتیک‌اسکرولِ لمسی + تعقیبِ نرمِ ماوس
       kineticScroll: { touch: true, mouse: false },
@@ -735,7 +735,7 @@ export default function BazaarNama() {
   useEffect(() => {
     const ch = chartRef.current; if (!ch) return;
     const _ov = chartSettingsOverrides;
-    ch.applyOptions({ layout: { background: bgOpts(_ov), textColor: TH.text, fontSize: _ov.scaleFontSize || 12, panes: { separatorColor: TH.grid, separatorHoverColor: TH.accent, enableResize: true } }, grid: { vertLines: { color: _ov.gridVertColor || TH.gridLine, visible: _ov.gridVert !== false, style: 1 }, horzLines: { color: _ov.gridHorzColor || TH.gridLine, visible: _ov.gridHorz !== false, style: 1 } }, timeScale: { borderColor: TH.grid }, rightPriceScale: { borderColor: TH.grid } });
+    ch.applyOptions({ layout: { background: bgOpts(_ov), textColor: TH.text, fontSize: _ov.scaleFontSize || 12, panes: { separatorColor: TH.grid, separatorHoverColor: TH.accent, enableResize: true } }, grid: { vertLines: { color: _ov.gridVertColor || TH.gridLine, visible: _ov.gridVert !== false, style: 1 }, horzLines: { color: _ov.gridHorzColor || TH.gridLine, visible: _ov.gridHorz !== false, style: 1 } }, timeScale: { borderColor: TH.border }, rightPriceScale: { borderColor: TH.border } });
     // eslint-disable-next-line
   }, [theme]);
 
