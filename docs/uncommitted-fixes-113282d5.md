@@ -68,4 +68,21 @@
 
 ---
 
-**وضعیت:** هر سه رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
+## رفع ۴ — پالتِ حجمِ VOL_UP/VOL_DOWN لگسی بود (Loop #86)
+فایل: `frontend/prochart/src/bazaarnama/chartbuilders.js` — ثابت‌های `VOL_UP`/`VOL_DOWN` (خط ۱۱۱-۱۱۲)
+باگ: کندل‌ها به پالتِ مدرنِ TV (#089981/#f23645) مهاجرت کرده بودند ولی این دو ثابتِ رنگِ حجم هنوز لگسی (#26a69a/#ef5350) بودند ⇒ ناسازگاری با کندل‌ها. (نسخهٔ inlineِ همین رنگ‌ها در `BazaarNama.jsx` **تمیز کامیت شد** — کامیتِ `11c9edd`؛ ولی chartbuilders.js فایلِ WIP است.)
+
+قبل:
+```js
+export const VOL_UP = 'rgba(38,166,154,.5)';   // legacy #26a69a
+export const VOL_DOWN = 'rgba(239,83,80,.5)';  // legacy #ef5350
+```
+بعد:
+```js
+export const VOL_UP = 'rgba(8,153,129,.5)';   // modern #089981 — هم‌تراز با کندل‌ها
+export const VOL_DOWN = 'rgba(242,54,69,.5)';  // modern #f23645 — هم‌تراز با کندل‌ها
+```
+
+---
+
+**وضعیت:** هر چهار رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
