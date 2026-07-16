@@ -655,7 +655,7 @@ export class DrawingLayer {
     }
     if (this.script) this._paintScript(ctx, W, H);
     const all = this.tmp ? [...this.drawings, this.tmp] : this.drawings;
-    all.forEach((d, i) => { if (d !== this.tmp && this._tfHidden(d)) return; this._draw(ctx, d); if (i === this.selected || this.multiSel.has(i)) this._drawHandles(ctx, d); else if (d !== this.tmp && i === this.hover && d.visible !== false) this._drawHandles(ctx, d, 0.4); });
+    all.forEach((d, i) => { if (d !== this.tmp && this._tfHidden(d)) return; this._draw(ctx, d, i === this.selected || this.multiSel.has(i)); if (i === this.selected || this.multiSel.has(i)) this._drawHandles(ctx, d); else if (d !== this.tmp && i === this.hover && d.visible !== false) this._drawHandles(ctx, d, 0.4); });
     // مستطیلِ Marquee (حینِ کشیدن) — کادرِ خط‌چینِ آبی با پُرِ نیمه‌شفاف، سبکِ TV.
     if (this.marquee) { const m = this.marquee; const rx = Math.min(m.x0, m.x1), ry = Math.min(m.y0, m.y1), rw = Math.abs(m.x1 - m.x0), rh = Math.abs(m.y1 - m.y0); ctx.save(); ctx.fillStyle = 'rgba(59,130,246,.10)'; ctx.strokeStyle = 'rgba(59,130,246,.9)'; ctx.lineWidth = 1; ctx.setLineDash([4, 3]); ctx.fillRect(rx, ry, rw, rh); ctx.strokeRect(rx, ry, rw, rh); ctx.restore(); }
     if (this.pending) {
@@ -690,7 +690,7 @@ export class DrawingLayer {
     if (alpha != null) ctx.restore();
   }
 
-  _draw(ctx, d) {
+  _draw(ctx, d, sel = false) {
     if (d.visible === false) return;
     if (isExt(d.type)) { extDraw(ctx, d, this); return; }
     const W = this.canvas.width, H = this.canvas.height;
@@ -742,7 +742,15 @@ export class DrawingLayer {
         if (d.border) { ctx.save(); ctx.strokeStyle = d.border; ctx.lineWidth = 1; ctx.strokeRect(rx, ry, rw, rh); ctx.restore(); } }
       for (let li = 0; li < lines.length; li++) ctx.fillText(lines[li], x, y + li * lh); return; }
     if (x0 == null || y0 == null || x1 == null || y1 == null) return;
-    if (d.type === 'trend') { ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); }
+    if (d.type === 'trend') { ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      // برچسبِ اطلاعاتیِ Δقیمت/٪/بار هنگامِ انتخاب (مثلِ خطِ روندِ TV) — متنِ رنگیِ ساده، هم‌سبکِ برچسب‌های دیگرِ ترسیم.
+      if (sel && d.p0 && d.p1) {
+        const dp = d.p1.p - d.p0.p, pct = d.p0.p ? (dp / d.p0.p * 100) : 0;
+        const iv = this._barInterval(), bars = iv ? Math.round((d.p1.t - d.p0.t) / iv) : 0;
+        const sg = dp >= 0 ? '+' : '−';
+        ctx.fillText(`${sg}${Math.abs(dp).toFixed(this.digits)} (${sg}${Math.abs(pct).toFixed(2)}%) · ${Math.abs(bars)} بار`, x1 + 8, y1 - 2);
+      }
+    }
     else if (d.type === 'ray') { const dx = x1 - x0, dy = y1 - y0; const k = 4000; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0 + dx * k, y0 + dy * k); ctx.stroke(); }
     else if (d.type === 'rect') { ctx.globalAlpha = (d.fillOpacity != null ? d.fillOpacity : 0.18); ctx.fillStyle = d.fill || d.color; ctx.fillRect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0)); ctx.fillStyle = d.color; ctx.globalAlpha = 1; ctx.strokeRect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0)); }
     else if (d.type === 'fib') {
@@ -771,9 +779,9 @@ export class DrawingLayer {
       const rskPct = entry ? (Math.abs(stop - entry) / Math.abs(entry) * 100) : 0;
       if (yT != null && yE != null) { ctx.fillStyle = 'rgba(34,197,94,.15)'; ctx.fillRect(xa, Math.min(yT, yE), xb - xa, Math.abs(yE - yT)); }
       if (yS != null && yE != null) { ctx.fillStyle = 'rgba(239,68,68,.15)'; ctx.fillRect(xa, Math.min(yS, yE), xb - xa, Math.abs(yE - yS)); }
-      ctx.fillStyle = d.color; ctx.strokeStyle = '#22c55e'; if (yT != null) { ctx.beginPath(); ctx.moveTo(xa, yT); ctx.lineTo(xb, yT); ctx.stroke(); ctx.fillText(`هدف 2R  ${rwdPct.toFixed(2)}%`, xa + 4, yT - 2); }
+      ctx.fillStyle = d.color; ctx.strokeStyle = '#22c55e'; if (yT != null) { ctx.beginPath(); ctx.moveTo(xa, yT); ctx.lineTo(xb, yT); ctx.stroke(); ctx.fillText(`هدف 2R  ${target.toFixed(this.digits)} (${rwdPct.toFixed(2)}%)`, xa + 4, yT - 2); }
       ctx.strokeStyle = '#94a3b8'; if (yE != null) { ctx.beginPath(); ctx.moveTo(xa, yE); ctx.lineTo(xb, yE); ctx.stroke(); ctx.fillText(`ورود  ${entry.toFixed(this.digits)}`, xa + 4, yE - 2); }
-      ctx.strokeStyle = '#ef4444'; if (yS != null) { ctx.beginPath(); ctx.moveTo(xa, yS); ctx.lineTo(xb, yS); ctx.stroke(); ctx.fillText(`حد ضرر  ${rskPct.toFixed(2)}%`, xa + 4, yS - 2); }
+      ctx.strokeStyle = '#ef4444'; if (yS != null) { ctx.beginPath(); ctx.moveTo(xa, yS); ctx.lineTo(xb, yS); ctx.stroke(); ctx.fillText(`حد ضرر  ${stop.toFixed(this.digits)} (${rskPct.toFixed(2)}%)`, xa + 4, yS - 2); }
     }
     else if (d.type === 'short') {
       // موقعیتِ شورت (ابزارِ Short Positionِ TV): برعکسِ لانگ — حدِ ضرر بالای ورود، هدف پایین (entry − 2R).
@@ -785,9 +793,9 @@ export class DrawingLayer {
       const rskPct = entry ? (Math.abs(stop - entry) / Math.abs(entry) * 100) : 0;
       if (yT != null && yE != null) { ctx.fillStyle = 'rgba(34,197,94,.15)'; ctx.fillRect(xa, Math.min(yT, yE), xb - xa, Math.abs(yE - yT)); }
       if (yS != null && yE != null) { ctx.fillStyle = 'rgba(239,68,68,.15)'; ctx.fillRect(xa, Math.min(yS, yE), xb - xa, Math.abs(yE - yS)); }
-      ctx.fillStyle = d.color; ctx.strokeStyle = '#22c55e'; if (yT != null) { ctx.beginPath(); ctx.moveTo(xa, yT); ctx.lineTo(xb, yT); ctx.stroke(); ctx.fillText(`هدف 2R  ${rwdPct.toFixed(2)}%`, xa + 4, yT - 2); }
+      ctx.fillStyle = d.color; ctx.strokeStyle = '#22c55e'; if (yT != null) { ctx.beginPath(); ctx.moveTo(xa, yT); ctx.lineTo(xb, yT); ctx.stroke(); ctx.fillText(`هدف 2R  ${target.toFixed(this.digits)} (${rwdPct.toFixed(2)}%)`, xa + 4, yT - 2); }
       ctx.strokeStyle = '#94a3b8'; if (yE != null) { ctx.beginPath(); ctx.moveTo(xa, yE); ctx.lineTo(xb, yE); ctx.stroke(); ctx.fillText(`ورود  ${entry.toFixed(this.digits)}`, xa + 4, yE - 2); }
-      ctx.strokeStyle = '#ef4444'; if (yS != null) { ctx.beginPath(); ctx.moveTo(xa, yS); ctx.lineTo(xb, yS); ctx.stroke(); ctx.fillText(`حد ضرر  ${rskPct.toFixed(2)}%`, xa + 4, yS - 2); }
+      ctx.strokeStyle = '#ef4444'; if (yS != null) { ctx.beginPath(); ctx.moveTo(xa, yS); ctx.lineTo(xb, yS); ctx.stroke(); ctx.fillText(`حد ضرر  ${stop.toFixed(this.digits)} (${rskPct.toFixed(2)}%)`, xa + 4, yS - 2); }
     }
   }
 }
