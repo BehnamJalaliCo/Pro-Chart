@@ -877,6 +877,88 @@ async def bn_calendar():
         return {"items": []}
 
 
+@router.get("/fundamentals")
+async def bn_fundamentals(symbol: str = ""):
+    """داده‌های بنیادیِ سهام (P/E، EPS، درآمد به‌ازای سهم، Market Cap، حاشیه‌ها،
+    ROE/ROA، سود تقسیمی، بتا، بدهی به حقوقِ صاحبانِ سهام و بازهٔ ۵۲هفته) از Finnhub.
+
+    عمومی (دادهٔ کاربری ندارد). Finnhubِ رایگان فقط برای سهامِ آمریکا داده دارد؛
+    کریپتو/فارکس/نمادِ ناموجود ⇒ available=False. کشِ ۱۰دقیقه در Redis (bn:fund:{SYM}).
+    """
+    import os as _os
+
+    from src.core.redis_client import redis_client
+    sym = re.sub(r"[^A-Za-z0-9.\-]", "", (symbol or "").upper())[:15]
+    if not sym:
+        return {"available": False, "symbol": ""}
+    ckey = f"bn:fund:{sym}"
+    try:
+        cached = await redis_client.get_json(ckey)
+        if cached:
+            return cached
+    except Exception:  # noqa: BLE001
+        pass
+    key = _os.getenv("FINNHUB_API_KEY", "")
+    if not key:
+        return {"available": False, "symbol": sym, "reason": "no-key"}
+    out = {"available": False, "symbol": sym}
+    try:
+        import httpx as _hx
+        async with _hx.AsyncClient(timeout=8.0) as cli:
+            mr = await cli.get("https://finnhub.io/api/v1/stock/metric",
+                               params={"symbol": sym, "metric": "all", "token": key})
+            pr = await cli.get("https://finnhub.io/api/v1/stock/profile2",
+                               params={"symbol": sym, "token": key})
+        m = ((mr.json() or {}).get("metric", {}) or {}) if mr.status_code == 200 else {}
+        p = (pr.json() or {}) if pr.status_code == 200 else {}
+
+        def g(*keys):
+            for k in keys:
+                v = m.get(k)
+                if v is not None:
+                    try:
+                        return float(v)
+                    except (TypeError, ValueError):
+                        return v
+            return None
+
+        mcap_m = p.get("marketCapitalization")  # واحد: میلیون
+        metrics = {
+            "peTTM": g("peTTM", "peBasicExclExtraTTM"),
+            "epsTTM": g("epsTTM", "epsBasicExclExtraItemsTTM"),
+            "pbAnnual": g("pbAnnual", "pbQuarterly"),
+            "psTTM": g("psTTM", "psAnnual"),
+            "roeTTM": g("roeTTM"),
+            "roaTTM": g("roaTTM"),
+            "netMarginTTM": g("netProfitMarginTTM"),
+            "grossMarginTTM": g("grossMarginTTM"),
+            "revenuePerShareTTM": g("revenuePerShareTTM"),
+            "dividendYieldTTM": g("currentDividendYieldTTM", "dividendYieldIndicatedAnnual"),
+            "beta": g("beta"),
+            "debtToEquity": g("totalDebt/totalEquityAnnual", "longTermDebt/equityAnnual"),
+            "week52High": g("52WeekHigh"),
+            "week52Low": g("52WeekLow"),
+            "marketCap": (float(mcap_m) * 1_000_000) if mcap_m else None,
+        }
+        prof = {
+            "name": p.get("name"),
+            "industry": p.get("finnhubIndustry"),
+            "exchange": p.get("exchange"),
+            "currency": p.get("currency"),
+            "shareOutstanding": p.get("shareOutstanding"),
+            "weburl": p.get("weburl"),
+        }
+        has = any(v is not None for v in metrics.values()) or bool(prof.get("name"))
+        out = {"available": bool(has), "symbol": sym, "metrics": metrics, "profile": prof}
+    except Exception:  # noqa: BLE001
+        out = {"available": False, "symbol": sym}
+    try:
+        await redis_client.set_json(ckey, out, expire=600)
+    except Exception:  # noqa: BLE001
+        pass
+    return out
+
+
 # ═══════════════════ پنلِ ادمینِ بازارنما (تأییدِ پرمیوم) ═══════════════════
 # احراز با رمزِ BN_ADMIN_PASSWORD → توکنِ scope=bn_admin (۱۲ ساعت).
 import os as _os_admin

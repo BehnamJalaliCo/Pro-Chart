@@ -124,6 +124,7 @@ export const api = {
   bnLayouts: () => client.get('/academy/bn/layouts'),
   bnLayoutGet: (id) => client.get(`/academy/bn/layouts/${id}`),
   bnLayoutSave: (d) => client.post('/academy/bn/layouts', d),
+  bnLayoutRename: (id, name) => client.post(`/academy/bn/layouts/${id}/rename`, { name }),
   bnLayoutDelete: (id) => client.delete(`/academy/bn/layouts/${id}`),
   bnScripts: () => client.get('/academy/bn/scripts'),
   bnScriptGet: (id) => client.get(`/academy/bn/scripts/${id}`),
@@ -138,6 +139,7 @@ export const api = {
     return client.post('/academy/bn/manual-order', o, k ? { headers: { 'X-BN-Owner-Key': k } } : undefined);
   },
   bnPrices: (symbols) => client.get('/academy/bn/prices', { params: { symbols } }),
+  bnFundamentals: (symbol) => client.get('/academy/bn/fundamentals', { params: { symbol } }),
   bnReferralLink: () => client.get('/academy/bn/referral-link'),
   bnPaymentSubmit: (tx_hash, plan) => client.post('/academy/bn/payment/submit', { tx_hash, plan }),
   bnConnectStatus: () => client.get('/academy/bn/connect/status'),

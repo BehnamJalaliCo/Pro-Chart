@@ -6,6 +6,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { api } from '../../api/client';
 import SymbolLogo from '../SymbolLogo';
+import { RATING_FA, technicalRating } from '../techRating';
 
 const num = (v) => { const n = typeof v === 'number' ? v : parseFloat(v); return Number.isFinite(n) ? n : null; };
 
@@ -126,12 +127,59 @@ function Flash({ value, dir, className = '', style, children }) {
   return <span key={st.n} className={`${className} ${st.cls}`} style={style}>{children}</span>;
 }
 
-export default function Details({ symbol, TH, prices = {} }) {
+// زمانِ نسبیِ فارسی از unix-seconds — برای کارتِ «اخبار»ِ سبکِ TV در پنلِ جزئیات (هم‌سبکِ NewsTab).
+function newsRelTime(ts) {
+  if (!ts) return '';
+  const s = Math.max(0, Date.now() / 1000 - ts);
+  if (s < 60) return 'هم‌اکنون';
+  const m = Math.floor(s / 60); if (m < 60) return `${m} دقیقه پیش`;
+  const h = Math.floor(m / 60); if (h < 24) return `${h} ساعت پیش`;
+  const d = Math.floor(h / 24);
+  if (d === 1) return 'دیروز';
+  if (d < 7) return `${d} روز پیش`;
+  try { return new Intl.DateTimeFormat('fa-IR', { day: 'numeric', month: 'long' }).format(new Date(ts * 1000)); } catch (e) { return `${d} روز پیش`; }
+}
+
+// کلیدواژه‌های نماد برای انتخابِ خبرِ مرتبط (زیرمجموعهٔ سبکِ symbolKeywordsِ NewsTab).
+const NEWS_KW_MAP = {
+  EUR: ['eur', 'یورو'], USD: ['usd', 'دلار', 'فدرال', 'fed'], GBP: ['gbp', 'پوند'], JPY: ['jpy', 'ین'],
+  XAU: ['xau', 'gold', 'طلا'], CAD: ['cad', 'کانادا'], AUD: ['aud', 'استرالیا'], CHF: ['chf', 'فرانک'],
+  NZD: ['nzd', 'نیوزیلند'], OIL: ['oil', 'نفت'], BTC: ['btc', 'bitcoin', 'بیت'], ETH: ['eth', 'اتر', 'اتریوم'],
+};
+function newsKW(symbol = '') {
+  const s = String(symbol).toUpperCase();
+  const out = new Set();
+  Object.keys(NEWS_KW_MAP).forEach((k) => { if (s.includes(k)) NEWS_KW_MAP[k].forEach((w) => out.add(w)); });
+  return [...out];
+}
+
+export default function Details({ symbol, TH, prices = {}, techRating = null }) {
   const [day, setDay] = useState(null); // {o,h,l,c,v} کندلِ روز
   const [yr, setYr] = useState(null);   // {hi52,lo52,avgVol} از یک سالِ کندلِ روزانه
+  const [news, setNews] = useState(null); // آخرین خبرِ مرتبط (کارتِ News سبکِ TV)
+  const [ratingTf, setRatingTf] = useState(null); // تایم‌فریمِ انتخابیِ امتیازِ تکنیکال (Technical Ratingِ TV دارد)؛ null = تایم‌فریمِ چارت (propِ techRating)
+  const [tfRating, setTfRating] = useState(null);  // امتیازِ محاسبه‌شده روی ratingTfِ انتخابی
+  const [fund, setFund] = useState(null); // داده‌های بنیادیِ سهام از Finnhub (فقط سهامِ آمریکا)
   const lp = prices[symbol];
   const mid = num(lp?.mid);
   const dir = lp?.dir || 0;
+
+  // با تغییرِ نماد، انتخابِ تایم‌فریمِ امتیاز به پیش‌فرض (تایم‌فریمِ چارت) برگردد
+  useEffect(() => { setRatingTf(null); }, [symbol]);
+  // امتیازِ تکنیکال روی تایم‌فریمِ انتخابی (Technical Rating TF selectorِ TV): کندل‌های آن TF را می‌گیرد و امتیاز می‌سازد.
+  useEffect(() => {
+    let on = true;
+    setTfRating(null);
+    if (!ratingTf || !symbol) return () => { on = false; };
+    (async () => {
+      try {
+        const r = await api.chart(symbol, ratingTf, '', 260);
+        const cs = (r?.candles || []).map((c) => ({ o: num(c.o), h: num(c.h), l: num(c.l), c: num(c.c) })).filter((c) => c.c != null);
+        if (on) setTfRating(technicalRating(cs));
+      } catch (e) { if (on) setTfRating(null); }
+    })();
+    return () => { on = false; };
+  }, [ratingTf, symbol]);
 
   // واکشیِ کندلِ روزانه برای بازهٔ روز و تغییرِ روز (+حجمِ روز اگر موجود)
   useEffect(() => {
@@ -144,8 +192,47 @@ export default function Details({ symbol, TH, prices = {} }) {
         const cs = res?.candles || res?.data || res || [];
         const arr = Array.isArray(cs) ? cs : [];
         const last = arr[arr.length - 1];
-        if (on && last && last.o != null) setDay({ o: last.o, h: last.h, l: last.l, c: last.c, v: last.v ?? last.volume ?? null });
+        const prev = arr.length >= 2 ? arr[arr.length - 2] : null;
+        if (on && last && last.o != null) setDay({ o: last.o, h: last.h, l: last.l, c: last.c, v: last.v ?? last.volume ?? null, prevClose: prev && prev.c != null ? prev.c : null, t: last.t ?? last.time ?? null });
       } catch { if (on) setDay(null); }
+    })();
+    return () => { on = false; };
+  }, [symbol]);
+
+  // داده‌های بنیادیِ سهام (Finnhub) — فقط سهامِ آمریکا داده دارد؛ کریپتو/فارکس بی‌صدا خالی می‌ماند.
+  useEffect(() => {
+    let on = true;
+    setFund(null);
+    if (!symbol) return;
+    (async () => {
+      try {
+        const res = await api.bnFundamentals(symbol);
+        const d = res?.data ?? res;
+        if (on && d && d.available) setFund(d);
+      } catch { if (on) setFund(null); }
+    })();
+    return () => { on = false; };
+  }, [symbol]);
+
+  // آخرین خبرِ مرتبط با نماد (کارتِ «اخبار» سبکِ Symbol Infoِ TV) — از همان /academy/bn/news؛
+  // مرتبط با نماد اگر کلیدواژه بخورد، وگرنه آخرینِ عمومی (مثلِ کارتِ خبرِ عمومیِ TV). بی‌صدا degrade.
+  useEffect(() => {
+    let on = true;
+    setNews(null);
+    if (!symbol) return undefined;
+    (async () => {
+      try {
+        const r = await api.bnNews();
+        const items = Array.isArray(r?.items) ? r.items : [];
+        if (!items.length) return;
+        const kws = newsKW(symbol);
+        const rel = kws.length ? items.find((a) => {
+          const hay = `${a?.title || ''} ${a?.summary || ''}`.toLowerCase();
+          return kws.some((w) => hay.includes(w));
+        }) : null;
+        const pick = rel || items[0];
+        if (on && pick && pick.title) setNews(pick);
+      } catch { if (on) setNews(null); }
     })();
     return () => { on = false; };
   }, [symbol]);
@@ -168,10 +255,19 @@ export default function Details({ symbol, TH, prices = {} }) {
           if (l != null && l < lo52) lo52 = l;
           if (v != null) { vSum += v; vN++; }
         }
+        // بازده‌های دوره‌ای (Performanceِ TV: 1W/1M/3M/6M/YTD/1Y) از سریِ بسته‌های روزانه — بستهٔ فعلی نسبت به بستهٔ N روزِ معاملاتیِ قبل.
+        const closesFull = arr.map((c) => num(c.c)).filter((x) => x != null);
+        const lastC = closesFull.length ? closesFull[closesFull.length - 1] : null;
+        const retN = (n) => { const i = closesFull.length - 1 - n; return (i >= 0 && closesFull[i] && lastC != null) ? ((lastC - closesFull[i]) / closesFull[i]) * 100 : null; };
+        let ytd = null;
+        try { const jan1 = Date.UTC(new Date().getUTCFullYear(), 0, 1) / 1000; const yc = arr.find((c) => (num(c.t ?? c.time) ?? 0) >= jan1); const yv = yc ? num(yc.c) : null; if (yv && lastC != null) ytd = ((lastC - yv) / yv) * 100; } catch (e) { /* noop */ }
         if (on) setYr({
           hi52: Number.isFinite(hi52) ? hi52 : null,
           lo52: Number.isFinite(lo52) ? lo52 : null,
           avgVol: vN ? vSum / vN : null,
+          // سریِ بسته‌های اخیر برای اسپارک‌لاینِ بالای پنل (مثلِ Symbol Infoِ TV) — آخرین ۹۰ روز
+          closes: closesFull.slice(-90),
+          perf: { w1: retN(5), m1: retN(21), m3: retN(63), m6: retN(126), ytd, y1: retN(252) },
         });
       } catch { if (on) setYr(null); }
     })();
@@ -193,12 +289,12 @@ export default function Details({ symbol, TH, prices = {} }) {
   const ask = mid != null ? mid + half : null;
   const spread = half != null ? pip : null;
 
-  // تغییرِ روز نسبت به openِ کندلِ روزانه
-  const base = day?.o != null ? day.o : (day?.c ?? null);
+  // تغییرِ روز عینِ TradingView = close-to-close: نسبت به بستهٔ روزِ قبل (prevClose)؛ نبودش ⇒ fallback به openِ روز.
+  const base = day?.prevClose != null ? day.prevClose : (day?.o != null ? day.o : (day?.c ?? null));
   const ref = mid != null ? mid : (day?.c ?? null);
   const chgAbs = (base != null && ref != null) ? ref - base : null;
   const chgPct = (base && ref != null) ? (chgAbs / base) * 100 : null;
-  const chgCol = chgPct == null ? TH.text : chgPct >= 0 ? TH.up : TH.down;
+  const chgCol = chgPct == null ? TH.text : chgPct >= 0 ? (TH.upText || TH.up) : (TH.downText || TH.down);
   // رنگِ نشانگرِ نوارِ رنج (جهتِ روز؛ نبودِ داده ⇐ اکسنت)
   const trendCol = chgPct == null ? TH.accent : chgPct >= 0 ? TH.up : TH.down;
 
@@ -238,7 +334,7 @@ export default function Details({ symbol, TH, prices = {} }) {
     <div className="mb-2.5">
       <div className="text-[10.5px] mb-1.5" style={{ color: TH.text }}>{title}</div>
       <div className="flex items-center gap-2" dir="ltr">
-        <span className="text-[10px] tabular-nums shrink-0 w-14 text-right" style={{ color: TH.textStrong, opacity: 0.85 }}>{loVal}</span>
+        <span className="text-[10px] tabular-nums shrink-0 w-[70px] whitespace-nowrap text-right" style={{ color: TH.textStrong, opacity: 0.85 }}>{loVal}</span>
         <div className="relative flex-1 h-1.5 rounded-full"
           style={{ background: p == null ? TH.chipBg : `linear-gradient(90deg, ${TH.down}, ${TH.up})` }}>
           {p != null && (
@@ -251,7 +347,7 @@ export default function Details({ symbol, TH, prices = {} }) {
               }} />
           )}
         </div>
-        <span className="text-[10px] tabular-nums shrink-0 w-14 text-left" style={{ color: TH.textStrong, opacity: 0.85 }}>{hiVal}</span>
+        <span className="text-[10px] tabular-nums shrink-0 w-[70px] whitespace-nowrap text-left" style={{ color: TH.textStrong, opacity: 0.85 }}>{hiVal}</span>
       </div>
     </div>
   );
@@ -278,7 +374,7 @@ export default function Details({ symbol, TH, prices = {} }) {
             <div className="flex items-center gap-1.5 mt-1 min-w-0">
               {name && <span className="text-[11px] truncate leading-tight" style={{ color: TH.text }}>{name}</span>}
               {meta.market && (
-                <span className="text-[9.5px] font-semibold uppercase tracking-[0.06em] shrink-0 opacity-55" dir="ltr" style={{ color: TH.text }}>· {meta.market}</span>
+                <span className="text-[9.5px] font-semibold uppercase tracking-[0.06em] shrink-0" dir="ltr" style={{ color: TH.text }}>· {meta.market}</span>
               )}
             </div>
           </div>
@@ -289,13 +385,18 @@ export default function Details({ symbol, TH, prices = {} }) {
               <path key="b" d="M13.5 3.8l2.7 2.7-8 8H5.3v-2.9zM12.2 5.1l2.7 2.7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round" />,
               <g key="c" fill="currentColor"><circle cx="4.5" cy="10" r="1.4" /><circle cx="10" cy="10" r="1.4" /><circle cx="15.5" cy="10" r="1.4" /></g>,
             ].map((g, i) => (
-              <span key={i} title={['مقایسه', 'ویرایش', 'بیشتر'][i]}
-                className="grid place-items-center rounded transition-colors duration-[120ms] cursor-default"
-                style={{ width: 24, height: 24, color: TH.text, opacity: 0.5 }}
+              <button key={i} type="button" title={['مقایسه (تغییرِ نماد)', 'ویرایشِ تنظیماتِ چارت', 'کپیِ قیمت'][i]}
+                onClick={() => { try {
+                  if (i === 0) window.dispatchEvent(new CustomEvent('bn:openSearch'));
+                  else if (i === 1) window.dispatchEvent(new CustomEvent('bn:openChartSettings'));
+                  else if (i === 2 && navigator.clipboard && ref != null) navigator.clipboard.writeText(String(fmt(ref)));
+                } catch (e) {} }}
+                className="grid place-items-center rounded transition-colors duration-[120ms] cursor-pointer"
+                style={{ width: 24, height: 24, color: TH.text, opacity: 0.5, background: 'transparent', border: 0, padding: 0 }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBg; e.currentTarget.style.opacity = '0.85'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.opacity = '0.5'; }}>
                 <svg width="18" height="18" viewBox="0 0 20 20">{g}</svg>
-              </span>
+              </button>
             ))}
           </div>
         </div>
@@ -305,9 +406,9 @@ export default function Details({ symbol, TH, prices = {} }) {
           <Flash value={mid} dir={dir}
             className="text-[28px] font-extrabold tabular-nums leading-none tracking-tight rounded px-0.5 -mx-0.5 inline-block"
             style={{ color: TH.textStrong }}>
-            {mid != null ? fmt(mid) : '—'}
+            {ref != null ? fmt(ref) : '—'}
           </Flash>
-          {quoteCcy && mid != null && (
+          {quoteCcy && ref != null && (
             <span className="text-[11px] font-semibold" style={{ color: TH.text }}>{quoteCcy}</span>
           )}
           {chgPct != null && (
@@ -319,17 +420,52 @@ export default function Details({ symbol, TH, prices = {} }) {
         {/* وضعیتِ بازار + زمانِ آخرین به‌روزرسانی (سبکِ «● Market open · Last update … GMT»ِ سرتیترِ TV).
             heuristic هم‌راستا با ردیف‌های واچ‌لیست: وجودِ midِ زندهٔ معتبر ⇒ بازار باز (نقطهٔ سبز)، نبودش ⇒ بسته (خاکستری). */}
         <div className="flex items-center gap-1.5 text-[10px] mt-1.5" dir="ltr">
-          <span className="inline-flex items-center gap-1 font-semibold" style={{ color: mid != null ? TH.up : TH.text, opacity: mid != null ? 0.85 : 0.5 }}>
+          <span className="inline-flex items-center gap-1 font-semibold" style={{ color: mid != null ? (TH.upText || TH.up) : TH.text }}>
             <span className="inline-block rounded-full shrink-0" style={{ width: 6, height: 6, background: mid != null ? TH.up : TH.text, opacity: mid != null ? 1 : 0.45 }} />
             {mid != null ? 'بازار باز' : 'بازار بسته'}
           </span>
-          {mid != null && (
-            <span className="opacity-55" style={{ color: TH.text }}>
+          {mid != null ? (
+            <span style={{ color: TH.text }}>
               · آخرین به‌روزرسانی · {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })} GMT
             </span>
-          )}
+          ) : day?.t != null && (() => {
+            // هم‌ترازِ «Last update at Jul 10, 23:59 GMT+0»ِ TV: تاریخ ماه‌اول (en-US) + زمانِ کندلِ آخر.
+            // برای کندلِ روزانه (نیمه‌شبِ UTC) زمان گمراه‌کننده است ⇒ فقط تاریخ نشان داده می‌شود.
+            const d = new Date(day.t * (day.t < 1e12 ? 1000 : 1));
+            const dateStr = d.toLocaleDateString('en-US', { day: '2-digit', month: 'short', timeZone: 'UTC' });
+            const hhmm = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+            return (
+              <span style={{ color: TH.text }}>
+                · آخرین به‌روزرسانی · {hhmm === '00:00' ? dateStr : `${dateStr}, ${hhmm}`} GMT
+              </span>
+            );
+          })()}
         </div>
       </div>
+
+      {/* اسپارک‌لاینِ روندِ اخیر (~۹۰ روزِ بسته) — زیرِ بلوکِ قیمت، مثلِ مینی‌چارتِ Symbol Infoِ TV. رنگ: سبز اگر بالاتر از شروعِ بازه، وگرنه قرمز. */}
+      {Array.isArray(yr?.closes) && yr.closes.length >= 4 && (() => {
+        const cs = yr.closes;
+        const min = Math.min(...cs), max = Math.max(...cs), span = (max - min) || 1;
+        const W = 300, H = 40, pad = 3, n = cs.length;
+        const pts = cs.map((v, i) => `${(pad + (i / (n - 1)) * (W - 2 * pad)).toFixed(1)},${(pad + (1 - (v - min) / span) * (H - 2 * pad)).toFixed(1)}`);
+        const up = cs[n - 1] >= cs[0];
+        const col = up ? TH.up : TH.down;
+        return (
+          <div className="mb-1.5 -mt-0.5" dir="ltr">
+            <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 40, display: 'block' }} preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="bnSparkFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={col} stopOpacity="0.16" />
+                  <stop offset="100%" stopColor={col} stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path d={`M ${pts[0]} L ${pts.join(' L ')} L ${(W - pad).toFixed(1)},${H} L ${pad},${H} Z`} fill="url(#bnSparkFill)" />
+              <polyline points={pts.join(' ')} fill="none" stroke={col} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+            </svg>
+          </div>
+        );
+      })()}
 
       {/* کارتِ «حقایقِ کلیدی» (توصیفیِ سبکِ TV، تینتِ اکسنتِ بنفش) */}
       <div className="rounded-lg p-2.5 mb-1" style={{ background: tint(TH.accentAi, 0.10), border: `1px solid ${tint(TH.accentAi, 0.22)}` }}>
@@ -338,27 +474,185 @@ export default function Details({ symbol, TH, prices = {} }) {
             <path d="M10 2l1.6 4.6L16 8.2l-4.4 1.6L10 14l-1.6-4.2L4 8.2l4.4-1.6zM15.5 12l.7 2 .8-2 1.5-.6-1.5-.7-.8-1.9-.7 1.9-1.5.7z" fill="currentColor" />
           </svg>
           <span className="text-[11px] font-extrabold" style={{ color: TH.textStrong }}>حقایقِ کلیدی</span>
-          <span className="text-[9px] uppercase tracking-[0.08em] opacity-40" dir="ltr">Key facts</span>
+          <span className="text-[9px] uppercase tracking-[0.08em]" dir="ltr">Key facts</span>
         </div>
         <div className="text-[11px] leading-[1.7]" style={{ color: TH.text }}>{facts}</div>
-        <div className="text-[10px] font-semibold mt-1.5 cursor-default" style={{ color: TH.accent }}>بیشتر بخوانید ›</div>
+        <div className="text-[10px] font-semibold mt-1.5 cursor-default" style={{ color: TH.accentText || TH.accent }}>بیشتر بخوانید ›</div>
       </div>
+
+      {/* کارتِ «اخبار» (News سبکِ Symbol Infoِ TV) — آخرین خبرِ مرتبط؛ کلیک ⇒ منبع در تبِ جدید. فقط اگر خبری بود. */}
+      {news && news.title && (
+        <a
+          href={news.url || undefined}
+          target={news.url ? '_blank' : undefined}
+          rel="noreferrer"
+          className="block rounded-lg p-2.5 mb-1 no-underline transition-colors"
+          style={{ background: TH.chipBg, border: `1px solid ${TH.border}`, cursor: news.url ? 'pointer' : 'default', color: 'inherit' }}
+          title={news.title}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[11px] font-extrabold" style={{ color: TH.textStrong }}>اخبار</span>
+            <span className="text-[9px] uppercase tracking-[0.08em]" dir="ltr">News</span>
+            {news.ts != null && <span className="text-[9.5px] mr-auto">{newsRelTime(news.ts)}</span>}
+          </div>
+          <div className="text-[11.5px] leading-[1.6] font-medium" style={{ color: TH.text, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{news.title}</div>
+          {news.source && (
+            <div className="text-[9.5px] font-semibold uppercase tracking-wide truncate mt-1" dir="ltr" style={{ color: TH.text }}>{news.source}</div>
+          )}
+        </a>
+      )}
+
+      {/* امتیازِ تکنیکال (Technical Ratingِ TV) — از میانگین‌ها + نوسان‌گرها؛ گِیجِ گرادیانی + برچسبِ خرید/فروش */}
+      {(() => {
+        // امتیازِ مؤثر: تایم‌فریمِ انتخابی (اگر بارگذاری شد) وگرنه امتیازِ چارت (prop).
+        const eff = (ratingTf && tfRating) ? tfRating : techRating;
+        if (!eff || !RATING_FA[eff.label]) return null;
+        const rf = RATING_FA[eff.label];
+        const pct = Math.max(2, Math.min(98, (eff.overall + 1) / 2 * 100));
+        const mf = RATING_FA[eff.maLabel] || RATING_FA.neutral, of = RATING_FA[eff.oscLabel] || RATING_FA.neutral;
+        return (
+          <div className="rounded-lg p-2.5 mb-1" style={{ border: `1px solid ${TH.border}` }}>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] font-extrabold" style={{ color: TH.textStrong }}>امتیازِ تکنیکال</span>
+              <span className="text-[9px] uppercase tracking-[0.08em]" dir="ltr">Technical Rating</span>
+            </div>
+            {/* انتخابگرِ تایم‌فریمِ امتیاز (Technical Rating TF selectorِ TV) — «چارت» = تایم‌فریمِ فعلیِ نمودار */}
+            <div className="flex items-center gap-0.5 mb-1.5 flex-wrap" dir="ltr">
+              {[[null, 'چارت'], ['M5', '5m'], ['M15', '15m'], ['H1', '1H'], ['H4', '4H'], ['D1', '1D']].map(([tf, lbl]) => {
+                const on = (ratingTf || null) === tf;
+                return (
+                  <button key={lbl} onClick={() => setRatingTf(tf)} title={tf ? `امتیاز روی ${lbl}` : 'امتیاز روی تایم‌فریمِ چارت'}
+                    className="px-1.5 h-5 rounded text-[9.5px] font-semibold tabular-nums transition-colors duration-[120ms]"
+                    style={on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg, color: TH.text }}>{lbl}</button>
+                );
+              })}
+            </div>
+            {/* گِیجِ نیم‌دایره‌ایِ عقربه‌دار + برچسبِ ریتینگ زیرِ کمان — هم‌ترازِ گِیجِ «Technical Rating»ِ TV (به‌جای نوارِ افقی + چیپِ جدا). */}
+            {(() => {
+              const cx = 70, cy = 58, R = 50, Rn = 42;
+              const th = (180 - pct * 1.8) * Math.PI / 180;   // pct=0 ⇒ چپ (فروشِ قوی)، ۵۰ ⇒ بالا (خنثی)، ۱۰۰ ⇒ راست (خریدِ قوی)
+              const nx = cx + Rn * Math.cos(th), ny = cy - Rn * Math.sin(th);
+              return (
+                <svg viewBox="0 0 140 66" className="w-full" style={{ maxHeight: 70 }} dir="ltr" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="bnTechGauge" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor={RATING_FA.strongSell.color} />
+                      <stop offset="50%" stopColor={RATING_FA.neutral.color} />
+                      <stop offset="100%" stopColor={RATING_FA.strongBuy.color} />
+                    </linearGradient>
+                  </defs>
+                  <path d={`M ${cx - R},${cy} A ${R},${R} 0 0 1 ${cx + R},${cy}`} fill="none" stroke="url(#bnTechGauge)" strokeWidth="7" strokeLinecap="round" />
+                  <line x1={cx} y1={cy} x2={nx} y2={ny} stroke={rf.color} strokeWidth="2.5" strokeLinecap="round" />
+                  <circle cx={cx} cy={cy} r="4.5" fill={rf.color} />
+                </svg>
+              );
+            })()}
+            {/* برچسبِ دو سرِ کمان (فروش/خرید) — هم‌ترازِ گِیجِ Technical Ratingِ TV؛ HTML نه textِ SVG (فارسی بدچین می‌شود). چپ=فروش(قرمز)، راست=خرید(سبز). */}
+            <div className="flex justify-between items-center px-2.5 -mt-2" dir="ltr">
+              <span className="text-[8px] font-bold" style={{ color: RATING_FA.sell.color, opacity: 0.65 }}>فروش</span>
+              <span className="text-[8px] font-bold" style={{ color: RATING_FA.neutral.color, opacity: 0.6 }}>خنثی</span>
+              <span className="text-[8px] font-bold" style={{ color: RATING_FA.buy.color, opacity: 0.65 }}>خرید</span>
+            </div>
+            {/* برچسبِ ریتینگ زیرِ گِیج (RTLِ HTML — نه textِ SVG که فارسی را بدچین می‌کند) */}
+            <div className="text-center -mt-0.5 mb-1"><span className="text-[15px] font-extrabold" style={{ color: rf.color }}>{rf.label}</span></div>
+            {/* شمارشِ کلِ سیگنال‌ها (فروش · خنثی · خرید) — هم‌ترازِ ردیفِ خلاصهٔ زیرِ برچسبِ گِیجِ Technical Ratingِ TV؛ جمعِ میانگین‌ها+نوسان‌گرها. */}
+            {(() => {
+              const ts = (eff.maSell || 0) + (eff.oscSell || 0), tn = (eff.maNeutral || 0) + (eff.oscNeutral || 0), tb = (eff.maBuy || 0) + (eff.oscBuy || 0);
+              return (
+                <div className="flex items-stretch justify-center gap-1.5 mb-1.5" dir="rtl">
+                  {[['فروش', ts, RATING_FA.sell.color], ['خنثی', tn, RATING_FA.neutral.color], ['خرید', tb, RATING_FA.buy.color]].map(([lbl, cnt, col]) => (
+                    <div key={lbl} className="flex-1 rounded-md py-0.5 text-center" style={{ background: TH.chipBg }}>
+                      <div className="text-[13px] font-extrabold tnum leading-none" style={{ color: col }}>{cnt}</div>
+                      <div className="text-[8px] opacity-55 mt-0.5">{lbl}</div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+            {/* تفکیکِ per-بخش سبکِ Technicalsِ TV: دو کارتِ «میانگین‌ها» و «نوسان‌گرها»، هرکدام با حکم + شمارشِ فروش·خنثی·خرید خودش. */}
+            <div className="grid grid-cols-2 gap-1.5 mt-2" dir="rtl">
+              {[
+                { key: 'ma', title: 'میانگین‌ها', vf: mf, s: eff.maSell || 0, n: eff.maNeutral || 0, bq: eff.maBuy || 0 },
+                { key: 'osc', title: 'نوسان‌گرها', vf: of, s: eff.oscSell || 0, n: eff.oscNeutral || 0, bq: eff.oscBuy || 0 },
+              ].map((c) => (
+                <div key={c.key} className="rounded-md px-1.5 py-1 text-center" style={{ background: TH.chipBg }}>
+                  <div className="text-[10px] font-extrabold leading-tight" style={{ color: c.vf.color }}>{c.vf.label}</div>
+                  <div className="text-[8.5px] opacity-55 mb-0.5">{c.title}</div>
+                  <div className="flex items-center justify-center gap-1 text-[9px] tnum" title="فروش · خنثی · خرید">
+                    <b style={{ color: RATING_FA.sell.color }}>{c.s}</b>
+                    <span className="opacity-30">·</span>
+                    <b style={{ color: RATING_FA.neutral.color }}>{c.n}</b>
+                    <span className="opacity-30">·</span>
+                    <b style={{ color: RATING_FA.buy.color }}>{c.bq}</b>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* نوارهای رنجِ روز و ۵۲ هفته (گِیجِ گرادیانِ سبکِ TV) */}
       <RangeBar title="بازهٔ روز" loVal={fmt(lo)} hiVal={fmt(hi)} p={pos} />
       <RangeBar title="بازهٔ ۵۲ هفته" loVal={pos52 != null ? fmt(lo52) : '—'} hiVal={pos52 != null ? fmt(hi52) : '—'} p={pos52} />
 
+      {/* عملکردِ دوره‌ای (Performanceِ Symbol Infoِ TV): بازدهٔ 1W/1M/3M/6M/YTD/1Y — کاشی‌های رنگیِ سبز/قرمز. فقط وقتی داده آمده. */}
+      {yr && yr.perf && Object.values(yr.perf).some((v) => v != null) && (
+        <>
+          <Label fa="عملکرد" en="Performance" />
+          <div className="grid grid-cols-3 gap-1.5 mb-1">
+            {/* «1D» عملکردِ روز = همان chgPctِ سرتیتر (منبعِ یکسان ⇒ سازگار)، مثلِ TV که Performance با 1D شروع می‌شود — #291 */}
+            {[['1D', chgPct], ['1W', yr.perf.w1], ['1M', yr.perf.m1], ['3M', yr.perf.m3], ['6M', yr.perf.m6], ['YTD', yr.perf.ytd], ['1Y', yr.perf.y1]].map(([lbl, v]) => (
+              <div key={lbl} className="rounded-lg border px-1 py-1.5 text-center" style={{ borderColor: TH.border, background: TH.subtle }}>
+                <div className="text-[12px] font-bold tabular-nums" dir="ltr" style={{ color: v == null ? TH.text : v >= 0 ? TH.up : TH.down }}>{v == null ? '—' : `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`}</div>
+                <div className="text-[9px] opacity-50 mt-0.5" dir="ltr">{lbl}</div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
       {/* آمارِ کلیدی — باز/سقف/کف روز، حجم، بازهٔ ۵۲ هفته */}
       <Label fa="آمارِ کلیدی" en="Key stats" />
       <div className="rounded-lg border px-3 py-1" style={{ borderColor: TH.border, background: TH.subtle }}>
+        {/* سقف/کفِ روز و ۵۲هفته در نوارهای «بازهٔ روز/۵۲ هفته» (با مقدارِ عددیِ دو سرِ نوار) نشان داده می‌شوند؛
+            تکرارشان این‌جا حذف شد تا مثلِ TV هر بازه فقط یک‌بار بیاید (دکلوتر، بدونِ ازدست‌رفتنِ اطلاعات). */}
+        <Row k="بستهٔ روزِ قبل" v={day?.prevClose != null ? fmt(day.prevClose) : '—'} />
         <Row k="بازشدنِ روز" v={fmt(day?.o)} />
-        <Row k="بالاترینِ روز" v={fmt(hi)} c={TH.up} />
-        <Row k="پایین‌ترینِ روز" v={fmt(lo)} c={TH.down} />
-        <Row k="حجمِ روز" v={compact(day?.v) ?? '—'} />
-        <Row k="میانگینِ حجم" v={compact(yr?.avgVol) ?? '—'} />
-        <Row k="بالاترینِ ۵۲ هفته" v={hi52 != null ? fmt(hi52) : '—'} />
-        <Row k="پایین‌ترینِ ۵۲ هفته" v={lo52 != null ? fmt(lo52) : '—'} last />
+        {/* حجم فقط اگر واقعی و ناصفر باشد (فارکس غیرِمتمرکز حجمِ حقیقی ندارد ⇒ «—» مثلِ TV، نه «۰») */}
+        <Row k="حجمِ روز" v={day?.v ? compact(day.v) : '—'} />
+        <Row k="میانگینِ حجم" v={yr?.avgVol ? compact(yr.avgVol) : '—'} last />
       </div>
+
+      {/* بنیادی — نسبت‌ها و متریک‌های مالی از Finnhub (فقط سهامِ آمریکا؛ کریپتو/فارکس پنهان). */}
+      {fund && fund.metrics && (() => {
+        const m = fund.metrics;
+        const n2 = (v) => (v == null || !Number.isFinite(Number(v)) ? '—' : Number(v).toFixed(2));
+        const pc = (v) => (v == null || !Number.isFinite(Number(v)) ? '—' : `${Number(v).toFixed(2)}٪`);
+        const rows = [
+          ['نسبتِ قیمت به سود (P/E)', n2(m.peTTM)],
+          ['سودِ هر سهم (EPS)', n2(m.epsTTM)],
+          ['قیمت به ارزشِ دفتری (P/B)', n2(m.pbAnnual)],
+          ['قیمت به فروش (P/S)', n2(m.psTTM)],
+          ['بازدهِ حقوقِ صاحبان (ROE)', pc(m.roeTTM)],
+          ['بازدهِ دارایی (ROA)', pc(m.roaTTM)],
+          ['حاشیهٔ سودِ خالص', pc(m.netMarginTTM)],
+          ['حاشیهٔ سودِ ناخالص', pc(m.grossMarginTTM)],
+          ['درآمد به‌ازای هر سهم', n2(m.revenuePerShareTTM)],
+          ['سودِ تقسیمی (Yield)', pc(m.dividendYieldTTM)],
+          ['بتا (Beta)', n2(m.beta)],
+          ['بدهی به حقوقِ صاحبان', n2(m.debtToEquity)],
+          ['ارزشِ بازار', m.marketCap ? compact(m.marketCap) : '—'],
+        ].filter((r) => r[1] !== '—');
+        if (!rows.length) return null;
+        return (
+          <>
+            <Label fa="بنیادی" en="Fundamentals" />
+            <div className="rounded-lg border px-3 py-1" style={{ borderColor: TH.border, background: TH.subtle }}>
+              {rows.map((r, i) => <Row key={r[0]} k={r[0]} v={r[1]} last={i === rows.length - 1} />)}
+            </div>
+          </>
+        );
+      })()}
 
       {/* مشخصاتِ معاملاتی — بید/اَسک/اسپرد */}
       <Label fa="مشخصاتِ معاملاتی" en="Quote" />
@@ -373,12 +667,15 @@ export default function Details({ symbol, TH, prices = {} }) {
       <div className="rounded-lg border px-3 py-1" style={{ borderColor: TH.border, background: TH.subtle }}>
         <Row k="نماد" v={symbol} />
         <Row k="نوعِ ابزار" v={meta.type} />
+        {/* ارزِ مظنه + حداقلِ حرکتِ قیمت (mintick) — هم‌ترازِ فیلدهای Currency/Mintickِ دیالوگِ Symbol infoِ TV */}
+        <Row k="ارزِ مظنه" v={quoteCcy || '—'} />
         <Row k="اندازهٔ قرارداد" v={meta.contract} />
+        <Row k="حداقلِ حرکتِ قیمت" v={dec != null && Number.isFinite(dec) ? Math.pow(10, -dec).toFixed(Math.max(0, dec)) : '—'} />
         <Row k="جلسهٔ معاملاتی" v={meta.session} last />
       </div>
 
       {mid == null && (
-        <div className="mt-3 text-[10px] text-center leading-5" style={{ color: TH.down, opacity: 0.7 }}>قیمتِ زنده هنوز دریافت نشده — هنگامِ بازشدنِ بازار به‌روز می‌شود.</div>
+        <div className="mt-3 text-[10px] text-center leading-5" style={{ color: TH.text, opacity: 0.6 }}>قیمتِ زنده هنوز دریافت نشده — هنگامِ بازشدنِ بازار به‌روز می‌شود.</div>
       )}
     </div>
   );
