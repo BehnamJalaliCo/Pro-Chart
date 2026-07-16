@@ -325,7 +325,7 @@ export class DrawingLayer {
       const x = e.clientX - r.left, y = e.clientY - r.top;
       if (this.tool === 'cursor' || this.tool === 'select') {
         // Shift+درگ ⇒ ابزارِ اندازه‌گیریِ گذرا (سبکِ TV): جعبهٔ Δقیمت/٪/بار/ساعت که با رهاکردن پاک می‌شود.
-        if (e.shiftKey) { const mp = this._snap({ t: this._t(x), p: this._p(y) }); if (mp.t != null && mp.p != null) { this.tmp = { type: 'dprange', p0: mp, p1: mp, color: '#26a69a', width: 2 }; this.dragging = true; this.didDrag = false; this.downXY = { x, y }; this.measuring = true; return; } }
+        if (e.shiftKey) { const mp = this._snap({ t: this._t(x), p: this._p(y) }); if (mp.t != null && mp.p != null) { this.tmp = { type: 'dprange', p0: mp, p1: mp, color: '#089981', width: 2 }; this.dragging = true; this.didDrag = false; this.downXY = { x, y }; this.measuring = true; return; } }
         // درگِ خطوطِ سفارش (entry/sl/tp)
         if (this.order) { for (const k of ['entry', 'sl', 'tp']) { const yy = this._y(this.order[k]); if (yy != null && Math.abs(yy - y) < 7) { this.dragOrder = k; return; } } }
         // ۱) اگر آبجکتی انتخاب شده، روی handleهایش کلیک شده؟ → درگِ handle
@@ -392,7 +392,7 @@ export class DrawingLayer {
         this.tmp = null; this.twoClick = false; this.dragging = false; this.didDrag = false; this._reset(); return;
       }
       // نشانگرِ فلشِ بالا/پایین = سیگنالِ خرید/فروش ⇒ رنگِ پیش‌فرضِ معناییِ سبز/قرمز (مثلِ TV؛ کاربر می‌تواند بعداً تغییر دهد).
-      const _clr = this.tool === 'arrowup' ? '#26a69a' : this.tool === 'arrowdown' ? '#ef5350' : this.color;
+      const _clr = this.tool === 'arrowup' ? '#089981' : this.tool === 'arrowdown' ? '#f23645' : this.color;
       this.tmp = { type: this.tool, p0: pt, p1: pt, color: _clr, width: 2 };
       this.dragging = true; this.didDrag = false; this.downXY = { x, y };
     };
@@ -463,7 +463,7 @@ export class DrawingLayer {
       if (!this.dragging || !this.tmp) return;
       if (sp.t != null && sp.p != null) {
         this.tmp.p1 = e.shiftKey ? this._constrainDraw(this.tmp.type, this.tmp.p0, sp) : sp;
-        if (this.measuring) this.tmp.color = sp.p >= this.tmp.p0.p ? '#26a69a' : '#ef5350'; // سبز صعودی / قرمز نزولی مثلِ اندازه‌گیریِ TV
+        if (this.measuring) this.tmp.color = sp.p >= this.tmp.p0.p ? '#089981' : '#f23645'; // سبز صعودی / قرمز نزولی مثلِ اندازه‌گیریِ TV
         if (this.downXY && Math.hypot(x - this.downXY.x, y - this.downXY.y) > 4) this.didDrag = true; // حرکتِ محسوس ⇒ کشیدن
         this.render();
       }
