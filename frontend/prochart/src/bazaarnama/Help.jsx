@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, HelpCircle, Keyboard } from 'lucide-react';
+import { X, HelpCircle, Keyboard } from './tvIcons';
 import { SHORTCUT_GROUPS } from './hotkeys';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -441,6 +441,9 @@ function HelpModalInner({ entry, onClose, TH }) {
   const title = str(entry.title);
   const what = str(entry.what);
   const example = str(entry.example);
+  // بخش‌های تشریحیِ بلند (سبکِ دانشنامه‌ایِ TradingView): تعریف/تاریخچه/محاسبه/واگرایی/…
+  // هر بخش {h: عنوان, body: رشته یا آرایه‌ای از بندها}. body آرایه → فهرستِ گلوله‌ای.
+  const sections = Array.isArray(entry.sections) ? entry.sections : [];
   return (
     <div dir="rtl" className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: TH.overlayMask || 'rgba(0,0,0,.5)', backdropFilter: 'blur(2px)' }} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="w-full max-w-lg max-h-[88vh] overflow-auto rounded-xl pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}`, color: TH.text }}>
@@ -451,6 +454,20 @@ function HelpModalInner({ entry, onClose, TH }) {
         <div className="px-4 py-3 space-y-3 text-[13px] leading-7">
           {what && <p style={{ color: TH.text }}>{what}</p>}
           {entry.diagram && <Diagram diagram={entry.diagram} TH={TH} />}
+          {sections.length > 0 && sections.map((s, i) => (
+            <div key={i}>
+              {str(s.h) && <div className="font-bold mb-1" style={{ color: TH.textStrong }}>{str(s.h)}</div>}
+              {Array.isArray(s.body)
+                ? <ul className="space-y-1">{s.body.map((b, j) => <li key={j} className="flex gap-1.5"><span style={{ color: TH.accent }}>•</span><span>{str(b)}</span></li>)}</ul>
+                : <p style={{ color: TH.text, whiteSpace: 'pre-wrap' }}>{str(s.body)}</p>}
+              {s.img && (
+                <figure className="mt-2 mb-1">
+                  <img src={str(s.img)} alt={str(s.h) || ''} loading="lazy" className="w-full rounded-lg" style={{ border: `1px solid ${TH.border}`, background: '#fff' }} />
+                  {str(s.cap) && <figcaption className="mt-1 text-[11.5px] text-center opacity-60" style={{ color: TH.text }}>{str(s.cap)}</figcaption>}
+                </figure>
+              )}
+            </div>
+          ))}
           {how.length > 0 && (
             <div>
               <div className="font-bold mb-1" style={{ color: TH.textStrong }}>گام‌به‌گامِ استفاده</div>

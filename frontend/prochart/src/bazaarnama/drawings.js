@@ -17,7 +17,7 @@ export class DrawingLayer {
     this.chart = chart;
     this.series = null;
     this.tool = 'cursor';
-    this.color = '#3b82f6';
+    this.color = '#2962FF'; // آبیِ اشباع/پررنگِ برندِ Pro-Chart (قبلاً #3b82f6ِ کم‌رنگ‌تر بود)
     this.toolDefaults = {}; // سبکِ پیش‌فرضِ هر نوعِ ابزار (Save as default styleِ TV) — خالی ⇒ no-op؛ فقط با ذخیرهٔ کاربر پر می‌شود
     this.digits = 5; // دقتِ اعشارِ قیمتِ نمادِ فعال (برای برچسبِ ابزارِ اندازه‌گیری) — با setDigits به‌روز می‌شود
     this.drawings = [];
@@ -396,9 +396,43 @@ export class DrawingLayer {
       this.tmp = { type: this.tool, p0: pt, p1: pt, color: _clr, width: 2 };
       this.dragging = true; this.didDrag = false; this.downXY = { x, y };
     };
+    // اسکرولِ خودکارِ لبه هنگام ترسیم (سبکِ TradingView): اگر حین کشیدن/ویرایشِ یک ابزار،
+    // نشانگر به لبهٔ چپ/راستِ چارت برسد، پنجرهٔ زمانی همان‌سو پن می‌شود تا کاربر بتواند ترسیم را
+    // تا هر کندلِ دلخواه (بیرون از صفحهٔ فعلی) ادامه دهد. با هر فریم نقطهٔ فعال هم به‌روز می‌شود.
+    let edgeRAF = null, edgeDir = 0, edgeX = 0, edgeY = 0;
+    const edgeTick = () => {
+      if (!edgeDir) { edgeRAF = null; return; }
+      let ts; try { ts = this.chart.timeScale(); } catch (e) { edgeRAF = null; return; }
+      const lr = ts.getVisibleLogicalRange && ts.getVisibleLogicalRange();
+      if (lr) {
+        const span = Math.max(1, lr.to - lr.from);
+        const step = Math.max(0.4, span * 0.010) * edgeDir; // ~۱٪ عرضِ دید در هر فریم
+        try { ts.setVisibleLogicalRange({ from: lr.from + step, to: lr.to + step }); } catch (e) { /* noop */ }
+      }
+      const sp = this._snap({ t: this._t(edgeX), p: this._p(edgeY) });
+      if (sp.t != null && sp.p != null) {
+        if (this.dragging && this.tmp) this.tmp.p1 = sp;
+        else if (this.twoClick && this.tmp) this.tmp.p1 = sp;
+        else if (this.pending) this.pending.preview = sp;
+      }
+      this.render();
+      edgeRAF = requestAnimationFrame(edgeTick);
+    };
+    const setEdgePan = (dir, x, y) => {
+      edgeDir = dir; edgeX = x; edgeY = y;
+      if (dir && !edgeRAF) edgeRAF = requestAnimationFrame(edgeTick);
+      else if (!dir && edgeRAF) { cancelAnimationFrame(edgeRAF); edgeRAF = null; }
+    };
+    const stopEdgePan = () => setEdgePan(0, 0, 0);
+    this._stopEdgePan = stopEdgePan;
     const move = (e) => {
       const r = cv.getBoundingClientRect();
       const x = e.clientX - r.left, y = e.clientY - r.top;
+      // تشخیصِ لبه هنگام یک عملیاتِ ترسیم/ویرایشِ فعال ⇒ فعال‌سازیِ پنِ خودکار.
+      const _drawActive = (this.dragging && this.tmp) || (this.twoClick && this.tmp) || !!this.pending || !!this.dragHandle || !!this.dragMove;
+      let _edir = 0; const EDGE = 40;
+      if (_drawActive) { if (x < EDGE) _edir = -1; else if (x > r.width - EDGE) _edir = 1; }
+      setEdgePan(_edir, x, y);
       if (this.marquee) { this.marquee.x1 = x; this.marquee.y1 = y; this.render(); return; }
       if (this.dragOrder && this.order) { const pr = this._p(y); if (pr != null) { this.order[this.dragOrder] = pr; this.render(); this.onOrder && this.onOrder({ ...this.order }); } return; }
       // درگِ handle
@@ -435,6 +469,7 @@ export class DrawingLayer {
       }
     };
     const up = () => {
+      stopEdgePan(); // پایانِ کشیدن ⇒ توقفِ اسکرولِ خودکارِ لبه
       // پایانِ Marquee: هر ترسیمی که لنگرش داخلِ مستطیل است انتخاب شود (چند-انتخاب).
       if (this.marquee) {
         const m = this.marquee; this.marquee = null;
@@ -523,7 +558,7 @@ export class DrawingLayer {
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', up);
     window.addEventListener('keydown', key);
-    this._cleanup = () => { cv.removeEventListener('mousedown', down); cv.removeEventListener('dblclick', dbl); cv.removeEventListener('wheel', wheel); window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); window.removeEventListener('keydown', key); };
+    this._cleanup = () => { stopEdgePan(); cv.removeEventListener('mousedown', down); cv.removeEventListener('dblclick', dbl); cv.removeEventListener('wheel', wheel); window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); window.removeEventListener('keydown', key); };
   }
 
   // #۱۱ آیا نقطهٔ (x,y) روی چیزی قابلِ‌تعامل است؟ (خطِ سفارش، دستگیرهٔ آبجکتِ انتخاب‌شده، یا بدنهٔ یک ترسیم)
@@ -657,7 +692,7 @@ export class DrawingLayer {
     if (d.visible === false) return;
     if (isExt(d.type)) { extDraw(ctx, d, this); return; }
     const W = this.canvas.width, H = this.canvas.height;
-    ctx.lineWidth = d.width || 1.5; ctx.strokeStyle = d.color; ctx.fillStyle = d.color; ctx.font = '12px IRANYekanX, Ravagh, Vazirmatn, sans-serif';
+    ctx.lineWidth = d.width || 2; ctx.strokeStyle = d.color; ctx.fillStyle = d.color; ctx.font = '12px IRANYekanX, Ravagh, Vazirmatn, sans-serif';
     // سبکِ خط: solid/dashed/dotted (سبکِ TV) — سازگارِ عقب‌رو با فلگِ قدیمیِ d.dashed.
     ctx.setLineDash(d.lineStyle === 'dotted' ? [2, 3] : ((d.lineStyle === 'dashed' || d.dashed) ? [6, 4] : []));
     // ابزارهای چندنقطه‌ای
@@ -667,7 +702,7 @@ export class DrawingLayer {
       ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.lineTo(P[1].x, P[1].y); ctx.stroke();
       if (P.length >= 3) { const dx = P[1].x - P[0].x, dy = P[1].y - P[0].y; const ox = P[2].x - P[0].x, oy = P[2].y - P[0].y;
         ctx.beginPath(); ctx.moveTo(P[0].x + ox, P[0].y + oy); ctx.lineTo(P[1].x + ox, P[1].y + oy); ctx.stroke();
-        ctx.globalAlpha = 0.08; ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.lineTo(P[1].x, P[1].y); ctx.lineTo(P[1].x + ox, P[1].y + oy); ctx.lineTo(P[0].x + ox, P[0].y + oy); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; }
+        ctx.globalAlpha = 0.15; ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.lineTo(P[1].x, P[1].y); ctx.lineTo(P[1].x + ox, P[1].y + oy); ctx.lineTo(P[0].x + ox, P[0].y + oy); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; }
       return;
     }
     if (d.type === 'pitchfork' && d.pts) {
@@ -707,7 +742,7 @@ export class DrawingLayer {
     if (x0 == null || y0 == null || x1 == null || y1 == null) return;
     if (d.type === 'trend') { ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); }
     else if (d.type === 'ray') { const dx = x1 - x0, dy = y1 - y0; const k = 4000; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0 + dx * k, y0 + dy * k); ctx.stroke(); }
-    else if (d.type === 'rect') { ctx.globalAlpha = (d.fillOpacity != null ? d.fillOpacity : 0.12); ctx.fillStyle = d.fill || d.color; ctx.fillRect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0)); ctx.fillStyle = d.color; ctx.globalAlpha = 1; ctx.strokeRect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0)); }
+    else if (d.type === 'rect') { ctx.globalAlpha = (d.fillOpacity != null ? d.fillOpacity : 0.18); ctx.fillStyle = d.fill || d.color; ctx.fillRect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0)); ctx.fillStyle = d.color; ctx.globalAlpha = 1; ctx.strokeRect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0)); }
     else if (d.type === 'fib') {
       const top = Math.max(d.p0.p, d.p1.p), bot = Math.min(d.p0.p, d.p1.p), rng = top - bot;
       const xa = Math.min(x0, x1), xb = Math.max(x0, x1);

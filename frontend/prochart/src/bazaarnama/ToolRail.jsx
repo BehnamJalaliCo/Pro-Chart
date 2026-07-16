@@ -17,7 +17,7 @@
 // (در drawtools_ext.js) هستند؛ پس setTool(id) مستقیماً کار می‌کند.
 // ─────────────────────────────────────────────────────────────────────────────
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { HelpCircle, Star, Magnet, Lock, LockOpen, Eye, EyeOff, Trash2, PenLine, Check } from 'lucide-react';
+import { HelpCircle, Star, Magnet, Lock, LockOpen, Eye, EyeOff, Trash2, PenLine, Check } from './tvIcons';
 import { GLYPH, GROUP_GLYPH } from './glyphs';
 import { getHelp } from './help';
 
@@ -53,27 +53,36 @@ const GROUPS = [
     tools: [
       { id: 'cursor', label: 'نشانگر' },
       { id: 'select', label: 'انتخاب/ویرایش' },
+      { id: 'eraser', label: 'پاک‌کن' },
     ],
   },
   {
     key: 'lines', label: 'خطوط',
+    // ترتیبِ دقیقِ فلای‌اوتِ «Trend tools»ِ TradingView (خط روند→پرتو→خط اطلاعاتی→امتداد‌یافته→زاویهٔ روند→افقی→پرتوِ افقی→عمودی→صلیبی)
     tools: [
       { id: 'trend', label: 'خط روند' },
       { id: 'ray', label: 'پرتو' },
+      { id: 'infoline', label: 'خطِ اطلاعاتی' },
       { id: 'extline', label: 'خطِ امتداد‌یافته' },
-      { id: 'hray', label: 'پرتوِ افقی' },
+      { id: 'angle', label: 'زاویهٔ روند' },
       { id: 'hline', label: 'خط افقی' },
+      { id: 'hray', label: 'پرتوِ افقی' },
       { id: 'vline', label: 'خط عمودی' },
       { id: 'crossline', label: 'خطِ صلیبی' },
-      { id: 'angle', label: 'زاویهٔ روند' },
-      { id: 'infoline', label: 'خطِ اطلاعاتی' },
     ],
   },
   {
     key: 'channels', label: 'کانال‌ها',
     tools: [
       { id: 'channel', label: 'کانالِ موازی' },
+      { id: 'regchannel', label: 'کانالِ رگرسیون' },
+      { id: 'disjointchannel', label: 'کانالِ ناپیوسته' },
+      { id: 'flatchannel', label: 'کانالِ سقف/کفِ صاف' },
       { id: 'pitchfork', label: 'چنگالِ اندروز' },
+      { id: 'schiff', label: 'چنگالِ شیف' },
+      { id: 'modschiff', label: 'چنگالِ شیفِ اصلاح‌شده' },
+      { id: 'insidepitchfork', label: 'چنگالِ داخلی' },
+      { id: 'pitchfan', label: 'پیچ‌فنِ فیبوناچی' },
     ],
   },
   {
@@ -88,32 +97,41 @@ const GROUPS = [
       { id: 'fibchannel', label: 'کانالِ فیبو' },
       { id: 'fibcircles', label: 'دایره‌های فیبو' },
       { id: 'fibarcs', label: 'کمان‌های فیبو' },
+      { id: 'fibspiral', label: 'مارپیچِ فیبو' },
+      { id: 'fibwedge', label: 'گُوِهٔ فیبو' },
     ],
   },
   {
     key: 'gann', label: 'گان',
     tools: [
       { id: 'gannbox', label: 'جعبهٔ گان' },
+      { id: 'gannsquare', label: 'مربعِ گان' },
       { id: 'gannfan', label: 'بادبزنِ گان' },
+      { id: 'gannfixed', label: 'مربعِ ثابتِ گان' },
     ],
   },
   {
     key: 'patterns', label: 'الگوها',
+    // ترتیبِ دقیقِ فلای‌اوتِ «Chart Patterns»ِ TradingView: XABCD→سایفر→ABCD→مثلثِ‌الگو→سه‌حرکت→سروشانه→الیوت‌ها
     tools: [
       { id: 'xabcd', label: 'XABCD' },
-      { id: 'abcd', label: 'ABCD' },
       { id: 'cypher', label: 'سایفر' },
+      { id: 'abcd', label: 'ABCD' },
       { id: 'tripattern', label: 'مثلثِ الگو' },
+      { id: 'threedrives', label: 'الگوی سه‌حرکت' },
       { id: 'hns', label: 'سر و شانه' },
       { id: 'ell_impulse', label: 'ایمپالسِ الیوت' },
+      { id: 'ell_triangle', label: 'مثلثِ الیوت' },
+      { id: 'ell_wxyxz', label: 'ترکیبِ سه‌گانهٔ الیوت' },
       { id: 'ell_abc', label: 'اصلاحیِ الیوت' },
-      { id: 'triangle', label: 'مثلث' },
+      { id: 'ell_wxy', label: 'ترکیبِ دوگانهٔ الیوت' },
     ],
   },
   {
     key: 'projection', label: 'پروجکشن و اندازه‌گیری',
     tools: [
-      { id: 'longshort', label: 'لانگ/شورت' },
+      { id: 'longshort', label: 'موقعیتِ لانگ' },
+      { id: 'short', label: 'موقعیتِ شورت' },
       { id: 'pricerange', label: 'بازهٔ قیمت' },
       { id: 'daterange', label: 'بازهٔ زمان' },
       { id: 'dprange', label: 'قیمت و زمان' },
@@ -121,6 +139,8 @@ const GROUPS = [
       { id: 'ruler', label: 'خط‌کش' },
       { id: 'cyclic', label: 'خطوطِ دوره‌ای' },
       { id: 'sine', label: 'خطِ سینوسی' },
+      { id: 'projection', label: 'پروجکشن' },
+      { id: 'timecycles', label: 'چرخه‌های زمانی' },
     ],
   },
   {
@@ -130,8 +150,14 @@ const GROUPS = [
       { id: 'rotrect', label: 'مستطیلِ چرخیده' },
       { id: 'circle', label: 'دایره' },
       { id: 'ellipse', label: 'بیضی' },
+      { id: 'triangle', label: 'مثلث' },
       { id: 'arrow', label: 'پیکان' },
       { id: 'brush', label: 'قلم‌موی آزاد' },
+      { id: 'polyline', label: 'خطِ چندتکه' },
+      { id: 'path', label: 'مسیرِ پیکان‌دار' },
+      { id: 'curve', label: 'منحنی' },
+      { id: 'doublecurve', label: 'منحنیِ دوگانه' },
+      { id: 'arc', label: 'کمان' },
       { id: 'highlighter', label: 'های‌لایتر' },
     ],
   },
@@ -143,6 +169,10 @@ const GROUPS = [
       { id: 'pricelabel', label: 'برچسبِ قیمت' },
       { id: 'note', label: 'یادداشت' },
       { id: 'arrowdir', label: 'پیکانِ جهت‌دار' },
+      { id: 'flag', label: 'پرچمِ نشانه' },
+      { id: 'signpost', label: 'تابلوِ راهنما' },
+      { id: 'arrowup', label: 'نشانگرِ فلشِ بالا' },
+      { id: 'arrowdown', label: 'نشانگرِ فلشِ پایین' },
     ],
   },
 ];
@@ -196,8 +226,8 @@ export default function ToolRail({
   magnet, onToggleMagnet, magnetMode, onSetMagnetMode,
   // «ماندن در حالتِ ترسیم» (قفلِ ابزار؛ بعد از کشیدن، ابزار فعال می‌ماند).
   stayInDrawing, onToggleStayInDrawing,
-  // قفلِ همه / مخفیِ همهٔ ترسیم‌ها + حذفِ همه.
-  allLocked, onLockAll, allHidden, onHideAll, onRemoveAll,
+  // قفلِ همه / مخفیِ همهٔ ترسیم‌ها + حذفِ همه (ترسیم‌ها) + حذفِ اندیکاتورها (فلای‌اوتِ سطل، سبکِ TV).
+  allLocked, onLockAll, allHidden, onHideAll, onRemoveAll, onRemoveIndicators,
 }) {
   // ابزارِ «به‌خاطرسپرده‌شده» برای هر گروه (پیش‌فرض: اولین ابزارِ گروه).
   const [remembered, setRemembered] = useState(() => {
@@ -220,6 +250,8 @@ export default function ToolRail({
   const [tip, setTip] = useState(null); // { top, label, hotkey }
   // آیا فلای‌اوتِ کوچکِ شدتِ آهنربا (weak/strong) باز است.
   const [magMenu, setMagMenu] = useState(false);
+  // آیا فلای‌اوتِ سطلِ حذف (ترسیم‌ها/اندیکاتورها/هردو) باز است — هم‌ترازِ منوی Remove‌ِ TV.
+  const [remMenu, setRemMenu] = useState(false);
   const rootRef = useRef(null);
   const hoverTimer = useRef(null);
 
@@ -293,6 +325,16 @@ export default function ToolRail({
     document.addEventListener('keydown', onKey);
     return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey); };
   }, [magMenu]);
+
+  // بستنِ فلای‌اوتِ سطلِ حذف با کلیکِ بیرون یا Escape.
+  useEffect(() => {
+    if (!remMenu) return undefined;
+    const onDown = (e) => { if (rootRef.current && !rootRef.current.contains(e.target)) setRemMenu(false); };
+    const onKey = (e) => { if (e.key === 'Escape') setRemMenu(false); };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey); };
+  }, [remMenu]);
 
   useEffect(() => () => { if (hoverTimer.current) clearTimeout(hoverTimer.current); }, []);
 
@@ -397,7 +439,7 @@ export default function ToolRail({
                 style={{
                   ...CELL,
                   background: active ? accentTint : 'transparent',
-                  color: active ? TH.accent : TH.text,
+                  color: active ? TH.accent : (TH.railIcon || TH.text),
                   transition: 'background-color 120ms ease, color 120ms ease',
                 }}
                 onMouseEnter={(e) => showTip(e, `★ ${label}`, HOTKEY[id])}
@@ -441,8 +483,8 @@ export default function ToolRail({
                 ...CELL,
                 // اکتیوِ tinted (accent با شفافیت) به‌جای پُرکردنِ سختِ آبی — پریتیِ TV.
                 background: isActiveGroup ? accentTint : (isOpen ? TH.chipBgHover : 'transparent'),
-                color: isActiveGroup ? TH.accent : TH.text,
-                opacity: inactiveDim ? 0.7 : 1,
+                color: isActiveGroup ? TH.accent : (TH.railIcon || TH.text),
+                opacity: 1, // آیکون‌های ریل همیشه پررنگ/مشکیِ کامل (بدونِ کم‌رنگیِ inactive)
                 transition: 'background-color 120ms ease, opacity 120ms ease, color 120ms ease',
               }}
               onMouseOver={(e) => {
@@ -450,7 +492,6 @@ export default function ToolRail({
                 if (!isActiveGroup && !isOpen) e.currentTarget.style.background = TH.chipBgHover;
               }}
               onMouseOut={(e) => {
-                if (inactiveDim) e.currentTarget.style.opacity = '0.7';
                 if (!isActiveGroup && !isOpen) e.currentTarget.style.background = 'transparent';
               }}
             >
@@ -702,26 +743,65 @@ export default function ToolRail({
       </button>
       )}
 
-      {/* حذفِ همهٔ ترسیم‌ها (Remove Drawings) — سطلِ قرمز. */}
+      {/* حذف (Remove) — سطلِ قرمز: کلیکِ اصلی = حذفِ ترسیم‌ها؛ کاراتِ گوشه = فلای‌اوتِ ترسیم‌ها/اندیکاتورها/هردو (سبکِ TV). */}
       {showRemove && (
-      <button
-        type="button"
-        aria-label="حذفِ همهٔ ترسیم‌ها"
-        onClick={() => { hideTip(); removeAll(); }}
-        className="relative shrink-0 flex items-center justify-center rounded"
-        style={{
-          ...CELL,
-          background: 'transparent',
-          color: TH.text,
-          transition: 'background-color 120ms ease, color 120ms ease',
-        }}
-        onMouseEnter={(e) => showTip(e, 'حذفِ همهٔ ترسیم‌ها')}
-        onMouseLeave={hideTip}
-        onMouseOver={(e) => { e.currentTarget.style.background = TH.chipBgHover; e.currentTarget.style.color = '#f6465d'; }}
-        onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = TH.text; }}
-      >
-        <Trash2 size={20} />
-      </button>
+      <div className="relative shrink-0 flex justify-center" onMouseLeave={hideTip}>
+        <button
+          type="button"
+          aria-label="حذفِ همهٔ ترسیم‌ها"
+          onClick={() => { hideTip(); removeAll(); }}
+          className="relative flex items-center justify-center rounded"
+          style={{
+            ...CELL,
+            background: remMenu ? TH.chipBgHover : 'transparent',
+            color: TH.text,
+            transition: 'background-color 120ms ease, color 120ms ease',
+          }}
+          onMouseEnter={(e) => showTip(e, 'حذفِ همهٔ ترسیم‌ها')}
+          onMouseLeave={hideTip}
+          onMouseOver={(e) => { if (!remMenu) { e.currentTarget.style.background = TH.chipBgHover; e.currentTarget.style.color = '#f6465d'; } }}
+          onMouseOut={(e) => { if (!remMenu) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = TH.text; } }}
+        >
+          <Trash2 size={20} />
+          {/* کاراتِ فلای‌اوتِ حذف — کلیکِ جدا از سطلِ اصلی (فقط وقتی حذفِ اندیکاتور هم وصل است). */}
+          {typeof onRemoveIndicators === 'function' && (
+            <span
+              role="button"
+              aria-label="گزینه‌های حذف"
+              onClick={(e) => { e.stopPropagation(); hideTip(); setRemMenu((v) => !v); }}
+              className="absolute bottom-0.5 right-0.5 w-0 h-0 pointer-events-auto"
+              style={{ borderLeft: '3.5px solid transparent', borderTop: `3.5px solid ${TH.text}`, opacity: 0.5, cursor: 'pointer' }}
+            />
+          )}
+        </button>
+
+        {remMenu && typeof onRemoveIndicators === 'function' && (
+          <div
+            dir="rtl"
+            className="absolute bottom-0 left-full ml-1.5 z-50 rounded-md overflow-hidden py-1 origin-left"
+            style={{ background: TH.popoverBg, border: `1px solid ${TH.border}`, boxShadow: '0 6px 22px -6px rgba(0,0,0,.45), 0 2px 6px -2px rgba(0,0,0,.30)', minWidth: 200, animation: 'brn-flyout-in 120ms ease-out both' }}
+          >
+            <div className="px-3 pt-1 pb-1.5 text-[10px] font-semibold tracking-wider select-none" style={{ color: TH.text, opacity: 0.5 }}>حذف</div>
+            {[
+              { k: 'draw', label: 'حذفِ ترسیم‌ها', run: () => { onRemoveAll && onRemoveAll(); } },
+              { k: 'ind', label: 'حذفِ اندیکاتورها', run: () => { onRemoveIndicators && onRemoveIndicators(); } },
+              { k: 'both', label: 'حذفِ ترسیم‌ها و اندیکاتورها', run: () => { onRemoveAll && onRemoveAll(); onRemoveIndicators && onRemoveIndicators(); } },
+            ].map(({ k, label, run }) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => { run(); setRemMenu(false); }}
+                className="w-full flex items-center gap-2.5 px-3 text-[12px] text-right"
+                style={{ height: 30, background: 'transparent', color: TH.textStrong, transition: 'background-color 120ms ease, color 120ms ease' }}
+                onMouseOver={(e) => { e.currentTarget.style.background = TH.chipBgHover; e.currentTarget.style.color = '#f6465d'; }}
+                onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = TH.textStrong; }}
+              >
+                <Trash2 size={14} style={{ opacity: 0.8 }} /> {label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
       )}
 
       {/* تولتیپِ TV — پیلِ راست‌ایستا با نام + هاتکی؛ Y هم‌ترازِ مرکزِ دکمهٔ اشاره‌شده. */}

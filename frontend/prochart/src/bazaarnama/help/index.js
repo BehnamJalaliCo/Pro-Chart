@@ -15,11 +15,15 @@ import patterns from './patterns.js';
 import projection from './projection.js';
 import shapes from './shapes.js';
 import workflow from './workflow.js';
+import tv_ind from './tv_ind.js';
+import tv_tools from './tv_tools.js';
 
 const HELP = {
   ...lines, ...channels, ...fib, ...gann, ...patterns, ...elliott, ...shapes,
   ...annotations, ...projection, ...ind_trend, ...ind_momentum, ...ind_volume,
   ...ind_volatility, ...charttypes, ...workflow, ...namascript,
+  // منتقل‌شده از TradingView (متن+عکس، بدون ویدیو) — آخر spread می‌شوند تا روی ورودی‌های قدیمی override کنند.
+  ...tv_ind, ...tv_tools,
 };
 
 // نگاشتِ نام‌های مترادف/کلیدهای جایگزین → idِ راهنما (برای پوششِ بیشتر)
