@@ -2827,7 +2827,7 @@ export default function BazaarNama() {
         <div data-menu className="relative">
           <button onClick={() => setLayoutMenu((v) => !v)} title="چیدمان‌ها (ذخیره/بارگذاری نماد + تایم‌فریم + اندیکاتورها + ترسیم‌ها)" className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs transition-colors duration-[120ms]" style={layoutMenu ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!layoutMenu) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!layoutMenu) e.currentTarget.style.background = TH.chipBg; }}><FolderOpen size={16} /><ChevronDown size={12} /></button>
           {layoutMenu && (
-            <div className="absolute z-[60] top-full mt-1 right-0 rounded-lg w-56 p-1 pc-pop" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+            <div className="absolute z-[60] top-full mt-1 left-0 rounded-lg w-56 p-1 pc-pop" dir="rtl" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
               <button onClick={() => { saveLayout(); setLayoutMenu(false); }} className="flex items-center gap-1.5 w-full text-right px-2 py-1.5 text-[12px] rounded" style={{ color: TH.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><Save size={13} /> ذخیرهٔ چیدمانِ فعلی</button>
               <div className="my-1 border-t" style={{ borderColor: TH.border }} />
               {layouts.length === 0 ? (
