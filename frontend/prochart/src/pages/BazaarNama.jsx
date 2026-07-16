@@ -3205,8 +3205,9 @@ export default function BazaarNama() {
             {grid <= 1 && chartSettingsOverrides.scaleCurrency === true && quoteCcyOf(symbol) && (
               <div className="absolute z-20 pointer-events-none rounded px-1.5 py-0.5 text-[10px] font-semibold tabular-nums" style={{ top: 4, right: 4, background: TH.chipBg, color: TH.text, opacity: 0.85 }} dir="ltr">{quoteCcyOf(symbol)}</div>
             )}
-            {/* دکمه‌های ریزِ گوشهٔ پایینِ محورِ قیمت (٪/log/A) — سبکِ TV. توگل: کلیک روی حالتِ فعال ⇒ عادی. */}
-            {grid <= 1 && (
+            {/* دکمه‌های ریزِ گوشهٔ پایینِ محورِ قیمت (٪/log/A) — سبکِ TV. توگل: کلیک روی حالتِ فعال ⇒ عادی.
+                روی موبایل (compact) پنهان: تارگتِ لمسیِ خیلی ریز + با برچسبِ محورِ زمان تداخل می‌کرد؛ TV موبایل هم این کلاستر را نشان نمی‌دهد (مقیاس از شیتِ «بیشتر» در دسترس است). */}
+            {grid <= 1 && !compact && (
               <div className="absolute z-20 flex items-center gap-0.5" style={{ bottom: 3, right: 3 }} dir="ltr">
                 {priceScaleCornerButtons({ mode: scaleMode, locked: scaleLocked }).map((btn) => (
                   <button key={btn.id} type="button" title={btn.title} aria-label={btn.title}
@@ -3499,8 +3500,9 @@ export default function BazaarNama() {
                   </div>
                 )}
               </div>
-              {/* ساعتِ زندهٔ منطقهٔ زمانی — کلیک‌پذیر: منوی منطقهٔ زمانی باز می‌شود (مثلِ نوارِ پایینِ TradingView که کلیکِ ساعت/TZ لیستِ زمان را می‌گشاید) */}
-              <div data-menu className="ml-auto relative">
+              {/* ساعتِ زندهٔ منطقهٔ زمانی — کلیک‌پذیر: منوی منطقهٔ زمانی باز می‌شود (مثلِ نوارِ پایینِ TradingView که کلیکِ ساعت/TZ لیستِ زمان را می‌گشاید).
+                  روی موبایل (compact) پنهان: در ویوپورتِ باریک ~۵۹px از لبهٔ راست بیرون می‌زد و لمس‌ناپذیر می‌شد؛ TV موبایل هم ساعتِ TZِ ماندگار روی چارت نشان نمی‌دهد (منطقهٔ زمانی از تنظیمات قابلِ‌تغییر است). */}
+              <div data-menu className={`ml-auto relative ${compact ? 'hidden' : ''}`}>
                 <button ref={tzBtnRef} onClick={() => { if (!tzBarOpen && tzBtnRef.current) { const r = tzBtnRef.current.getBoundingClientRect(); setTzAnchor({ right: Math.max(6, Math.round(window.innerWidth - r.right)), bottom: Math.round(window.innerHeight - r.top + 4) }); } setTzBarOpen((v) => !v); }} title="تغییرِ منطقهٔ زمانیِ چارت" className="flex items-center gap-1 pl-2 text-[11px] tabular-nums whitespace-nowrap select-none rounded transition-colors" style={{ color: tzBarOpen ? (TH.accentText || TH.accent) : (TH.textMuted || TH.text) }}>
                   <Clock size={12} style={{ opacity: 0.7 }} />
                   <span>{tzClock}</span>
