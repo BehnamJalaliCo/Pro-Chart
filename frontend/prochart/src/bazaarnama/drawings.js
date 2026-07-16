@@ -599,7 +599,9 @@ export class DrawingLayer {
       if (d.type === 'rect' || d.type === 'fib' || d.type === 'longshort' || d.type === 'short') {
         if (x >= Math.min(x0, x1) - near && x <= Math.max(x0, x1) + near && y >= Math.min(y0, y1) - near && y <= Math.max(y0, y1) + near) return i;
       } else { // خط: فاصله تا پاره‌خط
-        const A = x - x0, B = y - y0, C = x1 - x0, D = y1 - y0; const dot = A * C + B * D, len = C * C + D * D; const t = len ? Math.max(0, Math.min(1, dot / len)) : 0;
+        const A = x - x0, B = y - y0, C = x1 - x0, D = y1 - y0; const dot = A * C + B * D, len = C * C + D * D;
+        // ray از p0 در جهتِ p1 تا امتداد (رندرِ ۴۰۰۰×) کشیده می‌شود؛ پس سقفِ t را clamp نکن تا دُمِ امتدادیافته هم قابل‌انتخاب باشد (مثلِ TV). بقیهٔ خطوط پاره‌خطِ محدود [۰,۱].
+        const t = len ? (d.type === 'ray' ? Math.max(0, dot / len) : Math.max(0, Math.min(1, dot / len))) : 0;
         const px = x0 + t * C, py = y0 + t * D; if (Math.hypot(x - px, y - py) < near) return i;
       }
     }
