@@ -84,6 +84,7 @@ Object.assign(CRYPTO_FA, {
   KAVA: 'کاوا', ROSE: 'اویسیس', ONE: 'هارمونی', ZIL: 'زیلیکا', ANKR: 'انکر',
   LUNC: 'لوناکلاسیک', BTT: 'بیت‌تورنت', WIN: 'وین‌کوین', XEC: 'ای‌کش', CFX: 'کانفلاکس',
   STRK: 'استارک‌نت', W: 'ورم‌هول', TRB: 'تلور', GMT: 'استپن', MASK: 'مسک',
+  AR: 'آرویو',
 });
 Object.assign(CRYPTO_EN, {
   WIF: 'dogwifhat', BONK: 'Bonk', FLOKI: 'FLOKI', JUP: 'Jupiter', PYTH: 'Pyth Network',
@@ -96,6 +97,7 @@ Object.assign(CRYPTO_EN, {
   KAVA: 'Kava', ROSE: 'Oasis Network', ONE: 'Harmony', ZIL: 'Zilliqa', ANKR: 'Ankr',
   LUNC: 'Terra Classic', BTT: 'BitTorrent', WIN: 'WINkLink', XEC: 'eCash', CFX: 'Conflux',
   STRK: 'Starknet', W: 'Wormhole', TRB: 'Tellor', GMT: 'STEPN', MASK: 'Mask Network',
+  AR: 'Arweave',
 });
 // اعشارِ استانداردِ فلزات (اونسِ ترویِ TradingView): طلا/پلاتین/پالادیوم ۲، نقره ۳، مس ۴.
 const METAL_DIGITS = { XAU: 2, XAG: 3, XPT: 2, XPD: 2, XCU: 4 };
