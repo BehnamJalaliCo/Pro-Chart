@@ -129,4 +129,12 @@ export const VOL_DOWN = 'rgba(242,54,69,.5)';  // modern #f23645 — هم‌تر
 
 ---
 
-**وضعیت:** هر نُه رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
+## رفع ۱۰ — «تغییر»ِ پنجرهٔ داده close-open بود، ناسازگار با لجند/TV (Loop #97)
+فایل: `frontend/prochart/src/bazaarnama/overlays/ChartOverlays.jsx` — کامپوننتِ `DataWindow`.
+باگ: بعد از #۹۴ که لجند را close-to-close کرد، `DataWindow` هنوز `close − open` می‌داد ⇒ **همان کندل** در لجند و پنجرهٔ داده «تغییر»ِ متفاوت نشان می‌داد (و با TV فرق داشت). (پاسِ `prevClose={_legPrevClose}` در `BazaarNama.jsx` **تمیز کامیت شد** — `ff7b7db`.)
+رفع: `_cwBase = prevClose ?? open`، `chAbs = close − _cwBase`، رنگِ «تغییر» = `chgCol` (جهتِ close-to-close)، O/H/L/C = جهتِ کندل — عینِ لجند+TV.
+تأییدِ زنده (`index-C0AreHTe.js`): پنجرهٔ داده روی hover «تغییر +0.00052» هم‌راستا با تغییرِ زندهٔ SELL/BUY؛ ۰ خطای JS. by-construction close-to-close (همان `_legPrevClose`ِ اثبات‌شدهٔ لجند).
+
+---
+
+**وضعیت:** هر ده رفع در working-tree اعمال و زنده دیپلوی شده‌اند (بیلدهای این نشست). فقط منتظرِ snapshot-commitِ مالک برای ثبت در گیت‌اند.
