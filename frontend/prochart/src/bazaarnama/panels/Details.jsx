@@ -541,6 +541,11 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
                     </linearGradient>
                   </defs>
                   <path d={`M ${cx - R},${cy} A ${R},${R} 0 0 1 ${cx + R},${cy}`} fill="none" stroke="url(#bnTechGauge)" strokeWidth="7" strokeLinecap="round" />
+                  {/* شکافِ ۵ ناحیه‌ای (فروشِ‌قوی·فروش·خنثی·خرید·خریدِ‌قوی) — ناچ‌های نازک به رنگِ پس‌زمینه، کمانِ گرادیانی را به ۵ بخشِ مجزا می‌شکند مثلِ سرعت‌سنجِ Technical Ratingِ TV */}
+                  {[20, 40, 60, 80].map((b) => {
+                    const tb = (180 - b * 1.8) * Math.PI / 180;
+                    return <line key={b} x1={cx + (R - 5.5) * Math.cos(tb)} y1={cy - (R - 5.5) * Math.sin(tb)} x2={cx + (R + 5.5) * Math.cos(tb)} y2={cy - (R + 5.5) * Math.sin(tb)} stroke={TH.bg} strokeWidth="2.2" />;
+                  })}
                   <line x1={cx} y1={cy} x2={nx} y2={ny} stroke={rf.color} strokeWidth="2.5" strokeLinecap="round" />
                   <circle cx={cx} cy={cy} r="4.5" fill={rf.color} />
                 </svg>
