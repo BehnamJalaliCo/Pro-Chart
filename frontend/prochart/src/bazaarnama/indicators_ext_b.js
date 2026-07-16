@@ -170,7 +170,11 @@ const accelerator = (c) => {
   const mp = _hl2(c);
   const f = _sma(mp, 5), sl = _sma(mp, 34);
   const aoArr = mp.map((_, k) => (f[k] != null && sl[k] != null ? f[k] - sl[k] : null));
-  const aoSma = _sma(aoArr.map((v) => (v == null ? 0 : v)), 5).map((v, k) => (aoArr[k] == null ? null : v));
+  // _sma مقادیرِ null را ۰ می‌گیرد؛ پس خروجی را فقط روی پنجرهٔ کاملِ ۵-تاییِ واقعیِ AO نگه می‌داریم تا آلودگیِ warmup (صفرهای جعلی) وارد نشود.
+  const aoSma = _sma(aoArr.map((v) => (v == null ? 0 : v)), 5).map((v, k) => {
+    for (let j = 0; j < 5; j++) if (k - j < 0 || aoArr[k - j] == null) return null;
+    return v;
+  });
   const ac = aoArr.map((v, k) => (v != null && aoSma[k] != null ? v - aoSma[k] : null));
   // پالت: سبز اگر نسبت به بارِ قبل صعودی، قرمز اگر نزولی
   return { hist: ac, palette: (v, k) => (k > 0 && ac[k - 1] != null && ac[k] != null ? (ac[k] >= ac[k - 1] ? _UP : _DN) : _UP), guides: [0] };
@@ -245,7 +249,7 @@ const smiErgodic = (c, i) => {
   for (let k = 1; k < n; k++) { m[k] = close[k] - close[k - 1]; am[k] = Math.abs(m[k]); }
   const dbl = _ema(_ema(m, i.long), i.short), adbl = _ema(_ema(am, i.long), i.short);
   const smi = close.map((_, k) => (dbl[k] != null && adbl[k] ? (100 * dbl[k]) / adbl[k] : null));
-  const sig = _ema(smi.map((v) => (v == null ? 0 : v)), i.sig).map((v, k) => (smi[k] == null ? null : v));
+  const sig = _ema(smi, i.sig).map((v, k) => (smi[k] == null ? null : v));
   const hist = smi.map((v, k) => (v != null && sig[k] != null ? v - sig[k] : null));
   // سبکِ MACD: خطِ ارگودیک + سیگنال + هیستوگرامِ اختلاف + خطِ صفر (مثلِ SMI Ergodic Indicatorِ TV) —
   // قبلاً فقط hist رندر می‌شد و خطِ smi/signal دور ریخته می‌شد (مثلِ باگِ ADXِ #۲۶۶).
@@ -263,8 +267,8 @@ const smi = (c, i) => {
     const mid = (hh[k] + ll[k]) / 2;
     rel[k] = c.close[k] - mid; rng[k] = hh[k] - ll[k];
   }
-  const relS = _ema(_ema(rel.map((v) => (v == null ? 0 : v)), i.smoothK), i.smoothD);
-  const rngS = _ema(_ema(rng.map((v) => (v == null ? 0 : v)), i.smoothK), i.smoothD);
+  const relS = _ema(_ema(rel, i.smoothK), i.smoothD);
+  const rngS = _ema(_ema(rng, i.smoothK), i.smoothD);
   const out = new Array(n).fill(null);
   for (let k = 0; k < n; k++) {
     if (rel[k] == null || relS[k] == null || rngS[k] == null) continue;
@@ -286,7 +290,7 @@ const trix = (c, i) => {
   const src = _srcOf(c, i.source);
   const e3 = _ema(_ema(_ema(src, i.period), i.period), i.period);
   const line = e3.map((v, k) => (k > 0 && v != null && e3[k - 1]) ? (10000 * (v - e3[k - 1])) / e3[k - 1] : null);
-  const sig = _ema(line.map((v) => (v == null ? 0 : v)), i.sig).map((v, k) => (line[k] == null ? null : v));
+  const sig = _ema(line, i.sig).map((v, k) => (line[k] == null ? null : v));
   return { line, signal: sig, guides: [0] };
 };
 
@@ -342,7 +346,7 @@ const forceIndex = (c, i) => {
   if (!_hasVol(c.volume)) return { ..._nullLine(c.close.length), guides: [0] };
   const n = c.close.length, raw = new Array(n).fill(null);
   for (let k = 1; k < n; k++) raw[k] = (c.close[k] - c.close[k - 1]) * (c.volume[k] || 0);
-  const line = _ema(raw.map((v) => (v == null ? 0 : v)), i.period).map((v, k) => (k < 1 ? null : v));
+  const line = _ema(raw, i.period).map((v, k) => (k < 1 ? null : v));
   return { line, guides: [0] };
 };
 
@@ -365,7 +369,7 @@ const klinger = (c, i) => {
   }
   const ef = _ema(vf, i.fast), es = _ema(vf, i.slow);
   const kvo = vf.map((_, k) => (ef[k] != null && es[k] != null ? ef[k] - es[k] : null));
-  const sig = _ema(kvo.map((v) => (v == null ? 0 : v)), i.sig).map((v, k) => (kvo[k] == null ? null : v));
+  const sig = _ema(kvo, i.sig).map((v, k) => (kvo[k] == null ? null : v));
   return { line: kvo, signal: sig, guides: [0] };
 };
 
