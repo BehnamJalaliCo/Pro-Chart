@@ -243,5 +243,23 @@ const _bars = (n) => { const high = [], low = [], close = [], volume = []; let x
     cl.map((c, k) => { const r = high[k] - low[k]; return r ? (c - open[k]) / r : 0; }));
 }
 
+// ───────── Volume family: Force Index / PVT / A-D line / Chaikin Osc — added coverage (Loop #53) ─────────
+{
+  const b = _bars(40), { high, low, close, volume } = b, n = close.length;
+  // Force Index: raw=(c-c[-1])*vol, EMA(period), null@0
+  const raw = new Array(n).fill(null); for (let k = 1; k < n; k++) raw[k] = (close[k] - close[k - 1]) * volume[k];
+  elem('forceIndex == EMA((c-c[-1])*vol) reference', REG.forceIndex.calc(b, { period: 13 }).line, _refEma(raw, 13).map((v, k) => (k < 1 ? null : v)));
+  // PVT: cumulative ((c-c[-1])/c[-1])*vol, seed 0
+  const pvt = new Array(n).fill(0); for (let k = 1; k < n; k++) pvt[k] = pvt[k - 1] + ((close[k] - close[k - 1]) / close[k - 1]) * volume[k];
+  elem('pvt == cumulative price-volume-trend reference', REG.pvt.calc(b, {}).line, pvt);
+  // A/D line: cumulative MFM*vol, MFM=((c-l)-(h-c))/(h-l)
+  const adl = new Array(n).fill(null); let acc = 0;
+  for (let k = 0; k < n; k++) { const r = high[k] - low[k]; const mfm = r ? ((close[k] - low[k]) - (high[k] - close[k])) / r : 0; acc += mfm * volume[k]; adl[k] = acc; }
+  elem('adline == cumulative MFM*vol reference', REG.adline.calc(b, {}).line, adl);
+  // Chaikin Oscillator: EMA(ADL,fast) - EMA(ADL,slow)
+  const ef = _refEma(adl, 3), es = _refEma(adl, 10);
+  elem('chaikinOsc == EMA(ADL,3)-EMA(ADL,10) reference', REG.chaikinOsc.calc(b, { fast: 3, slow: 10 }).line, adl.map((_, k) => (ef[k] != null && es[k] != null ? ef[k] - es[k] : null)));
+}
+
 console.log(`\n=== ${pass} passed, ${fail} failed ===`);
 if (fail) process.exit(1);
