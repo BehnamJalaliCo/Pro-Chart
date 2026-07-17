@@ -42,31 +42,10 @@ chart_service/node_modules/
 *.JPEG
 *.bak.*
 
-# ── بخش‌های coinepro fx که در دیپلویِ pro-chart استفاده نمی‌شوند (آکادمی مالِ coinepro fx) ──
-frontend/academy/
-frontend/admin/
-frontend/ig/
-frontend/website/
-frontend/user/
-video_studio/
-backtest/
-chart_service/
-ci/
-deploy/
-flows/
-monitoring/
-tests/
-# QA harnessهای نگهداری‌شده جزو Source هستند؛ الگوی legacy بالا نباید آن‌ها را
-# پنهان کند. تست‌های قدیمیِ ریشه تا زمان تعیین contract همچنان ignored می‌مانند.
-!qa/tests/
-!qa/tests/**
-run_bot.py
-run_celery.py
-run_signal_engine.py
-run_tracker.py
-run_watchdog.py
-docker-compose.yml
-Makefile
-RESTORE_GDRIVE.md
+# ── بخش‌های coinepro fx ──
+# پیش‌تر کنار گذاشته می‌شدند چون در دیپلویِ pro-chart استفاده نمی‌شوند؛ اکنون به
+# خواستِ مالک کلِ سورس روی گیت‌هاب می‌رود. فقط node_modules/dist (بازتولیدشونده،
+# بالا ignore شده‌اند) بیرون می‌مانند — سورسِ خودشان روی‌هم ~۵ مگابایت است.
+video_studio/public/
 # CLAUDE.md دیگر ignore نیست — راهنمای Claude Code روی سرورِ مرکزی است (به docs/SERVER-HANDOFF.md اشاره می‌کند)
 Anjoman Max SemiPro.zip

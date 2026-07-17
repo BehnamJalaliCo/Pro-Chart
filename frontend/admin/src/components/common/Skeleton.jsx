@@ -1,0 +1,1 @@
+export function TableSkeleton(){return <div className="motion-safe:animate-pulse" aria-hidden="true"/>} export function CardSkeleton(){return <TableSkeleton/>} export function ChartSkeleton(){return <TableSkeleton/>}

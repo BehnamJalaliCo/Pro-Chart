@@ -1,0 +1,1 @@
+export const initialState={mobileDrawerOpen:false}; export const openMobileDrawer=()=>{}; export const closeMobileDrawer=()=>{}; export const toggleMobileDrawer=()=>{}; export const partialize=state=>({theme:state.theme,sidebarCollapsed:state.sidebarCollapsed});

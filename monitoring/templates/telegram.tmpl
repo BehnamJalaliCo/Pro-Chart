@@ -1,0 +1,41 @@
+{{/* فارسی-سازی پیام‌های Alertmanager برای Telegram */}}
+
+{{ define "telegram.default" }}
+<b>{{ .GroupLabels.alertname }}</b>
+وضعیت: {{ .Status | toUpper }}
+{{ range .Alerts }}
+{{- if .Labels.severity }}شدت: {{ .Labels.severity }}{{ end }}
+{{- if .Labels.category }} • دسته: {{ .Labels.category }}{{ end }}
+
+{{ .Annotations.summary }}
+{{- if .Annotations.description }}
+
+{{ .Annotations.description }}
+{{- end }}
+
+🕐 {{ .StartsAt.Format "2006-01-02 15:04 UTC" }}
+{{- if eq .Status "resolved" }} ✅ resolved at {{ .EndsAt.Format "15:04" }}{{ end }}
+{{ end }}
+{{ end }}
+
+{{ define "telegram.critical" }}
+{{ range .Alerts }}
+🚨 <b>{{ .Labels.alertname }}</b>
+{{ .Annotations.summary }}
+
+{{ .Annotations.description }}
+
+اقدام فوری لازم — runbook را ببینید.
+{{ end }}
+{{ end }}
+
+{{ define "telegram.risk" }}
+{{ range .Alerts }}
+<b>{{ .Labels.alertname }}</b>
+{{ .Annotations.summary }}
+
+{{ if .Annotations.description }}{{ .Annotations.description }}
+
+{{ end }}اقدام: بررسی RiskPage در admin panel.
+{{ end }}
+{{ end }}

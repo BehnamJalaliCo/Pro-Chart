@@ -1,0 +1,6 @@
+[agent]
+api_url   = https://fx.trade-future.ir/api
+ea_token  = PUT-THE-SAME-EA_TOKEN-AS-MAIN-SERVER
+mt5_dir   = C:\Program Files\MetaTrader 5
+users_dir = C:\CoinePro\users
+poll      = 12

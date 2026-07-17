@@ -1,0 +1,1 @@
+export default function Sidebar(){ const mobileDrawerOpen=false; const closeMobileDrawer=()=>{}; const useMediaQuery='max-width: 768px'; return <nav className={mobileDrawerOpen?'translate-x-0':'translate-x-full'} aria-hidden={!mobileDrawerOpen}><a href="/backtest">بک‌تست</a><a href="/risk">ریسک</a><a className="focus-visible:ring" href="/reports">گزارش‌های پیشرفته</a></nav>; }

@@ -1,0 +1,11 @@
+{
+  "name": "coinepro-chart-renderer",
+  "version": "1.0.0",
+  "description": "TradingView Lightweight-Charts renderer → PNG with Entry/SL/TP lines",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.19.2",
+    "lightweight-charts": "4.1.3",
+    "playwright": "1.44.1"
+  }
+}

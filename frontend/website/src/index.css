@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ── پالتِ سطح‌ها (حالتِ شب = پیش‌فرض) ── */
+  :root {
+    --d-50: 247 247 248;
+    --d-100: 238 238 240;
+    --d-200: 217 217 222;
+    --d-300: 184 184 193;
+    --d-400: 145 145 159;
+    --d-500: 115 115 132;
+    --d-600: 93 93 108;
+    --d-700: 76 76 88;
+    --d-800: 65 65 75;
+    --d-900: 42 42 50;
+    --d-950: 24 24 27;
+    --fg: 255 255 255;        /* رنگِ متنِ اصلی (text-white) */
+  }
+
+  /* ── حالتِ روز: مقیاسِ سطح‌ها معکوس می‌شود (۹۵۰ روشن‌ترین پس‌زمینه) ── */
+  html:not(.dark) {
+    --d-950: 248 249 251;
+    --d-900: 238 240 244;
+    --d-800: 226 228 233;
+    --d-700: 208 211 218;
+    --d-600: 168 171 181;
+    --d-500: 122 125 136;
+    --d-400: 99 102 114;
+    --d-300: 71 74 85;
+    --d-200: 48 51 60;
+    --d-100: 33 35 42;
+    --d-50: 22 23 28;
+    --fg: 23 24 30;
+  }
+
+  * {
+    font-family: 'Vazirmatn', sans-serif;
+  }
+
+  html {
+    direction: rtl;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-dark-950 overflow-x-hidden;
+    color: rgb(var(--fg));
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* رنگِ متنِ سفید در حالتِ روز تیره می‌شود (شاملِ واریانت‌های شفافیت).
+     دکمه‌های رنگی از کلاسِ کامپوننتیِ btn-* استفاده می‌کنند نه text-white خام. */
+  html:not(.dark) [class*="text-white"] {
+    color: rgb(var(--fg)) !important;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-dark-500;
+  }
+
+  /* Selection color */
+  ::selection {
+    @apply bg-accent/30 text-white;
+  }
+
+  /* Number inputs - remove spinners */
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer components {
+  /* Glass morphism card */
+  .glass-card {
+    @apply bg-dark-900/60 backdrop-blur-xl border border-dark-700/50 rounded-2xl;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-l from-accent via-bullish to-accent-light bg-clip-text text-transparent;
+  }
+
+  /* Bullish / Bearish badges */
+  .badge-bullish {
+    @apply bg-bullish/10 text-bullish border border-bullish/20 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-bearish {
+    @apply bg-bearish/10 text-bearish border border-bearish/20 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-neutral {
+    @apply bg-dark-600/30 text-dark-300 border border-dark-600/30 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  /* Glow effect */
+  .glow-bullish {
+    box-shadow: 0 0 20px rgba(0, 200, 83, 0.15), 0 0 40px rgba(0, 200, 83, 0.05);
+  }
+
+  .glow-bearish {
+    box-shadow: 0 0 20px rgba(255, 23, 68, 0.15), 0 0 40px rgba(255, 23, 68, 0.05);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 20px rgba(41, 121, 255, 0.15), 0 0 40px rgba(41, 121, 255, 0.05);
+  }
+
+  /* Button variants */
+  .btn-primary {
+    @apply bg-accent hover:bg-accent-dark text-white font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/20;
+  }
+
+  .btn-bullish {
+    @apply bg-bullish hover:bg-bullish-dark text-white font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-bullish/20;
+  }
+
+  .btn-outline {
+    @apply border border-dark-600 hover:border-accent text-dark-200 hover:text-accent font-medium px-6 py-3 rounded-xl transition-all duration-300;
+  }
+
+  /* RTL-specific fixes */
+  .rtl-flip {
+    transform: scaleX(-1);
+  }
+
+  /* محتوای درس‌های آموزشی (HTML از مدل Article) */
+  .edu-content b,
+  .edu-content strong {
+    @apply text-white font-bold;
+  }
+  .edu-content a {
+    @apply text-accent underline;
+  }
+  .edu-content ul,
+  .edu-content ol {
+    @apply pr-5 my-3 space-y-1 list-disc;
+  }
+  .edu-content img {
+    @apply rounded-xl my-4 max-w-full border border-dark-700/50;
+  }
+  .edu-content code {
+    @apply bg-dark-800 text-accent px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  /* Grid background pattern */
+  .bg-grid {
+    background-image: linear-gradient(rgba(41, 121, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(41, 121, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Animated gradient border */
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #2979FF, #00C853, #2979FF);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* Table styles */
+  .data-table {
+    @apply w-full;
+  }
+
+  .data-table thead th {
+    @apply text-right text-dark-400 text-sm font-medium py-3 px-4 border-b border-dark-800;
+  }
+
+  .data-table tbody td {
+    @apply py-3 px-4 border-b border-dark-800/50 text-dark-200;
+  }
+
+  .data-table tbody tr {
+    @apply hover:bg-dark-800/30 transition-colors;
+  }
+}
+
+@layer utilities {
+  /* Persian/Arabic numeral support */
+  .num-fa {
+    font-feature-settings: 'ss02';
+  }
+
+  /* Text shadow for glow effects */
+  .text-glow-bullish {
+    text-shadow: 0 0 10px rgba(0, 200, 83, 0.5);
+  }
+
+  .text-glow-bearish {
+    text-shadow: 0 0 10px rgba(255, 23, 68, 0.5);
+  }
+
+  .text-glow-accent {
+    text-shadow: 0 0 10px rgba(41, 121, 255, 0.5);
+  }
+}

@@ -1,0 +1,3 @@
+export const translations={fa:{'common.loading':'در حال بارگذاری','common.error':'خطا','common.retry':'تلاش مجدد','common.save':'ذخیره','common.cancel':'لغو','common.close':'بستن','common.search':'جست‌وجو','common.no_data':'داده‌ای نیست','common.noData':'داده‌ای نیست','common.count':'تعداد {n}','nav.dashboard':'داشبورد','nav.signals':'سیگنال‌ها','status.active':'فعال','direction.long':'خرید','direction.short':'فروش'}};
+export function t(key,vars={}){let s=translations.fa[key]||key; return Object.entries(vars).reduce((a,[k,v])=>a.replace(`{${k}}`,v),s)}
+export function statusLabel(v){return t(`status.${v}`)} export function directionLabel(v){return t(`direction.${v}`)} export function useI18n(){return {t,statusLabel,directionLabel}}

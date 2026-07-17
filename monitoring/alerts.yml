@@ -1,0 +1,144 @@
+groups:
+  - name: forex_signal_critical
+    interval: 30s
+    rules:
+      # ── در دسترس بودن سرویس ──
+      - alert: AllDataFeedsDown
+        expr: sum(forex_data_feed_status) == 0
+        for: 2m
+        labels:
+          severity: critical
+          category: data
+        annotations:
+          summary: تمام منابع داده قطع شدند
+          description: |
+            هیچ data feed فعال نیست. سیگنال‌های جدید با قیمت‌های stale تولید می‌شوند.
+            بررسی: docker logs، اتصال به broker، rate limit ها.
+
+      - alert: APIDown
+        expr: up{job="forex_api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: api
+        annotations:
+          summary: API در دسترس نیست
+          description: HTTP /health پاسخ نمی‌دهد. کاربران نمی‌توانند به پنل دسترسی داشته باشند.
+
+      # ── ریسک ──
+      - alert: SystemLockedDueToDailyLoss
+        expr: forex_system_locked == 1
+        for: 1m
+        labels:
+          severity: high
+          category: risk
+        annotations:
+          summary: circuit breaker فعال — سیستم قفل است
+          description: |
+            forex_daily_pnl_dollar = {{ $labels.value }}
+            دلیل قفل از Redis: risk:daily_loss:* را بررسی کنید.
+            اقدام: اگر دلیل تأیید شد، در پایان rollover منتظر بمانید یا
+            دلایل ضرر را بررسی و دستی unlock کنید.
+
+      - alert: HighConsecutiveLosses
+        expr: forex_daily_consecutive_losses >= 3
+        for: 1m
+        labels:
+          severity: warning
+          category: risk
+        annotations:
+          summary: ۳+ زیان متوالی
+          description: |
+            سیستم در سراشیبی است. بررسی regime detector، آیا بازار تغییر یافته؟
+
+      # ── سیگنال‌دهی ──
+      - alert: NoSignalsForOneHour
+        expr: rate(forex_signals_generated_total[1h]) == 0
+        for: 1h
+        labels:
+          severity: warning
+          category: signals
+        annotations:
+          summary: یک ساعت اخیر هیچ سیگنالی تولید نشده
+          description: |
+            احتمالاً Engine متوقف شده یا تمام سیگنال‌ها در RiskGuard rejected می‌شوند.
+            بررسی: forex_risk_rejections_total
+
+      - alert: HighRejectionRate
+        expr: |
+          rate(forex_risk_rejections_total[10m])
+          / rate(forex_signals_generated_total[10m])
+          > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          category: signals
+        annotations:
+          summary: ۸۰٪+ سیگنال‌ها در حال رد شدن هستند
+          description: |
+            احتمالاً تنظیمات RiskGuard خیلی سخت‌گیرانه است یا بازار نامناسب است.
+            top rejection reasons: forex_risk_rejections_total per reason
+
+      # ── ML ──
+      - alert: MLModelStale
+        expr: time() - forex_ml_model_accuracy > 7 * 24 * 3600
+        for: 5m
+        labels:
+          severity: warning
+          category: ml
+        annotations:
+          summary: مدل ML بیش از ۷ روز retrain نشده
+          description: |
+            بازار FX سریع تغییر می‌کند. مدل قدیمی → degradation.
+            اقدام: retrain task celery را check کنید.
+
+      # ── زیرساخت ──
+      - alert: HighAPILatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(http_request_duration_seconds_bucket[5m])
+          ) > 1.5
+        for: 5m
+        labels:
+          severity: warning
+          category: api
+        annotations:
+          summary: p95 latency بالای ۱.۵ ثانیه
+          description: کاربران زمان پاسخ‌دهی کندی می‌بینند. DB pool یا Redis را check کنید.
+
+      - alert: HighRejectedRateLimits
+        expr: |
+          rate(http_requests_total{status_code="429"}[5m]) > 5
+        for: 5m
+        labels:
+          severity: info
+          category: api
+        annotations:
+          summary: rate limit بسیار trip می‌شود
+          description: ممکن است حمله یا misconfiguration کلاینت باشد.
+
+  # ── alerts paper trading ──
+  - name: forex_paper_trading
+    interval: 5m
+    rules:
+      - alert: PaperVsBacktestDegradation
+        expr: forex_paper_vs_live_divergence{metric="win_rate"} < -0.15
+        for: 30m
+        labels:
+          severity: high
+          category: launch
+        annotations:
+          summary: paper win_rate ۱۵٪+ کمتر از backtest است
+          description: |
+            احتمالاً overfit یا regime change. قبل از launch live، علت بررسی شود.
+
+      - alert: PaperTradeVolumeLow
+        expr: |
+          sum(rate(forex_paper_signals_generated_total[24h])) < 0.5
+        for: 24h
+        labels:
+          severity: info
+          category: launch
+        annotations:
+          summary: paper trading حجم کم
+          description: کمتر از ۰.۵ سیگنال در ساعت — برای آنالیز معتبر داده‌ی بیشتر نیاز است.
