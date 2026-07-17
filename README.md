@@ -823,7 +823,10 @@ The state machine is `NOT_STARTED → BASELINING → BASELINED → IN_PROGRESS �
 
 **Proprietary.** No license file is present in this repository; all rights are reserved by the owner. This code is published for review and is not offered for reuse or redistribution.
 
-**Third-party notice.** `lightweight-charts` is used under its own license. **No proprietary TradingView code or assets are included** — every indicator and drawing-tool formula in this repository is reimplemented from public descriptions.
+**Third-party notice.** `lightweight-charts` is used under its own license. Every indicator and drawing-tool **formula** here is reimplemented from public descriptions — `drawtools_ext.js` states this rule and holds to it.
+
+> [!CAUTION]
+> **The rule is currently violated in one place.** `src/bazaarnama/tvIcons.jsx` overrides 23 lucide icons with SVG path data whose own header comment reads *«استخراجِ مستقیم از TradingView»* — extracted directly from TradingView. Path geometry is a copyrightable asset. This is tracked as **V-1 (P0)** in [`docs/parity/TV_GAP_REGISTER.md`](docs/parity/TV_GAP_REGISTER.md) and must be replaced with original artwork before this repository is made public.
 
 > [!WARNING]
 > **Financial risk.** This software is a technical-analysis and order-routing tool. It is **not** financial advice, and it makes **no guarantee of profit** — a constraint written into the product spec itself. Trading leveraged instruments carries substantial risk of loss. `TRADING_MODE` defaults to `paper` and crypto execution defaults to **off**; both are safe defaults, and both are your responsibility to change knowingly.
