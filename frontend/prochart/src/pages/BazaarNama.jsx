@@ -34,6 +34,7 @@ import { attachHotkeys, SHORTCUT_GROUPS } from '../bazaarnama/hotkeys';
 import { useBreakpoint, MobileToolSheet, CompactTopBar, BREAKPOINTS } from '../bazaarnama/mobile';
 import { useViewport } from '../bazaarnama/useViewport';
 import { GRID_PRESET_ORDER, getGridLayout, presetToLegacyGrid } from '../bazaarnama/layoutPresets';
+import { rafThrottle } from '../bazaarnama/perf';
 import { Legend, ChartLegend, SubPaneLegends, CountdownChip, Watermark, ReplayBar, DataWindow, CrosshairAxisTag } from '../bazaarnama/overlays/ChartOverlays';
 import { queueIndicatorAlert, queueSeedAlert } from '../bazaarnama/AlertsPanel';
 import { symbolCurrencies } from '../bazaarnama/panels/Calendar';
@@ -57,6 +58,10 @@ import { HelpCircle } from '../bazaarnama/tvIcons';
 import { TVCT } from '../bazaarnama/tvChartIcons';
 
 const TFS = ['M1', 'M2', 'M3', 'M5', 'M10', 'M15', 'M30', 'M45', 'H1', 'H2', 'H3', 'H4', 'D1', 'W1', 'MN', 'MN3'];
+
+// intrabar (فاز ۶.۳): تایم‌فریمِ ریزتر برای «ذره‌بینِ بار» سبکِ TV — کاربر در replay
+// داخلِ یک کندل ریزگام می‌بیند. فقط برای TFهایی که ریزکندلِ منطقی دارند.
+const INTRABAR_SUB_TF = { M5: 'M1', M15: 'M5', M30: 'M5', H1: 'M15', H2: 'M15', H3: 'M30', H4: 'H1', D1: 'H1', W1: 'H4', MN: 'D1' };
 // باسِ همگام‌سازیِ چندچارتی (زمان + کراس‌هیر) — هر MiniChart مشترک می‌شود
 function makeSyncBus() { let subs = []; return { subscribe(fn) { subs.push(fn); return () => { subs = subs.filter((s) => s !== fn); }; }, emit(type, payload, self) { subs.forEach((fn) => { if (fn !== self) fn(type, payload); }); } }; }
 // برچسبِ کوتاه + عنوانِ فارسی برای نوارِ تایم‌فریمِ حرفه‌ای
@@ -394,7 +399,8 @@ export default function BazaarNama() {
   const delIndTpl = (name) => setIndTpls((p) => { const n = { ...p }; delete n[name]; saveWS({ indTpls: n }); return n; });
   const [ctMenu, setCtMenu] = useState(false);
   const [crossMenu, setCrossMenu] = useState(false); // منوی حالتِ کراس‌هیر (دکمهٔ آیکونی به‌جای select متنی — سبکِ TV)
-  const [scaleMenu, setScaleMenu] = useState(false); // منوی حالتِ مقیاسِ قیمت (دکمهٔ نشانِ کوتاه به‌جای select متنی — سبکِ TV: log/%/…)
+  const [scaleMenu, setScaleMenu] = useState(false);
+  const [intrabarOn, setIntrabarOn] = useState(() => loadWS().intrabar === true); // ذره‌بینِ بارِ replay (۶.۳) // منوی حالتِ مقیاسِ قیمت (دکمهٔ نشانِ کوتاه به‌جای select متنی — سبکِ TV: log/%/…)
   // اینتروال سبکِ TV: تایم‌فریم‌های منتخبِ inline + dropdownِ کاملِ همه (audit #2)
   const [tfMenu, setTfMenu] = useState(false);
   const [tfSearch, setTfSearch] = useState(''); // فیلترِ جستجوی منوی اینتروال (سبکِ سرچ‌باکسِ بالای منوی تایم‌فریمِ TV)
@@ -1398,6 +1404,7 @@ export default function BazaarNama() {
   }, [ctParams]);
   // نگه‌داشتنِ خودکارِ میزِکار (نماد/تایم‌فریم/نوعِ چارت/تم/اندیکاتورها) — رفرش/خروج پاکش نمی‌کند
   useEffect(() => { saveWS({ symbol, tf, chartType, theme, overlays, subs }); }, [symbol, tf, chartType, theme, overlays, subs]);
+  useEffect(() => { saveWS({ intrabar: intrabarOn }); }, [intrabarOn]); // ذره‌بینِ بار (۶.۳)
   useEffect(() => { symbolRef.current = symbol; }, [symbol]);
   // تغییرِ نماد ⇒ ترسیم‌های نمادِ جدید را در لایه بگذار (فاز ۵.۱).
   // ترسیم‌های نمادِ قبلی از قبل با onChange (saveSymbolDrawings) ذخیره شده‌اند.
@@ -1780,8 +1787,24 @@ export default function BazaarNama() {
   //   onStep  → یک گامِ رو به جلو ⇒ همان series.update روانِ قبلی
   //   onSlice → بازساختِ کاملِ برش (seek/step-back/scrub) ⇒ buildPriceSeries+overlays+subs
   // یک گامِ رو به جلو روی برشِ موجود (نسخهٔ ضد-رگرسیون از کدِ قبلی).
+  // بازمحاسبهٔ throttle‌شدهٔ اندیکاتور در پخشِ replay (فاز ۶.۵ + ۶.۴).
+  // باگ: replayApplyStep فقط قیمت/حجم را update می‌کرد؛ اورلی/سابِ اندیکاتورها فقط
+  // با seek بازمحاسبه می‌شدند — پس هنگامِ پخش، اندیکاتورها روی آخرین seek فریز بودند.
+  // rafThrottle (از perf.js که تا حالا مرده بود) چند فریم را به یکی جمع می‌کند تا
+  // چند setData در یک فریم پخش را کند نکند.
+  const _applyIndRef = useRef({ ov: applyOverlays, sub: applySubs });
+  _applyIndRef.current.ov = applyOverlays; _applyIndRef.current.sub = applySubs; // همیشه آخرین نسخه (بدونِ stale closure)
+  const _replayIndRecalc = useRef(null);
+  if (!_replayIndRecalc.current) {
+    _replayIndRecalc.current = rafThrottle(() => {
+      const sl = candlesRef.current;
+      if (!sl || !sl.length) return;
+      try { _applyIndRef.current.ov(sl); _applyIndRef.current.sub(sl); } catch (e) { /* یک فریم نباید حلقه را بشکند */ }
+    });
+  }
   const replayApplyStep = useCallback((c, slice) => {
     candlesRef.current = slice;
+    if (_replayIndRecalc.current) _replayIndRecalc.current(); // اندیکاتورها با پخش زنده می‌مانند
     // بستنِ خودکارِ معاملهٔ تمرینی اگر کندلِ تازه‌آشکارشده به SL یا TP برخورد کند (اولویت با SL — بدترین حالت).
     const pp = practicePosRef.current;
     if (pp && c && practiceCloseAtRef.current) {
@@ -1826,6 +1849,15 @@ export default function BazaarNama() {
       speed: SPEED_LADDER.includes(replay.speed) ? replay.speed : 1,
       onStep: (c, slice) => replayApplyStep(c, slice),
       onSlice: (slice) => replayApplySlice(slice),
+      // ذره‌بینِ بار (۶.۳): هر ریزکندل، کندلِ در‌حالِ‌شکل‌گیری را روی سری update می‌کند.
+      onIntrabar: (sub, bar, j, slice) => {
+        candlesRef.current = slice;
+        try {
+          const forming = { time: bar.t, open: bar.o, high: sub.h, low: sub.l, close: sub.c };
+          if (['line', 'area', 'baseline', 'step'].includes(chartType) || EXT_VALUE_TYPES.includes(chartType)) priceSeriesRef.current.update({ time: bar.t, value: sub.c });
+          else priceSeriesRef.current.update(forming);
+        } catch (e) { /* یک ریزگام نباید حلقه را بشکند */ }
+      },
       onChange: (st) => {
         replayRef.current.idx = st.idx; replayRef.current.full = ctrl.full;
         setReplay((s) => ({ ...s, on: st.on, playing: st.playing, speed: st.speed, idx: st.idx, length: st.length }));
@@ -1845,6 +1877,28 @@ export default function BazaarNama() {
       const vb = 170; // پهنای پنجرهٔ دید (تعداد بار)
       ts.setVisibleLogicalRange({ from: startIdx - vb * 0.72, to: startIdx + vb * 0.28 });
     } catch (e) { try { chartRef.current.timeScale().fitContent(); } catch (e2) {} }
+    // بارگذاریِ ریزکندل‌ها برای ذره‌بینِ بار (۶.۳) — opt-in و ناهمگام؛ اگر ناموفق
+    // شد replay بدونِ ذره‌بین کار می‌کند (سقوطِ امن به step معمولی).
+    if (intrabarOn && INTRABAR_SUB_TF[tf] && !NONSTANDARD.includes(chartType) && !DERIVED_TF[tf]) {
+      const subTf = INTRABAR_SUB_TF[tf];
+      const from = full[0] ? full[0].t : 0;
+      api.chart(symbol, subTf, '', 5000, 0).then((r) => {
+        if (!replayCtrlRef.current || replayCtrlRef.current !== ctrl) return; // replay عوض شده
+        const subs = (r.candles || []).filter((c) => c.t >= from);
+        if (!subs.length) return;
+        // نگاشتِ زمانِ بارِ والد → ریزکندل‌های داخلش (بر اساسِ بازهٔ [bar.t, nextBar.t))
+        const map = new Map();
+        let k = 0;
+        for (let i = 0; i < full.length; i++) {
+          const bt = full[i].t, nt = i + 1 < full.length ? full[i + 1].t : Infinity;
+          const bucket = [];
+          while (k < subs.length && subs[k].t < bt) k++;
+          while (k < subs.length && subs[k].t < nt) { bucket.push({ t: subs[k].t, o: subs[k].o, h: subs[k].h, l: subs[k].l, c: subs[k].c, v: subs[k].v }); k++; }
+          if (bucket.length > 1) map.set(bt, bucket);
+        }
+        if (map.size) { ctrl.setIntrabarData(map); ctrl.enableIntrabar(true); }
+      }).catch(() => { /* بدونِ ذره‌بین ادامه بده */ });
+    }
     setReplay((s) => ({ ...s, on: true, playing: false }));
   };
   const exitReplay = () => {
@@ -3506,6 +3560,7 @@ export default function BazaarNama() {
               );
             })()}
             <ReplayBar replay={replay} TH={TH} replayStepBack={replayStepBack} replayToggle={replayToggle} replayStep={replayStep} replaySeek={replaySeek} replaySetSpeed={replaySetSpeed} exitReplay={exitReplay}
+              intrabarOn={intrabarOn} onToggleIntrabar={() => setIntrabarOn((v) => !v)}
               replayToStart={replayToStart} replayToEnd={replayToEnd} replayJump={replayJump}
               replayDate={(() => { try { const t = (replayRef.current.full || [])[replay.idx]; if (!t) return ''; const d = new Date(t.t * 1000); return d.toLocaleString('fa-IR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } })()} />
           </div>

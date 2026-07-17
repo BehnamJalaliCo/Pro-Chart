@@ -690,7 +690,7 @@ export function Watermark({ src, theme, opacity = 0.13, height = 60 }) {
 }
 
 // نوارِ کنترلِ بازپخش — رندرِ خالص؛ همهٔ هندلرها از props.
-export function ReplayBar({ replay, TH, replayStepBack, replayToggle, replayStep, replaySeek, replaySetSpeed, exitReplay, replayToStart, replayToEnd, replayJump, replayDate }) {
+export function ReplayBar({ replay, TH, replayStepBack, replayToggle, replayStep, replaySeek, replaySetSpeed, exitReplay, replayToStart, replayToEnd, replayJump, replayDate, intrabarOn, onToggleIntrabar }) {
   if (!replay.on) return null;
   const atStart = replay.idx <= 30, atEnd = replay.idx >= replay.length - 1;
   const IconBtn = ({ onClick, title, disabled, children, accent }) => (
@@ -726,6 +726,11 @@ export function ReplayBar({ replay, TH, replayStepBack, replayToggle, replayStep
       <span className="opacity-60 tabular-nums shrink-0" dir="ltr">{replay.length ? `${replay.idx + 1}/${replay.length}` : ''}</span>
       <span className="opacity-60 shrink-0">سرعت</span>
       {SPEED_LADDER.map((sp) => (<button key={sp} onClick={() => replaySetSpeed(sp)} className={`px-1.5 rounded-md tabular-nums transition-colors duration-[120ms] ${replay.speed === sp ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={replay.speed === sp ? { background: TH.accent } : {}}>{sp}×</button>))}
+      {onToggleIntrabar && (
+        <IconBtn onClick={onToggleIntrabar} title={intrabarOn ? 'ذره‌بینِ بار: روشن (ریزکندل داخلِ هر بار)' : 'ذره‌بینِ بار: خاموش'} accent={!!intrabarOn}>
+          <svg width="13" height="13" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="m17 17 6 6" strokeLinecap="butt"/><path d="M9 12h6M12 9v6" strokeLinecap="butt"/></svg>
+        </IconBtn>
+      )}
       <button onClick={exitReplay} className="p-1 rounded-md bg-red-500/20 text-red-400 transition-colors duration-[120ms] shrink-0">✕ خروج</button>
     </div>
   );
