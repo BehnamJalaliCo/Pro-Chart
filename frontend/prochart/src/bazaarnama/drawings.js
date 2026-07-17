@@ -3,7 +3,7 @@
 // نقاط بر حسبِ {t (unix), p (price)} ذخیره می‌شوند تا با zoom/pan ثابت بمانند.
 
 // افزونهٔ فصل ۴ (PRO_CHART_BUILD_SPEC): ۳۹ ابزارِ ترسیمِ جدید، drop-in.
-import { EXT_NEED, EXT_LABELS, isExt, extDraw, extHit, extHandles } from './drawtools_ext';
+import { EXT_NEED, EXT_FREEHAND, EXT_LABELS, isExt, extDraw, extHit, extHandles } from './drawtools_ext';
 import { DrawingHistory } from './drawing_history.js';
 
 const FIB = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
@@ -366,6 +366,15 @@ export class DrawingLayer {
       }
       let pt = this._snap({ t: this._t(x), p: this._p(y) });
       if (pt.t == null || pt.p == null) return;
+      // ابزارهای freehand (brush/highlighter): با درگ نمونه‌برداری می‌شوند، نه با کلیک.
+      // پیش‌تر EXT_FREEHAND ساخته می‌شد ولی **هرگز import نمی‌شد**، و EXT_NEED فقط
+      // points>=3 را می‌گیرد — پس points:-1 در هیچ شاخه‌ای نمی‌افتاد و این دو دکمه
+      // برای همیشه هیچ‌چیز نمی‌کشیدند.
+      if (EXT_FREEHAND.includes(this.tool)) {
+        this.freehand = { type: this.tool, pts: [pt], color: this.color };
+        this.render();
+        return;
+      }
       const NEED = { channel: 3, pitchfork: 3, ...EXT_NEED };
       if (NEED[this.tool]) {
         if (!this.pending || this.pending.type !== this.tool) this.pending = { type: this.tool, pts: [pt], color: this.color };
@@ -433,6 +442,17 @@ export class DrawingLayer {
       let _edir = 0; const EDGE = 40;
       if (_drawActive) { if (x < EDGE) _edir = -1; else if (x > r.width - EDGE) _edir = 1; }
       setEdgePan(_edir, x, y);
+      // نمونه‌برداریِ freehand — نقطهٔ نو فقط وقتی که به‌اندازهٔ کافی از قبلی دور شده،
+      // وگرنه صدها نقطهٔ هم‌پوشان ذخیره می‌شود و render کند می‌شود.
+      if (this.freehand) {
+        const sp = { t: this._t(x), p: this._p(y) };
+        if (sp.t != null && sp.p != null) {
+          const last = this.freehand.pts[this.freehand.pts.length - 1];
+          const lp = last ? { x: this._x(last.t), y: this._y(last.p) } : null;
+          if (!lp || Math.hypot(x - lp.x, y - lp.y) >= 3) { this.freehand.pts.push(sp); this.render(); }
+        }
+        return;
+      }
       if (this.marquee) { this.marquee.x1 = x; this.marquee.y1 = y; this.render(); return; }
       if (this.dragOrder && this.order) { const pr = this._p(y); if (pr != null) { this.order[this.dragOrder] = pr; this.render(); this.onOrder && this.onOrder({ ...this.order }); } return; }
       // درگِ handle
@@ -470,6 +490,18 @@ export class DrawingLayer {
     };
     const up = () => {
       stopEdgePan(); // پایانِ کشیدن ⇒ توقفِ اسکرولِ خودکارِ لبه
+      // پایانِ freehand: زیر ۲ نقطه یعنی کلیکِ ساده — چیزی ثبت نمی‌شود.
+      if (this.freehand) {
+        const fh = this.freehand; this.freehand = null;
+        if (fh.pts.length >= 2) {
+          this._pushUndo();
+          this.drawings.push(this._applyDef({ type: fh.type, pts: fh.pts, color: fh.color }));
+          this.selected = this.drawings.length - 1;
+          this._changed();
+        }
+        this.render();
+        return;
+      }
       // پایانِ Marquee: هر ترسیمی که لنگرش داخلِ مستطیل است انتخاب شود (چند-انتخاب).
       if (this.marquee) {
         const m = this.marquee; this.marquee = null;
@@ -654,8 +686,11 @@ export class DrawingLayer {
       });
     }
     if (this.script) this._paintScript(ctx, W, H);
-    const all = this.tmp ? [...this.drawings, this.tmp] : this.drawings;
-    all.forEach((d, i) => { if (d !== this.tmp && this._tfHidden(d)) return; this._draw(ctx, d, i === this.selected || this.multiSel.has(i)); if (i === this.selected || this.multiSel.has(i)) this._drawHandles(ctx, d); else if (d !== this.tmp && i === this.hover && d.visible !== false) this._drawHandles(ctx, d, 0.4); });
+    // freehand حین کشیدن مثلِ tmp پیش‌نمایش می‌شود — وگرنه کاربر تا رهاکردنِ ماوس
+    // هیچ‌چیز نمی‌بیند و فکر می‌کند ابزار خراب است.
+    const _live = this.tmp || this.freehand || null;
+    const all = _live ? [...this.drawings, _live] : this.drawings;
+    all.forEach((d, i) => { if (d !== _live && this._tfHidden(d)) return; this._draw(ctx, d, i === this.selected || this.multiSel.has(i)); if (i === this.selected || this.multiSel.has(i)) this._drawHandles(ctx, d); else if (d !== this.tmp && i === this.hover && d.visible !== false) this._drawHandles(ctx, d, 0.4); });
     // مستطیلِ Marquee (حینِ کشیدن) — کادرِ خط‌چینِ آبی با پُرِ نیمه‌شفاف، سبکِ TV.
     if (this.marquee) { const m = this.marquee; const rx = Math.min(m.x0, m.x1), ry = Math.min(m.y0, m.y1), rw = Math.abs(m.x1 - m.x0), rh = Math.abs(m.y1 - m.y0); ctx.save(); ctx.fillStyle = 'rgba(59,130,246,.10)'; ctx.strokeStyle = 'rgba(59,130,246,.9)'; ctx.lineWidth = 1; ctx.setLineDash([4, 3]); ctx.fillRect(rx, ry, rw, rh); ctx.strokeRect(rx, ry, rw, rh); ctx.restore(); }
     if (this.pending) {

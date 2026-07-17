@@ -2493,7 +2493,33 @@ var REGISTRY = {
   } },
   maCross: { label: "\u062A\u0642\u0627\u0637\u0639\u0650 \u0645\u06CC\u0627\u0646\u06AF\u06CC\u0646\u200C\u0647\u0627 (MA Cross)", pane: "main", inputs: { fast: 10, slow: 30 }, color: "#22c55e", calc: (c, i) => ({ lines: [{ data: sma(c.close, i.fast), color: "#22c55e" }, { data: sma(c.close, i.slow), color: "#ef4444" }] }) }
 };
-Object.assign(REGISTRY, EXT_REGISTRY_A, EXT_REGISTRY_B);
+var REGISTRY_OWNER = {
+  trix: "A",
+  // extA — warmupِ درست
+  bbpercent: "B",
+  bbw: "B",
+  chaikinVol: "A",
+  bop: "B",
+  eom: "B"
+};
+var _mergeExt = (target, ext, tag) => {
+  for (const [key, def] of Object.entries(ext)) {
+    if (key in target) {
+      const owner = REGISTRY_OWNER[key];
+      if (owner === void 0) {
+        const msg = `[indicators] \u062A\u0635\u0627\u062F\u0645\u0650 \u062B\u0628\u062A\u200C\u0646\u0634\u062F\u0647\u0654 \u0631\u062C\u06CC\u0633\u062A\u0631\u06CC: "${key}" (\u0645\u0646\u0628\u0639: ${tag}). \u06CC\u06A9\u06CC \u0631\u0627 \u062D\u0630\u0641 \u06A9\u0646\u06CC\u062F \u06CC\u0627 \u0645\u0627\u0644\u06A9\u0634 \u0631\u0627 \u062F\u0631 REGISTRY_OWNER \u0627\u0639\u0644\u0627\u0645 \u06A9\u0646\u06CC\u062F.`;
+        if (import.meta.env?.DEV) throw new Error(msg);
+        console.warn(msg);
+      } else if (owner !== tag) {
+        continue;
+      }
+    }
+    target[key] = def;
+  }
+  return target;
+};
+_mergeExt(REGISTRY, EXT_REGISTRY_A, "A");
+_mergeExt(REGISTRY, EXT_REGISTRY_B, "B");
 export {
   REGISTRY,
   SOURCE_OPTS,

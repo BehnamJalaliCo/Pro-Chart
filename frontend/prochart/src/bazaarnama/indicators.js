@@ -632,6 +632,50 @@ export const REGISTRY = {
   maCross: { label: 'تقاطعِ میانگین‌ها (MA Cross)', pane: 'main', inputs: { fast: 10, slow: 30 }, color: '#22c55e', calc: (c, i) => ({ lines: [{ data: sma(c.close, i.fast), color: '#22c55e' }, { data: sma(c.close, i.slow), color: '#ef4444' }] }) },
 };
 
-// ادغامِ افزونه‌های فصل ۵ (۳۷ اندیکاتورِ جدید: روند/MA/نوسان + مومنتوم/حجم/پیوت).
-// ترتیب: A سپس B (در ۳ کلیدِ مشترک trix/bbpercent/bbw نسخهٔ B برنده می‌شود).
-Object.assign(REGISTRY, EXT_REGISTRY_A, EXT_REGISTRY_B);
+// ── ادغامِ افزونه‌های فصل ۵ ────────────────────────────────────────────────
+//
+// پیش‌تر یک `Object.assign(REGISTRY, A, B)`ِ ساده بود و کامنتش می‌گفت «۳ کلیدِ مشترک».
+// واقعاً **۶** تاست، و «آخرین نویسنده بی‌صدا برنده» یک باگِ درست‌نمایی بود:
+//
+//   • trix        — extB برنده می‌شد و **غلط** بود. `_ema` در extB روی null مقدارِ
+//                   قبلی را جلو می‌برد و warmup را ایندکس‌محور می‌سنجد، پس TRIX(18)
+//                   از کندلِ ۱۸ مقدار می‌داد در حالی که سه EMAِ تودرتو ~۵۴ کندل لازم
+//                   دارند — ۳۴ کندلِ ابتدایی از مقادیرِ جعلی ساخته می‌شد. همان کلاسِ
+//                   باگی که dema/tema داشتند (نگاه: کامنتِ dema/tema بالاتر).
+//                   → نسخهٔ extA (شمارشی، nullها را رد می‌کند) برنده شد.
+//   • bbpercent   — هر دو ریاضیِ یکسان می‌دهند؛ تکرارِ بی‌ضرر. extB نگه داشته شد.
+//   • bbw         — همان.
+//   • chaikinVol  — extA بر core.
+//   • bop, eom    — extB بر core.
+//
+// حالا مالکیت **صریح** است و گارد جلوی تصادمِ ناخواستهٔ آینده را می‌گیرد.
+const REGISTRY_OWNER = {
+  trix: 'A',        // extA — warmupِ درست
+  bbpercent: 'B',
+  bbw: 'B',
+  chaikinVol: 'A',
+  bop: 'B',
+  eom: 'B',
+};
+
+const _mergeExt = (target, ext, tag) => {
+  for (const [key, def] of Object.entries(ext)) {
+    if (key in target) {
+      const owner = REGISTRY_OWNER[key];
+      if (owner === undefined) {
+        // تصادمِ جدید و ثبت‌نشده — کسی کلیدی را دوباره تعریف کرده بدونِ اینکه بداند
+        const msg = `[indicators] تصادمِ ثبت‌نشدهٔ رجیستری: "${key}" (منبع: ${tag}). ` +
+          'یکی را حذف کنید یا مالکش را در REGISTRY_OWNER اعلام کنید.';
+        if (import.meta.env?.DEV) throw new Error(msg);
+        console.warn(msg);
+      } else if (owner !== tag) {
+        continue; // مالکِ اعلام‌شده این نیست → نادیده بگیر
+      }
+    }
+    target[key] = def;
+  }
+  return target;
+};
+
+_mergeExt(REGISTRY, EXT_REGISTRY_A, 'A');
+_mergeExt(REGISTRY, EXT_REGISTRY_B, 'B');

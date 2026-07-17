@@ -398,7 +398,8 @@ function ScalesTab({ TH, s, set }) {
       <ToggleRow TH={TH} label="نمادِ ارز" hint="نمایشِ واحدِ ارزِ نماد کنارِ مقیاس"
         on={s.scaleCurrency} onToggle={() => set('scaleCurrency', !s.scaleCurrency)} />
       <ToggleRow TH={TH} label="واحد" hint="نمایشِ واحدِ اندازه‌گیری روی مقیاس"
-        on={s.scaleUnit} onToggle={() => set('scaleUnit', !s.scaleUnit)} />
+        on={s.scaleUnit} onToggle={() => set('scaleUnit', !s.scaleUnit)}
+        soon="واحدِ اندازه‌گیری هنوز به مقیاس وصل نیست" />
 
       <SectionTitle TH={TH} title="متن" en="Text" />
       <Row TH={TH} label="اندازهٔ فونتِ مقیاس" icon={Type}>
@@ -536,11 +537,14 @@ function EventsTab({ TH, s, set }) {
       <ToggleRow TH={TH} label="آخرین اخبار (News)" hint="نشانگرِ بنفشِ اخبارِ اخیر روی کندلِ زمانِ خبر (هم‌ترازِ Latest newsِ TV)"
         on={s.evNews} onToggle={() => set('evNews', !s.evNews)} />
       <ToggleRow TH={TH} label="سودِ سهام (Dividends)" hint="نشانگرِ D روی محورِ زمان"
-        on={s.evDividends} onToggle={() => set('evDividends', !s.evDividends)} />
+        on={s.evDividends} onToggle={() => set('evDividends', !s.evDividends)}
+        soon="نیازمندِ دادهٔ رویدادِ شرکتی — فید هنوز آن را نمی‌دهد" />
       <ToggleRow TH={TH} label="تقسیمِ سهام (Splits)" hint="نشانگرِ تقسیم روی محورِ زمان"
-        on={s.evSplits} onToggle={() => set('evSplits', !s.evSplits)} />
+        on={s.evSplits} onToggle={() => set('evSplits', !s.evSplits)}
+        soon="نیازمندِ دادهٔ رویدادِ شرکتی — فید هنوز آن را نمی‌دهد" />
       <ToggleRow TH={TH} label="گزارشِ درآمد (Earnings)" hint="نشانگرِ E روی محورِ زمان"
-        on={s.evEarnings} onToggle={() => set('evEarnings', !s.evEarnings)} />
+        on={s.evEarnings} onToggle={() => set('evEarnings', !s.evEarnings)}
+        soon="نیازمندِ تقویمِ درآمد — فید هنوز آن را نمی‌دهد" />
       <div className="mt-3 flex items-start gap-2 p-3 rounded-lg text-[11.5px] leading-relaxed"
         style={{ background: TH.subtle, color: TH.text }}>
         <Info size={14} className="shrink-0 mt-0.5 opacity-70" />
@@ -578,10 +582,13 @@ function Row({ TH, label, hint, icon: Icon, children }) {
   );
 }
 
-function ToggleRow({ TH, label, hint, on, onToggle }) {
+// `soon`: کلید در رابط هست ولی هیچ مصرف‌کننده‌ای ندارد — یعنی زدنش هیچ اثری روی
+// چارت نمی‌گذارد. به‌جای حذف (که سیاستِ عدم حذف را نقض می‌کند) غیرفعال و صریح می‌شود.
+// وعدهٔ نشدنی از «به‌زودی»ِ صادقانه بدتر است.
+function ToggleRow({ TH, label, hint, on, onToggle, soon }) {
   return (
-    <Row TH={TH} label={label} hint={hint}>
-      <Switch TH={TH} on={on} onToggle={onToggle} />
+    <Row TH={TH} label={soon ? `${label} — به‌زودی` : label} hint={soon || hint}>
+      <Switch TH={TH} on={soon ? false : on} onToggle={onToggle} disabled={!!soon} />
     </Row>
   );
 }
@@ -623,10 +630,11 @@ function ColorSwatch({ TH, color, onChange, disabled }) {
   );
 }
 
-function Switch({ TH, on, onToggle }) {
+function Switch({ TH, on, onToggle, disabled }) {
   return (
-    <button type="button" onClick={onToggle} role="switch" aria-checked={!!on}
-      className="relative inline-flex items-center w-9 h-5 rounded-full transition-colors duration-[150ms] shrink-0"
+    <button type="button" onClick={disabled ? undefined : onToggle} role="switch" aria-checked={!!on}
+      disabled={!!disabled} aria-disabled={!!disabled}
+      className="relative inline-flex items-center w-9 h-5 rounded-full transition-colors duration-[150ms] shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
       style={{ background: on ? TH.accent : TH.border }}>
       <span className="absolute w-3.5 h-3.5 rounded-full bg-white transition-all duration-[150ms]"
         style={{ right: on ? '2px' : '18px', boxShadow: '0 1px 2px rgba(0,0,0,.3)' }} />
