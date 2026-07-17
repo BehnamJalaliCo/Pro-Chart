@@ -200,6 +200,7 @@ export default function RightPanel({
       {TABS.map(([k, l, Icon]) => {
         const active = rightTab === k && isOpen;
         const acc = k === 'ai' ? TH.accentAi : TH.accent;
+        const accTxt = k === 'ai' ? TH.accentAi : (TH.accentText || TH.accent); // متنِ فعال: نسخهٔ AA
         return (
           <button key={k} title={l} onClick={() => openTab(k)}
             className="relative w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
@@ -230,10 +231,11 @@ export default function RightPanel({
         {TABS.map(([k, l, Icon]) => {
           const active = rightTab === k;
           const acc = k === 'ai' ? TH.accentAi : TH.accent;
+          const accTxt = k === 'ai' ? TH.accentAi : (TH.accentText || TH.accent); // متنِ فعال: نسخهٔ AA
           return (
             <button key={k} onClick={() => setRightTab(k)} title={l}
               className="group/tab relative shrink-0 whitespace-nowrap flex items-center gap-1 px-2.5 py-2 text-[11px] transition-colors duration-[120ms]"
-              style={active ? { color: acc } : { color: TH.text }}>
+              style={active ? { color: accTxt } : { color: TH.text }}>
               <Icon size={13} className="shrink-0" />
               <span>{l}</span>
               <span className="absolute left-1.5 right-1.5 -bottom-px h-[2px] rounded-full transition-all duration-150"
@@ -260,10 +262,10 @@ export default function RightPanel({
           <button onClick={getAiSignal} disabled={aiBusy} className="w-full py-2 rounded-md text-white font-bold flex items-center justify-center gap-1.5 disabled:opacity-60 transition-opacity duration-[120ms]" style={{ background: TH.accentAi }}>
             <Sparkles size={14} className={aiBusy ? 'animate-pulse' : ''} /> {aiBusy ? 'در حال تحلیل…' : 'سیگنالِ AI برای ' + symbol}
           </button>
-          {aiQuota && <div className="text-center text-[10px] opacity-60">سهمیهٔ امروز: {aiQuota.remaining} از {aiQuota.limit} ({aiQuota.tier})</div>}
+          {aiQuota && <div className="text-center text-[11px] opacity-60">سهمیهٔ امروز: {aiQuota.remaining} از {aiQuota.limit} ({aiQuota.tier})</div>}
           {aiList.length > 0 && (
             <div className="space-y-1">
-              <div className="text-[10px] opacity-50 px-1">ستاپ‌های من — روی هرکدام بزن تا چارت همان‌جا برود:</div>
+              <div className="text-[11px] opacity-50 px-1">ستاپ‌های من — روی هرکدام بزن تا چارت همان‌جا برود:</div>
               {aiList.map((s) => {
                 const b = s.direction === 'buy';
                 const sm = { active: ['فعال', '#3b82f6'], tp1: ['TP1 ✅', '#22c55e'], tp2: ['TP2 ✅', '#22c55e'], tp3: ['TP3 🎯', '#22c55e'], sl: ['SL', '#ef4444'] };
@@ -719,7 +721,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           const on = meta.flagFilter === c;
           return <button key={c} title={`فیلترِ رنگِ ${c}`} onClick={() => patch({ flagFilter: on ? null : c })} className="w-3.5 h-3.5 rounded-full transition-transform duration-[120ms]" style={{ background: FLAG_HEX[c], outline: on ? `2px solid ${TH.accent}` : 'none', outlineOffset: 1, transform: on ? 'scale(1.15)' : 'scale(1)', opacity: meta.flagFilter && !on ? 0.4 : 1 }} />;
         })}
-        {meta.flagFilter && <button onClick={() => patch({ flagFilter: null })} className="text-[10px] opacity-60 hover:opacity-100" style={{ color: TH.text }}>پاک</button>}
+        {meta.flagFilter && <button onClick={() => patch({ flagFilter: null })} className="text-[11px] opacity-60 hover:opacity-100" style={{ color: TH.text }}>پاک</button>}
       </div>
 
       {/* افزودنِ نماد — جستجوی واقعی، بالای لیست (سبکِ TV؛ با دکمهٔ + بالای پنل باز/بسته می‌شود) */}
@@ -844,7 +846,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
               </button>
               {/* رنگِ پرچم */}
               <div className="px-2 py-1.5">
-                <div className="text-[10px] opacity-55 mb-1">رنگِ پرچم</div>
+                <div className="text-[11px] opacity-55 mb-1">رنگِ پرچم</div>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {FLAG_ORDER.map((c) => (
                     <button key={c} title={c} onClick={() => { setFlag(ctx.sym, c); setCtx(null); }} className="w-4 h-4 rounded-full transition-transform hover:scale-110" style={{ background: FLAG_HEX[c], outline: cm.flag === c ? `2px solid ${TH.textStrong}` : 'none', outlineOffset: 1 }} />
@@ -857,7 +859,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
               {/* جابه‌جایی به سکشن (وقتی سکشنی تعریف شده) */}
               {list.sections.length > 0 && (
                 <div className="px-2 py-1.5 border-t" style={{ borderColor: TH.border }}>
-                  <div className="text-[10px] opacity-55 mb-1">انتقال به سکشن</div>
+                  <div className="text-[11px] opacity-55 mb-1">انتقال به سکشن</div>
                   <div className="flex flex-col gap-0.5 max-h-28 overflow-auto bn-thin-scroll">
                     {list.sections.map((s) => (
                       <button key={s.id} onClick={() => moveToSection(ctx.sym, s.id)} className="text-right px-1.5 py-1 rounded truncate" style={{ color: cm.section === s.id ? TH.accent : TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>{s.name}</button>

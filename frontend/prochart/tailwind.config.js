@@ -43,7 +43,7 @@ export default {
         '2xl': 'var(--pc-shadow-modal)', // مودالِ روی بک‌دراپ
         inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
       },
-      fontFamily: { sans: ['Ravagh', 'AnjomanMax', 'Vazirmatn', 'sans-serif'], ravagh: ['Ravagh', 'sans-serif'], anjoman: ['AnjomanMax', 'sans-serif'], vazir: ['Vazirmatn', 'sans-serif'] },
+      fontFamily: { sans: ['IRANYekanX', 'Ravagh', 'AnjomanMax', 'Vazirmatn', 'sans-serif'], ravagh: ['Ravagh', 'sans-serif'], anjoman: ['AnjomanMax', 'sans-serif'], vazir: ['Vazirmatn', 'sans-serif'] },
       borderRadius: { xl: '0.875rem', '2xl': '1rem' },
     },
   },

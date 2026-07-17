@@ -193,7 +193,7 @@ export default function NewsTab({ symbol, TH }) {
             <span className="absolute inline-flex w-full h-full rounded-full animate-ping" style={{ background: TH.up, opacity: 0.55 }} />
             <span className="relative inline-flex w-1.5 h-1.5 rounded-full" style={{ background: TH.up }} />
           </span>
-          <span className="opacity-50 text-[10px]">مهم‌ترین اخبارِ بازار</span>
+          <span className="opacity-50 text-[11px]">مهم‌ترین اخبارِ بازار</span>
         </span>
         <div className="flex items-center rounded-md overflow-hidden shrink-0" style={{ border: `1px solid ${TH.border}` }} dir="rtl">
           <button onClick={() => setOnlyRelevant(false)}

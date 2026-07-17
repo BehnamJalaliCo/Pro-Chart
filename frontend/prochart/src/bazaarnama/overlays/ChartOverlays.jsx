@@ -187,7 +187,7 @@ function ChangeChip({ ch, chStr, col }) {
 
 // چیپِ Legend (OHLC) روی چارت — رندرِ خالص؛ همهٔ ورودی‌ها از props.
 //   propهای جدید (chartType/priceDir/volume/fmtVol) اختیاری و backward-compatible‌اند.
-export function Legend({ legend, TH, symbol, tf, market, name, chartType, priceDir, volume, fmtVol, onChartSettings, prevClose, lastDayChg, lastDayPct, sl = {} }) {
+export function Legend({ legend, TH, symbol, tf, market, name, chartType, priceDir, volume, fmtVol, onChartSettings, prevClose, lastDayChg, lastDayPct, reserveLeft = 0, sl = {} }) {
   if (!legend) return null;
   // «تغییر» عینِ TradingView = close-to-close (نسبت به بستهٔ کندلِ قبل)؛ نبودِ prevClose ⇒ fallback به open (هم‌رفتار با ChartLegend، رفعِ ناسازگاریِ مسیرِ لجندِ بدونِ اندیکاتور).
   const _base = (prevClose != null && Number.isFinite(prevClose)) ? prevClose : (legend.open != null ? legend.open : null);
@@ -199,11 +199,17 @@ export function Legend({ legend, TH, symbol, tf, market, name, chartType, priceD
   const chStr = chAbs != null ? fmtDelta(chAbs, Math.max(decimalsOf(legend.close), decimalsOf(_base))) : null;
   const vol = volume != null ? volume : legend.volume;
   return (
-    <div className={`group absolute top-2 right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 max-w-[calc(100vw-1rem)] overflow-hidden ${sl.slBackground === false ? '' : 'border'}`} dir="rtl"
-      /* توگلِ «پس‌زمینه»ِ تبِ Status lineِ TV: با slBackground===false پس‌زمینه/بلور/کادر حذف می‌شود (لجندِ شفاف). پیش‌فرض روشن = رفتارِ قبلی. */
-      style={sl.slBackground === false
-        ? {}
-        : { background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', boxShadow: 'var(--pc-shadow-chip)' }}>
+    <div className={`group absolute right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 overflow-hidden ${sl.slBackground === false ? '' : 'border'}`} dir="rtl"
+      /* reserveLeft: عرضِ چیپ‌های SELL/BUY (که top-2 left-2 هستند) را از سمتِ چپ کنار می‌گذارد
+         تا لجند زیرشان نرود. باگِ موبایل: max-w کلِ عرض بود و متن پشتِ چیپ‌ها له می‌شد.
+         slBackground===false ⇒ لجندِ شفاف (بدونِ پس‌زمینه/بلور/کادر). */
+      style={{
+        top: reserveLeft ? `${reserveLeft}px` : '0.5rem',
+        maxWidth: 'calc(100vw - 1rem)',
+        ...(sl.slBackground === false
+          ? {}
+          : { background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', boxShadow: 'var(--pc-shadow-chip)' }),
+      }}>
       {/* توگل‌های نمایشِ تبِ Status lineِ TV — این مسیرِ لجند (بدونِ اندیکاتور) قبلاً همیشه همه را نشان می‌داد؛ حالا مثلِ ChartLegend به sl.* احترام می‌گذارد. پیش‌فرضِ همه true ⇒ بدونِ رگرسیون. */}
       <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} name={name} chartType={chartType}
         showLogo={sl.slLogo !== false} showName={sl.slSymbol !== false} />
@@ -355,7 +361,7 @@ function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, on
 
 // items: [{id, key, label, color, visible, scope}]، indVals: {id: 'value-string'}
 export function ChartLegend({
-  items = [], legend, TH, symbol, tf, market, name, indVals = {},
+  items = [], legend, TH, symbol, tf, market, name, indVals = {}, reserveLeft = 0,
   collapsed = false, onCollapse, viewMode = 'normal', onToggleViewMode,
   onToggleVisible, onSettings, onRemove, onDuplicate, onAddAlert, onMovePane, onHelp, hasHelp, onClearAll, onChartSettings, coarse = false,
   chartType, priceDir, volume, fmtVol, showVolume = true,
@@ -387,12 +393,18 @@ export function ChartLegend({
   const rowsOpen = (hasInds || hasVol) && !collapsed;
 
   return (
-    <div className="absolute top-2 right-2 z-20 max-w-[min(70%,520px)]"
+    <div className="absolute right-2 z-20"
       /* سبکِ لجندِ TradingView: بدونِ کادرِ سختِ پیل — فقط پس‌زمینهٔ بسیار محوِ نیمه‌شفاف برای خوانایی روی کندل‌ها (بدونِ border/shadow).
          توگلِ «پس‌زمینه»ِ تبِ Status lineِ TV: با slBackground===false پس‌زمینه/بلور حذف می‌شود (لجندِ کاملاً شفاف). پیش‌فرض روشن = رفتارِ قبلی. */
-      style={sl.slBackground === false
-        ? { borderRadius: 6, padding: '3px 6px' }
-        : { background: TH.overlayMask, backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)', borderRadius: 6, padding: '3px 6px' }}>
+      /* reserveLeft: فضای چیپ‌های SELL/BUY را از چپ کنار می‌گذارد (باگِ هم‌پوشانیِ موبایل).
+         پیش‌تر max-w-[min(70%,520px)] بود که روی موبایل تا زیرِ چیپ‌ها می‌کشید. */
+      style={{
+        top: reserveLeft ? `${reserveLeft}px` : '0.5rem',
+        maxWidth: 'min(calc(100vw - 1rem), 520px)',
+        ...(sl.slBackground === false
+          ? { borderRadius: 6, padding: '3px 6px' }
+          : { background: TH.overlayMask, backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)', borderRadius: 6, padding: '3px 6px' }),
+      }}>
       <style>{`.bn-leg-ctrls{opacity:0;transition:opacity 120ms ease}.group\\/leg:hover .bn-leg-ctrls{opacity:1}.bn-leg-ctrl{opacity:0}.group\\/leg:hover .bn-leg-ctrl{opacity:1}`}</style>
       {/* ردیفِ نماد (OHLC) */}
       <div className="group/leg flex items-center gap-1.5 px-1.5 h-7">

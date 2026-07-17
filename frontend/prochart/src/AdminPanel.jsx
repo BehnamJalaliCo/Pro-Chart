@@ -753,15 +753,15 @@ function Ads({ flash, auth401 }) {
               </div>
               <div className="space-y-2.5">
                 <div>
-                  <label className="text-[11.5px] block mb-1" style={{ color: TH.textDim }}>متن</label>
+                  <label className="text-[11px] block mb-1" style={{ color: TH.textDim }}>متن</label>
                   <input className={field} style={{ ...FS, borderColor: TH.border }} value={a.text || ''} onChange={(e) => setField(slot, 'text', e.target.value)} placeholder="متنِ تبلیغ…" />
                 </div>
                 <div>
-                  <label className="text-[11.5px] block mb-1" style={{ color: TH.textDim }}>آدرسِ لوگو</label>
+                  <label className="text-[11px] block mb-1" style={{ color: TH.textDim }}>آدرسِ لوگو</label>
                   <input className={field} style={{ ...FS, borderColor: TH.border }} value={a.logo || ''} onChange={(e) => setField(slot, 'logo', e.target.value)} placeholder="https://…" dir="ltr" />
                 </div>
                 <div>
-                  <label className="text-[11.5px] block mb-1" style={{ color: TH.textDim }}>لینکِ مقصد</label>
+                  <label className="text-[11px] block mb-1" style={{ color: TH.textDim }}>لینکِ مقصد</label>
                   <div className="relative">
                     <input className={`${field} pl-8`} style={{ ...FS, borderColor: TH.border }} value={a.link || ''} onChange={(e) => setField(slot, 'link', e.target.value)} placeholder="https://…" dir="ltr" />
                     <Link2 size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 opacity-40" />

@@ -42,14 +42,17 @@
 .light {
   color-scheme: light;
   --bg-body: #ffffff;
-  --surface-default: #ffffff;
-  --surface-card: #f8f9fd;
-  --surface-elevated: #f0f3fa;
+  /* وارونهٔ سبکِ TV: صفحه خاکستری، پنل‌ها سفیدِ شناور روی آن.
+     پیش‌تر همه سفید بودند (default→card پلهٔ ۱.۰۵ = نامرئی) و با واش‌های آلفا جبران
+     می‌شد که تودرتو نمی‌شوند. حالا پله ۱.۱۹ (مثلِ TV) و لایه‌ها واقعاً از هم جدا. */
+  --surface-default: #ebeef3;
+  --surface-card: #ffffff;
+  --surface-elevated: #f7f8fb;
   --surface-border: #e0e3eb;
   --surface-hover: #f0f3fa;
   --text-primary: #131722;
   --text-secondary: #5d606b;
-  --text-muted: #6b6e78;  /* AA روی هر سه سطحِ روشن: default 5.09 · card 4.84 · elevated 4.58 */
+  --text-muted: #5f626b;  /* AA روی سطوحِ وارونهٔ روشن: page(#ebeef3) 5.24 · card(#fff) 6.09 · elevated 5.74 */
   --scroll-thumb: #d1d4dc;
   --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.1);
   --pc-shadow-modal: 0 8px 28px rgba(16,24,40,.18);
@@ -62,7 +65,10 @@
   --elev-2: var(--pc-shadow-modal);
 }
 
-* { font-family: 'IRANYekanX', 'Ravagh', 'AnjomanMax', 'Vazirmatn', sans-serif; }
+/* پیش‌تر روی `*` بود — تلهٔ نهفته: IRANYekanX فقط به‌خاطرِ این سلکتور زنده بود،
+   چون از tailwind.config حذف شده بود. حالا هر دو دارندش، پس این را به html,body
+   محدود می‌کنیم تا با ارث‌بریِ طبیعی کار کند نه با override سراسری. */
+html, body { font-family: 'IRANYekanX', 'Ravagh', 'AnjomanMax', 'Vazirmatn', sans-serif; }
 
 body {
   margin: 0;
@@ -137,8 +143,11 @@ body { text-rendering: optimizeLegibility; -moz-osx-font-smoothing: grayscale; }
 ::-webkit-scrollbar-thumb:hover { background: var(--surface-border); }
 * { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) transparent; }
 
-/* §۳۲ focus-visible برای دسترس‌پذیریِ کیبورد (بدونِ نمایش روی کلیکِ موس) */
-:focus-visible { outline: 2px solid var(--brand-blue, #2962ff); outline-offset: 1px; }
+/* §۳۲ focus-visible برای دسترس‌پذیریِ کیبورد (بدونِ نمایش روی کلیکِ موس).
+   عناصری که فقط برای اعلامِ screen reader فوکوسِ برنامه‌نویسی می‌شوند (tabindex="-1")
+   نباید حلقه بگیرند — کاربر با کیبورد به آن‌ها نمی‌رسد، پس حلقه فقط سردرگم‌کننده است.
+   مثال: عنوانِ اسلایدِ onboarding که با .focus() خوانده می‌شود ولی تعاملی نیست. */
+:focus-visible:not([tabindex="-1"]) { outline: 2px solid var(--brand-blue, #2962ff); outline-offset: 1px; }
 
 /* میکرو‌اینتراکشنِ یکدست — همهٔ کنترل‌ها snappy و native (120ms ease-out، بدون scale) */
 button, [role="button"], a, summary, .pc-btn {

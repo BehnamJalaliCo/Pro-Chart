@@ -192,7 +192,7 @@ export default function Calendar({ symbol, TH }) {
   return (
     <div ref={rootRef} className="flex flex-col text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
       <div className="flex items-center gap-1.5 px-3 py-1.5 border-b shrink-0 flex-wrap" style={{ borderColor: TH.border }}>
-        <span className="opacity-50 text-[10px]">تقویمِ اقتصادی</span>
+        <span className="opacity-50 text-[11px]">تقویمِ اقتصادی</span>
         {/* دکمهٔ «امروز» (مثلِ TV) — پرشِ سریع به رویدادهای امروز؛ فقط وقتی امروز در هفتهٔ جاری رویداد دارد */}
         {groups.some(([day]) => day === todayKey) && (
           <button onClick={() => { const el = dayRefs.current[todayKey]; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
@@ -268,7 +268,7 @@ export default function Calendar({ symbol, TH }) {
           <div key={day} ref={(el) => { if (el) dayRefs.current[day] = el; }}>
             <div className="sticky top-0 z-10 flex items-center gap-1.5 px-3 py-1 text-[10px] font-semibold border-b" style={{ background: TH.panel, color: TH.textStrong, borderColor: TH.border }}>
               <span>{day}</span>
-              {day === todayKey && <span className="px-1 rounded-sm text-[8px] leading-[14px] font-medium" style={{ background: `${TH.accent}1f`, color: TH.accent }}>امروز</span>}
+              {day === todayKey && <span className="px-1 rounded-sm text-[11px] leading-[14px] font-medium" style={{ background: `${TH.accent}1f`, color: TH.accent }}>امروز</span>}
             </div>
             {evs.map((e, i) => {
               const actual = e.actual ?? e.act;

@@ -260,6 +260,9 @@ const THEMES = {
     gridLine: 'rgba(255,255,255,.05)', // خطِ داخلیِ گرید: بسیار کم‌رنگ مثلِ TV (نه به پررنگیِ border)
     text: '#b2b5be', textStrong: '#d1d4dc',
     up: '#089981', down: '#f23645', // سبز/قرمزِ up/down هم‌ترازِ پالتِ فعلیِ TV (قبلاً #26a69a/#ef5350ِ قدیمی بود؛ تمِ روشن از قبل درست بود)
+    // نسخهٔ **متنیِ** روشن‌ترِ رنگِ بازار — فقط برای متنِ UI (اعدادِ SELL/BUY، برچسب‌ها).
+    // رنگِ کندل (up/down/accent) دست‌نخورده می‌ماند. AA روی تیره‌ترین سطح: قرمز ۴.۵ · آبی ۵.۰ · سبز ۶.۳
+    upText: '#0fb894', downText: '#f6485a', accentText: '#5b8cff',
     chipBg: 'transparent', chipBgHover: 'rgba(255,255,255,.10)', chipActive: 'rgba(255,255,255,.06)',
     subtle: 'rgba(255,255,255,.04)', popoverBg: 'rgba(30,34,45,.98)',
     overlayMask: 'rgba(0,0,0,.42)', accent: '#2962FF', accentAi: '#8b5cf6',
@@ -2582,7 +2585,7 @@ export default function BazaarNama() {
         </div>
         <div data-menu className="relative">
           <button onClick={() => setCtMenu((v) => !v)} title={`نوعِ چارت: ${(CHART_TYPES.find((c) => c.id === chartType) || {}).label || ''}`} className="flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{(() => { const CtI = (CHART_TYPES.find((c) => c.id === chartType) || {}).Icon || CandlestickChart; return <CtI size={17} />; })()}<ChevronDown size={13} /></button>
-          {ctMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-52 max-h-[70vh] overflow-auto pc-pop" style={{ background: TH.panel, borderColor: TH.border }}><div className="px-3 pt-1.5 pb-1 text-[10px] font-bold tracking-wider select-none flex items-center justify-between" style={{ color: TH.text, opacity: 0.55 }}><span>نوعِ چارت</span><span dir="ltr" className="opacity-70">CHART TYPE</span></div>{CHART_TYPES.map((ct, ci) => { const I = ct.Icon || CandlestickChart; const on = chartType === ct.id; const sep = ci > 0 && CHART_TYPES[ci - 1].grp !== ct.grp; return (<React.Fragment key={ct.id}>{sep && <div className="my-1 border-t" style={{ borderColor: TH.border }} />}<button onClick={() => { setChartType(ct.id); setCtMenu(false); }} className="flex items-center gap-2 w-full text-right px-3 py-1.5 text-sm whitespace-nowrap transition-colors duration-[120ms]" style={on ? { color: TH.accent, background: TH.chipActive } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}><I size={15} style={{ color: on ? TH.accent : TH.text }} /> {ct.label}</button></React.Fragment>); })}</div>)}
+          {ctMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-52 max-h-[70vh] overflow-auto pc-pop" style={{ background: TH.panel, borderColor: TH.border }}><div className="px-3 pt-1.5 pb-1 text-[11px] font-bold tracking-wider select-none flex items-center justify-between" style={{ color: TH.text, opacity: 0.55 }}><span>نوعِ چارت</span><span dir="ltr" className="opacity-70">CHART TYPE</span></div>{CHART_TYPES.map((ct, ci) => { const I = ct.Icon || CandlestickChart; const on = chartType === ct.id; const sep = ci > 0 && CHART_TYPES[ci - 1].grp !== ct.grp; return (<React.Fragment key={ct.id}>{sep && <div className="my-1 border-t" style={{ borderColor: TH.border }} />}<button onClick={() => { setChartType(ct.id); setCtMenu(false); }} className="flex items-center gap-2 w-full text-right px-3 py-1.5 text-sm whitespace-nowrap transition-colors duration-[120ms]" style={on ? { color: TH.accent, background: TH.chipActive } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}><I size={15} style={{ color: on ? TH.accent : TH.text }} /> {ct.label}</button></React.Fragment>); })}</div>)}
         </div>
         {/* تنظیماتِ نوعِ چارتِ غیرِزمانی (آجرِ Renko/بازگشتِ Kagi/جعبهٔ P&F/…) — فقط وقتی نوعِ فعال غیرِزمانی است، مثلِ چرخ‌دندهٔ کنارِ نوعِ چارتِ TV */}
         {CT_CFG[chartType] && (
@@ -2601,7 +2604,7 @@ export default function BazaarNama() {
                 ))}
                 <div className="flex items-center justify-between mt-1">
                   <button onClick={() => setCtParams((p) => { const n = { ...p }; CT_CFG[chartType].forEach((f) => delete n[f.k]); return n; })} className="text-[11px] px-2 py-1 rounded-md" style={{ color: TH.text, background: TH.chipBg }}>بازنشانی</button>
-                  <span className="text-[10px] opacity-50">خالی = خودکار (ATR)</span>
+                  <span className="text-[11px] opacity-50">خالی = خودکار (ATR)</span>
                 </div>
               </div>
             )}
@@ -2613,7 +2616,7 @@ export default function BazaarNama() {
             <div className="absolute z-40 mt-1 rounded-lg w-56 max-h-80 overflow-auto p-1 pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}` }}>
               {indFavs.filter((k) => REGISTRY[k]).length > 0 && (
                 <>
-                  <div className="px-2 py-1 text-[10px] opacity-50 flex items-center gap-1"><Star size={10} /> منتخب‌ها</div>
+                  <div className="px-2 py-1 text-[11px] opacity-50 flex items-center gap-1"><Star size={10} /> منتخب‌ها</div>
                   {indFavs.filter((k) => REGISTRY[k]).map((k) => (
                     <div key={'f' + k} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={{ color: TH.textStrong }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                       <button onClick={() => addInd(k)} className="flex-1 text-right">{REGISTRY[k].label}</button>
@@ -2658,7 +2661,7 @@ export default function BazaarNama() {
           <button onClick={() => setGridMenu((v) => !v)} className="flex items-center gap-1 px-2 py-1 rounded-md text-sm transition-colors duration-[120ms]" style={grid > 1 ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (grid === 1) e.currentTarget.style.background = TH.chipBg; }} title="چند-چارت — انتخابِ چیدمان"><LayoutGrid size={17} /> {getGridLayout(gridPreset).cells}× <ChevronDown size={13} /></button>
           {gridMenu && (
             <div className="absolute z-40 mt-1 left-0 border rounded-lg w-40 p-1" style={{ background: TH.popoverBg, borderColor: TH.border }}>
-              <div className="px-2 pt-1 pb-1.5 text-[10px] font-bold tracking-wider select-none" style={{ color: TH.text, opacity: 0.55 }}>انتخابِ چیدمان</div>
+              <div className="px-2 pt-1 pb-1.5 text-[11px] font-bold tracking-wider select-none" style={{ color: TH.text, opacity: 0.55 }}>انتخابِ چیدمان</div>
               {GRID_PRESET_ORDER.map((pid) => { const L = getGridLayout(pid); const active = gridPreset === pid; return (
                 <button key={pid} onClick={() => { setGridPreset(pid); setGrid(presetToLegacyGrid(pid)); setGridMenu(false); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-sm rounded-md transition-colors duration-[120ms]" style={active ? { background: TH.accent, color: '#fff' } : {}} onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
                   <GridPreview cols={L.cols} rows={L.rows} color={active ? '#fff' : TH.text} />
@@ -2708,7 +2711,7 @@ export default function BazaarNama() {
           {crossMenu && (
             <div className="absolute z-40 mt-1 border rounded-lg w-36 p-1" style={{ background: TH.popoverBg, borderColor: TH.border }}>
               {/* سرتیترِ منو (هم‌ترازِ منوی «Cursors»ِ TV) */}
-              <div className="px-2 pt-0.5 pb-1 text-[10px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>کراس‌هیر</div>
+              <div className="px-2 pt-0.5 pb-1 text-[11px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>کراس‌هیر</div>
               {CROSSHAIR_MODES.filter((m) => m.id !== 'eraser').map((m) => { const on = crosshairId === m.id; return (
                 <button key={m.id} onClick={() => { setCrosshairId(m.id); setCrossMenu(false); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-sm rounded-md transition-colors duration-[120ms]" style={on ? { background: TH.accent, color: '#fff' } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
                   <CrossModeIcon id={m.id} size={15} /> <span>{m.label}</span>
@@ -2894,6 +2897,7 @@ export default function BazaarNama() {
           {legendItems.length > 0 ? (
             <div dir="rtl">
               <ChartLegend
+                reserveLeft={(_showQuickTrade && (bp.width || 9999) < 640) ? 68 : 0}
                 items={legendItems} legend={_legendShown} TH={TH} symbol={symbol} tf={TF_LABEL[tf] || tf}
                 chartType={chartType} priceDir={priceDir}
                 volume={(legend && legend.volume != null) ? legend.volume : (_lastCandle ? _lastCandle.v : undefined)}
@@ -2921,6 +2925,8 @@ export default function BazaarNama() {
               chartType={chartType} priceDir={priceDir} sl={chartSettingsOverrides} prevClose={_legPrevClose}
               lastDayChg={_lastDayChg} lastDayPct={_lastDayPct}
               onChartSettings={() => setChartSettingsOpen(true)}
+              /* روی موبایلِ باریک چیپ‌های SELL/BUY سمتِ چپ فضا می‌گیرند — لجند نباید زیرشان برود */
+              reserveLeft={(_showQuickTrade && (bp.width || 9999) < 640) ? 68 : 0}
               volume={(legend && legend.volume != null) ? legend.volume : (_lastCandle ? _lastCandle.v : undefined)} />
           )}
           <div className="relative flex-1 min-h-0"
@@ -3138,7 +3144,7 @@ export default function BazaarNama() {
               <div className="absolute top-2 left-1/2 -translate-x-1/2 z-40 px-3 py-1.5 rounded-lg text-[12px] font-semibold shadow-lg flex items-center gap-2 pointer-events-none" style={{ background: TH.accent, color: '#fff' }}>
                 <Play size={13} />
                 <span>روی چارت کلیک کنید تا نقطهٔ شروعِ بازپخش انتخاب شود</span>
-                <span className="opacity-70 text-[10px]">Esc = لغو</span>
+                <span className="opacity-70 text-[11px]">Esc = لغو</span>
               </div>
             )}
             {/* درختِ آبجکت‌ها (Object Tree) */}
@@ -3443,11 +3449,11 @@ export default function BazaarNama() {
                       </>
                     ) : (
                       <>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold text-white shrink-0" style={{ background: pos.side === 'buy' ? TH.up : TH.down }}>{pos.side === 'buy' ? 'لانگ' : 'شورت'}</span>
+                        <span className="px-1.5 py-0.5 rounded text-[11px] font-bold text-white shrink-0" style={{ background: pos.side === 'buy' ? TH.up : TH.down }}>{pos.side === 'buy' ? 'لانگ' : 'شورت'}</span>
                         <span className="opacity-70 tabular-nums shrink-0" dir="ltr">@{fmtPrice(symbol, pos.entry)}</span>
                         <span className="font-bold tabular-nums shrink-0" dir="ltr" style={{ color: posCol }}>{fmtP(pnlPct)}</span>
-                        {pos.sl != null && <span className="tabular-nums shrink-0 text-[10px]" dir="ltr" title="حدِ ضرر" style={{ color: TH.down }}>SL {fmtPrice(symbol, pos.sl)}</span>}
-                        {pos.tp != null && <span className="tabular-nums shrink-0 text-[10px]" dir="ltr" title="حدِ سود" style={{ color: TH.up }}>TP {fmtPrice(symbol, pos.tp)}</span>}
+                        {pos.sl != null && <span className="tabular-nums shrink-0 text-[11px]" dir="ltr" title="حدِ ضرر" style={{ color: TH.down }}>SL {fmtPrice(symbol, pos.sl)}</span>}
+                        {pos.tp != null && <span className="tabular-nums shrink-0 text-[11px]" dir="ltr" title="حدِ سود" style={{ color: TH.up }}>TP {fmtPrice(symbol, pos.tp)}</span>}
                         <button onClick={practiceReverse} title="وارونه‌کردنِ پوزیشن (بستن + بازکردنِ جهتِ مخالف)" className="px-2 py-0.5 rounded-md text-[11px] shrink-0" style={{ background: TH.chipBg }}>وارونه</button>
                         <button onClick={practiceClose} title="بستنِ دستیِ معاملهٔ تمرینی" className="px-2 py-0.5 rounded-md text-[11px] shrink-0" style={{ background: TH.chipBg }}>بستن</button>
                       </>
@@ -3493,7 +3499,7 @@ export default function BazaarNama() {
                 </button>
                 {gotoOpen && (
                   <div className="absolute bottom-8 left-0 z-40 p-2 rounded-lg border pc-pop" style={{ background: TH.popoverBg, borderColor: TH.border }}>
-                    <div className="text-[10px] mb-1 opacity-60 whitespace-nowrap" style={{ color: TH.text }}>پرش به تاریخ و زمان</div>
+                    <div className="text-[11px] mb-1 opacity-60 whitespace-nowrap" style={{ color: TH.text }}>پرش به تاریخ و زمان</div>
                     <input type="datetime-local" autoFocus onChange={(e) => goToDate(e.target.value)}
                       className="text-[12px] rounded px-2 py-1 outline-none" dir="ltr"
                       style={{ background: TH.chipBg, color: TH.textStrong, border: `1px solid ${TH.border}`, colorScheme: theme === 'dark' ? 'dark' : 'light' }} />

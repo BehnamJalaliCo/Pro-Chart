@@ -781,7 +781,7 @@ export default function ToolRail({
             className="absolute bottom-0 left-full ml-1.5 z-50 rounded-md overflow-hidden py-1 origin-left"
             style={{ background: TH.popoverBg, border: `1px solid ${TH.border}`, boxShadow: 'var(--pc-shadow-pop)', minWidth: 200, animation: 'brn-flyout-in 120ms ease-out both' }}
           >
-            <div className="px-3 pt-1 pb-1.5 text-[10px] font-semibold tracking-wider select-none" style={{ color: TH.text, opacity: 0.5 }}>حذف</div>
+            <div className="px-3 pt-1 pb-1.5 text-[11px] font-semibold tracking-wider select-none" style={{ color: TH.text, opacity: 0.5 }}>حذف</div>
             {[
               { k: 'draw', label: 'حذفِ ترسیم‌ها', run: () => { onRemoveAll && onRemoveAll(); } },
               { k: 'ind', label: 'حذفِ اندیکاتورها', run: () => { onRemoveIndicators && onRemoveIndicators(); } },

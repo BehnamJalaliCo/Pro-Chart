@@ -489,7 +489,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
           <span className="text-[9px] uppercase tracking-[0.08em]" dir="ltr">Key facts</span>
         </div>
         <div className="text-[11px] leading-[1.7]" style={{ color: TH.text }}>{facts}</div>
-        <div className="text-[10px] font-semibold mt-1.5 cursor-default" style={{ color: TH.accentText || TH.accent }}>بیشتر بخوانید ›</div>
+        <div className="text-[11px] font-semibold mt-1.5 cursor-default" style={{ color: TH.accentText || TH.accent }}>بیشتر بخوانید ›</div>
       </div>
 
       {/* کارتِ «اخبار» (News سبکِ Symbol Infoِ TV) — آخرین خبرِ مرتبط؛ کلیک ⇒ منبع در تبِ جدید. فقط اگر خبری بود. */}
@@ -565,9 +565,9 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
             })()}
             {/* برچسبِ دو سرِ کمان (فروش/خرید) — هم‌ترازِ گِیجِ Technical Ratingِ TV؛ HTML نه textِ SVG (فارسی بدچین می‌شود). چپ=فروش(قرمز)، راست=خرید(سبز). */}
             <div className="flex justify-between items-center px-2.5 -mt-2" dir="ltr">
-              <span className="text-[8px] font-bold" style={{ color: RATING_FA.sell.color, opacity: 0.65 }}>فروش</span>
-              <span className="text-[8px] font-bold" style={{ color: RATING_FA.neutral.color, opacity: 0.6 }}>خنثی</span>
-              <span className="text-[8px] font-bold" style={{ color: RATING_FA.buy.color, opacity: 0.65 }}>خرید</span>
+              <span className="text-[11px] font-bold" style={{ color: RATING_FA.sell.color, opacity: 0.65 }}>فروش</span>
+              <span className="text-[11px] font-bold" style={{ color: RATING_FA.neutral.color, opacity: 0.6 }}>خنثی</span>
+              <span className="text-[11px] font-bold" style={{ color: RATING_FA.buy.color, opacity: 0.65 }}>خرید</span>
             </div>
             {/* برچسبِ ریتینگ زیرِ گِیج (RTLِ HTML — نه textِ SVG که فارسی را بدچین می‌کند) */}
             <div className="text-center -mt-0.5 mb-1"><span className="text-[15px] font-extrabold" style={{ color: rf.color }}>{rf.label}</span></div>
@@ -692,7 +692,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
       </div>
 
       {mid == null && (
-        <div className="mt-3 text-[10px] text-center leading-5" style={{ color: TH.text, opacity: 0.6 }}>قیمتِ زنده هنوز دریافت نشده — هنگامِ بازشدنِ بازار به‌روز می‌شود.</div>
+        <div className="mt-3 text-[11px] text-center leading-5" style={{ color: TH.text, opacity: 0.6 }}>قیمتِ زنده هنوز دریافت نشده — هنگامِ بازشدنِ بازار به‌روز می‌شود.</div>
       )}
     </div>
   );

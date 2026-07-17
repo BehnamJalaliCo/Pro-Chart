@@ -224,7 +224,7 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
                 </button>
                 <div className="my-1 h-px" style={{ background: TH.border }} />
                 {Object.keys(tpls).length === 0 ? (
-                  <div className="px-2.5 py-2 text-[11.5px] opacity-55">هنوز تمپلیتی ذخیره نشده.</div>
+                  <div className="px-2.5 py-2 text-[11px] opacity-55">هنوز تمپلیتی ذخیره نشده.</div>
                 ) : (
                   Object.keys(tpls).map((name) => (
                     <div key={name}

@@ -427,7 +427,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
             )}
           </div>
           {form.id && (
-            <button onClick={cancelEdit} className="text-[10px] opacity-60 hover:opacity-100 transition-opacity shrink-0">انصراف</button>
+            <button onClick={cancelEdit} className="text-[11px] opacity-60 hover:opacity-100 transition-opacity shrink-0">انصراف</button>
           )}
         </div>
 
@@ -613,7 +613,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       {/* ───────────────── لاگِ آلارم ───────────────── */}
       {tab === 'log' ? (
         logEntries.length === 0 ? (
-          <div className="text-[10px] opacity-40 text-center py-8">هنوز آلارمی رخ نداده.</div>
+          <div className="text-[11px] opacity-40 text-center py-8">هنوز آلارمی رخ نداده.</div>
         ) : (
           <div>
             {logEntries.map((a) => {
@@ -646,7 +646,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
         </div>
       ) : (
         <div>
-          <div className="text-[10px] opacity-50 mb-1 px-0.5">آلارم‌های ذخیره‌شده ({list.length})</div>
+          <div className="text-[11px] opacity-50 mb-1 px-0.5">آلارم‌های ذخیره‌شده ({list.length})</div>
           {list.map((a) => {
             const fired = a.last_triggered_at && (Date.now() - new Date(a.last_triggered_at).getTime()) < 86400000;
             const off = a.active === false;

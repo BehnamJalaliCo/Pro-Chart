@@ -396,7 +396,7 @@ export function StrategyTesterTab({ TH, children, result, properties }) {
                 const area = `${xAt(0)},${Hh} ${pts} ${xAt(result.equity.length - 1)},${Hh}`;
                 return (
                   <div className="rounded-md p-2" style={{ background: TH.subtle, border: `1px solid ${TH.border}` }}>
-                    <div className="text-[10px] opacity-60 mb-1" style={{ color: TH.text }}>منحنیِ سرمایه</div>
+                    <div className="text-[11px] opacity-60 mb-1" style={{ color: TH.text }}>منحنیِ سرمایه</div>
                     <svg viewBox={`0 0 ${W} ${Hh}`} preserveAspectRatio="none" className="w-full" style={{ height: Hh }}>
                       <defs>
                         <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
