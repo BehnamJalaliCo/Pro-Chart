@@ -686,7 +686,9 @@ const aroonOsc = (c, i) => {
 };
 // نوسان‌گرِ حجمیِ درصدی (PVO): مثلِ MACD ولی روی حجم. اگر حجمِ واقعی نبود، روی tick-volume.
 const pvo = (c, i) => {
-  const vol = _hasVol(c.volume) ? c.volume : c.close.map(() => 1);
+  // بدونِ حجم PVO خطِ صافِ صفر می‌شد — «واگراییِ حجمی وجود ندارد» می‌خواند، نه «داده نیست».
+  if (!_hasVol(c.volume)) return { ..._nullLine(c.close.length), signal: new Array(c.close.length).fill(null), hist: new Array(c.close.length).fill(null), macd: true, guides: [0] };
+  const vol = c.volume;
   const fast = _ema(vol, i.fast), slow = _ema(vol, i.slow);
   const line = fast.map((f, k) => (f == null || slow[k] == null || !slow[k] ? null : (f - slow[k]) / slow[k] * 100));
   const signal = _ema(line, i.sig);
@@ -739,7 +741,9 @@ const pmo = (c, i) => {
 
 // PVI/NVI (شاخصِ حجمِ مثبت/منفی): تجمعی، seed=۱۰۰۰؛ فقط در روزهای حجم‌بالا (PVI) یا حجم‌پایین (NVI) تغییر می‌کند.
 const _volIndex = (c, positive) => {
-  const cl = c.close, vol = _hasVol(c.volume) ? c.volume : cl.map(() => 1), n = cl.length, out = new Array(n).fill(null);
+  const cl = c.close, n = cl.length;
+  if (!_hasVol(c.volume)) return new Array(n).fill(null); // بدونِ حجم خطِ صافِ ۱۰۰۰ می‌داد
+  const vol = c.volume, out = new Array(n).fill(null);
   let idx = 1000; if (n) out[0] = 1000;
   for (let k = 1; k < n; k++) {
     const up = vol[k] > vol[k - 1], dn = vol[k] < vol[k - 1];

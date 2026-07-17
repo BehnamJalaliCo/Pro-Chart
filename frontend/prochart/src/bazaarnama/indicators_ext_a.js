@@ -269,8 +269,28 @@ const _dmi = (highs, lows, closes, p = 14) => {
   return { plus, minus, adx: adxOut };
 };
 
-// منبعِ پیش‌فرض (هماهنگ با §5.7؛ اگر i.source از قبل آرایه باشد همان استفاده می‌شود)
-const _src = (c, i) => (Array.isArray(i && i.source) ? i.source : c.close);
+// منبع (§5.7). رجیستری `source: 'close'` را به‌صورتِ **رشته** می‌فرستد، ولی این تابع
+// پیش‌تر فقط آرایه را می‌پذیرفت — یعنی `Array.isArray('high') === false` و هر ۱۳
+// اندیکاتورِ این فایل بی‌صدا روی close می‌افتادند. دراپ‌داونِ منبع در رابط بود و
+// کار نمی‌کرد. حالا مثلِ `_srcOf` در indicators_ext_b.js نامِ رشته‌ای را هم resolve می‌کند.
+const _hl2 = (c) => c.close.map((_, k) => (c.high[k] + c.low[k]) / 2);
+const _hlc3 = (c) => c.close.map((v, k) => (c.high[k] + c.low[k] + v) / 3);
+const _ohlc4 = (c) => c.close.map((v, k) => (c.open[k] + c.high[k] + c.low[k] + v) / 4);
+const _hlcc4 = (c) => c.close.map((v, k) => (c.high[k] + c.low[k] + v + v) / 4);
+const _src = (c, i) => {
+  const s = i && i.source;
+  if (Array.isArray(s)) return s;                 // سازگاریِ عقب‌رو: آرایهٔ از پیش resolve‌شده
+  switch (s) {
+    case 'open': return c.open;
+    case 'high': return c.high;
+    case 'low': return c.low;
+    case 'hl2': return _hl2(c);
+    case 'hlc3': return _hlc3(c);
+    case 'ohlc4': return _ohlc4(c);
+    case 'hlcc4': return _hlcc4(c);
+    default: return c.close;
+  }
+};
 
 // ───────────────────────── رجیستریِ افزونه ─────────────────────────
 export const EXT_REGISTRY_A = {

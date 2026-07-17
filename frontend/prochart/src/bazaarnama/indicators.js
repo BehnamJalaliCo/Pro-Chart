@@ -5,6 +5,16 @@
 import { EXT_REGISTRY_A } from './indicators_ext_a';
 import { EXT_REGISTRY_B } from './indicators_ext_b';
 
+// فارکس/فلز/شاخص حجم ندارند. اندیکاتورِ حجمی روی چنین ابزاری باید null بدهد،
+// نه عددی که شبیهِ نتیجهٔ واقعی است — کاربر روی آن معامله می‌کند.
+// پیش‌تر mfi ثابت ۱۰۰ (اشباعِ خریدِ همیشگی) و vwap بی‌صدا close برمی‌گرداند.
+export const hasVolume = (vols) => {
+  if (!Array.isArray(vols)) return false;
+  for (let i = 0; i < vols.length; i++) { const v = vols[i]; if (v != null && v > 0) return true; }
+  return false;
+};
+const nulls = (n) => new Array(n).fill(null);
+
 export const sma = (src, p) => {
   const out = new Array(src.length).fill(null);
   let sum = 0;
@@ -118,6 +128,7 @@ export const stoch = (highs, lows, closes, p = 14, d = 3) => {
 // اگر آرایهٔ times (یونیکس‌ثانیه) داده شود، با تغییرِ روزِ UTC انباشت ریست می‌گردد؛
 // بدونِ times رفتارِ تجمعیِ قبلی حفظ می‌شود (سازگاریِ عقب‌رو).
 export const vwap = (highs, lows, closes, vols, times) => {
+  if (!hasVolume(vols)) return nulls(closes.length); // VWAP بدونِ حجم وجود ندارد (پیش‌تر بی‌صدا close می‌داد)
   const out = new Array(closes.length).fill(null);
   let pv = 0, vv = 0, prevDay = null;
   for (let i = 0; i < closes.length; i++) {
@@ -135,6 +146,7 @@ export const vwap = (highs, lows, closes, vols, times) => {
 
 // Anchored VWAP — VWAP از anchorِ N کندلِ پیش + باندهای انحرافِ معیار (±mult·σ) — نسخهٔ مؤسساتی
 export const avwap = (highs, lows, closes, vols, anchorBars = 100, mult = 1) => {
+  if (!hasVolume(vols)) return { vwap: nulls(closes.length), upper: nulls(closes.length), lower: nulls(closes.length) };
   const n = closes.length;
   const out = new Array(n).fill(null), up = new Array(n).fill(null), dn = new Array(n).fill(null);
   const start = Math.max(0, n - (anchorBars || n));
@@ -185,6 +197,7 @@ export const dpo = (c, p = 20) => { const sma = _sma(c, p), n = c.length, out = 
 export const bop = (o, h, l, c) => c.map((cl, i) => { const rng = h[i] - l[i]; return rng > 0 ? (cl - o[i]) / rng : 0; });
 // Ease of Movement
 export const eom = (h, l, vol, p = 14) => {
+  if (!hasVolume(vol)) return nulls(h.length);
   const n = h.length, raw = new Array(n).fill(null);
   for (let i = 1; i < n; i++) { const dm = (h[i] + l[i]) / 2 - (h[i - 1] + l[i - 1]) / 2; const br = (vol[i] || 1) / 100000000 / Math.max(h[i] - l[i], 1e-9); raw[i] = br > 0 ? dm / br : 0; }
   return _sma(raw.map((x) => x == null ? 0 : x), p);
@@ -204,13 +217,44 @@ export const alligator = (h, l) => { const med = h.map((x, i) => (x + l[i]) / 2)
 export const rvi = (o, h, l, c) => { const n = c.length, co = c.map((x, i) => x - o[i]), hl = h.map((x, i) => x - l[i]); const swma = (a) => { const out = new Array(n).fill(null); for (let i = 3; i < n; i++) { if ([a[i], a[i - 1], a[i - 2], a[i - 3]].some((v) => v == null)) continue; out[i] = (a[i] + 2 * a[i - 1] + 2 * a[i - 2] + a[i - 3]) / 6; } return out; }; const num = swma(co), den = swma(hl); const line = num.map((x, i) => (x != null && den[i]) ? x / den[i] : null); const sig = new Array(n).fill(null); for (let i = 3; i < n; i++) { if ([line[i], line[i - 1], line[i - 2], line[i - 3]].some((v) => v == null)) continue; sig[i] = (line[i] + 2 * line[i - 1] + 2 * line[i - 2] + line[i - 3]) / 6; } return { line, signal: sig }; };
 export const bbWidth = (c, p = 20, mult = 2) => { const ma = _sma(c, p), n = c.length, out = new Array(n).fill(null); for (let i = p - 1; i < n; i++) { let s = 0; for (let j = 0; j < p; j++) { const d = c[i - j] - ma[i]; s += d * d; } const sd = Math.sqrt(s / p); out[i] = ma[i] ? (2 * mult * sd) / ma[i] * 100 : null; } return out; };
 export const stc = (c, fast = 23, slow = 50, cycle = 10) => { const ef = _ema2(c, fast), es = _ema2(c, slow); const macd = ef.map((x, i) => (x != null && es[i] != null) ? x - es[i] : null); const n = c.length; const stoch = (src, p) => { const out = new Array(n).fill(null); for (let i = p - 1; i < n; i++) { let hh = -Infinity, ll = Infinity, ok = true; for (let j = 0; j < p; j++) { const v = src[i - j]; if (v == null) { ok = false; break; } hh = Math.max(hh, v); ll = Math.min(ll, v); } if (ok) out[i] = hh > ll ? (src[i] - ll) / (hh - ll) * 100 : 0; } return out; }; const d1 = _ema2(stoch(macd, cycle), 3); const d2 = _ema2(stoch(d1, cycle), 3); return d2; };
-export const netVolume = (o, c, v) => c.map((cl, i) => (v[i] || 0) * (cl >= o[i] ? 1 : -1));
+export const netVolume = (o, c, v) => (hasVolume(v) ? c.map((cl, i) => (v[i] || 0) * (cl >= o[i] ? 1 : -1)) : nulls(c.length));
 export const stdErrBands = (c, p = 21, mult = 2) => { const n = c.length, mid = new Array(n).fill(null), up = new Array(n).fill(null), dn = new Array(n).fill(null); for (let i = p - 1; i < n; i++) { let sx = 0, sy = 0, sxx = 0, sxy = 0; for (let j = 0; j < p; j++) { const x = j, y = c[i - p + 1 + j]; sx += x; sy += y; sxx += x * x; sxy += x * y; } const b = (p * sxy - sx * sy) / (p * sxx - sx * sx || 1); const a = (sy - b * sx) / p; const yhat = a + b * (p - 1); let se = 0; for (let j = 0; j < p; j++) { const x = j, y = c[i - p + 1 + j]; const e = y - (a + b * x); se += e * e; } const stderr = Math.sqrt(se / Math.max(1, p - 2)); mid[i] = yhat; up[i] = yhat + mult * stderr; dn[i] = yhat - mult * stderr; } return { mid, up, dn }; };
-export const accelerator = (h, l) => { const med = h.map((x, i) => (x + l[i]) / 2); const ao = _sma(med, 5).map((v, i) => (v != null && _sma(med, 34)[i] != null) ? v - _sma(med, 34)[i] : null); return ao.map((v, i) => (v != null && _sma(ao.map((x) => x == null ? 0 : x), 5)[i] != null) ? v - _sma(ao.map((x) => x == null ? 0 : x), 5)[i] : null); };
+// Accelerator Oscillator = AO − SMA(AO, 5)، که AO = SMA(median,5) − SMA(median,34).
+//
+// پیش‌تر O(n²) بود: `_sma(med, 34)` و `_sma(ao, 5)` **داخلِ** `.map()` صدا زده می‌شدند،
+// یعنی به‌ازای هر کندل کلِ سری از نو محاسبه می‌شد. ۵۰۰۰ کندل ≈ ۷۰۰ms و با
+// اسکرولِ بی‌کرانِ تاریخچه، فریزِ حتمی. حالا هر SMA یک‌بار حساب می‌شود → O(n).
+export const accelerator = (h, l) => {
+  const med = h.map((x, i) => (x + l[i]) / 2);
+  const s5 = _sma(med, 5), s34 = _sma(med, 34);
+  const ao = s5.map((v, i) => (v != null && s34[i] != null ? v - s34[i] : null));
+  const aoSig = _sma(ao.map((x) => (x == null ? 0 : x)), 5);
+  return ao.map((v, i) => (v != null && aoSig[i] != null ? v - aoSig[i] : null));
+};
 export const chaikinVol = (h, l, p = 10) => { const hl = h.map((x, i) => x - l[i]); const e = _ema2(hl, p); return e.map((v, i) => (v != null && e[i - p] != null && e[i - p] !== 0) ? (v - e[i - p]) / e[i - p] * 100 : null); };
 // MTF: resampleِ کندل‌های موجود به تایم‌فریمِ بالاتر (factor)، محاسبه، و گسترشِ مقادیر به طولِ اصلی
 const _resampleC = (c, f) => { f = Math.max(1, f | 0); const o = [], h = [], l = [], cl = [], v = []; for (let i = 0; i < c.close.length; i += f) { const end = Math.min(i + f, c.close.length); let mh = -Infinity, ml = Infinity, sv = 0; for (let j = i; j < end; j++) { if (c.high[j] > mh) mh = c.high[j]; if (c.low[j] < ml) ml = c.low[j]; sv += c.volume[j] || 0; } o.push(c.open[i]); h.push(mh); l.push(ml); cl.push(c.close[end - 1]); v.push(sv); } return { open: o, high: h, low: l, close: cl, volume: v }; };
-const _expandA = (arr, f, len) => { f = Math.max(1, f | 0); const out = new Array(len).fill(null); for (let i = 0; i < arr.length; i++) { for (let j = 0; j < f; j++) { const idx = i * f + j; if (idx < len) out[idx] = arr[i]; } } return out; };
+// گسترشِ سریِ HTF به طولِ تایم‌فریمِ پایه — **بدونِ سوگیریِ lookahead**.
+//
+// باگِ پیشین: سطلِ i (کندل‌های پایهٔ i*f .. i*f+f-1) مقدارش از close[end-1] یعنی
+// **آخرین** کندلِ سطل می‌آمد، ولی به **همهٔ** کندل‌های سطل نسبت داده می‌شد. یعنی در
+// کندلِ i*f، اندیکاتور کلوزی را می‌دانست که f-1 کندل بعد اتفاق می‌افتد. بک‌تست را
+// غلط سودده نشان می‌داد.
+//
+// درست (مثلِ request.security با lookahead=off در TradingView): کندلِ HTF شمارهٔ i
+// در انتهای کندلِ پایهٔ i*f+f-1 بسته می‌شود، پس فقط از کندلِ (i+1)*f به بعد
+// در دسترس است. تا آن موقع کندلِ HTF در حالِ شکل‌گیری است و مقدارِ قبلی دیده می‌شود.
+// نتیجه: f کندلِ اولِ خروجی null‌اند — چون هنوز هیچ کندلِ HTFای بسته نشده.
+const _expandA = (arr, f, len) => {
+  f = Math.max(1, f | 0);
+  const out = new Array(len).fill(null);
+  for (let i = 0; i < arr.length; i++) {
+    const from = (i + 1) * f;                    // اولین کندلِ پایه پس از بسته‌شدنِ سطلِ i
+    const to = Math.min(from + f, len);
+    for (let idx = from; idx < to; idx++) out[idx] = arr[i];
+  }
+  return out;
+};
 
 // SuperTrend → { trend:[-1/1], line:[price] }
 export const supertrend = (highs, lows, closes, p = 10, mult = 3) => {
@@ -260,6 +304,7 @@ export const williamsR = (highs, lows, closes, p = 14) => {
 
 // OBV
 export const obv = (closes, vols) => {
+  if (!hasVolume(vols)) return nulls(closes.length);
   const out = new Array(closes.length).fill(null);
   let v = 0; out[0] = 0;
   for (let i = 1; i < closes.length; i++) { v += closes[i] > closes[i - 1] ? (vols[i] || 0) : closes[i] < closes[i - 1] ? -(vols[i] || 0) : 0; out[i] = v; }
@@ -267,7 +312,28 @@ export const obv = (closes, vols) => {
 };
 
 // Ichimoku → چند خط
+// ایچیموکو کینکو هیو — با جابه‌جاییِ درست.
+//
+// باگِ پیشین: Senkou A/B بدونِ جابه‌جایی و روی همان کندل رسم می‌شدند، و Chikou اصلاً
+// وجود نداشت. یعنی ابر روی قیمت می‌نشست به‌جای اینکه جلوتر از آن برجسته شود — دقیقاً
+// وارونهٔ کارکردش. ابر (کومو) باید **۲۶ کندل جلوتر** باشد؛ کلِ فلسفهٔ ایچیموکو
+// پیش‌بینیِ حمایت/مقاومتِ آینده است.
+//
+// تعریفِ استاندارد:
+//   Tenkan  = (بیشینهٔ ۹ سقف + کمینهٔ ۹ کف) / 2      — روی کندلِ جاری
+//   Kijun   = (بیشینهٔ ۲۶ سقف + کمینهٔ ۲۶ کف) / 2     — روی کندلِ جاری
+//   Senkou A = (Tenkan + Kijun) / 2                  — **۲۶ کندل جلوتر**
+//   Senkou B = (بیشینهٔ ۵۲ سقف + کمینهٔ ۵۲ کف) / 2    — **۲۶ کندل جلوتر**
+//   Chikou   = close                                 — **۲۶ کندل عقب‌تر**
+//
+// محدودیتِ شناخته‌شده: چارت فعلاً کندلِ آینده ندارد، پس آن ۲۶ کندلِ برجستهٔ فراتر از
+// آخرین کندل رسم نمی‌شوند. همهٔ کندل‌های تاریخی درست هم‌ترازند. برجستگیِ لبهٔ راست
+// نیازمندِ گسترشِ محورِ زمان است (کارِ سطحِ چارت، نه اندیکاتور).
+//
+// ⚠️ Chikou ذاتاً کلوزِ آینده را در موقعیتِ گذشته نشان می‌دهد (استاندارد است و TV هم
+// همین می‌کند). برای **نمایش** درست است؛ یک استراتژی هرگز نباید از آن سیگنال بگیرد.
 export const ichimoku = (highs, lows, closes, t = 9, k = 26, b = 52) => {
+  const n = highs.length;
   const mid = (p) => highs.map((_, i) => {
     if (i < p - 1) return null;
     let hh = -Infinity, ll = Infinity;
@@ -275,8 +341,22 @@ export const ichimoku = (highs, lows, closes, t = 9, k = 26, b = 52) => {
     return (hh + ll) / 2;
   });
   const tenkan = mid(t), kijun = mid(k), b52 = mid(b);
-  const spanA = tenkan.map((v, i) => (v != null && kijun[i] != null ? (v + kijun[i]) / 2 : null));
-  return { tenkan, kijun, spanA, spanB: b52 };
+
+  // Senkou A/B: مقدارِ محاسبه‌شده در کندلِ i، در کندلِ i+k ظاهر می‌شود
+  const spanA = new Array(n).fill(null);
+  const spanB = new Array(n).fill(null);
+  for (let i = 0; i < n; i++) {
+    const src = i - k;
+    if (src < 0) continue;
+    if (tenkan[src] != null && kijun[src] != null) spanA[i] = (tenkan[src] + kijun[src]) / 2;
+    if (b52[src] != null) spanB[i] = b52[src];
+  }
+
+  // Chikou: کلوزِ کندلِ i+k در موقعیتِ i — یعنی ۲۶ کندلِ آخر خالی می‌مانند
+  const chikou = new Array(n).fill(null);
+  for (let i = 0; i < n - k; i++) chikou[i] = closes[i + k];
+
+  return { tenkan, kijun, spanA, spanB, chikou };
 };
 
 // Donchian channel
@@ -378,16 +458,19 @@ export const aroon = (highs, lows, p = 14) => {
 
 // MFI
 export const mfi = (highs, lows, closes, vols, p = 14) => {
+  if (!hasVolume(vols)) return nulls(closes.length); // بدونِ حجم MFI بی‌معناست (پیش‌تر ثابت ۱۰۰ می‌داد)
   const n = closes.length, tp = new Array(n), pos = new Array(n).fill(0), neg = new Array(n).fill(0);
   for (let i = 0; i < n; i++) { tp[i] = (highs[i] + lows[i] + closes[i]) / 3; const rmf = tp[i] * (vols[i] || 0); if (i > 0) { if (tp[i] > tp[i - 1]) pos[i] = rmf; else if (tp[i] < tp[i - 1]) neg[i] = rmf; } }
   const sp = sma(pos, p).map((v) => (v == null ? null : v * p)), sn = sma(neg, p).map((v) => (v == null ? null : v * p));
   const out = new Array(n).fill(null);
-  for (let i = 0; i < n; i++) if (sp[i] != null) out[i] = sn[i] ? 100 - 100 / (1 + sp[i] / sn[i]) : 100;
+  // clamp: MFI طبقِ تعریف ۰..۱۰۰ است؛ بدونِ این، خطای ممیزِ شناور ۱۰۰.۰۰۰۰۰۰۰۰۰۰۰۰۰۱ می‌داد
+  for (let i = 0; i < n; i++) if (sp[i] != null) out[i] = Math.min(100, Math.max(0, sn[i] ? 100 - 100 / (1 + sp[i] / sn[i]) : 100));
   return out;
 };
 
 // CMF
 export const cmf = (highs, lows, closes, vols, p = 20) => {
+  if (!hasVolume(vols)) return nulls(closes.length);
   const n = closes.length, mfv = new Array(n);
   for (let i = 0; i < n; i++) { const rng = highs[i] - lows[i]; mfv[i] = (rng ? ((closes[i] - lows[i]) - (highs[i] - closes[i])) / rng : 0) * (vols[i] || 0); }
   const sm = sma(mfv, p).map((v) => (v == null ? null : v * p)), sv = sma(vols.map((v) => v || 0), p).map((v) => (v == null ? null : v * p));
@@ -530,7 +613,7 @@ export const REGISTRY = {
   adx:  { label: 'ADX', pane: 'sub', inputs: { period: 14 }, color: '#f97316', calc: (c, i) => ({ line: adx(c.high, c.low, c.close, i.period), guides: [25] }) },
   donchian: { label: 'کانال دونچیان', pane: 'main', inputs: { period: 20 }, color: '#94a3b8', calc: (c, i) => { const d = donchian(c.high, c.low, i.period); return { lines: [{ data: d.upper, color: '#60a5fa' }, { data: d.basis, color: '#94a3b8' }, { data: d.lower, color: '#60a5fa' }], cloud: [0, 2], cloudColors: ['rgba(96,165,250,0.07)'] }; } }, // باندهای توپر + پُرشدگیِ آبیِ کم‌رنگ مثلِ دونچیانِ TV
   keltner: { label: 'کانال کلتنر', pane: 'main', inputs: { period: 20, mult: 2 }, color: '#f472b6', calc: (c, i) => { const k = keltner(c.high, c.low, c.close, i.period, i.mult); return { lines: [{ data: k.upper, color: '#f472b6' }, { data: k.basis, color: '#f472b6' }, { data: k.lower, color: '#f472b6' }], cloud: [0, 2], cloudColors: ['rgba(244,114,182,0.08)'] }; } }, // باندهای توپر + پُرشدگیِ صورتیِ کم‌رنگ بینِ بالا/پایین مثلِ کلتنرِ TV
-  ichimoku: { label: 'ایچیموکو', pane: 'main', inputs: { tenkan: 9, kijun: 26, span: 52 }, color: '#22d3ee', calc: (c, i) => { const k = ichimoku(c.high, c.low, c.close, i.tenkan, i.kijun, i.span); return { lines: [{ data: k.tenkan, color: '#3b82f6' }, { data: k.kijun, color: '#ef4444' }, { data: k.spanA, color: '#22c55e' }, { data: k.spanB, color: '#f59e0b' }], cloud: [2, 3] }; } }, // Senkou A/B توپر + ابرِ سبز/قرمزِ بینِ آن‌ها (indexِ 2/3) مثلِ TV
+  ichimoku: { label: 'ایچیموکو', pane: 'main', inputs: { tenkan: 9, kijun: 26, span: 52 }, color: '#22d3ee', calc: (c, i) => { const k = ichimoku(c.high, c.low, c.close, i.tenkan, i.kijun, i.span); return { lines: [{ data: k.tenkan, color: '#3b82f6' }, { data: k.kijun, color: '#ef4444' }, { data: k.spanA, color: '#22c55e' }, { data: k.spanB, color: '#f59e0b' }, { data: k.chikou, color: '#a855f7', dashed: true }], cloud: [2, 3] }; } }, // Tenkan/Kijun روی کندلِ جاری · Senkou A/B با جابه‌جاییِ +۲۶ و ابرِ بینشان (indexهای 2/3) · Chikou با جابه‌جاییِ −۲۶ (خط‌چین)
   dema: { label: 'DEMA (نمایی دوگانه)', pane: 'main', inputs: { period: 20, source: 'close' }, color: '#38bdf8', calc: (c, i) => ({ line: dema(resolveSrc(c, i.source), i.period) }) },
   tema: { label: 'TEMA (نمایی سه‌گانه)', pane: 'main', inputs: { period: 20, source: 'close' }, color: '#fb923c', calc: (c, i) => ({ line: tema(resolveSrc(c, i.source), i.period) }) },
   vwma: { label: 'VWMA (وزنیِ حجمی)', pane: 'main', inputs: { period: 20 }, color: '#c084fc', calc: (c, i) => ({ line: vwma(c.close, c.volume, i.period) }) },

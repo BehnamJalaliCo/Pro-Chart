@@ -246,7 +246,32 @@ var _dmi = (highs, lows, closes, p = 14) => {
   }
   return { plus, minus, adx: adxOut };
 };
-var _src = (c, i) => Array.isArray(i && i.source) ? i.source : c.close;
+var _hl2 = (c) => c.close.map((_, k) => (c.high[k] + c.low[k]) / 2);
+var _hlc3 = (c) => c.close.map((v, k) => (c.high[k] + c.low[k] + v) / 3);
+var _ohlc4 = (c) => c.close.map((v, k) => (c.open[k] + c.high[k] + c.low[k] + v) / 4);
+var _hlcc4 = (c) => c.close.map((v, k) => (c.high[k] + c.low[k] + v + v) / 4);
+var _src = (c, i) => {
+  const s = i && i.source;
+  if (Array.isArray(s)) return s;
+  switch (s) {
+    case "open":
+      return c.open;
+    case "high":
+      return c.high;
+    case "low":
+      return c.low;
+    case "hl2":
+      return _hl2(c);
+    case "hlc3":
+      return _hlc3(c);
+    case "ohlc4":
+      return _ohlc4(c);
+    case "hlcc4":
+      return _hlcc4(c);
+    default:
+      return c.close;
+  }
+};
 var EXT_REGISTRY_A = {
   // ===== §5.1 روند / میانگین‌های متحرک =====
   smma: {
@@ -545,11 +570,11 @@ var _trArr = (highs, lows, closes) => {
   return tr;
 };
 var _atr = (highs, lows, closes, p) => _rma(_trArr(highs, lows, closes), p);
-var _hl2 = (c) => c.high.map((h, i) => (h + c.low[i]) / 2);
-var _hlc3 = (c) => c.high.map((h, i) => (h + c.low[i] + c.close[i]) / 3);
-var _ohlc4 = (c) => c.high.map((h, i) => (c.open[i] + h + c.low[i] + c.close[i]) / 4);
-var _hlcc4 = (c) => c.high.map((h, i) => (h + c.low[i] + 2 * c.close[i]) / 4);
-var _srcOf = (c, name) => name === "open" ? c.open : name === "high" ? c.high : name === "low" ? c.low : name === "hl2" ? _hl2(c) : name === "hlc3" ? _hlc3(c) : name === "ohlc4" ? _ohlc4(c) : name === "hlcc4" ? _hlcc4(c) : c.close;
+var _hl22 = (c) => c.high.map((h, i) => (h + c.low[i]) / 2);
+var _hlc32 = (c) => c.high.map((h, i) => (h + c.low[i] + c.close[i]) / 3);
+var _ohlc42 = (c) => c.high.map((h, i) => (c.open[i] + h + c.low[i] + c.close[i]) / 4);
+var _hlcc42 = (c) => c.high.map((h, i) => (h + c.low[i] + 2 * c.close[i]) / 4);
+var _srcOf = (c, name) => name === "open" ? c.open : name === "high" ? c.high : name === "low" ? c.low : name === "hl2" ? _hl22(c) : name === "hlc3" ? _hlc32(c) : name === "ohlc4" ? _ohlc42(c) : name === "hlcc4" ? _hlcc42(c) : c.close;
 var _mfm = (h, l, c) => {
   const r = h - l;
   return r ? (c - l - (h - c)) / r : 0;
@@ -642,7 +667,7 @@ var roc = (c, i) => {
   return { line: s.map((v, k) => k >= i.period && v != null && s[k - i.period] ? 100 * (v - s[k - i.period]) / s[k - i.period] : null), guides: [0] };
 };
 var accelerator = (c) => {
-  const mp = _hl2(c);
+  const mp = _hl22(c);
   const f = _sma2(mp, 5), sl = _sma2(mp, 34);
   const aoArr = mp.map((_, k) => f[k] != null && sl[k] != null ? f[k] - sl[k] : null);
   const aoSma = _sma2(aoArr.map((v) => v == null ? 0 : v), 5).map((v, k) => {
@@ -682,7 +707,7 @@ var ultimateOsc = (c, i) => {
   return { line: out, guides: [30, 70], range: [0, 100], zone: [30, 70] };
 };
 var fisher = (c, i) => {
-  const mp = _hl2(c), n = mp.length;
+  const mp = _hl22(c), n = mp.length;
   const hh = _highest(mp, i.period), ll = _lowest(mp, i.period);
   const fish = new Array(n).fill(null), sig = new Array(n).fill(null);
   let v = 0, f = 0;
@@ -1181,7 +1206,8 @@ var aroonOsc = (c, i) => {
   return { line, guides: [0], range: [-100, 100] };
 };
 var pvo = (c, i) => {
-  const vol = _hasVol(c.volume) ? c.volume : c.close.map(() => 1);
+  if (!_hasVol(c.volume)) return { ..._nullLine(c.close.length), signal: new Array(c.close.length).fill(null), hist: new Array(c.close.length).fill(null), macd: true, guides: [0] };
+  const vol = c.volume;
   const fast = _ema2(vol, i.fast), slow = _ema2(vol, i.slow);
   const line = fast.map((f, k) => f == null || slow[k] == null || !slow[k] ? null : (f - slow[k]) / slow[k] * 100);
   const signal = _ema2(line, i.sig);
@@ -1246,7 +1272,9 @@ var pmo = (c, i) => {
   return { line, signal, guides: [0] };
 };
 var _volIndex = (c, positive) => {
-  const cl = c.close, vol = _hasVol(c.volume) ? c.volume : cl.map(() => 1), n = cl.length, out = new Array(n).fill(null);
+  const cl = c.close, n = cl.length;
+  if (!_hasVol(c.volume)) return new Array(n).fill(null);
+  const vol = c.volume, out = new Array(n).fill(null);
   let idx = 1e3;
   if (n) out[0] = 1e3;
   for (let k = 1; k < n; k++) {
@@ -1346,8 +1374,8 @@ var volatilityStop = (c, i) => {
   }
   return { lines: [{ data: up, color: "#22c55e", gaps: true }, { data: dn, color: "#ef4444", gaps: true }] };
 };
-var typicalPrice = (c) => ({ line: _hlc3(c) });
-var weightedClose = (c) => ({ line: _hlcc4(c) });
+var typicalPrice = (c) => ({ line: _hlc32(c) });
+var weightedClose = (c) => ({ line: _hlcc42(c) });
 var EXT_REGISTRY_B = {
   // — اندیکاتورهای غایبِ TV (batch ۱) —
   aroonOsc: { label: "\u0627\u0633\u06CC\u0644\u0627\u062A\u0648\u0631\u0650 \u0622\u0631\u0648\u0646 (Aroon Oscillator)", pane: "sub", inputs: { period: 14 }, color: "#22c55e", calc: aroonOsc },
@@ -1403,6 +1431,15 @@ var EXT_REGISTRY_B = {
 };
 
 // src/bazaarnama/indicators.js
+var hasVolume = (vols) => {
+  if (!Array.isArray(vols)) return false;
+  for (let i = 0; i < vols.length; i++) {
+    const v = vols[i];
+    if (v != null && v > 0) return true;
+  }
+  return false;
+};
+var nulls = (n) => new Array(n).fill(null);
 var sma = (src, p) => {
   const out = new Array(src.length).fill(null);
   let sum = 0;
@@ -1554,6 +1591,7 @@ var stoch = (highs, lows, closes, p = 14, d = 3) => {
   return { k, d: dd };
 };
 var vwap = (highs, lows, closes, vols, times) => {
+  if (!hasVolume(vols)) return nulls(closes.length);
   const out = new Array(closes.length).fill(null);
   let pv = 0, vv = 0, prevDay = null;
   for (let i = 0; i < closes.length; i++) {
@@ -1573,6 +1611,7 @@ var vwap = (highs, lows, closes, vols, times) => {
   return out;
 };
 var avwap = (highs, lows, closes, vols, anchorBars = 100, mult = 1) => {
+  if (!hasVolume(vols)) return { vwap: nulls(closes.length), upper: nulls(closes.length), lower: nulls(closes.length) };
   const n = closes.length;
   const out = new Array(n).fill(null), up = new Array(n).fill(null), dn = new Array(n).fill(null);
   const start = Math.max(0, n - (anchorBars || n));
@@ -1660,6 +1699,7 @@ var bop2 = (o, h, l, c) => c.map((cl, i) => {
   return rng > 0 ? (cl - o[i]) / rng : 0;
 });
 var eom2 = (h, l, vol, p = 14) => {
+  if (!hasVolume(vol)) return nulls(h.length);
   const n = h.length, raw = new Array(n).fill(null);
   for (let i = 1; i < n; i++) {
     const dm = (h[i] + l[i]) / 2 - (h[i - 1] + l[i - 1]) / 2;
@@ -1843,7 +1883,7 @@ var stc = (c, fast = 23, slow = 50, cycle = 10) => {
   const d2 = _ema22(stoch2(d1, cycle), 3);
   return d2;
 };
-var netVolume = (o, c, v) => c.map((cl, i) => (v[i] || 0) * (cl >= o[i] ? 1 : -1));
+var netVolume = (o, c, v) => hasVolume(v) ? c.map((cl, i) => (v[i] || 0) * (cl >= o[i] ? 1 : -1)) : nulls(c.length);
 var stdErrBands = (c, p = 21, mult = 2) => {
   const n = c.length, mid = new Array(n).fill(null), up = new Array(n).fill(null), dn = new Array(n).fill(null);
   for (let i = p - 1; i < n; i++) {
@@ -1873,8 +1913,10 @@ var stdErrBands = (c, p = 21, mult = 2) => {
 };
 var accelerator2 = (h, l) => {
   const med = h.map((x, i) => (x + l[i]) / 2);
-  const ao2 = _sma3(med, 5).map((v, i) => v != null && _sma3(med, 34)[i] != null ? v - _sma3(med, 34)[i] : null);
-  return ao2.map((v, i) => v != null && _sma3(ao2.map((x) => x == null ? 0 : x), 5)[i] != null ? v - _sma3(ao2.map((x) => x == null ? 0 : x), 5)[i] : null);
+  const s5 = _sma3(med, 5), s34 = _sma3(med, 34);
+  const ao2 = s5.map((v, i) => v != null && s34[i] != null ? v - s34[i] : null);
+  const aoSig = _sma3(ao2.map((x) => x == null ? 0 : x), 5);
+  return ao2.map((v, i) => v != null && aoSig[i] != null ? v - aoSig[i] : null);
 };
 var chaikinVol = (h, l, p = 10) => {
   const hl = h.map((x, i) => x - l[i]);
@@ -1904,10 +1946,9 @@ var _expandA = (arr, f, len) => {
   f = Math.max(1, f | 0);
   const out = new Array(len).fill(null);
   for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < f; j++) {
-      const idx = i * f + j;
-      if (idx < len) out[idx] = arr[i];
-    }
+    const from = (i + 1) * f;
+    const to = Math.min(from + f, len);
+    for (let idx = from; idx < to; idx++) out[idx] = arr[i];
   }
   return out;
 };
@@ -1956,6 +1997,7 @@ var williamsR = (highs, lows, closes, p = 14) => {
   return out;
 };
 var obv = (closes, vols) => {
+  if (!hasVolume(vols)) return nulls(closes.length);
   const out = new Array(closes.length).fill(null);
   let v = 0;
   out[0] = 0;
@@ -1966,6 +2008,7 @@ var obv = (closes, vols) => {
   return out;
 };
 var ichimoku = (highs, lows, closes, t = 9, k = 26, b = 52) => {
+  const n = highs.length;
   const mid = (p) => highs.map((_, i) => {
     if (i < p - 1) return null;
     let hh = -Infinity, ll = Infinity;
@@ -1976,8 +2019,17 @@ var ichimoku = (highs, lows, closes, t = 9, k = 26, b = 52) => {
     return (hh + ll) / 2;
   });
   const tenkan = mid(t), kijun = mid(k), b52 = mid(b);
-  const spanA = tenkan.map((v, i) => v != null && kijun[i] != null ? (v + kijun[i]) / 2 : null);
-  return { tenkan, kijun, spanA, spanB: b52 };
+  const spanA = new Array(n).fill(null);
+  const spanB = new Array(n).fill(null);
+  for (let i = 0; i < n; i++) {
+    const src = i - k;
+    if (src < 0) continue;
+    if (tenkan[src] != null && kijun[src] != null) spanA[i] = (tenkan[src] + kijun[src]) / 2;
+    if (b52[src] != null) spanB[i] = b52[src];
+  }
+  const chikou = new Array(n).fill(null);
+  for (let i = 0; i < n - k; i++) chikou[i] = closes[i + k];
+  return { tenkan, kijun, spanA, spanB, chikou };
 };
 var donchian = (highs, lows, p = 20) => {
   const up = new Array(highs.length).fill(null), lo = new Array(highs.length).fill(null), mid = new Array(highs.length).fill(null);
@@ -2137,6 +2189,7 @@ var aroon = (highs, lows, p = 14) => {
   return { up, down };
 };
 var mfi = (highs, lows, closes, vols, p = 14) => {
+  if (!hasVolume(vols)) return nulls(closes.length);
   const n = closes.length, tp = new Array(n), pos = new Array(n).fill(0), neg = new Array(n).fill(0);
   for (let i = 0; i < n; i++) {
     tp[i] = (highs[i] + lows[i] + closes[i]) / 3;
@@ -2148,10 +2201,11 @@ var mfi = (highs, lows, closes, vols, p = 14) => {
   }
   const sp = sma(pos, p).map((v) => v == null ? null : v * p), sn = sma(neg, p).map((v) => v == null ? null : v * p);
   const out = new Array(n).fill(null);
-  for (let i = 0; i < n; i++) if (sp[i] != null) out[i] = sn[i] ? 100 - 100 / (1 + sp[i] / sn[i]) : 100;
+  for (let i = 0; i < n; i++) if (sp[i] != null) out[i] = Math.min(100, Math.max(0, sn[i] ? 100 - 100 / (1 + sp[i] / sn[i]) : 100));
   return out;
 };
 var cmf = (highs, lows, closes, vols, p = 20) => {
+  if (!hasVolume(vols)) return nulls(closes.length);
   const n = closes.length, mfv = new Array(n);
   for (let i = 0; i < n; i++) {
     const rng = highs[i] - lows[i];
@@ -2396,9 +2450,9 @@ var REGISTRY = {
   // باندهای توپر + پُرشدگیِ صورتیِ کم‌رنگ بینِ بالا/پایین مثلِ کلتنرِ TV
   ichimoku: { label: "\u0627\u06CC\u0686\u06CC\u0645\u0648\u06A9\u0648", pane: "main", inputs: { tenkan: 9, kijun: 26, span: 52 }, color: "#22d3ee", calc: (c, i) => {
     const k = ichimoku(c.high, c.low, c.close, i.tenkan, i.kijun, i.span);
-    return { lines: [{ data: k.tenkan, color: "#3b82f6" }, { data: k.kijun, color: "#ef4444" }, { data: k.spanA, color: "#22c55e" }, { data: k.spanB, color: "#f59e0b" }], cloud: [2, 3] };
+    return { lines: [{ data: k.tenkan, color: "#3b82f6" }, { data: k.kijun, color: "#ef4444" }, { data: k.spanA, color: "#22c55e" }, { data: k.spanB, color: "#f59e0b" }, { data: k.chikou, color: "#a855f7", dashed: true }], cloud: [2, 3] };
   } },
-  // Senkou A/B توپر + ابرِ سبز/قرمزِ بینِ آن‌ها (indexِ 2/3) مثلِ TV
+  // Tenkan/Kijun روی کندلِ جاری · Senkou A/B با جابه‌جاییِ +۲۶ و ابرِ بینشان (indexهای 2/3) · Chikou با جابه‌جاییِ −۲۶ (خط‌چین)
   dema: { label: "DEMA (\u0646\u0645\u0627\u06CC\u06CC \u062F\u0648\u06AF\u0627\u0646\u0647)", pane: "main", inputs: { period: 20, source: "close" }, color: "#38bdf8", calc: (c, i) => ({ line: dema(resolveSrc(c, i.source), i.period) }) },
   tema: { label: "TEMA (\u0646\u0645\u0627\u06CC\u06CC \u0633\u0647\u200C\u06AF\u0627\u0646\u0647)", pane: "main", inputs: { period: 20, source: "close" }, color: "#fb923c", calc: (c, i) => ({ line: tema(resolveSrc(c, i.source), i.period) }) },
   vwma: { label: "VWMA (\u0648\u0632\u0646\u06CC\u0650 \u062D\u062C\u0645\u06CC)", pane: "main", inputs: { period: 20 }, color: "#c084fc", calc: (c, i) => ({ line: vwma(c.close, c.volume, i.period) }) },
@@ -2469,6 +2523,7 @@ export {
   ema,
   eom2 as eom,
   gmma,
+  hasVolume,
   hma,
   ichimoku,
   keltner,
