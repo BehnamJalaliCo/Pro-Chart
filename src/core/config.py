@@ -175,6 +175,8 @@ class Settings(BaseSettings):
     ACADEMY_MENTOR_QUOTA_FREE: int = 10      # پیام/۲۴ساعت — تیرِ رایگان
     ACADEMY_MENTOR_QUOTA_VIP: int = 80       # پیام/۲۴ساعت — VIP
     ACADEMY_MENTOR_QUOTA_PREMIUM: int = 300  # پیام/۲۴ساعت — پرمیوم
+    ACADEMY_INVITE_REWARD_DAYS: int = 15     # روزِ VIP که دعوت‌کننده بابتِ هر دعوتِ موفق می‌گیرد
+    ACADEMY_DELETE_GRACE_DAYS: int = 30      # مهلتِ بازگشت پیش از حذفِ نهاییِ حساب
 
     # ── لایه‌ی Claude (سرویس claude-llm، اشتراک Max، Sonnet) ──
     LLM_ENABLED: bool = False

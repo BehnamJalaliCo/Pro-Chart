@@ -8,13 +8,14 @@
 
 from __future__ import annotations
 
+import base64
 import json
 import os
 import random
 import re
 from datetime import date, datetime, timedelta, timezone
 
-from fastapi import APIRouter, Body, Depends, Header, HTTPException
+from fastapi import APIRouter, Body, Depends, Header, HTTPException, Query, Response
 from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,6 +23,7 @@ from src.api.deps import get_db
 from src.core.config import settings
 from src.core.database import (
     AcademyAchievement,
+    AcademyAvatar,
     AcademyCertificate,
     AcademyDevice,
     AcademyJournalEntry,
@@ -253,12 +255,45 @@ async def list_devices(authorization: str | None = Header(None), st: AcademyStud
             "last_seen": d.last_seen_at.isoformat() if d.last_seen_at else None} for d in rows]}
 
 
+@router.delete("/devices")
+async def remove_all_devices(authorization: str | None = Header(None), st: AcademyStudent = Depends(current_student),
+                            db: AsyncSession = Depends(get_db)):
+    """خروج از همهٔ دستگاه‌ها به‌جز دستگاهِ فعلی (تک‌کال)."""
+    p = verify_access_token((authorization or "").split(" ", 1)[-1].strip()) or {}
+    cur = p.get("did")
+    rows = (await db.execute(select(AcademyDevice).where(AcademyDevice.student_id == st.id))).scalars().all()
+    revoked = 0
+    for d in rows:
+        if d.device_id == cur:
+            continue
+        await db.delete(d)
+        revoked += 1
+    await db.commit()
+    return {"ok": True, "revoked": revoked}
+
+
 @router.delete("/devices/{device_id}")
 async def remove_device(device_id: int, st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
     d = (await db.execute(select(AcademyDevice).where(AcademyDevice.id == device_id, AcademyDevice.student_id == st.id))).scalar_one_or_none()
     if d is None:
         raise HTTPException(404, "دستگاه یافت نشد.")
     await db.delete(d); await db.commit()
+    return {"ok": True}
+
+
+@router.post("/auth/change-password")
+async def change_password(current_password: str = Body(..., embed=True), new_password: str = Body(..., embed=True),
+                          st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """تغییرِ رمزِ کاربرِ لاگین‌شده (نه reset با ایمیل)."""
+    if not verify_password(current_password or "", st.password_hash):
+        raise HTTPException(status_code=400, detail="رمزِ فعلی نادرست است.")
+    if len((new_password or "")) < 6:
+        raise HTTPException(status_code=400, detail="رمزِ جدید حداقل ۶ کاراکتر باشد.")
+    if verify_password(new_password, st.password_hash):
+        raise HTTPException(status_code=400, detail="رمزِ جدید نباید با رمزِ فعلی یکی باشد.")
+    st.password_hash = hash_password(new_password)
+    await db.commit()
+    logger.info("academy_change_password", sid=st.id)
     return {"ok": True}
 
 
@@ -558,10 +593,13 @@ async def me(st: AcademyStudent = Depends(current_student), db: AsyncSession = D
     streak_out = {"current": streak.current_streak or 0, "longest": streak.longest_streak or 0} if streak else {"current": 0, "longest": 0}
     ach_count = (await db.execute(select(func.count()).select_from(AcademyAchievement).where(
         AcademyAchievement.student_id == st.id))).scalar() or 0
+    av = (await db.execute(select(AcademyAvatar).where(AcademyAvatar.student_id == st.id))).scalar_one_or_none()
     return {"username": st.username, "full_name": st.full_name, "tier": tier,
             "account_type": getattr(st, "account_type", None),
             "phone_number": st.phone_number,
             "phone_required": (not st.phone_number),
+            "avatar_id": getattr(st, "avatar_id", None),
+            "avatar_url": _avatar_url(av),
             "expires_at": st.expires_at.isoformat() if st.expires_at else None,
             "prochart_until": st.prochart_until.isoformat() if getattr(st, "prochart_until", None) else None,
             "forex_copy_until": st.forex_copy_until.isoformat() if getattr(st, "forex_copy_until", None) else None,
@@ -651,11 +689,13 @@ async def stream_video(video_id: int, t: str = "", db: AsyncSession = Depends(ge
 
 @router.post("/profile")
 async def update_profile(full_name: str | None = Body(None, embed=True), phone: str | None = Body(None, embed=True),
-                         country: str | None = Body(None, embed=True),
+                         country: str | None = Body(None, embed=True), avatar_id: str | None = Body(None, embed=True),
                          st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
     """به‌روزرسانیِ پروفایل — شمارهٔ موبایل برای فعال‌سازیِ حساب لازم است (داخلی + بین‌المللی)."""
     if full_name is not None:
         st.full_name = (full_name.strip()[:120] or None)
+    if avatar_id is not None:
+        st.avatar_id = (avatar_id.strip()[:64] or None)   # آواتارِ داخلیِ کلاینت؛ خالی = پاک‌کردن
     if phone is not None:
         raw = (phone or "").strip()
         digits = re.sub(r"[^\d]", "", raw)
@@ -676,7 +716,90 @@ async def update_profile(full_name: str | None = Body(None, embed=True), phone: 
                 st.notes = (st.notes or "")  # کشور صرفاً جهتِ آینده؛ نگه‌داری نمی‌شود
     await db.commit()
     return {"ok": True, "full_name": st.full_name, "phone_number": st.phone_number,
-            "phone_required": not st.phone_number}
+            "phone_required": not st.phone_number, "avatar_id": getattr(st, "avatar_id", None)}
+
+
+# ── آواتار (عکسِ شخصیِ آپلودی) ──
+_AVATAR_TYPES = {"image/png", "image/jpeg", "image/webp"}
+_AVATAR_MAX_BYTES = 2 * 1024 * 1024   # ۲ مگابایتِ عکسِ decode-شده
+
+
+def _avatar_url(av) -> str | None:
+    if av is None:
+        return None
+    v = int(av.updated_at.timestamp()) if av.updated_at else 0
+    return f"/api/academy/me/avatar/raw?v={v}"
+
+
+@router.post("/me/avatar")
+async def upload_avatar(content_type: str = Body(..., embed=True), data_b64: str = Body(..., embed=True),
+                        st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """آپلودِ عکسِ شخصی. مجاز: png/jpeg/webp — حداکثر ۲ مگابایت (پس از decode)."""
+    ct = (content_type or "").strip().lower()
+    if ct not in _AVATAR_TYPES:
+        raise HTTPException(status_code=400, detail="فرمتِ مجاز فقط png/jpeg/webp است.")
+    raw = (data_b64 or "").strip()
+    if raw[:5].lower() == "data:" and "," in raw:
+        raw = raw.split(",", 1)[1]
+    try:
+        blob = base64.b64decode(raw, validate=True)
+    except Exception:  # noqa: BLE001
+        raise HTTPException(status_code=400, detail="دادهٔ base64 نامعتبر است.")
+    if not blob:
+        raise HTTPException(status_code=400, detail="فایلِ خالی است.")
+    if len(blob) > _AVATAR_MAX_BYTES:
+        raise HTTPException(status_code=400, detail="حجمِ عکس بیش از ۲ مگابایت است.")
+    clean = base64.b64encode(blob).decode()
+    av = (await db.execute(select(AcademyAvatar).where(AcademyAvatar.student_id == st.id))).scalar_one_or_none()
+    if av is None:
+        av = AcademyAvatar(student_id=st.id, content_type=ct, data_b64=clean)
+        db.add(av)
+    else:
+        av.content_type = ct
+        av.data_b64 = clean
+        av.updated_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(av)
+    return {"ok": True, "avatar_url": _avatar_url(av)}
+
+
+@router.get("/me/avatar/raw")
+async def avatar_raw(authorization: str | None = Header(None), t: str | None = Query(None),
+                     v: str | None = Query(None), db: AsyncSession = Depends(get_db)):
+    """بایت‌های خامِ عکسِ کاربرِ جاری. توکن از هدر یا کوئریِ ?t= (برای <Image>)."""
+    tok = t or ((authorization or "").split(" ", 1)[-1].strip() if authorization else "")
+    p = verify_access_token(tok) if tok else None
+    if not p or (p.get("scope") not in ("academy", "app")):
+        raise HTTPException(status_code=401, detail="ورود لازم است.")
+    sid = int(p.get("sid", 0) or 0)
+    av = (await db.execute(select(AcademyAvatar).where(AcademyAvatar.student_id == sid))).scalar_one_or_none() if sid else None
+    if av is None:
+        raise HTTPException(status_code=404, detail="عکسی ثبت نشده.")
+    try:
+        blob = base64.b64decode(av.data_b64)
+    except Exception:  # noqa: BLE001
+        raise HTTPException(status_code=404, detail="عکس نامعتبر است.")
+    return Response(content=blob, media_type=av.content_type,
+                    headers={"Cache-Control": "private, max-age=86400"})
+
+
+@router.post("/me/delete")
+async def delete_account(confirm: bool = Body(..., embed=True), reason: str | None = Body(None, embed=True),
+                         st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """حذفِ حساب با مهلتِ بازگشت: فوراً غیرفعال + خروجِ همهٔ دستگاه‌ها + مهلتِ پیش‌فرض ۳۰ روز."""
+    if not confirm:
+        raise HTTPException(status_code=400, detail="برای حذفِ حساب باید confirm=true باشد.")
+    grace = int(getattr(settings, "ACADEMY_DELETE_GRACE_DAYS", 30) or 30)
+    sched = datetime.now(timezone.utc) + timedelta(days=grace)
+    st.status = "disabled"
+    st.deletion_scheduled_at = sched
+    if reason:
+        st.notes = ((st.notes or "") + f"\n[delete] {reason.strip()[:300]}").strip()[:1000]
+    for d in (await db.execute(select(AcademyDevice).where(AcademyDevice.student_id == st.id))).scalars().all():
+        await db.delete(d)
+    await db.commit()
+    logger.info("academy_delete_scheduled", sid=st.id, at=sched.isoformat())
+    return {"ok": True, "deletion_scheduled_at": sched.isoformat(), "grace_days": grace}
 
 
 @router.post("/progress/{slug}")

@@ -668,6 +668,83 @@ class AcademyStudent(Base):
     kyc_full_name: Mapped[str] = mapped_column(String(120), nullable=True)
     kyc_country: Mapped[str] = mapped_column(String(60), nullable=True)
     disclaimer_version: Mapped[str] = mapped_column(String(16), nullable=True)
+    # مرکزِ حساب (Account Center) — migration 042:
+    avatar_id: Mapped[str] = mapped_column(String(64), nullable=True)
+    referral_code: Mapped[str] = mapped_column(String(16), nullable=True, index=True)
+    referred_by: Mapped[int] = mapped_column(Integer, nullable=True, index=True)
+    invite_rewarded: Mapped[bool] = mapped_column(Boolean, default=False)
+    deletion_scheduled_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class AcademyAvatar(Base):
+    """عکسِ شخصیِ آپلودشدهٔ دانش‌آموز (base64). آواتارهای داخلی فقط با avatar_id ذخیره می‌شوند."""
+    __tablename__ = "academy_avatars"
+    student_id: Mapped[int] = mapped_column(Integer, ForeignKey("academy_students.id", ondelete="CASCADE"), primary_key=True)
+    content_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    data_b64: Mapped[str] = mapped_column(Text, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+
+class AcademyVoucher(Base):
+    """کدِ اشتراکِ قابلِ redeem (ادمین می‌سازد)."""
+    __tablename__ = "academy_vouchers"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    code: Mapped[str] = mapped_column(String(40), unique=True, nullable=False, index=True)
+    tier: Mapped[str] = mapped_column(String(20), default="vip")
+    days: Mapped[int] = mapped_column(Integer, default=30)
+    max_uses: Mapped[int] = mapped_column(Integer, default=1)
+    used_count: Mapped[int] = mapped_column(Integer, default=0)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class AcademyVoucherRedemption(Base):
+    """ثبتِ مصرفِ یک کد توسطِ یک کاربر — جلوگیری از مصرفِ دوباره."""
+    __tablename__ = "academy_voucher_redemptions"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    voucher_id: Mapped[int] = mapped_column(Integer, ForeignKey("academy_vouchers.id", ondelete="CASCADE"), nullable=False, index=True)
+    student_id: Mapped[int] = mapped_column(Integer, ForeignKey("academy_students.id", ondelete="CASCADE"), nullable=False, index=True)
+    redeemed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    __table_args__ = (UniqueConstraint("voucher_id", "student_id", name="uq_academy_voucher_redeem"),)
+
+
+class AcademyKyc(Base):
+    """احرازِ هویتِ دانش‌آموزِ آکادمی با آپلودِ مدرک (سطحِ بالاتر از kyc_status پایه)."""
+    __tablename__ = "academy_kyc"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    student_id: Mapped[int] = mapped_column(Integer, ForeignKey("academy_students.id", ondelete="CASCADE"), unique=True, nullable=False, index=True)
+    status: Mapped[str] = mapped_column(String(20), default="none")
+    level: Mapped[int] = mapped_column(Integer, default=0)
+    full_name: Mapped[str] = mapped_column(String(160), nullable=True)
+    national_id: Mapped[str] = mapped_column(String(40), nullable=True)
+    birth_date: Mapped[str] = mapped_column(String(20), nullable=True)
+    reason: Mapped[str] = mapped_column(Text, nullable=True)
+    submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    reviewed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class AcademyKycDoc(Base):
+    """مدرکِ آپلودشدهٔ KYC (base64). type: national_card/passport/driver_license/selfie."""
+    __tablename__ = "academy_kyc_docs"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    kyc_id: Mapped[int] = mapped_column(Integer, ForeignKey("academy_kyc.id", ondelete="CASCADE"), nullable=False, index=True)
+    doc_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    data_b64: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class AcademySupportTicket(Base):
+    """تیکتِ پشتیبانیِ دانش‌آموز."""
+    __tablename__ = "academy_support_tickets"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    student_id: Mapped[int] = mapped_column(Integer, ForeignKey("academy_students.id", ondelete="CASCADE"), nullable=False, index=True)
+    subject: Mapped[str] = mapped_column(String(200), nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default="open")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 
 class AcademyDevice(Base):

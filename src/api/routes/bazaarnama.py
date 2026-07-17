@@ -8,11 +8,13 @@
 
 from __future__ import annotations
 
+import base64
 import re
+import secrets
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Body, Depends, Header, HTTPException, Request
-from sqlalchemy import select
+from sqlalchemy import func, select, text as _sql_text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.deps import get_db
@@ -25,8 +27,14 @@ from src.api.routes.academy import (
     _rsi_list,
     current_student,
 )
+from src.core.config import settings
 from src.core.database import (
+    AcademyKyc,
+    AcademyKycDoc,
     AcademyStudent,
+    AcademySupportTicket,
+    AcademyVoucher,
+    AcademyVoucherRedemption,
     BnAiSignal,
     BnAlert,
     BnLayout,
@@ -35,6 +43,7 @@ from src.core.database import (
 )
 from src.core.logger import get_logger
 from src.core.security import create_access_token, verify_access_token
+from src.llm.client import llm_client
 from src.signals.candle_utils import drop_unclosed_candle_rows
 
 router = APIRouter()
@@ -1446,3 +1455,271 @@ async def feed_forex(payload: dict = Body(...),
         await redis_client.set_price(sym, {"bid": bid, "ask": ask, "price": mid,
                                            "ts": now_e, "source": "mt5"})
     return {"ok": True, "candles": n, "symbols": len(symbols), "quotes": len(quotes)}
+
+
+# ═══════════════ مرکزِ حساب (Account Center) ═══════════════
+_TIER_RANK = {"free": 0, "vip": 1, "premium": 2}
+
+
+# ── ۴) تاریخچهٔ پرداختِ خودسرویس (از جدولِ واقعیِ bn_payments) ──
+@router.get("/payment/history")
+async def payment_history(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    rows = (await db.execute(_sql_text(
+        "SELECT tx_hash, plan, product, usdt, status, created_at "
+        "FROM bn_payments WHERE student_id=:s ORDER BY created_at DESC LIMIT 100"),
+        {"s": st.id})).all()
+    return {"tx": [{
+        "tx_hash": r[0],
+        "plan": r[1],
+        "product": r[2],
+        "amount_usdt": (float(r[3]) if r[3] is not None else None),
+        "status": r[4],
+        "at": r[5].isoformat() if r[5] else None,
+    } for r in rows]}
+
+
+# ── ۵) کدِ redeem/voucher ──
+@router.post("/payment/redeem")
+async def redeem_voucher(code: str = Body(..., embed=True),
+                         st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    c = (code or "").strip().upper()
+    if not c:
+        raise HTTPException(status_code=400, detail="کدِ اشتراک را وارد کن.")
+    v = (await db.execute(select(AcademyVoucher).where(func.upper(AcademyVoucher.code) == c))).scalar_one_or_none()
+    if v is None:
+        raise HTTPException(status_code=400, detail="کدِ نامعتبر است.")
+    now = _now()
+    if not v.is_active:
+        raise HTTPException(status_code=400, detail="این کد غیرفعال شده است.")
+    if v.expires_at is not None and v.expires_at <= now:
+        raise HTTPException(status_code=400, detail="این کد منقضی شده است.")
+    if (v.used_count or 0) >= (v.max_uses or 1):
+        raise HTTPException(status_code=400, detail="ظرفیتِ این کد پر شده است.")
+    dup = (await db.execute(select(AcademyVoucherRedemption).where(
+        AcademyVoucherRedemption.voucher_id == v.id,
+        AcademyVoucherRedemption.student_id == st.id))).scalar_one_or_none()
+    if dup is not None:
+        raise HTTPException(status_code=400, detail="این کد را قبلاً استفاده کرده‌اید.")
+    if _TIER_RANK.get(v.tier, 0) > _TIER_RANK.get(_effective_tier(st), 0):
+        st.tier = v.tier
+    base = st.expires_at if (st.expires_at and st.expires_at > now) else now
+    st.expires_at = base + timedelta(days=int(v.days or 0))
+    v.used_count = (v.used_count or 0) + 1
+    db.add(AcademyVoucherRedemption(voucher_id=v.id, student_id=st.id))
+    # ثبت در تاریخچهٔ واقعیِ پرداخت (bn_payments) برای نمایش در payment/history
+    await db.execute(_sql_text(
+        "INSERT INTO bn_payments (student_id, product, plan, tx_hash, usdt, status) "
+        "VALUES (:s,'voucher','voucher',NULL,0,'confirmed')"), {"s": st.id})
+    await _grant_invite_reward(db, st)
+    await db.commit()
+    logger.info("bn_voucher_redeemed", sid=st.id, voucher=v.id, tier=st.tier)
+    return {"ok": True, "tier": st.tier, "expires_at": st.expires_at.isoformat()}
+
+
+# ── ۶) KYC آکادمی با آپلودِ مدرک (سطحِ بالاتر از kyc_status پایه) ──
+_KYC_ACCEPTED_DOCS = ["national_card", "passport", "driver_license"]
+_KYC_REQUIRED = ["national_card", "selfie"]
+_KYC_MAX_DOC_BYTES = 4 * 1024 * 1024
+_KYC_BIRTH_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _kyc_meta() -> dict:
+    return {"required_docs": _KYC_REQUIRED,
+            "accepted_doc_types": _KYC_ACCEPTED_DOCS + ["selfie"],
+            "max_doc_mb": _KYC_MAX_DOC_BYTES // (1024 * 1024)}
+
+
+@router.get("/kyc/status")
+async def kyc_status(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    k = (await db.execute(select(AcademyKyc).where(AcademyKyc.student_id == st.id))).scalar_one_or_none()
+    if k is None:
+        base = getattr(st, "kyc_status", None) or "none"
+        return {"status": base, "level": 0, "reason": None, **_kyc_meta()}
+    return {"status": k.status, "level": k.level, "reason": k.reason, **_kyc_meta()}
+
+
+def _decode_doc(b64: str, label: str) -> str:
+    raw = (b64 or "").strip()
+    if raw[:5].lower() == "data:" and "," in raw:
+        raw = raw.split(",", 1)[1]
+    if not raw:
+        raise HTTPException(status_code=400, detail=f"{label} ارسال نشده است.")
+    try:
+        blob = base64.b64decode(raw, validate=True)
+    except Exception:  # noqa: BLE001
+        raise HTTPException(status_code=400, detail=f"دادهٔ {label} نامعتبر است (base64).")
+    if len(blob) > _KYC_MAX_DOC_BYTES:
+        raise HTTPException(status_code=400, detail=f"حجمِ {label} بیش از ۴ مگابایت است.")
+    return base64.b64encode(blob).decode()
+
+
+@router.post("/kyc/submit")
+async def kyc_submit(full_name: str = Body(..., embed=True), national_id: str = Body(..., embed=True),
+                     birth_date: str = Body(..., embed=True), docs: list = Body(..., embed=True),
+                     selfie_b64: str = Body(..., embed=True),
+                     st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """ثبتِ KYC با آپلودِ مدرک + سلفی. وضعیت اولیه pending (بازبینیِ دستیِ ادمین)."""
+    fn = (full_name or "").strip()
+    nid = (national_id or "").strip()
+    bd = (birth_date or "").strip()
+    if len(fn) < 3:
+        raise HTTPException(status_code=400, detail="نامِ کامل را کامل وارد کن.")
+    if len(nid) < 4:
+        raise HTTPException(status_code=400, detail="کدِ ملی/شمارهٔ مدرک نامعتبر است.")
+    if not _KYC_BIRTH_RE.match(bd):
+        raise HTTPException(status_code=400, detail="تاریخِ تولد باید به شکلِ YYYY-MM-DD باشد.")
+    if not isinstance(docs, list) or not docs:
+        raise HTTPException(status_code=400, detail="حداقل یک مدرکِ هویتی لازم است.")
+    if len(docs) > 5:
+        raise HTTPException(status_code=400, detail="حداکثر ۵ مدرک مجاز است.")
+    saved: list[tuple[str, str]] = []
+    for d in docs:
+        dtype = (d.get("type") or "").strip().lower() if isinstance(d, dict) else ""
+        if dtype not in _KYC_ACCEPTED_DOCS:
+            raise HTTPException(status_code=400,
+                                detail=f"نوعِ مدرک نامعتبر است. مجاز: {', '.join(_KYC_ACCEPTED_DOCS)}.")
+        saved.append((dtype, _decode_doc(d.get("data_b64"), f"مدرکِ {dtype}")))
+    saved.append(("selfie", _decode_doc(selfie_b64, "سلفی")))
+
+    now = _now()
+    k = (await db.execute(select(AcademyKyc).where(AcademyKyc.student_id == st.id))).scalar_one_or_none()
+    if k is None:
+        k = AcademyKyc(student_id=st.id)
+        db.add(k)
+        await db.flush()
+    k.status = "pending"
+    k.full_name = fn[:160]
+    k.national_id = nid[:40]
+    k.birth_date = bd
+    k.reason = None
+    k.submitted_at = now
+    # هم‌گام‌سازی با فیلدِ پایهٔ روی دانش‌آموز
+    st.kyc_status = "pending"
+    st.kyc_full_name = fn[:120]
+    for old in (await db.execute(select(AcademyKycDoc).where(AcademyKycDoc.kyc_id == k.id))).scalars().all():
+        await db.delete(old)
+    for dtype, clean in saved:
+        db.add(AcademyKycDoc(kyc_id=k.id, doc_type=dtype, data_b64=clean))
+    await db.commit()
+    await _notify_support(f"🪪 KYCِ جدیدِ بازارنما — کاربر: {st.username} | نام: {fn} | مدارک: {len(saved)}")
+    logger.info("bn_kyc_submitted", sid=st.id, docs=len(saved))
+    return {"status": "pending"}
+
+
+# ── ۷) دعوتِ کاربر-به-کاربر ──
+async def _ensure_referral_code(db: AsyncSession, st: AcademyStudent) -> str:
+    if st.referral_code:
+        return st.referral_code
+    alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+    for _ in range(12):
+        cand = "".join(secrets.choice(alphabet) for _ in range(8))
+        exists = (await db.execute(select(AcademyStudent.id).where(
+            AcademyStudent.referral_code == cand))).scalar_one_or_none()
+        if not exists:
+            st.referral_code = cand
+            await db.commit()
+            return cand
+    raise HTTPException(status_code=500, detail="تولیدِ کدِ دعوت ناموفق بود؛ دوباره تلاش کن.")
+
+
+async def _grant_invite_reward(db: AsyncSession, st: AcademyStudent) -> None:
+    """در اولین پرداختِ موفقِ کاربرِ دعوت‌شده، به دعوت‌کننده روزِ VIP بده. idempotent."""
+    if not getattr(st, "referred_by", None) or getattr(st, "invite_rewarded", False):
+        return
+    inviter = (await db.execute(select(AcademyStudent).where(
+        AcademyStudent.id == st.referred_by))).scalar_one_or_none()
+    st.invite_rewarded = True
+    if inviter is None or inviter.id == st.id:
+        return
+    days = int(getattr(settings, "ACADEMY_INVITE_REWARD_DAYS", 15) or 15)
+    now = _now()
+    base = inviter.expires_at if (inviter.expires_at and inviter.expires_at > now) else now
+    inviter.expires_at = base + timedelta(days=days)
+    if _TIER_RANK.get(inviter.tier or "free", 0) < 1:
+        inviter.tier = "vip"
+
+
+@router.get("/invite")
+async def invite(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    code = await _ensure_referral_code(db, st)
+    invited = (await db.execute(select(func.count()).select_from(AcademyStudent).where(
+        AcademyStudent.referred_by == st.id))).scalar() or 0
+    rewarded = (await db.execute(select(func.count()).select_from(AcademyStudent).where(
+        AcademyStudent.referred_by == st.id, AcademyStudent.invite_rewarded.is_(True)))).scalar() or 0
+    days = int(getattr(settings, "ACADEMY_INVITE_REWARD_DAYS", 15) or 15)
+    base_url = getattr(settings, "ACADEMY_SITE_URL", "") or "https://user.pro-chart.com"
+    return {"code": code, "link": f"{base_url}?ref={code}",
+            "invited_count": int(invited), "reward_total": int(rewarded) * days,
+            "reward_unit": "روزِ اشتراکِ VIP"}
+
+
+@router.post("/invite/redeem")
+async def invite_redeem(code: str = Body(..., embed=True),
+                        st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    """ثبتِ کدِ دعوت‌کننده (یک‌بار؛ معمولاً بلافاصله پس از ثبت‌نام)."""
+    if getattr(st, "referred_by", None):
+        return {"ok": True, "already": True}
+    c = (code or "").strip().upper()
+    inviter = (await db.execute(select(AcademyStudent).where(
+        func.upper(AcademyStudent.referral_code) == c))).scalar_one_or_none() if c else None
+    if inviter is None or inviter.id == st.id:
+        raise HTTPException(status_code=400, detail="کدِ دعوت نامعتبر است.")
+    st.referred_by = inviter.id
+    await db.commit()
+    return {"ok": True, "already": False}
+
+
+# ── ۸) پشتیبانی ──
+_SUPPORT_SYSTEM = (
+    "تو دستیارِ پشتیبانیِ «Pro-Chart» هستی. کوتاه، دقیق و به فارسی پاسخ بده. "
+    "محصولات: پرو‌چارت (سیگنال + تریدِ واقعی)، کپی‌فارکس، کپی‌کریپتو، و آکادمی VIP. "
+    "اشتراک با USDT روی شبکهٔ BEP-20 (BSC) پرداخت می‌شود. اگر سؤال نیازِ دخالتِ انسانی/مالی دارد، "
+    "کاربر را به ثبتِ تیکتِ پشتیبانی راهنمایی کن."
+)
+
+
+@router.post("/support/chat")
+async def support_chat(message: str = Body(..., embed=True), history: list | None = Body(None, embed=True),
+                       st: AcademyStudent = Depends(current_student)):
+    msg = (message or "").strip()[:2000]
+    if not msg:
+        raise HTTPException(status_code=400, detail="پیام خالی است.")
+    lines: list[str] = []
+    for h in (history or [])[-10:]:
+        if not isinstance(h, dict):
+            continue
+        role = "کاربر" if (h.get("role") or "") == "user" else "پشتیبان"
+        content = (h.get("content") or "").strip()[:1000]
+        if content:
+            lines.append(f"{role}: {content}")
+    lines.append(f"کاربر: {msg}")
+    prompt = "\n".join(lines) + "\nپشتیبان:"
+    reply = await llm_client.complete(prompt, system=_SUPPORT_SYSTEM, system_replace=True)
+    if not reply:
+        reply = "الان امکانِ پاسخِ خودکار نیست. لطفاً تیکتِ پشتیبانی ثبت کن تا کارشناس پاسخ دهد."
+    return {"reply": reply.strip()}
+
+
+@router.post("/support/ticket")
+async def support_ticket(subject: str = Body(..., embed=True), body: str = Body(..., embed=True),
+                         st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    subj = (subject or "").strip()[:200]
+    bd = (body or "").strip()[:5000]
+    if len(subj) < 3 or len(bd) < 5:
+        raise HTTPException(status_code=400, detail="موضوع و متنِ تیکت را کامل وارد کن.")
+    t = AcademySupportTicket(student_id=st.id, subject=subj, body=bd, status="open")
+    db.add(t)
+    await db.commit()
+    await db.refresh(t)
+    await _notify_support(f"🎫 تیکتِ جدید #{t.id} — {st.username}\nموضوع: {subj}")
+    return {"ticket_id": t.id}
+
+
+@router.get("/support/tickets")
+async def support_tickets(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
+    rows = (await db.execute(select(AcademySupportTicket).where(AcademySupportTicket.student_id == st.id)
+            .order_by(AcademySupportTicket.created_at.desc()).limit(100))).scalars().all()
+    return {"tickets": [{
+        "id": t.id, "subject": t.subject, "status": t.status,
+        "created_at": t.created_at.isoformat() if t.created_at else None,
+    } for t in rows]}
