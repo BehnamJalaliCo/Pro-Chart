@@ -138,6 +138,12 @@ services:
       CENTRAL_AUTH_ENABLED: "1"
       # SEO — دامنهٔ canonical و ثبت در موتورهای جستجو (pro-chart.com)
       WEBSITE_DOMAIN: "pro-chart.com"
+      # zoneِ Cloudflare باید با WEBSITE_DOMAIN بخواند. .env مقدارِ trade-future.ir
+      # دارد (دامنهٔ دیگرِ همین حساب)، پس بدونِ این override، purgeِ سئوی مقالات به
+      # zoneِ اشتباه می‌رفت و بی‌صدا بی‌اثر می‌ماند. zone id از API تأیید شد.
+      CLOUDFLARE_ZONE_ID: "5b725123989dbca9a89419d52f0bbac7"
+      # توکن راز است و در فایلِ track‌شده نمی‌آید — از .env می‌آید (که gitignore است).
+      # توکنِ .env به توکنی که هر ۵ zoneِ حساب را می‌بیند به‌روز شد.
       SEO_GSC_SITE: "sc-domain:pro-chart.com"
       INDEXNOW_KEY: "b64067bef00e5006645434d5ec6bd0ed"
       # اتصالِ DB — کاهشِ pool تا با max_connections=50 و سرویس‌های دیگر headroom بماند
