@@ -194,13 +194,15 @@ export class DrawingLayer {
     return out;
   }
   setTool(t, color) { this.tool = t; if (color) this.color = color; this.pending = null; this.tmp = null; this.twoClick = false; this.dragging = false; this.multiSel = new Set(); this.hover = -1; this.canvas.style.pointerEvents = t === 'cursor' ? 'none' : 'auto'; this.canvas.style.cursor = (t === 'cursor' || t === 'select') ? 'default' : 'crosshair'; if (t !== 'select') { this.selected = -1; this.onSelect && this.onSelect(-1); } }
-  setDrawings(arr) { this.drawings = arr || []; this.render(); }
+  // record=true وقتی کاربر صریحاً چیدمانی را لود می‌کند (باید undo شود)؛
+  // پیش‌فرض false برای لودِ اولیه/بازیابیِ نماد که نباید در تاریخچه بیفتد.
+  setDrawings(arr, record = false) { if (record && this.drawings.length) this._pushUndo(); this.drawings = arr || []; this.selected = -1; this.render(); }
   getDrawings() { return this.drawings; }
   clearLast() { this.drawings.pop(); this._changed(); }
 
   // #۹ افزودنِ برنامه‌ایِ یک ترسیم (مثلِ جعبهٔ لانگ/شورت از کلیک‌راست) + ثبت در undo/persist
   addDrawing(d) { if (!d || typeof d !== 'object') return; this._pushUndo(); this.drawings.push(d); this.selected = this.drawings.length - 1; this._changed(); this.onSelect && this.onSelect(this.selected); }
-  clearAll() { this.drawings = []; this._changed(); }
+  clearAll() { if (this.drawings.length) this._pushUndo(); this.drawings = []; this.selected = -1; this.multiSel = new Set(); this._changed(); }
   _changed() { this.render(); this.onChange && this.onChange(this.drawings); }
 
   // فاصلهٔ زمانیِ یک بار (ثانیه) — میانهٔ چند فاصلهٔ آخر (مقاوم به گپ‌ها) برای اکستراپولیشن در فضای خالی.
@@ -605,6 +607,7 @@ export class DrawingLayer {
     const near = 7;
     for (let i = this.drawings.length - 1; i >= 0; i--) {
       const d = this.drawings[i];
+      if (!d || d.visible === false) continue; // شیِ مخفی (toggleVisible) نباید کلیک‌پذیر باشد
       if (this._tfHidden(d)) continue; // ترسیمِ پنهان‌شده در این کلاسِ تایم‌فریم قابلِ انتخاب نیست (#271)
       if (isExt(d.type)) { if (extHit(d, x, y, this)) return i; continue; }
       if (d.type === 'hline') { const yy = this._y(d.p); if (yy != null && Math.abs(yy - y) < near) return i; continue; }

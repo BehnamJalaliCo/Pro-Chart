@@ -170,6 +170,20 @@ function deriveCustomTf(str) {
 const WS_KEY = 'bn_workspace';
 const loadWS = () => { try { return JSON.parse(localStorage.getItem(WS_KEY) || '{}') || {}; } catch (e) { return {}; } };
 const saveWS = (patch) => { try { localStorage.setItem(WS_KEY, JSON.stringify({ ...loadWS(), ...patch })); } catch (e) { /* noop */ } };
+
+// ── ترسیم‌ها per-symbol (فاز ۵.۱) ─────────────────────────────────────────────
+// باگ: پیش‌تر ترسیم‌ها در همان WS_KEY (تک‌کلید) ذخیره می‌شدند، پس هر ترسیمی روی
+// **هر** نماد رندر می‌شد — EURUSD ترسیم می‌کردی، به BTCUSD می‌رفتی، همان‌جا بود.
+// حالا هر نماد کلیدِ خودش را دارد. سقفِ ۲۰۰ نماد در localStorage تا بی‌کران نشود.
+const DRAW_KEY = (sym) => `bn_draw:${String(sym || '').toUpperCase()}`;
+const loadSymbolDrawings = (sym) => { try { return JSON.parse(localStorage.getItem(DRAW_KEY(sym)) || '[]') || []; } catch (e) { return []; } };
+const saveSymbolDrawings = (sym, drawings) => {
+  try {
+    const key = DRAW_KEY(sym);
+    if (!drawings || !drawings.length) { localStorage.removeItem(key); return; }
+    localStorage.setItem(key, JSON.stringify(drawings));
+  } catch (e) { /* noop */ }
+};
 // آیکون‌های اختصاصیِ SVG برای نوع‌چارت‌های تخصصی — تا در منوی نوعِ چارت (سبکِ TradingView)
 // هر نوع آیکونِ متمایزِ خودش را داشته باشد (قبلاً renko/range/linebreak همه آیکونِ کندل و
 // kagi/pnf هر دو آیکونِ خط داشتند و از هم قابلِ‌تشخیص نبودند). اصیل‌اند، نه کپیِ آیکونِ TV.
@@ -628,7 +642,7 @@ export default function BazaarNama() {
     try { dl.setTfClass(TF_CLASS(tfRef.current)); } catch (e) { /* noop */ } // «نمایش روی تایم‌فریم‌ها»ِ ترسیم (#271)
     try { dl.setTimeFmt((t) => { const f = crossTimeFmtRef.current; return f ? f(t) : ''; }); } catch (e) { /* noop */ } // برچسبِ تاریخِ خطِ عمودی (tz-aware) #281
     // نگه‌داشتنِ خودکارِ ترسیم‌ها در مرورگر + بازیابیِ آن‌ها پس از رفرش
-    dl.onChange = (drawings) => { saveWS({ drawings }); setDrawList(drawings.slice()); setDrawVer((v) => v + 1); };
+    dl.onChange = (drawings) => { saveSymbolDrawings(symbolRef.current, drawings); setDrawList(drawings.slice()); setDrawVer((v) => v + 1); };
     // حالتِ «پاک‌کن» (Eraserِ TV): کلیک روی ترسیم به‌جای انتخاب، حذفش می‌کند.
     dl.onSelect = (i) => { if (crosshairIdRef.current === 'eraser' && i >= 0) { try { dl.removeAt(i); } catch (e) {} treeRefresh(); } else { setSelDraw(i); } };
     // دابل‌کلیک روی ترسیم (سبکِ TV): متن ⇒ ویرایشِ محتوا با prompt؛ بقیه ⇒ فقط انتخاب (نوارِ سبکِ شناور از onSelect می‌آید).
@@ -636,7 +650,7 @@ export default function BazaarNama() {
     // باگ#۲: وقتی ابزار پس از ترسیم به cursor ریست می‌شود، استیتِ React هم همگام شود
     // تا انتخابِ دوبارهٔ همان ابزار دوباره effect را trigger کند (وگرنه ابزارها بعد از یک‌بار/حذف کار نمی‌کنند).
     dl.onToolReset = () => setTool('cursor');
-    const savedDr = loadWS().drawings;
+    const savedDr = loadSymbolDrawings(symbolRef.current);
     if (savedDr && savedDr.length) setTimeout(() => { try { dl.setDrawings(savedDr); } catch (e) {} }, 500);
     // سایزدهیِ صریح (مثلِ Terminalِ کارا) — autoSize با DOMِ مطلق ارتفاعِ صفر می‌داد
     const resize = () => {
@@ -1299,7 +1313,14 @@ export default function BazaarNama() {
       const r = await api.chart(symbol, tf, '', 500, oldest - 1);
       const older = (r.candles || []).map((c) => ({ t: c.t, o: c.o, h: c.h, l: c.l, c: c.c, v: c.v })).filter((c) => c.t < oldest);
       if (!older.length) { lz.exhausted = true; return; }
+      // سقفِ کندل (فاز ۵.۲): prepend بی‌کران بود — هر اسکرولِ چپ ۵۰۰ کندل اضافه می‌کرد
+      // و همهٔ اندیکاتورها روی کلِ آرایه بازمحاسبه می‌شدند. با accelerator O(n²)ِ سابق
+      // فریزِ حتمی بود. حالا: این batch prepend می‌شود، ولی اگر مجموع از MAX_BARS رد شد،
+      // exhausted می‌شود تا دیگر batch نیاید. آرایه برش نمی‌خورد (نه چپ نه راست) — هر دو
+      // سمت داده‌ای‌اند که کاربر ممکن است ببیند؛ فقط رشدِ بیشتر متوقف می‌شود.
+      const MAX_BARS = 6000;
       const merged = older.concat(cs); candlesRef.current = merged;
+      if (merged.length >= MAX_BARS) lz.exhausted = true;
       const s = priceSeriesRef.current;
       if (s) { const data = chartType === 'heikin' ? heikin(merged) : merged; s.setData((['line', 'area', 'baseline', 'step'].includes(chartType) || EXT_VALUE_TYPES.includes(chartType)) ? valSeries(data) : ohlcColored(data, settingsRef.current)); }
       applyOverlays(merged); applySubs(merged); applyVolume(merged);
@@ -1378,6 +1399,19 @@ export default function BazaarNama() {
   // نگه‌داشتنِ خودکارِ میزِکار (نماد/تایم‌فریم/نوعِ چارت/تم/اندیکاتورها) — رفرش/خروج پاکش نمی‌کند
   useEffect(() => { saveWS({ symbol, tf, chartType, theme, overlays, subs }); }, [symbol, tf, chartType, theme, overlays, subs]);
   useEffect(() => { symbolRef.current = symbol; }, [symbol]);
+  // تغییرِ نماد ⇒ ترسیم‌های نمادِ جدید را در لایه بگذار (فاز ۵.۱).
+  // ترسیم‌های نمادِ قبلی از قبل با onChange (saveSymbolDrawings) ذخیره شده‌اند.
+  // firstRun را رد می‌کنیم چون effect بالای setup خودش لودِ اولیه را می‌کند.
+  const _drawSymRef = useRef(symbol);
+  useEffect(() => {
+    if (_drawSymRef.current === symbol) return; // همان نماد — کاری نکن
+    _drawSymRef.current = symbol;
+    const dl = drawRef.current;
+    if (!dl) return;
+    try { dl.setDrawings(loadSymbolDrawings(symbol)); } catch (e) { /* noop */ }
+    setDrawList(dl.getDrawings ? dl.getDrawings().slice() : []);
+    setDrawVer((v) => v + 1);
+  }, [symbol]);
   // #3 ماندگاریِ ترجیحاتِ Legend (جمع‌بودن/حالتِ نمایش)
   useEffect(() => { saveWS({ legCollapsed, legView }); }, [legCollapsed, legView]);
   // #4 در چیدمانِ فشرده (گوشی/تبلت/لنداسکیپِ کوتاه) grid اجباری ۱ (RAM/پینت) — بدونِ رگرسیونِ دسکتاپ
