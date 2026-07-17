@@ -516,7 +516,7 @@ export default function ToolRail({
                 style={{
                   background: TH.popoverBg,
                   border: `1px solid ${TH.border}`,
-                  boxShadow: '0 6px 22px -6px rgba(0,0,0,.45), 0 2px 6px -2px rgba(0,0,0,.30)',
+                  boxShadow: 'var(--pc-shadow-pop)',
                   minWidth: 208,
                   animation: 'brn-flyout-in 120ms ease-out both',
                 }}
@@ -630,7 +630,7 @@ export default function ToolRail({
             style={{
               background: TH.popoverBg,
               border: `1px solid ${TH.border}`,
-              boxShadow: '0 6px 22px -6px rgba(0,0,0,.45), 0 2px 6px -2px rgba(0,0,0,.30)',
+              boxShadow: 'var(--pc-shadow-pop)',
               minWidth: 176,
               animation: 'brn-flyout-in 120ms ease-out both',
             }}
@@ -779,7 +779,7 @@ export default function ToolRail({
           <div
             dir="rtl"
             className="absolute bottom-0 left-full ml-1.5 z-50 rounded-md overflow-hidden py-1 origin-left"
-            style={{ background: TH.popoverBg, border: `1px solid ${TH.border}`, boxShadow: '0 6px 22px -6px rgba(0,0,0,.45), 0 2px 6px -2px rgba(0,0,0,.30)', minWidth: 200, animation: 'brn-flyout-in 120ms ease-out both' }}
+            style={{ background: TH.popoverBg, border: `1px solid ${TH.border}`, boxShadow: 'var(--pc-shadow-pop)', minWidth: 200, animation: 'brn-flyout-in 120ms ease-out both' }}
           >
             <div className="px-3 pt-1 pb-1.5 text-[10px] font-semibold tracking-wider select-none" style={{ color: TH.text, opacity: 0.5 }}>حذف</div>
             {[
@@ -814,7 +814,7 @@ export default function ToolRail({
             transform: 'translateY(-50%)',
             background: TH.popoverBg,
             border: `1px solid ${TH.border}`,
-            boxShadow: '0 4px 14px -4px rgba(0,0,0,.45), 0 1px 3px -1px rgba(0,0,0,.30)',
+            boxShadow: 'var(--pc-shadow-pop)',
             animation: 'brn-tip-in 90ms ease-out both',
           }}
         >

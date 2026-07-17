@@ -131,7 +131,7 @@ export default function RightIconRail({ active, onSelect, TH, badges = {} }) {
             transform: 'translateY(-50%)',
             background: TH.popoverBg,
             border: `1px solid ${TH.border}`,
-            boxShadow: '0 4px 14px -4px rgba(0,0,0,.45), 0 1px 3px -1px rgba(0,0,0,.30)',
+            boxShadow: 'var(--pc-shadow-pop)',
             animation: 'brn-rtip-in 90ms ease-out both',
           }}
         >

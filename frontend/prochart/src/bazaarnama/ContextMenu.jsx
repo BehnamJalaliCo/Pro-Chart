@@ -75,7 +75,7 @@ function MenuPanel({ items, TH, onClose, style, dir = 'rtl', autoClamp = true })
         border: `1px solid ${TH.border}`,
         borderRadius: 6,
         color: TH.text,
-        boxShadow: '0 2px 4px rgba(0,0,0,.2), 0 6px 16px -4px rgba(0,0,0,.32)',
+        boxShadow: 'var(--pc-shadow-pop)',
         backdropFilter: 'saturate(1.05)',
         animation: 'pcScreenIn .1s ease-out both',
         transformOrigin: 'top right',

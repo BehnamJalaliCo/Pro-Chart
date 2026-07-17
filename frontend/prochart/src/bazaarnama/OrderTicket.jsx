@@ -157,7 +157,7 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
     <div className="p-2.5 space-y-3" style={{ color: TH.text }}>
       {/* خرید/فروش */}
       <div className="flex gap-1 p-1 rounded-xl" style={{ background: TH.subtle }}>
-        <button onClick={() => pickSide('buy')} style={{ ...seg, ...(side === 'buy' ? { background: TH.up, color: '#fff', boxShadow: '0 4px 12px -3px rgba(0,0,0,.25)' } : {}) }}>{t('trade.buy')}</button>
+        <button onClick={() => pickSide('buy')} style={{ ...seg, ...(side === 'buy' ? { background: TH.up, color: '#fff', boxShadow: 'var(--pc-shadow-pop)' } : {}) }}>{t('trade.buy')}</button>
         <button onClick={() => pickSide('sell')} style={{ ...seg, ...(side === 'sell' ? { background: TH.down, color: '#fff' } : {}) }}>{t('trade.sell')}</button>
       </div>
 
@@ -305,7 +305,7 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
       {/* دکمهٔ اقدام — اگر حساب متصل باشد سفارشِ واقعی (با تأیید)، وگرنه پیش‌نمایش */}
       <button onClick={onAction} disabled={connected && blocking}
         className="w-full flex items-center justify-center gap-2 rounded-xl active:scale-[.98] transition-transform"
-        style={{ height: 50, border: 0, cursor: (connected && blocking) ? 'not-allowed' : 'pointer', opacity: (connected && blocking) ? .55 : 1, fontFamily: 'inherit', fontWeight: 800, fontSize: 15, color: '#fff', background: side === 'buy' ? TH.up : TH.down, boxShadow: '0 10px 22px -8px rgba(0,0,0,.3)' }}>
+        style={{ height: 50, border: 0, cursor: (connected && blocking) ? 'not-allowed' : 'pointer', opacity: (connected && blocking) ? .55 : 1, fontFamily: 'inherit', fontWeight: 800, fontSize: 15, color: '#fff', background: side === 'buy' ? TH.up : TH.down, boxShadow: 'var(--pc-shadow-pop)' }}>
         <ShoppingCart size={17} className="shrink-0" />
         {/* برچسبِ پویا سبکِ TV: «خرید 0.5 EURUSD @ بازار» / «… @ 1.14000 حدی» — نمایشِ سمت+مقدار+نماد+نوع/قیمت پیش از کلیک */}
         <span className="truncate">{side === 'buy' ? t('trade.buy') : t('trade.sell')}{Number(amount) > 0 ? ` ${amount}` : ''} {baseUnit} @ {orderType === 'market' ? typeLabel('market') : ((isLimitish ? limitPx : stopPx) > 0 ? `${fmtPx(symbol, isLimitish ? limitPx : stopPx)} ${typeLabel(orderType)}` : typeLabel(orderType))}</span>

@@ -256,7 +256,7 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
           height: 'min(600px, 88vh)',
           background: TH.panel,
           border: `1px solid ${TH.border}`,
-          boxShadow: '0 12px 40px rgba(0,0,0,.35)',
+          boxShadow: 'var(--pc-shadow-modal)',
           color: TH.textStrong,
         }}
         onMouseDown={(e) => e.stopPropagation()}

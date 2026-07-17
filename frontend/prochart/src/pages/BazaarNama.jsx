@@ -2523,7 +2523,7 @@ export default function BazaarNama() {
         <span className="w-px h-6 self-center rounded shrink-0" style={{ background: TH.border, opacity: 0.7 }} />
         {/* اینتروالِ سبکِ TV: منتخب‌های inline + اینتروالِ فعال (اگر منتخب نبود) + dropdownِ کاملِ همه با ستارهٔ منتخب‌سازی */}
         <div data-menu className="flex items-center gap-0.5 rounded-lg p-0.5 relative" style={{ background: TH.subtle }}>
-          {(() => { const inline = TFS.filter((t) => tfFavs.includes(t) || t === tf); return inline.map((t) => { const on = tf === t; return (<button key={t} onClick={() => setTf(t)} title={TF_TITLE[t] || t} className="px-2 h-7 rounded-md text-[12px] font-semibold tabular-nums transition-colors duration-[120ms]" dir="ltr" style={on ? { background: TH.accent, color: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,.25)' } : { background: 'transparent', color: TH.text }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>{TF_LABEL[t] || t}</button>); }); })()}
+          {(() => { const inline = TFS.filter((t) => tfFavs.includes(t) || t === tf); return inline.map((t) => { const on = tf === t; return (<button key={t} onClick={() => setTf(t)} title={TF_TITLE[t] || t} className="px-2 h-7 rounded-md text-[12px] font-semibold tabular-nums transition-colors duration-[120ms]" dir="ltr" style={on ? { background: TH.accent, color: '#fff', boxShadow: 'var(--pc-shadow-chip)' } : { background: 'transparent', color: TH.text }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>{TF_LABEL[t] || t}</button>); }); })()}
           <button onClick={() => setTfMenu((v) => !v)} title="همهٔ اینتروال‌ها" className="px-1 h-7 rounded-md transition-colors duration-[120ms] flex items-center" style={{ color: TH.text }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}><ChevronDown size={14} /></button>
           {tfMenu && (
             <div className="absolute z-40 top-9 right-0 border rounded-lg w-40 max-h-[70vh] overflow-auto p-1 pc-pop" style={{ background: TH.panel, borderColor: TH.border }}>
@@ -2999,7 +2999,7 @@ export default function BazaarNama() {
             {/* فاز۲: راهنمای ژستِ بارِ اول (موبایل) */}
             {showGestureHint && compact && (
               <button onClick={dismissGestureHint} className="absolute left-1/2 -translate-x-1/2 z-[22] flex items-center gap-2 px-3.5 py-2 rounded-full text-[11.5px] font-semibold pc-hint-in"
-                style={{ bottom: 54, background: TH.popoverBg, color: TH.textStrong, border: `1px solid ${TH.border}`, boxShadow: '0 8px 24px rgba(0,0,0,.28)' }}>
+                style={{ bottom: 54, background: TH.popoverBg, color: TH.textStrong, border: `1px solid ${TH.border}`, boxShadow: 'var(--pc-shadow-modal)' }}>
                 {/* آیکونِ ژستِ لمس/اشاره — SVGِ اختصاصی (به‌جای ایموجیِ 👆 که در فونتِ سایت به‌صورتِ □ رِندر می‌شد) */}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0" aria-hidden="true">
                   <path d="M22 14a8 8 0 0 1-8 8" /><path d="M18 11v-1a2 2 0 0 0-4 0" /><path d="M14 10V9a2 2 0 0 0-4 0v1" /><path d="M10 9.5V4a2 2 0 0 0-4 0v10" />

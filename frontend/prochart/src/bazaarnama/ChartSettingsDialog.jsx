@@ -144,7 +144,7 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
           height: 'min(600px, 90vh)',
           background: TH.panel,
           border: `1px solid ${TH.border}`,
-          boxShadow: '0 8px 24px rgba(0,0,0,.28)',
+          boxShadow: 'var(--pc-shadow-modal)',
           color: TH.textStrong,
         }}
         onMouseDown={(e) => e.stopPropagation()}
@@ -637,7 +637,7 @@ function Switch({ TH, on, onToggle, disabled }) {
       className="relative inline-flex items-center w-9 h-5 rounded-full transition-colors duration-[150ms] shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
       style={{ background: on ? TH.accent : TH.border }}>
       <span className="absolute w-3.5 h-3.5 rounded-full bg-white transition-all duration-[150ms]"
-        style={{ right: on ? '2px' : '18px', boxShadow: '0 1px 2px rgba(0,0,0,.3)' }} />
+        style={{ right: on ? '2px' : '18px', boxShadow: 'var(--pc-shadow-chip)' }} />
     </button>
   );
 }

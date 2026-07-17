@@ -223,14 +223,14 @@ export default function CodeEditor({ value: rawValue, onChange, onRun, onSave, o
             style={{ position: 'absolute', inset: 0, margin: 0, padding: PAD, font: FONT, lineHeight: LH + 'px', whiteSpace: 'pre', overflow: 'auto', background: 'transparent', color: 'transparent', caretColor: '#e5e7eb', border: 'none', outline: 'none', resize: 'none', tabSize: 2 }} />
           {/* امضای تابعِ فعال */}
           {hint && (
-            <div style={{ position: 'absolute', top: Math.max(PAD, PAD + (line0 + 1) * LH - scrollY), left: hintLeft, zIndex: 25, background: '#161b27', border: '1px solid #2a3142', borderRadius: 6, boxShadow: '0 6px 20px #0007', padding: '4px 10px', maxWidth: 360, pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', top: Math.max(PAD, PAD + (line0 + 1) * LH - scrollY), left: hintLeft, zIndex: 25, background: '#161b27', border: '1px solid #2a3142', borderRadius: 6, boxShadow: 'var(--pc-shadow-modal)', padding: '4px 10px', maxWidth: 360, pointerEvents: 'none' }}>
               <span style={{ font: FONT, fontSize: 12, color: '#7dd3fc' }}>{hint.sig}</span>
               <span style={{ fontSize: 11, color: '#8a93a6', marginInlineStart: 8 }}>{hint.desc}</span>
             </div>
           )}
           {/* اتوکامپلیت */}
           {ac && (
-            <div style={{ position: 'absolute', top: Math.max(PAD, ac.top), left: Math.min(ac.left, 400), zIndex: 30, background: '#161b27', border: '1px solid #2a3142', borderRadius: 6, boxShadow: '0 6px 20px #0008', minWidth: 200, maxWidth: 420, maxHeight: 240, overflow: 'auto' }}>
+            <div style={{ position: 'absolute', top: Math.max(PAD, ac.top), left: Math.min(ac.left, 400), zIndex: 30, background: '#161b27', border: '1px solid #2a3142', borderRadius: 6, boxShadow: 'var(--pc-shadow-modal)', minWidth: 200, maxWidth: 420, maxHeight: 240, overflow: 'auto' }}>
               {ac.items.map((it, i) => {
                 const d = DOCS[it];
                 return (

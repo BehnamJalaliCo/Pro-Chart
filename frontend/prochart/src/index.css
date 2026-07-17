@@ -13,15 +13,25 @@
   --surface-hover: #2a2e39;
   --text-primary: #d1d4dc;
   --text-secondary: #b2b5be;
-  --text-muted: #787b86;
+  --text-muted: #9096a3;  /* AA روی هر سه سطحِ تاریک: default 6.03 · card 5.35 · elevated 4.57 */
   --scroll-thumb: #363a45;
+  /* ── ارتفاع: دقیقاً دو نقش ─────────────────────────────────────────────────
+     TradingView **یک** سایه دارد. ما ۳ توکن + ۸ سایهٔ درون‌خطی + ۵۱ کلاسِ Tailwind
+     داشتیم — بدونِ قاعده، و پیش‌فرض‌های Tailwind هم نشت کرده بودند.
+     «همه یکی» هم غلط است: یک مودالِ تمام‌صفحه واقعاً ارتفاعِ بیشتری از یک دراپ‌داون
+     دارد. پس دو نقشِ صریح، و بس:
+       --pc-shadow-pop → لایهٔ شناور: منو، دراپ‌داون، تولتیپ، پاپ‌اور
+       --pc-shadow-modal → مودالِ روی بک‌دراپ
+     --elev-1/--elev-2 به همین‌ها نگاشته شدند (سازگاریِ عقب‌رو، بدونِ مقدارِ سوم). */
   --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.2), 0 2px 12px rgba(0,0,0,.4);
+  --pc-shadow-modal: 0 8px 28px rgba(0,0,0,.55);
+  --pc-shadow-chip: 0 1px 3px rgba(0,0,0,.30);   /* برجستگیِ ریز: چیپِ فعال، دستگیرهٔ سوییچ — لایهٔ شناور نیست */
   /* توکن‌های معنایی (تاریک) — هم‌راستا با THEMES.dark چارت */
   --accent: #2962ff; --accent-weak: rgba(41,98,255,.14); --accent-2: #a78bfa;
   --up: #26a69a; --up-weak: rgba(38,166,154,.16); --down: #ef5350; --down-weak: rgba(239,83,80,.16);
   --warn: #f0b95d; --danger: #ff6169; --success: #2db39a;
-  --elev-1: 0 1px 2px rgba(0,0,0,.4), 0 10px 26px -12px rgba(0,0,0,.6);
-  --elev-2: 0 2px 8px rgba(0,0,0,.5), 0 20px 44px -16px rgba(0,0,0,.7);
+  --elev-1: var(--pc-shadow-pop);
+  --elev-2: var(--pc-shadow-modal);
 }
 
 /* مقیاس‌های مستقل از تم (تایپ/فاصله/گوشه) — توکنِ لایهٔ ۱ */
@@ -39,15 +49,17 @@
   --surface-hover: #f0f3fa;
   --text-primary: #131722;
   --text-secondary: #5d606b;
-  --text-muted: #787b86;
+  --text-muted: #6b6e78;  /* AA روی هر سه سطحِ روشن: default 5.09 · card 4.84 · elevated 4.58 */
   --scroll-thumb: #d1d4dc;
   --pc-shadow-pop: 0 2px 4px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.1);
+  --pc-shadow-modal: 0 8px 28px rgba(16,24,40,.18);
+  --pc-shadow-chip: 0 1px 3px rgba(16,24,40,.16);
   /* توکن‌های معنایی (روشن) — هم‌راستا با THEMES.light چارت */
   --accent: #2962FF; --accent-weak: rgba(41,98,255,.10); --accent-2: #8b5cf6;
   --up: #089981; --up-weak: rgba(8,153,129,.12); --down: #f23645; --down-weak: rgba(242,54,69,.12);
   --warn: #e8a33d; --danger: #e5484d; --success: #12a594;
-  --elev-1: 0 1px 2px rgba(16,24,40,.04), 0 10px 26px -12px rgba(16,24,40,.14);
-  --elev-2: 0 2px 8px rgba(16,24,40,.06), 0 20px 44px -16px rgba(16,24,40,.18);
+  --elev-1: var(--pc-shadow-pop);
+  --elev-2: var(--pc-shadow-modal);
 }
 
 * { font-family: 'IRANYekanX', 'Ravagh', 'AnjomanMax', 'Vazirmatn', sans-serif; }
@@ -383,9 +395,12 @@ button, [role="button"], a, summary, .pc-btn {
    ════════════════════════════════════════════════════════════════════ */
 :root {
   /* الویشنِ لایه‌بندیِ TV — پاپ‌آپ سبک، دیالوگ عمیق‌تر، همیشه با borderِ hairline */
-  --pc-elev-1: 0 1px 2px rgba(0,0,0,.24), 0 2px 6px rgba(0,0,0,.32);
-  --pc-elev-menu: 0 2px 4px rgba(0,0,0,.28), 0 8px 20px -6px rgba(0,0,0,.5);
-  --pc-elev-dialog: 0 4px 12px rgba(0,0,0,.36), 0 24px 48px -12px rgba(0,0,0,.62);
+  /* الویشنِ لایه‌بندی — این‌ها سیستمِ چهارمِ سایه بودند با همان نقش‌های --pc-shadow-*.
+     حالا به آن‌ها نگاشته‌اند تا یک منبعِ حقیقت بماند. .pc-elev-menu/.pc-elev-dialog
+     کلاس‌های ابزاری‌اند که صفر بار استفاده می‌شوند؛ نگه داشته شدند چون ارزان‌اند. */
+  --pc-elev-1: var(--pc-shadow-pop);
+  --pc-elev-menu: var(--pc-shadow-pop);
+  --pc-elev-dialog: var(--pc-shadow-modal);
   --pc-elev-pop: var(--pc-elev-menu);
   /* ringِ فوکاسِ کیبورد — دقیقاً رنگِ accentِ TV، شفافیتِ محسوس ولی نه پرنویز */
   --pc-focus-ring: 0 0 0 2px var(--pc-bg), 0 0 0 4px rgba(41,98,255,.55);
@@ -393,9 +408,9 @@ button, [role="button"], a, summary, .pc-btn {
   --pc-hairline-color: #2a2e39;
 }
 .light {
-  --pc-elev-1: 0 1px 2px rgba(16,24,40,.06), 0 2px 6px rgba(16,24,40,.10);
-  --pc-elev-menu: 0 2px 4px rgba(16,24,40,.08), 0 8px 20px -6px rgba(16,24,40,.16);
-  --pc-elev-dialog: 0 4px 12px rgba(16,24,40,.10), 0 24px 48px -12px rgba(16,24,40,.22);
+  --pc-elev-1: var(--pc-shadow-pop);
+  --pc-elev-menu: var(--pc-shadow-pop);
+  --pc-elev-dialog: var(--pc-shadow-modal);
   --pc-focus-ring: 0 0 0 2px var(--pc-bg), 0 0 0 4px rgba(41,98,255,.40);
   --pc-hairline-color: #e0e3eb;
 }

@@ -26,6 +26,23 @@ export default {
         },
         text: { primary: 'var(--text-primary)', secondary: 'var(--text-secondary)', muted: 'var(--text-muted)' },
       },
+      // مقیاسِ سایه = همان دو نقشِ --pc-shadow-*.
+      //
+      // پیش‌فرض‌های Tailwind (shadow-sm/md/lg/xl/2xl) پنج سایهٔ سیاهِ **تم‌ناآگاه**
+      // می‌سازند که کنارِ توکن‌های ما نشت می‌کردند — رندرِ زنده ۱۱ سایهٔ متمایز نشان داد
+      // در حالی که TradingView دقیقاً یکی دارد. ۲۷ کلاسِ shadow-* در سطوحِ زنده بود؛
+      // به‌جای ویرایشِ تک‌تک، خودِ مقیاس بازتعریف شد تا هر کلاس به نقشِ درست بیفتد و
+      // کدِ موجود دست‌نخورده بماند.
+      boxShadow: {
+        none: 'none',
+        sm: 'var(--pc-shadow-pop)',
+        DEFAULT: 'var(--pc-shadow-pop)',
+        md: 'var(--pc-shadow-pop)',
+        lg: 'var(--pc-shadow-pop)',    // منو/دراپ‌داون/پاپ‌اور
+        xl: 'var(--pc-shadow-modal)',
+        '2xl': 'var(--pc-shadow-modal)', // مودالِ روی بک‌دراپ
+        inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+      },
       fontFamily: { sans: ['Ravagh', 'AnjomanMax', 'Vazirmatn', 'sans-serif'], ravagh: ['Ravagh', 'sans-serif'], anjoman: ['AnjomanMax', 'sans-serif'], vazir: ['Vazirmatn', 'sans-serif'] },
       borderRadius: { xl: '0.875rem', '2xl': '1rem' },
     },

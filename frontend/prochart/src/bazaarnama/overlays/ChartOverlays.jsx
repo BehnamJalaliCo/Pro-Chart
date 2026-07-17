@@ -203,7 +203,7 @@ export function Legend({ legend, TH, symbol, tf, market, name, chartType, priceD
       /* توگلِ «پس‌زمینه»ِ تبِ Status lineِ TV: با slBackground===false پس‌زمینه/بلور/کادر حذف می‌شود (لجندِ شفاف). پیش‌فرض روشن = رفتارِ قبلی. */
       style={sl.slBackground === false
         ? {}
-        : { background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', boxShadow: '0 1px 3px rgba(0,0,0,.10)' }}>
+        : { background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', boxShadow: 'var(--pc-shadow-chip)' }}>
       {/* توگل‌های نمایشِ تبِ Status lineِ TV — این مسیرِ لجند (بدونِ اندیکاتور) قبلاً همیشه همه را نشان می‌داد؛ حالا مثلِ ChartLegend به sl.* احترام می‌گذارد. پیش‌فرضِ همه true ⇒ بدونِ رگرسیون. */}
       <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} name={name} chartType={chartType}
         showLogo={sl.slLogo !== false} showName={sl.slSymbol !== false} />

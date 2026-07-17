@@ -348,7 +348,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
                 left: `${p * 100}%`, transform: 'translate(-50%,-50%)',
                 width: 12, height: 12, background: TH.bg,
                 border: `2.5px solid ${trendCol}`,
-                boxShadow: '0 1px 3px rgba(0,0,0,.35)',
+                boxShadow: 'var(--pc-shadow-chip)',
               }} />
           )}
         </div>
