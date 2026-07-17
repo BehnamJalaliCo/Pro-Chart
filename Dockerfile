@@ -1,45 +1,23 @@
-FROM python:3.12-slim
+FROM python:3.13.14-slim@sha256:bffeb7bd6a85767587059c6ba23e1e9122078e3aa3fa836099171b9bb5a9bb00
 
 # متغیرهای محیطی
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1
+    PIP_NO_CACHE_DIR=1 \
+    HOME=/tmp
 
-# نصب وابستگی‌های سیستمی
+# فقط runtime کتابخانه‌های ML؛ wheel رسمی TA-Lib دیگر compiler یا curl نمی‌خواهد.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    wget \
-    curl \
-    libpq-dev \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
-
-# نصب TA-Lib از سورس (نسخه کلاسیک)
-RUN wget -q https://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
-    tar -xzf ta-lib-0.4.0-src.tar.gz && \
-    cd ta-lib && \
-    ./configure --prefix=/usr && \
-    make && \
-    make install && \
-    ldconfig && \
-    cd .. && \
-    rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
 
 WORKDIR /app
 
 # نصب وابستگی‌های پایتون
 COPY requirements.txt .
-# Install numpy first, then main deps, then pandas-ta (skip dep check), then compile TA-Lib
-RUN pip install --no-cache-dir numpy==2.2.6
-RUN pip install --no-cache-dir -r requirements.txt
-# numba را نصب کن ولی numpy را روی 2.2.6 نگه دار (numba نیازمند numpy<2.5 است؛
-# بدونِ این پین، نصبِ numba به‌طور جانبی numpy را به 2.5 ارتقا می‌داد و باعثِ
-# کرشِ «Numba needs NumPy 2.4 or less» در ماژول‌های ML/pandas-ta می‌شد).
-RUN pip install --no-cache-dir numba "numpy==2.2.6"
-RUN pip install --no-cache-dir --no-deps pandas-ta==0.4.71b0
-RUN pip install --no-cache-dir cython setuptools wheel && \
-    pip install --no-cache-dir --no-binary TA-Lib --no-build-isolation --no-deps --force-reinstall TA-Lib==0.4.32
-# اطمینانِ نهایی: numpy روی 2.2.6 قفل بماند (TA-Lib/سایر مراحل آن را ارتقا ندهند).
-RUN pip install --no-cache-dir "numpy==2.2.6" && python -c "import numpy,numba; print('numpy',numpy.__version__,'numba',numba.__version__)"
+RUN python -m pip install --no-cache-dir -r requirements.txt && \
+    python -c "import fastapi,lightgbm,numpy,pandas,talib,xgboost; print('fastapi',fastapi.__version__,'numpy',numpy.__version__,'pandas',pandas.__version__,'talib',talib.__version__,'lightgbm',lightgbm.__version__,'xgboost',xgboost.__version__)" && \
+    python -m pip check
 
 # کپی سورس کد
 COPY src/ ./src/
@@ -49,7 +27,10 @@ COPY scripts/ ./scripts/
 COPY run_*.py ./
 
 # ساخت پوشه‌ها
-RUN mkdir -p /app/logs /app/ml_models
+RUN mkdir -p /app/logs /app/ml_models && \
+    chown -R 1000:1000 /app/logs /app/ml_models
+
+USER 1000:1000
 
 EXPOSE 8000
 

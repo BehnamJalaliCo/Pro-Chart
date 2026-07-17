@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Check, ShieldCheck, Coins, TrendingUp } from 'lucide-react';
+import { X, Check, ShieldCheck, Coins, TrendingUp } from './tvIcons';
 
 import ReferralDeparture from '../components/ReferralDeparture';
 

@@ -24,6 +24,8 @@ export const CROSSHAIR_MODES = [
   { id: 'dot', label: 'نقطه‌ای', mode: CROSSHAIR_MODE.Normal, glyph: 'dot', cursor: 'crosshair', linesVisible: true },
   { id: 'arrow', label: 'پیکانی', mode: CROSSHAIR_MODE.Normal, glyph: 'arrow', cursor: 'default', linesVisible: true },
   { id: 'hidden', label: 'بدون', mode: CROSSHAIR_MODE.Hidden, glyph: 'none', cursor: 'default', linesVisible: false },
+  // پاک‌کن (Eraserِ TV) — کلیک روی ترسیم آن را حذف می‌کند. کراس‌هیرِ عادی نمایش داده می‌شود تا هدف‌گیری دقیق باشد.
+  { id: 'eraser', label: 'پاک‌کن', mode: CROSSHAIR_MODE.Normal, glyph: 'none', cursor: 'default', linesVisible: true, eraser: true },
 ];
 
 export const crosshairModeById = (id) =>
@@ -135,11 +137,14 @@ export const paintCrosshairGlyph = (ctx, glyph, x, y, th) => {
 export const PRICE_SCALE_MODE = { Normal: 0, Logarithmic: 1, Percentage: 2, IndexedTo100: 3 };
 
 // جدولِ حالت‌های مقیاس برای پر کردنِ <select>. value مستقیماً به applyOptions({mode}) می‌رود.
+// ترتیبِ نمایش هم‌ترازِ منوی مقیاسِ TradingView: عادی ← درصدی ← پایه۱۰۰ ← لگاریتمی
+// (تحقیقِ لوپِ #۳۵۸ + ترتیبِ دکمه‌های گوشهٔ TV «٪» پیش از «log»: درصد قبل از لگاریتمی، لگاریتمی آخر).
+// اصلاحِ #۳۳۶ که اشتباهاً لگاریتمی را دوم گذاشته بود. value مبناست پس بازچینش فقط نمایشی است.
 export const PRICE_SCALE_MODES = [
   { value: PRICE_SCALE_MODE.Normal, label: 'عادی' },
-  { value: PRICE_SCALE_MODE.Logarithmic, label: 'لگاریتمی' },
   { value: PRICE_SCALE_MODE.Percentage, label: 'درصدی' },
   { value: PRICE_SCALE_MODE.IndexedTo100, label: 'پایه ۱۰۰' },
+  { value: PRICE_SCALE_MODE.Logarithmic, label: 'لگاریتمی' },
 ];
 
 // ظاهرِ TV-مانندِ محورِ قیمت (افزایشی؛ روی chart.priceScale('right').applyOptions اعمال می‌شود).
@@ -250,8 +255,8 @@ export const priceAxisLayoutOptions = (fontFamily) => ({
 });
 
 // رنگ‌های پیش‌فرضِ سبز/قرمزِ برچسبِ قیمت (fallback وقتی تم رنگ نمی‌دهد).
-const LIVE_UP = '#26a69a';
-const LIVE_DOWN = '#ef5350';
+const LIVE_UP = '#089981';
+const LIVE_DOWN = '#f23645';
 const LIVE_FLAT = '#2962FF';
 
 /**
@@ -305,6 +310,8 @@ export const lastPriceLabelOptions = ({ priceLineColor } = {}) => ({
 // تعریفِ سشن‌ها برحسبِ ساعتِ UTC (تقریبیِ هماهنگ با backend session-coverage).
 // startUtc/endUtc ساعتِ شناورِ UTC. اگر end < start یعنی سشن از نیمه‌شبِ UTC عبور می‌کند.
 export const SESSIONS = [
+  // سیدنی — چهارمین سشنِ اصلیِ فارکس (از نیمه‌شبِ UTC عبور می‌کند؛ sessionBands این را پشتیبانی می‌کند).
+  { id: 'sydney', label: 'سیدنی', startUtc: 21, endUtc: 6, color: 'rgba(236,72,153,0.10)', edge: 'rgba(236,72,153,0.45)' },
   { id: 'tokyo', label: 'توکیو', startUtc: 0, endUtc: 9, color: 'rgba(99,102,241,0.10)', edge: 'rgba(99,102,241,0.45)' },
   { id: 'london', label: 'لندن', startUtc: 8, endUtc: 17, color: 'rgba(34,197,94,0.10)', edge: 'rgba(34,197,94,0.45)' },
   { id: 'newyork', label: 'نیویورک', startUtc: 13, endUtc: 22, color: 'rgba(234,179,8,0.10)', edge: 'rgba(234,179,8,0.45)' },
@@ -389,6 +396,16 @@ export const sessionBands = (fromSec, toSec, tz = 'UTC', opt = {}) => {
     for (let day = startDay; day <= endDay; day += DAY) {
       const oFrom = Math.max(day + L.startUtc * 3600, day + N.startUtc * 3600, fromSec);
       const oTo = Math.min(day + L.endUtc * 3600, day + N.endUtc * 3600, toSec);
+      if (oTo > oFrom) bands.push({ id: 'overlap', label: 'همپوشانی', from: oFrom, to: oTo, color: SESSION_OVERLAP_COLOR, edge: 'rgba(239,68,68,0.4)' });
+    }
+  }
+  // همپوشانیِ سیدنی↔توکیو: هر روز از شروعِ توکیو (۰h UTC) تا پایانِ سیدنی (۶h UTC).
+  if (wantOverlap && pick.find((s) => s.id === 'sydney') && pick.find((s) => s.id === 'tokyo')) {
+    const T = SESSIONS.find((s) => s.id === 'tokyo');
+    const Sy = SESSIONS.find((s) => s.id === 'sydney');
+    for (let day = startDay; day <= endDay; day += DAY) {
+      const oFrom = Math.max(day + T.startUtc * 3600, fromSec);
+      const oTo = Math.min(day + Sy.endUtc * 3600, toSec);
       if (oTo > oFrom) bands.push({ id: 'overlap', label: 'همپوشانی', from: oFrom, to: oTo, color: SESSION_OVERLAP_COLOR, edge: 'rgba(239,68,68,0.4)' });
     }
   }
@@ -506,12 +523,26 @@ export const countdownTint = (rem) => {
  * ────────────────────────────────────────────────────────────────────────── */
 
 // منطقه‌های آمادهٔ انتخاب در picker (پیش‌فرضِ مخاطبِ ما: تهران).
+// مراکزِ مالیِ اصلیِ جهان، مرتب بر اساسِ آفستِ UTC (غرب→شرق) مثلِ فهرستِ منطقهٔ زمانیِ TradingView.
+// فهرستِ منتخب (نه همهٔ ۴۰+ زونِ TV) تا decluttered بماند؛ انتخاب همیشه با id است پس ترتیب فقط نمایشی است.
 export const TIMEZONES = [
-  { id: 'Asia/Tehran', label: 'تهران' },
-  { id: 'UTC', label: 'UTC' },
-  { id: 'Europe/London', label: 'لندن' },
-  { id: 'America/New_York', label: 'نیویورک' },
-  { id: 'Asia/Tokyo', label: 'توکیو' },
+  { id: 'America/Los_Angeles', label: 'لس‌آنجلس' },   // UTC−8
+  { id: 'America/Chicago', label: 'شیکاگو' },          // UTC−6
+  { id: 'America/New_York', label: 'نیویورک' },        // UTC−5
+  { id: 'America/Sao_Paulo', label: 'سائوپائولو' },    // UTC−3
+  { id: 'UTC', label: 'UTC' },                          // UTC±0
+  { id: 'Europe/London', label: 'لندن' },              // UTC±0
+  { id: 'Europe/Berlin', label: 'فرانکفورت' },         // UTC+1
+  { id: 'Europe/Zurich', label: 'زوریخ' },             // UTC+1
+  { id: 'Europe/Moscow', label: 'مسکو' },              // UTC+3
+  { id: 'Asia/Tehran', label: 'تهران' },               // UTC+3:30
+  { id: 'Asia/Dubai', label: 'دبی' },                  // UTC+4
+  { id: 'Asia/Kolkata', label: 'بمبئی' },              // UTC+5:30
+  { id: 'Asia/Singapore', label: 'سنگاپور' },          // UTC+8
+  { id: 'Asia/Hong_Kong', label: 'هنگ‌کنگ' },          // UTC+8
+  { id: 'Asia/Shanghai', label: 'شانگهای' },           // UTC+8
+  { id: 'Asia/Tokyo', label: 'توکیو' },                // UTC+9
+  { id: 'Australia/Sydney', label: 'سیدنی' },          // UTC+10
 ];
 
 /**
@@ -520,16 +551,24 @@ export const TIMEZONES = [
  * @param {string} tz منطقهٔ زمانیِ نمایش
  * @returns {{timeScale:{tickMarkFormatter:Function}, localization:{timeFormatter:Function}}}
  */
-export const timeZoneOptions = (tz = 'UTC') => {
+export const timeZoneOptions = (tz = 'UTC', hour12 = false, dowOnLabels = false) => {
   const dateFmt = new Intl.DateTimeFormat('fa-IR', { timeZone: tz, month: 'short', day: 'numeric' });
-  const timeFmt = new Intl.DateTimeFormat('fa-IR', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false });
-  const fullFmt = new Intl.DateTimeFormat('fa-IR', { timeZone: tz, month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+  // «روزِ هفته روی برچسب‌ها» (Day of week on labels — تبِ Scalesِ TV): فقط برچسبِ روزِ ماه، آپشنال.
+  const dayFmt = dowOnLabels
+    ? new Intl.DateTimeFormat('fa-IR', { timeZone: tz, weekday: 'short', month: 'short', day: 'numeric' })
+    : dateFmt;
+  // قالبِ ساعت ۱۲/۲۴ (هم‌ترازِ «Time hours format»ِ تبِ Scalesِ TV) — روی محورِ زمان + تگِ کراس‌هیر + پنجرهٔ داده اعمال می‌شود.
+  const timeFmt = new Intl.DateTimeFormat('fa-IR', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: !!hour12 });
   // tickType: 0=Year 1=Month 2=DayOfMonth 3=Time 4=TimeWithSeconds
   const tickMarkFormatter = (time, tickType) => {
     const d = new Date((typeof time === 'number' ? time : 0) * 1000);
-    return tickType >= 3 ? timeFmt.format(d) : dateFmt.format(d);
+    if (tickType >= 3) return timeFmt.format(d);
+    if (tickType === 2) return dayFmt.format(d); // روزِ ماه — با روزِ هفته اگر فعال باشد
+    return dateFmt.format(d); // سال/ماه
   };
-  const timeFormatter = (time) => fullFmt.format(new Date((typeof time === 'number' ? time : 0) * 1000));
+  // تگِ زمانِ کراس‌هیر: تاریخ و ساعت را جدا فرمت و با جداکنندهٔ صریحِ « · » می‌چسبانیم — چون قالبِ ترکیبیِ Intlِ fa-IR
+  // بین موتورهای ICU متفاوت است و در مرورگر تاریخ و ساعت را بدونِ جداکننده به‌هم می‌چسباند («تیر ۴۱۳:۳۵» به‌جای «تیر ۴ · ۱۳:۳۵»).
+  const timeFormatter = (time) => { const d = new Date((typeof time === 'number' ? time : 0) * 1000); return `${dateFmt.format(d)} · ${timeFmt.format(d)}`; };
   return { timeScale: { tickMarkFormatter }, localization: { timeFormatter } };
 };
 
@@ -561,9 +600,9 @@ export const tabularAxisLayoutOptions = () => priceAxisLayoutOptions(AXIS_TABULA
  */
 export const priceScaleMenu = ({ mode = PRICE_SCALE_MODE.Normal, locked = false, invert = false } = {}) => [
   { id: 'regular', label: 'عادی', type: 'radio', checked: mode === PRICE_SCALE_MODE.Normal, value: PRICE_SCALE_MODE.Normal },
-  { id: 'log', label: 'لگاریتمی', type: 'radio', checked: mode === PRICE_SCALE_MODE.Logarithmic, value: PRICE_SCALE_MODE.Logarithmic },
   { id: 'percent', label: 'درصدی', type: 'radio', checked: mode === PRICE_SCALE_MODE.Percentage, value: PRICE_SCALE_MODE.Percentage },
   { id: 'indexed', label: 'پایه ۱۰۰', type: 'radio', checked: mode === PRICE_SCALE_MODE.IndexedTo100, value: PRICE_SCALE_MODE.IndexedTo100 },
+  { id: 'log', label: 'لگاریتمی', type: 'radio', checked: mode === PRICE_SCALE_MODE.Logarithmic, value: PRICE_SCALE_MODE.Logarithmic },
   { id: 'sep1', type: 'separator' },
   { id: 'auto', label: 'مقیاسِ خودکار', type: 'checkbox', checked: !locked },
   { id: 'invert', label: 'وارونه‌کردنِ مقیاس', type: 'checkbox', checked: !!invert },
@@ -611,7 +650,7 @@ export const applyPriceScaleMenu = (id, state = {}) => {
 export const priceScaleCornerButtons = ({ mode = PRICE_SCALE_MODE.Normal, locked = false } = {}) => [
   { id: 'percent', label: '٪', title: 'مقیاسِ درصدی', active: mode === PRICE_SCALE_MODE.Percentage },
   { id: 'log', label: 'log', title: 'مقیاسِ لگاریتمی', active: mode === PRICE_SCALE_MODE.Logarithmic },
-  { id: 'auto', label: 'A', title: 'مقیاسِ خودکار (Fit)', active: !locked },
+  { id: 'auto', label: 'auto', title: 'مقیاسِ خودکار (Fit)', active: !locked },
 ];
 
 /**

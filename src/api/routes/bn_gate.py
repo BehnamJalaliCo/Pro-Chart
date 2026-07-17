@@ -64,11 +64,6 @@ async def grant_forex_trial(st: AcademyStudent, db: AsyncSession) -> None:
         logger.warning("grant_forex_trial_failed", error=str(e))
 
 
-def _prochart_active(st: AcademyStudent) -> bool:
-    from src.api.routes.bazaarnama import _prochart_active as _pa
-    return _pa(st)
-
-
 async def _crypto_gate(st: AcademyStudent, db: AsyncSession) -> dict:
     """کریپتو: رفرالِ LBank + موجودی ≥ $۵۰. بدونِ تریال."""
     acc = (await db.execute(select(BnExchangeAccount).where(
@@ -111,6 +106,11 @@ async def _crypto_balance(st: AcademyStudent, acc) -> float | None:
     except Exception as e:  # noqa: BLE001
         logger.warning("crypto_balance_failed", sid=st.id, error=str(e))
         return None
+
+
+def _prochart_active(st: AcademyStudent) -> bool:
+    from src.api.routes.bazaarnama import _prochart_active as _pa
+    return _pa(st)
 
 
 def _forex_gate(st: AcademyStudent) -> dict:

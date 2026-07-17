@@ -1,6 +1,6 @@
 // صفحهٔ قفلِ اپ — ورودِ PIN با کیبوردِ عددی. تم‌آگاه، دوزبانه، لوگوی برند.
 import React, { useState, useEffect } from 'react';
-import { Delete, Fingerprint } from 'lucide-react';
+import { Delete, Fingerprint } from '../bazaarnama/tvIcons';
 import { verifyPin, hasPin } from './lock';
 import { bioEnabled, bioVerify } from './biometric';
 import { useApp } from '../appStore';
@@ -49,7 +49,7 @@ export default function AppLock({ onUnlock }) {
       <div className="grid grid-cols-3 gap-3" style={{ width: 250 }}>
         {keys.map((k) => {
           if (k === 'del') return <button key={k} onClick={back} className="flex items-center justify-center active:scale-90 transition-transform" style={{ height: 62, borderRadius: 18, background: 'transparent', border: 0, color: 'var(--text-secondary)', cursor: 'pointer' }}><Delete size={22} /></button>;
-          if (k === 'ok') return <button key={k} onClick={submit} className="flex items-center justify-center active:scale-90 transition-transform" style={{ height: 62, borderRadius: 18, background: ACCENT, border: 0, color: '#fff', fontWeight: 800, fontSize: 15, cursor: 'pointer' }}>OK</button>;
+          if (k === 'ok') return <button key={k} onClick={submit} className="flex items-center justify-center active:scale-90 transition-transform" style={{ height: 62, borderRadius: 18, background: ACCENT, border: 0, color: '#fff', fontWeight: 800, fontSize: 15, cursor: 'pointer' }}>{t('lock.ok')}</button>;
           return <button key={k} onClick={() => push(k)} className="flex items-center justify-center active:scale-90 transition-transform tabular-nums" style={{ height: 62, borderRadius: 18, background: 'var(--surface-card)', border: '1px solid var(--surface-border)', color: 'var(--text-primary)', fontWeight: 700, fontSize: 22, cursor: 'pointer' }} dir="ltr">{k}</button>;
         })}
       </div>

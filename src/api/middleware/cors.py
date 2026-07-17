@@ -24,10 +24,10 @@ DEFAULT_PRODUCTION_ORIGINS = [
     "https://coinepro.com",
     "https://www.coinepro.com",
     "https://panel.coinepro.com",
-    # اپِ اندرویدِ مستقل (Capacitor) — محتوا داخلِ APK بسته‌بندی شده و از
-    # مبدأ https://localhost سرو می‌شود؛ فقط API آنلاین صدا زده می‌شود.
+    # اپِ اندرویدِ مستقلِ فعلی (Capacitor) — androidScheme در config برابر
+    # https است، پس تنها origin بومیِ لازم https://localhost است. اگر پلتفرم
+    # iOS با scheme سفارشی اضافه شد، origin آن باید صریحاً از env وارد شود.
     "https://localhost",
-    "capacitor://localhost",
 ]
 
 # پیش‌فرض development — localhost با پورت‌های متداول

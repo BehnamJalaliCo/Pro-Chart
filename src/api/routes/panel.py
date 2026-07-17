@@ -1965,8 +1965,8 @@ async def ml_retrain(
 async def ml_ensemble_weights(
     admin: Admin = Depends(get_current_admin),
 ):
-    # وزن‌های پیش‌فرضِ ترکیبی — inline تا از import سنگینِ src.ml.ensemble
-    # (pandas_ta/numba که با NumPy 2.5 ناسازگار است) جلوگیری شود.
+    # وزن‌های پیش‌فرضِ ترکیبی — inline تا route به module اختیاری و سنگینِ
+    # src.ml.ensemble وابسته نشود؛ این module در image فعلی deploy وجود ندارد.
     default_weights = {"xgboost": 0.40, "lgbm": 0.35, "lstm": 0.25}
     # اگر override در Redis ثبت شده باشد (از طریق PUT)، همان را برمی‌گردانیم.
     try:

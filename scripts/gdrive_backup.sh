@@ -20,7 +20,10 @@ docker compose exec -T timescaledb pg_dump -U coinepro -d "$DB" 2>/dev/null | gz
 docker compose exec -T redis redis-cli SAVE >/dev/null 2>&1
 docker compose cp redis:/data/dump.rdb "$TMP/redis_dump.rdb" >/dev/null 2>&1
 crontab -l > "$TMP/crontab.txt" 2>/dev/null
-docker compose config > "$TMP/docker-compose.resolved.yml" 2>/dev/null
+# Configuration topology is useful for restore, but interpolated values and
+# env_file contents are secrets and must never enter the remote snapshot.
+docker compose config --no-interpolate --no-env-resolution \
+  > "$TMP/docker-compose.unresolved.yml" 2>/dev/null
 docker volume ls > "$TMP/docker_volumes.txt" 2>/dev/null
 cp "$PROJECT/RESTORE_GDRIVE.md" "$TMP/" 2>/dev/null
 # گواهی‌های SSL (مالکِ root) — از طریقِ docker خوانده و tar می‌شوند (forex اجازهٔ مستقیم ندارد)
@@ -34,6 +37,14 @@ $RCLONE --config "$CONF" sync "$PROJECT" "$REMOTE/project-mirror" \
   --exclude 'dist/' \
   --exclude '__pycache__/' --exclude '*.pyc' \
   --exclude '/logs/' \
+  --exclude '/backups/' --exclude '/backup-logs/' \
+  --exclude '/.codex-backups/' \
+  --exclude '/secrets/' \
+  --exclude '.env' --exclude '.env.*' \
+  --exclude '.cf' --exclude '.igkey' --exclude '.git-credentials' \
+  --exclude '**/rclone.conf' \
+  --exclude '*.pem' --exclude '*.key' --exclude '*.crt' \
+  --exclude '*.p12' --exclude '*.pfx' \
   --exclude '/certbot/conf/' \
   --exclude '/avatar_work/frames/' \
   --exclude '/avatar_work/stage/' \

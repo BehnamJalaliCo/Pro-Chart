@@ -5,28 +5,33 @@
 // میانگینِ بازهٔ واقعی برای اندازهٔ پیش‌فرضِ آجر/بازه
 export function avgRange(cs, p = 14) {
   if (!cs.length) return 1;
+  // ATRِ اخیر (میانگینِ True Rangeِ p بارِ آخر) — مثلِ TV؛ نه p بارِ قدیمی‌ترین.
+  //   قبلاً از ایندکسِ ۰ می‌شمرد و زود break می‌زد ⇒ اندازهٔ خودکارِ آجرِ Renko/Range/Kagi
+  //   بر پایهٔ نوسانِ ~۸۰۰ کندلِ پیش بود، نه نوسانِ فعلی. #481
+  const start = Math.max(1, cs.length - p);
   let sum = 0, n = 0;
-  for (let i = 1; i < cs.length; i++) {
+  for (let i = start; i < cs.length; i++) {
     const tr = Math.max(cs[i].h - cs[i].l, Math.abs(cs[i].h - cs[i - 1].c), Math.abs(cs[i].l - cs[i - 1].c));
     sum += tr; n++;
-    if (n >= p && i >= p) break;
   }
-  return n ? sum / n : (cs[0].h - cs[0].l) || 1;
+  return n ? sum / n : (cs[cs.length - 1].h - cs[cs.length - 1].l) || 1;
 }
 
 // تخصیصِ زمانِ صعودیِ یکتا
 function timer() { let last = 0; return (t) => { const v = Math.max(t || 0, last + 1); last = v; return v; }; }
 
 // ── Renko ── (آجرها بر پایهٔ close)
-export function renko(cs, brick) {
+export function renko(cs, brick, atrLen) {
   if (!cs.length) return [];
-  brick = brick || avgRange(cs) || 1;
+  brick = brick || avgRange(cs, atrLen || 14) || 1;
   const out = []; const nt = timer();
-  let base = cs[0].c, dir = 0;
+  // دو دیوارِ top/bot: ادامهٔ روند فقط ۱ آجر می‌خواهد ولی بازگشت باید ۲ آجر حرکت کند (قانونِ استانداردِ Renko/TV).
+  // قبلاً یک baseِ تکی بود که بعد از فقط ۱ آجرِ برگشت آجرِ معکوس می‌زد ⇒ بازگشت‌های جعلیِ اضافی (نمای «نازک/پرنویز»).
+  let top = cs[0].c, bot = cs[0].c;
   for (const c of cs) {
-    let price = c.c;
-    while (price >= base + brick) { const o = base, cl = base + brick; out.push({ t: nt(c.t), o, h: cl, l: o, c: cl }); base += brick; dir = 1; }
-    while (price <= base - brick) { const o = base, cl = base - brick; out.push({ t: nt(c.t), o, h: o, l: cl, c: cl }); base -= brick; dir = -1; }
+    const price = c.c;
+    while (price >= top + brick) { const o = top, cl = top + brick; out.push({ t: nt(c.t), o, h: cl, l: o, c: cl }); top += brick; bot = top - brick; }
+    while (price <= bot - brick) { const o = bot, cl = bot - brick; out.push({ t: nt(c.t), o, h: o, l: cl, c: cl }); bot -= brick; top = bot + brick; }
   }
   return out;
 }
@@ -68,9 +73,9 @@ export function lineBreak(cs, n = 3) {
 }
 
 // ── Kagi ── (خطِ پیوسته که با برگشتِ ≥reversal جهت عوض می‌کند) → نقاطِ خط
-export function kagi(cs, reversal) {
+export function kagi(cs, reversal, atrLen) {
   if (!cs.length) return [];
-  reversal = reversal || avgRange(cs) || 1;
+  reversal = reversal || avgRange(cs, atrLen || 14) || 1;
   const nt = timer();
   const pts = [{ t: nt(cs[0].t), value: cs[0].c }];
   let dir = 0, ext = cs[0].c;
@@ -85,9 +90,9 @@ export function kagi(cs, reversal) {
 }
 
 // ── Point & Figure ── (سادهٔ ستونی) → نقاطِ خطِ سقف/کفِ ستون‌ها
-export function pnf(cs, box, reversal = 3) {
+export function pnf(cs, box, reversal = 3, atrLen) {
   if (!cs.length) return [];
-  box = box || avgRange(cs) || 1;
+  box = box || avgRange(cs, atrLen || 14) || 1;
   const nt = timer();
   const pts = []; let dir = 0, ext = cs[0].c;
   for (const c of cs) {
@@ -103,8 +108,8 @@ export function pnf(cs, box, reversal = 3) {
 // ── Volume (هیستوگرامِ حجم، سبک TradingView) ──
 // overlay روی مقیاسِ قیمتِ مستقل ('' → جدا از مقیاسِ اصلی) و چسبیده به کفِ چارت،
 // نیمه‌شفاف، رنگِ هر میله سبز/قرمز بر پایهٔ جهتِ کندل (close≥open). پیش‌فرض روشن.
-export const VOL_UP = 'rgba(38,166,154,.5)';   // سبزِ teal مثلِ TV (نیمه‌شفاف)
-export const VOL_DOWN = 'rgba(239,83,80,.5)';  // قرمزِ TV (نیمه‌شفاف)
+export const VOL_UP = 'rgba(8,153,129,.5)';   // سبزِ up مثلِ پالتِ فعلیِ TV (#089981، نیمه‌شفاف) — هم‌تراز با کندل‌ها
+export const VOL_DOWN = 'rgba(242,54,69,.5)';  // قرمزِ down مثلِ پالتِ فعلیِ TV (#f23645، نیمه‌شفاف) — هم‌تراز با کندل‌ها
 
 // دادهٔ هیستوگرامِ حجم: هر نقطه {time,value,color} — رنگ بر پایهٔ up/down.
 export function volumeData(cs, opts = {}) {
@@ -148,11 +153,13 @@ export function buildVolume(cs, opts = {}) {
 }
 
 export const NONSTANDARD = ['renko', 'range', 'linebreak', 'kagi', 'pnf'];
-export function buildNonStandard(type, cs) {
-  if (type === 'renko') return { kind: 'candle', data: renko(cs) };
-  if (type === 'range') return { kind: 'candle', data: rangeBars(cs) };
-  if (type === 'linebreak') return { kind: 'candle', data: lineBreak(cs, 3) };
-  if (type === 'kagi') return { kind: 'line', data: kagi(cs) };
-  if (type === 'pnf') return { kind: 'line', data: pnf(cs) };
+// عددِ مثبتِ معتبر یا undefined (تا سازنده به پیش‌فرضِ avgRange برگردد). ورودیِ خالی/۰/نامعتبر ⇒ undefined.
+function posOr(v) { const n = Number(v); return (v != null && v !== '' && Number.isFinite(n) && n > 0) ? n : undefined; }
+export function buildNonStandard(type, cs, p = {}) {
+  if (type === 'renko') return { kind: 'candle', data: renko(cs, posOr(p.renkoBrick), posOr(p.atrLen)) };
+  if (type === 'range') return { kind: 'candle', data: rangeBars(cs, posOr(p.rangeSize)) };
+  if (type === 'linebreak') return { kind: 'candle', data: lineBreak(cs, posOr(p.lineBreakLines) || 3) };
+  if (type === 'kagi') return { kind: 'line', data: kagi(cs, posOr(p.kagiReversal), posOr(p.atrLen)) };
+  if (type === 'pnf') return { kind: 'line', data: pnf(cs, posOr(p.pnfBox), posOr(p.pnfReversal) || 3, posOr(p.atrLen)) };
   return null;
 }

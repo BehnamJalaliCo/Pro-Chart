@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Camera, Copy, Download, Link as LinkIcon, Droplet, Check, ChevronDown } from 'lucide-react';
+import { Camera, Copy, Download, Link as LinkIcon, Droplet, Check, ChevronDown } from './tvIcons';
 import { captureChart, canvasToBlob, downloadBlob, copyBlobToClipboard, copyText, loadScreenshotOpts, saveScreenshotOpts } from './screenshot';
 
 // منوی دوربین (#5): کپی به کلیپ‌بورد / دانلودِ PNG|JPG / کپیِ لینک + تنظیماتِ فرمت/واترمارک/caption.
@@ -71,11 +71,11 @@ export default function ScreenshotMenu({ TH, getCapture, uploadSnapshot, iconSiz
   };
 
   const T = TH;
-  const item = (icon, label, onClick) => (
+  const item = (icon, label, onClick, hotkey) => (
     <button onClick={onClick} disabled={busy} className="w-full text-right px-3 py-2 flex items-center gap-2.5 text-[13px] disabled:opacity-50"
       style={{ color: T.textStrong, minHeight: coarse ? 44 : 36 }}
       onMouseEnter={(e) => (e.currentTarget.style.background = T.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-      {icon}<span>{label}</span>
+      {icon}<span className="flex-1">{label}</span>{hotkey && <kbd className="text-[10px] opacity-45 tabular-nums" dir="ltr">{hotkey}</kbd>}
     </button>
   );
 
@@ -88,8 +88,9 @@ export default function ScreenshotMenu({ TH, getCapture, uploadSnapshot, iconSiz
       </button>
       {open && (
         <div className="absolute z-50 mt-1 right-0 w-56 rounded-lg py-1 shadow-xl" dir="rtl" style={{ background: T.popoverBg, border: `1px solid ${T.border}` }}>
-          {item(<Copy size={15} />, 'کپی تصویر', doCopy)}
+          {/* ترتیبِ منوی دوربینِ TV: «ذخیرهٔ تصویر» نخست، سپس کپی، سپس لینک */}
           {item(<Download size={15} />, 'ذخیرهٔ تصویر', doDownload)}
+          {item(<Copy size={15} />, 'کپی تصویر', doCopy, 'Alt+S')}
           {item(<LinkIcon size={15} />, 'کپیِ لینکِ تصویر', doLink)}
           <div className="my-1 border-t" style={{ borderColor: T.border }} />
           {/* فرمت */}

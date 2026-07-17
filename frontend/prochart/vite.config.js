@@ -16,18 +16,21 @@ export default defineConfig({
         simplify: true,
         identifierNamesGenerator: 'mangled',
         stringArray: true,
-        stringArrayEncoding: ['base64'],
-        stringArrayThreshold: 1,
+        // پروفایلِ کم‌هزینهٔ مستندِ obfuscator: رشته‌ها همچنان در آرایهٔ
+        // چرخان/درهم‌ریخته پنهان می‌شوند، اما decodeِ base64 در runtime ندارند.
+        stringArrayEncoding: [],
+        stringArrayThreshold: 0.75,
         rotateStringArray: true,
         shuffleStringArray: true,
-        splitStrings: true,
+        splitStrings: false,
         splitStringsChunkLength: 6,
         selfDefending: true,
         disableConsoleOutput: true,
-        numbersToExpressions: true,
-        // قفلِ DevTools: با باز شدنِ کنسول، حلقهٔ debugger تب را عملاً فریز می‌کند
-        debugProtection: true,
-        debugProtectionInterval: 2000,
+        numbersToExpressions: false,
+        // debugProtection برای هر ماژول یک حلقه/interval جدا تزریق می‌کند و روی
+        // اپِ بزرگ main-thread را دوره‌ای متوقف می‌کند؛ مبهم‌سازیِ خودِ کد فعال است.
+        debugProtection: false,
+        debugProtectionInterval: 0,
         // غیرفعال: روی برخی الگوهای کد declarationها را جابه‌جا و خطای TDZ
         // («Cannot access X before initialization» = صفحهٔ مشکی) می‌ساختند.
         controlFlowFlattening: false,

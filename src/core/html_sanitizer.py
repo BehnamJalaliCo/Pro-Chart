@@ -78,6 +78,13 @@ def sanitize_article_html(content: str, allow_tags: bool = True) -> str:
     if not content:
         return content
 
+    # Bleach strips disallowed tags but intentionally preserves their text content.
+    # Raw-text containers such as <script> and <style> must be removed as a whole
+    # before the allow-list pass, otherwise attacker-controlled payload text leaks
+    # into article/plain-text output and the regex fallback behaves differently.
+    content = _DANGEROUS_TAGS_RE.sub("", content)
+    content = _DANGEROUS_SELF_CLOSING_RE.sub("", content)
+
     if not allow_tags:
         # تمام tag ها حذف می‌شوند
         if _HAS_BLEACH:
@@ -96,10 +103,6 @@ def sanitize_article_html(content: str, allow_tags: bool = True) -> str:
 
     # ── Fallback regex-based (محافظه‌کارانه) ──
     cleaned = content
-    # حذف tag‌های خطرناک با محتوای آن‌ها (script, iframe, ...)
-    cleaned = _DANGEROUS_TAGS_RE.sub("", cleaned)
-    # حذف tag‌های خطرناک self-closing
-    cleaned = _DANGEROUS_SELF_CLOSING_RE.sub("", cleaned)
     # حذف event handlers (onclick, onerror, ...)
     cleaned = _EVENT_HANDLER_RE.sub("", cleaned)
     cleaned = _EVENT_HANDLER_SINGLE_QUOTE_RE.sub("", cleaned)

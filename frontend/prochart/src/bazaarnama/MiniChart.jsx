@@ -4,11 +4,15 @@ import { api } from '../api/client';
 import { useApp } from '../appStore';
 import { priceDigits } from './symbolMeta';
 
+// جداکنندهٔ هزارگان روی محورِ قیمت + برچسبِ آخرِ MiniChart — هم‌راستا با چارتِ اصلی و TradingView.
+const grp = (v, d) => Number(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const grpFmt = (d) => ({ type: 'custom', minMove: Math.pow(10, -d), formatter: (p) => (p == null || !Number.isFinite(Number(p)) ? '' : grp(p, d)) });
+
 // پالتِ روشن/تیره هم‌ترازِ TradingView (توکن‌های --pc-* از نقشهٔ راه).
 // سبز/قرمزِ کندل teal/red؛ متنِ off-white در تیره، #131722 در روشن؛ گریدِ بسیار کم‌رنگ.
 const PAL = {
-  dark:  { bg: '#131722', grid: 'rgba(255,255,255,.06)', text: '#d1d4dc', border: '#2a2e39', cross: '#9598a1', up: '#26a69a', down: '#ef5350' },
-  light: { bg: '#ffffff', grid: 'rgba(0,0,0,.06)',       text: '#131722', border: '#e0e3eb', cross: '#9598a1', up: '#26a69a', down: '#ef5350' },
+  dark:  { bg: '#131722', grid: 'rgba(255,255,255,.06)', text: '#d1d4dc', border: '#2a2e39', cross: '#9598a1', up: '#089981', down: '#f23645' },
+  light: { bg: '#ffffff', grid: 'rgba(0,0,0,.06)',       text: '#131722', border: '#e0e3eb', cross: '#9598a1', up: '#089981', down: '#f23645' },
 };
 const TH = PAL.dark; // سازگاریِ عقب‌رو (پیش‌فرضِ تیره)
 
@@ -74,13 +78,16 @@ export function Sparkline({ data, up, width = 56, height = 22, stroke, fill = tr
 }
 
 // چارتِ کوچکِ مستقل برای حالتِ چند-چارت (هر کدام نماد + تایم‌فریمِ خود)
-export default function MiniChart({ symbols = [], tf, initial, syncBus = null }) {
+export default function MiniChart({ symbols = [], tf, initial, syncBus = null, syncSymbol = false, syncTime = true, syncCrosshair = true }) {
   const elRef = useRef(null);
   const chartRef = useRef(null);
   const seriesRef = useRef(null);
   const theme = useApp((s) => s.theme) || 'light';
   const th = PAL[theme] || PAL.dark;
   const [symbol, setSymbol] = useState(initial || 'EURUSD');
+  const syncSymRef = useRef(syncSymbol); syncSymRef.current = syncSymbol; // آینهٔ زندهٔ تاگلِ سینکِ نماد (برای onMsgِ subscribe-once)
+  const syncTimeRef = useRef(syncTime); syncTimeRef.current = syncTime;    // تاگلِ سینکِ زمان/اسکرول بینِ سلول‌ها
+  const syncCrossRef = useRef(syncCrosshair); syncCrossRef.current = syncCrosshair; // تاگلِ سینکِ کراس‌هیر بینِ سلول‌ها
   const [last, setLast] = useState(null);
   const [dir, setDir] = useState(null); // 'up' | 'down' | null — رنگِ برچسبِ قیمت بر اساسِ روند
 
@@ -104,8 +111,10 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null })
       const onMsg = (type, payload) => {
         if (!chartRef.current) return; applying = true;
         try {
-          if (type === 'time' && payload) chartRef.current.timeScale().setVisibleLogicalRange(payload);
-          else if (type === 'cross') { if (payload && payload.time != null) chartRef.current.setCrosshairPosition(payload.value || 0, payload.time, seriesRef.current); else chartRef.current.clearCrosshairPosition(); }
+          if (type === 'time' && payload) { if (syncTimeRef.current) chartRef.current.timeScale().setVisibleLogicalRange(payload); }
+          else if (type === 'cross') { if (syncCrossRef.current) { if (payload && payload.time != null) chartRef.current.setCrosshairPosition(payload.value || 0, payload.time, seriesRef.current); else chartRef.current.clearCrosshairPosition(); } }
+          // سینکِ نماد (لینکِ چند-چارتِ TV): وقتی تاگل روشن است، همهٔ سلول‌ها نمادِ منتشرشده را می‌گیرند. setSymbol باعثِ echo نمی‌شود.
+          else if (type === 'symbol' && syncSymRef.current && payload) setSymbol(payload);
         } catch (e) {}
         applying = false;
       };
@@ -135,7 +144,7 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null })
       if (stop || !seriesRef.current) return;
       // دقتِ اعشارِ محورِ قیمت per-symbol (فارکس ۵، JPY ۳، شاخص/طلا ۲…) — مثلِ چارتِ اصلی؛
       // قبلاً MiniChart پیش‌فرضِ کتابخانه (۲ رقم) را می‌گرفت و برای فارکس «۱٫۱۴» نشان می‌داد.
-      { const d = priceDigits(symbol); try { seriesRef.current.applyOptions({ priceFormat: { type: 'price', precision: d, minMove: Math.pow(10, -d) } }); } catch (e) { /* noop */ } }
+      { const d = priceDigits(symbol); try { seriesRef.current.applyOptions({ priceFormat: grpFmt(d) }); } catch (e) { /* noop */ } }
       const cs = (r.candles || []).map((c) => ({ time: c.t, open: c.o, high: c.h, low: c.l, close: c.c }));
       seriesRef.current.setData(cs);
       chartRef.current && chartRef.current.timeScale().fitContent();
@@ -154,10 +163,10 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null })
   return (
     <div className="relative w-full h-full rounded overflow-hidden" style={{ border: `1px solid ${th.border}` }}>
       <div className="absolute top-1 right-1 z-10 flex items-center gap-1">
-        <select value={symbol} onChange={(e) => setSymbol(e.target.value)} className="text-[11px] rounded px-1 py-0.5 outline-none transition-colors duration-[120ms]" style={{ background: isDark ? 'rgba(0,0,0,.4)' : 'rgba(255,255,255,.72)', color: th.text, border: `1px solid ${th.border}` }}>
+        <select value={symbol} onChange={(e) => { const v = e.target.value; setSymbol(v); if (syncSymRef.current && syncBus) syncBus.emit('symbol', v); }} className="text-[11px] rounded px-1 py-0.5 outline-none transition-colors duration-[120ms]" style={{ background: isDark ? 'rgba(0,0,0,.4)' : 'rgba(255,255,255,.72)', color: th.text, border: `1px solid ${th.border}` }}>
           {symbols.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        {last != null && <span className="tnum text-[11px] font-semibold" dir="ltr" style={{ color: priceColor }}>{Number(last).toFixed(priceDigits(symbol))}</span>}
+        {last != null && <span className="tnum text-[11px] font-semibold" dir="ltr" style={{ color: priceColor }}>{grp(last, priceDigits(symbol))}</span>}
       </div>
       <div ref={elRef} className="w-full h-full" />
     </div>

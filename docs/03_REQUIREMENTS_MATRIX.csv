@@ -1,0 +1,163 @@
+شناسه,حوزه,اولویت,الزام,معیار پذیرش,شاهد لازم,وضعیت
+PC-001,محصول,P0,هدف محصول در تمام تصمیم‌ها اولویت داشته باشد,تصمیم‌های اصلی به هدف «بهترین تجربه برای فارسی‌زبانان» و ADR متصل باشند,ADR + بازبینی محصول,NOT_STARTED
+PC-002,محصول,P0,هیچ قابلیت موجود بدون مجوز حذف نشود,Inventory و Characterization test ثابت کند همه مسیرهای Baseline باقی مانده‌اند,Baseline diff + E2E,NOT_STARTED
+PC-003,محصول,P0,هیچ CTA یا کنترل مرده وجود نداشته باشد,Crawl همه کنترل‌ها؛ صفر Handler خالی، Placeholder دائمی یا Fake success,Static scan + E2E,NOT_STARTED
+PC-004,محصول,P0,تعریف ۱۰۰٪ بر اساس Gateها اعمال شود,COMPLETE فقط پس از همه معیارهای توقف و سه Clean run ثبت شود,Execution state + CI artifacts,NOT_STARTED
+PC-005,محصول,P0,Routeهای قدیمی سازگار بمانند,هر Route تغییرکرده Redirect یا Compatibility test داشته باشد,Route contract test,NOT_STARTED
+PC-006,محصول,P1,Featureها به صورت افزایشی منتشر شوند,قابلیت‌های پرریسک Feature Flag، Canary و Rollback داشته باشند,Flag registry + release report,NOT_STARTED
+PC-007,محصول,P1,محدوده P0/P1/P2 شفاف باشد,هر Requirement Owner، وضعیت و Evidence داشته باشد,Matrix audit,NOT_STARTED
+PC-008,محصول,P1,هیچ متن خارج از هویت محصول نمایش داده نشود,Scan متن‌های عمومی فقط واژگان برند و محصول را بیابد,Content scan,NOT_STARTED
+PC-009,زبان و RTL,P0,ریشه رابط فارسی و RTL باشد,lang=fa و dir=rtl در همه Routeهای عمومی,DOM assertion,NOT_STARTED
+PC-010,زبان و RTL,P0,تمام رشته‌ها از i18n بیایند,صفر متن Hard-coded عمومی در Componentها,i18n static scan,NOT_STARTED
+PC-011,زبان و RTL,P0,انگلیسی خارج Whitelist صفر باشد,Scanner در DOM و Bundle هیچ رشته غیرمجاز نیابد,Language gate,NOT_STARTED
+PC-012,زبان و RTL,P0,توکن‌های LTR ایزوله شوند,Symbol، قیمت، Formula و Code در Span جهت‌دار درست نمایش یابند,Visual + DOM test,NOT_STARTED
+PC-013,زبان و RTL,P0,تقویم جلالی و میلادی پشتیبانی شود,تبدیل بدون تغییر Timestamp و آزمون مرزی سال/ماه/DST,Unit + E2E,NOT_STARTED
+PC-014,زبان و RTL,P0,اعداد فارسی/لاتین قابل انتخاب باشند,تنظیم کاربر در همه نمایش‌ها جز کد/نماد اعمال و ذخیره شود,E2E + snapshot,NOT_STARTED
+PC-015,زبان و RTL,P1,جست‌وجو Normalize فارسی داشته باشد,ی/ک عربی، نیم‌فاصله و Transliteration نتایج درست بدهند,Search golden suite,NOT_STARTED
+PC-016,زبان و RTL,P1,واژه‌نامه فنی ثابت باشد,اصطلاح‌های مصوب در UI و راهنما یکسان باشند,Content lint,NOT_STARTED
+PC-017,زبان و RTL,P1,پیام خطا راه‌حل‌محور باشد,هر خطای P0 شامل علت قابل‌فهم و اقدام بعدی باشد,UX review + E2E,NOT_STARTED
+PC-018,زبان و RTL,P1,Typography فارسی بدون clipping باشد,تمام Viewportها و Zoom 200% بدون بریدگی و overlap,Visual matrix,NOT_STARTED
+PC-019,Design System,P0,Tokenهای رنگ، فاصله، تایپوگرافی و لایه واحد باشند,صفر مقدار پراکنده خارج Allowlist در Production CSS,Token lint,NOT_STARTED
+PC-020,Design System,P0,Theme تیره و روشن کامل باشند,تمام Componentها و چارت در دو Theme بدون Contrast defect,Visual + a11y,NOT_STARTED
+PC-021,Design System,P1,Theme کنتراست بالا موجود باشد,مسیرهای P0 در High-contrast خوانا و قابل استفاده باشند,Manual a11y,NOT_STARTED
+PC-022,Design System,P0,Componentهای پایه همه Stateها را داشته باشند,default/hover/focus/active/disabled/loading/error پوشش داده شود,Story/Component tests,NOT_STARTED
+PC-023,Design System,P0,Icon set مستقل و منسجم باشد,Grid، Stroke، نام معنایی و Accessible name برای همه آیکون‌ها,Icon audit + snapshots,NOT_STARTED
+PC-024,Design System,P0,Asset شخص ثالث از منبع غیرمجاز وارد نشود,Asset registry برای همه لوگوها/فونت‌ها منبع و مجوز ثبت کند,Asset/license audit,NOT_STARTED
+PC-025,Design System,P0,Touch target حداقل ۴۴ پیکسل باشد,تمام کنترل‌های لمسی P0 حداقل Hit area را پاس کنند,Automated layout test,NOT_STARTED
+PC-026,Design System,P1,Component catalog مستند باشد,هر Component API، State، نمونه RTL و دسترس‌پذیری داشته باشد,Catalog review,NOT_STARTED
+PC-027,Design System,P1,Responsive behavior تعریف‌شده باشد,هیچ breakpoint تصادفی؛ رفتار در Viewport matrix تأیید شود,Visual matrix,NOT_STARTED
+PC-028,حرکت و تعامل,P0,بازخورد ورودی سریع باشد,Pointer/keyboard action در کمتر از ۱۰۰ms بازخورد بصری دهد,Performance trace,NOT_STARTED
+PC-029,حرکت و تعامل,P0,Gestureهای چارت کامل باشند,Pan، Zoom، Pinch، long-press و scale drag طبق spec کار کنند,E2E gesture tests,NOT_STARTED
+PC-030,حرکت و تعامل,P0,Undo/Redo پایدار باشد,حداقل ۵۰ Command متوالی بدون corruption قابل بازگشت/اعاده باشد,Property + E2E,NOT_STARTED
+PC-031,حرکت و تعامل,P0,Keyboard shortcuts کامل باشند,تمام عملیات P0 مسیر Keyboard و Help قابل‌مشاهده داشته باشند,Keyboard matrix,NOT_STARTED
+PC-032,حرکت و تعامل,P1,Motion tokenها رعایت شوند,مدت و easing خارج Token صفر باشد,Motion lint + trace,NOT_STARTED
+PC-033,حرکت و تعامل,P1,Reduced motion پشتیبانی شود,انیمیشن غیرضروری حذف و کارکرد حفظ شود,E2E reduced-motion,NOT_STARTED
+PC-034,حرکت و تعامل,P1,Motion regression ثبت شود,مسیرهای حیاتی Frame/Event trace و threshold داشته باشند,Motion artifacts,NOT_STARTED
+PC-035,موتور چارت,P0,چارت شمعی دقیق باشد,OHLC، wick، body، precision و session با Fixture مرجع منطبق باشد,Golden render + unit,NOT_STARTED
+PC-036,موتور چارت,P0,انواع P0 چارت کامل باشند,۱۲ نوع P0 در data/state/view matrix پاس شوند,E2E + visual,NOT_STARTED
+PC-037,موتور چارت,P1,انواع P1 غیرزمانی دقیق باشند,Renko/Kagi/P&F/Line Break/Range قرارداد و عدم look-ahead داشته باشند,Golden vectors,NOT_STARTED
+PC-038,موتور چارت,P1,Profile و Footprint پشتیبانی شود,محاسبات حجم و aggregation با Dataset مرجع پاس شوند,Unit + visual,NOT_STARTED
+PC-039,موتور چارت,P0,Scaleهای Linear/Log/Percent/Indexed کار کنند,تبدیل و inverse mapping در دامنه‌ها و extreme values دقیق باشد,Property tests,NOT_STARTED
+PC-040,موتور چارت,P0,Pan/Zoom Anchor پایدار باشد,نقطه زیر Pointer پس از Zoom در tolerance تعریف‌شده بماند,Interaction test,NOT_STARTED
+PC-041,موتور چارت,P0,Multi-pane و resize کامل باشد,Paneها اضافه/حذف/resize/save/restore بدون drift,E2E + serialization,NOT_STARTED
+PC-042,موتور چارت,P1,Multi-chart تا ۱۶ پنل کار کند,Layoutهای تعریف‌شده، sync انتخابی و محدودیت منابع پاس شوند,E2E + performance,NOT_STARTED
+PC-043,موتور چارت,P0,Crosshair داده درست نشان دهد,زمان، OHLCV و مقادیر indicator برای Bar منتخب دقیق باشد,Unit + E2E,NOT_STARTED
+PC-044,موتور چارت,P0,Serialization نسخه‌دار باشد,Layout قدیمی migrate و round-trip بدون از دست رفتن State,Migration fixtures,NOT_STARTED
+PC-045,موتور چارت,P0,Export تصویر امن و دقیق باشد,PNG/WebP در Scaleهای هدف بدون PII و clipping,Export tests,NOT_STARTED
+PC-046,موتور چارت,P1,Accessibility overlay چارت موجود باشد,OHLCV و عملیات اصلی از Keyboard/Screen reader قابل دسترس,Manual + automated a11y,NOT_STARTED
+PC-047,موتور چارت,P1,Object selection قابل پیش‌بینی باشد,Hit testing در Zoom/DPRهای مختلف مطابق tolerance,Geometry tests,NOT_STARTED
+PC-048,موتور چارت,P1,LOD و downsampling کیفیت را حفظ کند,داده بزرگ روان و extremeها حفظ شوند,Benchmark + visual,NOT_STARTED
+PC-049,داده بازار,P0,Provider interface مستقل باشد,هیچ UI Component مستقیماً Schema Provider را مصرف نکند,Architecture test,NOT_STARTED
+PC-050,داده بازار,P0,Symbol master نسخه‌دار باشد,Instrument metadata کامل و تغییرات قابل مهاجرت باشد,Schema + contract,NOT_STARTED
+PC-051,داده بازار,P0,OHLCV normalized و deterministic باشد,UTC، ترتیب، duplicate، gap و correction طبق قرارداد,Property/contract tests,NOT_STARTED
+PC-052,داده بازار,P0,WebSocket reconnect امن باشد,Heartbeat، backoff، resume/reconcile و dedupe پاس شود,Fault-injection test,NOT_STARTED
+PC-053,داده بازار,P0,وضعیت freshness در UI دیده شود,live/delayed/reconnecting/offline درست و بدون Quote کهنه پنهان,E2E states,NOT_STARTED
+PC-054,داده بازار,P0,Cache entitlement را رعایت کند,داده خارج مجوز cache یا export نشود,Security/contract tests,NOT_STARTED
+PC-055,داده بازار,P1,Cache چندلایه و سالم باشد,Checksum، TTL، LRU و recovery در corruption پاس شود,Integration tests,NOT_STARTED
+PC-056,داده بازار,P0,Timezone/Session/DST صحیح باشد,مرز Session و DST روی Datasetهای مرجع بدون جابه‌جایی,Golden suite,NOT_STARTED
+PC-057,داده بازار,P1,Data quality dashboard موجود باشد,latency/gap/duplicate/correction/provider health قابل مشاهده,Dashboard evidence,NOT_STARTED
+PC-058,داده بازار,P1,Lineage هر Bar ثبت شود,Provider، sequence و quality flag قابل ردیابی باشد,Trace audit,NOT_STARTED
+PC-059,ابزار ترسیم,P0,خانواده ابزارهای اولویت‌دار کامل باشند,Trend/Fib/Geometry/Annotation P0 با create/edit/delete/save پاس شوند,E2E + visual,NOT_STARTED
+PC-060,ابزار ترسیم,P1,مجموعه کامل بیش از ۱۱۰ ابزار برنامه‌ریزی/پیاده شود,هر ابزار Requirement و test vectors مستقل داشته باشد,Matrix + coverage,NOT_STARTED
+PC-061,ابزار ترسیم,P0,Snap و Magnet درست باشد,OHLC/indicator snap در tolerance و toggleها کار کنند,Geometry tests,NOT_STARTED
+PC-062,ابزار ترسیم,P0,Lock/Hide/Group/Order کار کند,State از Canvas و Object Tree دوطرفه و persist شود,E2E,NOT_STARTED
+PC-063,ابزار ترسیم,P0,Drawing alert قابل ساخت باشد,عبور/ورود/خروج با Clock سروری و dedupe درست,Integration tests,NOT_STARTED
+PC-064,ابزار ترسیم,P1,Style template و visibility interval باشد,Template round-trip و نمایش بر تایم‌فریم طبق rule,E2E + serialization,NOT_STARTED
+PC-065,ابزار ترسیم,P1,Anchor drift صفر عملی باشد,پس از Save/Load/Zoom جابه‌جایی کمتر از tolerance,Geometry golden,NOT_STARTED
+PC-066,اندیکاتورها,P0,کتابخانه P0 کامل باشد,تمام اندیکاتورهای فهرست‌شده با input/style/alert ارائه شوند,Catalog + tests,NOT_STARTED
+PC-067,اندیکاتورها,P0,محاسبات Golden داشته باشند,هر اندیکاتور روی داده مرجع و edge cases پاس شود,Golden vectors,NOT_STARTED
+PC-068,اندیکاتورها,P0,عدم Look-ahead تضمین شود,Historical result با اضافه‌شدن داده آینده تغییر غیرمجاز نکند,Property tests,NOT_STARTED
+PC-069,اندیکاتورها,P0,Streaming correction درست باشد,Bar جاری/اصلاح‌شده خروجی قابل بازتولید دهد,Stream tests,NOT_STARTED
+PC-070,اندیکاتورها,P1,Multi-timeframe semantics روشن باشد,Merge/gap/lookahead rule مستند و تست‌شده,Contract tests,NOT_STARTED
+PC-071,اندیکاتورها,P0,Indicator manager فارسی کامل باشد,Search/category/favorite/recent/settings/remove/move کار کند,E2E + visual,NOT_STARTED
+PC-072,اندیکاتورها,P1,Template و Instance ID پایدار باشد,چند Instance و Save/Load بدون collision,Serialization tests,NOT_STARTED
+PC-073,اندیکاتورها,P1,هشدار Performance Script داده شود,کار سنگین شناسایی و بدون Freeze توضیح داده شود,Benchmark + UX test,NOT_STARTED
+PC-074,Workspace,P0,Auto-save قابل اعتماد باشد,debounce، status، retry و conflict بدون از دست‌رفتن داده,Integration/E2E,NOT_STARTED
+PC-075,Workspace,P0,Layoutهای قدیمی migrate شوند,Fixture همه نسخه‌های شناخته‌شده restore شود,Migration suite,NOT_STARTED
+PC-076,Workspace,P1,Version history و restore باشد,نسخه‌ها قابل مشاهده و بازیابی بدون overwrite ناخواسته,E2E,NOT_STARTED
+PC-077,Workspace,P0,Watchlist چندگانه کامل باشد,create/rename/reorder/import/export/columns/filter پاس شود,E2E,NOT_STARTED
+PC-078,Workspace,P0,Watchlist stream virtualized باشد,۱۰هزار ردیف بدون jank و با quotes درست,Performance + E2E,NOT_STARTED
+PC-079,Workspace,P0,Object Tree دوطرفه باشد,Selection/visibility/lock/order/group با Canvas sync,E2E,NOT_STARTED
+PC-080,Workspace,P1,Offline queue و conflict حل شود,تغییرات آفلاین پس از اتصال با policy روشن merge شوند,Fault test,NOT_STARTED
+PC-081,هشدار,P0,هشدار قیمت سروری باشد,پس از بستن مرورگر Trigger و Delivery log ایجاد شود,Integration/E2E,NOT_STARTED
+PC-082,هشدار,P0,هشدار اندیکاتور و Drawing باشد,conditionها با Bar clock و dedupe درست عمل کنند,Golden + integration,NOT_STARTED
+PC-083,هشدار,P1,هشدار چندشرطی باشد,AND/OR و grouping UI/runtime مطابق AST,Unit + E2E,NOT_STARTED
+PC-084,هشدار,P1,Webhook امن باشد,HMAC، replay protection، retry، SSRF control پاس شود,Security tests,NOT_STARTED
+PC-085,هشدار,P0,مدیریت Pause/Resume/Clone/Expiry باشد,تمام lifecycleها و permissionها کار کنند,E2E,NOT_STARTED
+PC-086,هشدار,P0,Delivery دقیق و قابل ممیزی باشد,هر تلاش status، timestamp، channel و علت خطا داشته باشد,Audit report,NOT_STARTED
+PC-087,Replay و Backtest,P1,Replay Clock مجازی داشته باشد,هیچ مسیر Replay به Date.now وابسته نباشد,Static + deterministic tests,NOT_STARTED
+PC-088,Replay و Backtest,P1,Replay step/speed/pause/reset کامل باشد,همه کنترل‌ها و state persistence پاس شوند,E2E,NOT_STARTED
+PC-089,Replay و Backtest,P1,Replay آینده را افشا نکند,Network/UI/indicator فقط داده تا Clock مجازی ببیند,Security/property test,NOT_STARTED
+PC-090,Replay و Backtest,P1,Backtest deterministic باشد,همان hash تنظیمات سه اجرای برابر بدهد,Golden run,NOT_STARTED
+PC-091,Replay و Backtest,P1,Commission/slippage/margin اعمال شود,Trade list و summary با سناریوی دستی منطبق,Unit + report test,NOT_STARTED
+PC-092,Replay و Backtest,P1,گزارش کامل Strategy باشد,equity/drawdown/trades/metrics/export ارائه شود,Visual + data test,NOT_STARTED
+PC-093,Replay و Backtest,P1,Paper Trading واضح و ایمن باشد,برچسب آزمایشی، order lifecycle، reset و audit کامل,E2E,NOT_STARTED
+PC-094,Replay و Backtest,P1,Double-submit سفارش غیرممکن باشد,Idempotency و disabled state در latency/timeout پاس شود,Fault test,NOT_STARTED
+PC-095,NamaScript,P1,Grammar نسخه‌دار باشد,Parser fixture نسخه‌ها و خطاهای پایدار داشته باشد,Parser tests,NOT_STARTED
+PC-096,NamaScript,P1,Type checker کامل باشد,Type errors با code/location/message فارسی دقیق,Golden diagnostics,NOT_STARTED
+PC-097,NamaScript,P1,Runtime sandbox باشد,بدون network/DOM/file و با CPU/memory/time quota,Security/fuzz tests,NOT_STARTED
+PC-098,NamaScript,P1,Standard library فنی کافی باشد,توابع P1 با test vectors و docs پوشش داده شوند,Coverage + docs,NOT_STARTED
+PC-099,NamaScript,P1,Editor حرفه‌ای باشد,highlight/autocomplete/hover/problems/format/diff کار کند,E2E + visual,NOT_STARTED
+PC-100,NamaScript,P1,Debugger و Profiler باشد,breakpoint/step/watch/trace/perf report قابل استفاده,E2E,NOT_STARTED
+PC-101,NamaScript,P1,Strategy/Alert API باشد,Script بتواند بدون look-ahead شرط و strategy بسازد,Golden suite,NOT_STARTED
+PC-102,NamaScript,P1,انتشار و Versioning امن باشد,private/public/protected/invite و license/attribution ثبت شود,Permission tests,NOT_STARTED
+PC-103,NamaScript,P1,Draft بازیابی شود,autosave/crash restore/conflict بدون از دست رفتن کد,E2E fault test,NOT_STARTED
+PC-104,کشف بازار,P1,Symbol search رتبه‌بندی دقیق داشته باشد,exact/alias/fa/en/transliteration/typo/entitlement پاس شود,Search golden suite,NOT_STARTED
+PC-105,کشف بازار,P1,Screener فیلتر و Sort کامل داشته باشد,فیلترهای P1، multi-timeframe و saved preset کار کنند,E2E + contract,NOT_STARTED
+PC-106,کشف بازار,P1,Screener حجم بالا را تحمل کند,Query cancel، pagination و virtualization بدون jank,Load + performance,NOT_STARTED
+PC-107,کشف بازار,P1,Heatmap تعاملی و Accessible باشد,drill-down/tooltip/filter و table alternative پاس شود,E2E + a11y,NOT_STARTED
+PC-108,محتوا,P1,Calendar جلالی/Timezone صحیح باشد,رویداد، revision و marker چارت بدون duplicate,Contract + E2E,NOT_STARTED
+PC-109,محتوا,P1,News attribution و مجوز را رعایت کند,Source/time/link موجود و متن کامل غیرمجاز نمایش داده نشود,Content audit,NOT_STARTED
+PC-110,محتوا,P1,محتوای خارجی AI را آلوده نکند,Prompt injection از خبر نتواند Tool action اجرا کند,Security eval,NOT_STARTED
+PC-111,هوش مصنوعی,P1,دستیار پاسخ فارسی و Context محدود بدهد,پاسخ فقط از Context مجاز و با منبع/عدم قطعیت باشد,Eval suite,NOT_STARTED
+PC-112,هوش مصنوعی,P1,Actionها Preview و Confirm داشته باشند,هیچ تغییر حساس مستقیم اجرا نشود,E2E safety,NOT_STARTED
+PC-113,هوش مصنوعی,P1,Draft NamaScript/Alert قابل بررسی باشد,خروجی Validate و تا تأیید کاربر اجرا نشود,Integration eval,NOT_STARTED
+PC-114,هوش مصنوعی,P1,فرمان صوتی فارسی باشد,STT/TTS، transcript، confidence و cancel کار کند,Voice eval,NOT_STARTED
+PC-115,هوش مصنوعی,P1,فرمان حساس تأیید دو مرحله‌ای باشد,اتصال/سفارش/حذف گسترده بدون تأیید ممکن نباشد,Safety E2E,NOT_STARTED
+PC-116,هوش مصنوعی,P1,PII و Secret وارد مدل نشود,Redaction و tool allowlist با تست نشت پاس شود,Security eval,NOT_STARTED
+PC-117,هوش مصنوعی,P1,کیفیت با Dataset فارسی سنجیده شود,intent/parameter/safety/hallucination/latency گزارش شود,Eval report,NOT_STARTED
+PC-118,اتصال‌ها,P0,تنها LBank به عنوان صرافی نمایش یابد,Scan UI/Bundle/fixtures نام صرافی دیگری نیابد,Content + code scan,NOT_STARTED
+PC-119,اتصال‌ها,P0,لینک LBank دقیق باشد,Redirect داخلی مقصد دقیق و status مناسب داشته باشد,Redirect contract test,NOT_STARTED
+PC-120,اتصال‌ها,P0,تنها OneRoyal به عنوان بروکر نمایش یابد,Scan UI/Bundle/fixtures نام بروکر دیگری نیابد,Content + code scan,NOT_STARTED
+PC-121,اتصال‌ها,P0,لینک OneRoyal دقیق باشد,Redirect داخلی مقصد دقیق و status مناسب داشته باشد,Redirect contract test,NOT_STARTED
+PC-122,اتصال‌ها,P0,Disclosure لینک معرفی نمایش یابد,قبل از خروج، متن شفاف و قابل‌دسترسی وجود داشته باشد,E2E + a11y,NOT_STARTED
+PC-123,اتصال‌ها,P0,Eligibility gate وجود داشته باشد,UI خدمت را برای محل نامجاز قطعی معرفی نکند,Policy E2E,NOT_STARTED
+PC-124,اتصال‌ها,P1,LBank public API با Adapter رسمی باشد,REST/WS، rate limit، time sync، reconnect و mapping پاس شود,Provider contract suite,NOT_STARTED
+PC-125,اتصال‌ها,P1,کلید LBank فقط Server-side باشد,Secret vault، no-withdrawal، rotation و revoke پاس شود,Security audit,NOT_STARTED
+PC-126,اتصال‌ها,P1,OneRoyal تا API رسمی Referral-only بماند,هیچ fake connection/order UI فعال نباشد,E2E + code audit,NOT_STARTED
+PC-127,اتصال‌ها,P1,Broker adapter مستقل آماده باشد,Interface و test double بدون scraping پیاده شود,Architecture/contract tests,NOT_STARTED
+PC-128,امنیت,P0,Threat model کامل باشد,Auth/Data/Script/AI/Webhook/Trading پوشش و Owner داشته باشد,Threat model review,NOT_STARTED
+PC-129,امنیت,P0,2FA و Session controls باشد,TOTP/backup/recovery/device logout و rotation پاس شود,Security E2E,NOT_STARTED
+PC-130,امنیت,P0,CSP و Headerهای امن اعمال شوند,Scanner هیچ High finding نداشته باشد,DAST/header scan,NOT_STARTED
+PC-131,امنیت,P0,Permission سمت سرور enforce شود,تغییر Client نتواند Entitlement/RBAC را دور بزند,Authorization tests,NOT_STARTED
+PC-132,امنیت,P0,Secret scan صفر باشد,Git history/current build/log artifact Secret نداشته باشد,Secret scan,NOT_STARTED
+PC-133,امنیت,P0,Dependency/SBOM کنترل شود,صفر Critical/High حل‌نشده و SBOM امضا شده,SCA report,NOT_STARTED
+PC-134,امنیت,P0,Audit log عملیات حساس باشد,اتصال، Alert، Webhook، سفارش و تنظیم امنیت ثبت شوند,Audit tests,NOT_STARTED
+PC-135,امنیت,P0,Backup/restore آزموده باشد,Restore در محیط Clean با RPO/RTO هدف موفق شود,Drill report,NOT_STARTED
+PC-136,امنیت,P1,Webhook SSRF-safe باشد,Private ranges/DNS rebinding/redirect abuse مسدود شود,Security tests,NOT_STARTED
+PC-137,امنیت,P1,AI tool permission محدود باشد,Prompt خارجی یا کاربر بدون مجوز Action نگیرد,Adversarial eval,NOT_STARTED
+PC-138,کارایی,P0,LCP صدک ۷۵ حداکثر ۲.۵s باشد,RUM و lab در Routeهای هدف پاس شوند,Web Vitals report,NOT_STARTED
+PC-139,کارایی,P0,INP صدک ۷۵ حداکثر ۲۰۰ms باشد,تعامل‌های P0 در RUM/lab پاس شوند,Web Vitals report,NOT_STARTED
+PC-140,کارایی,P0,CLS حداکثر ۰.۱ باشد,Routeها و Lazy content بدون shift غیرمجاز,Web Vitals report,NOT_STARTED
+PC-141,کارایی,P0,چارت هدف ۶۰fps داشته باشد,p95 frame زیر ۲۰ms در دستگاه مرجع,Performance trace,NOT_STARTED
+PC-142,کارایی,P0,Memory leak در Soak صفر عملی باشد,جلسه طولانی رشد کنترل‌نشده نداشته باشد,Soak report,NOT_STARTED
+PC-143,کارایی,P1,Indicator ۱۰هزار Bar زیر Budget باشد,P0 indicatorها در Worker/benchmark هدف پاس شوند,Benchmark,NOT_STARTED
+PC-144,کارایی,P1,Bundle budget enforce شود,افزایش خارج Budget CI را fail کند,CI artifact,NOT_STARTED
+PC-145,کارایی,P1,Stream fan-out و Alert load پاس شود,ظرفیت هدف با error/latency در SLA,Load report,NOT_STARTED
+PC-146,دسترس‌پذیری,P0,WCAG 2.2 AA مسیرهای P0 هدف باشد,Audit خودکار و دستی بدون Critical/Serious,A11y report,NOT_STARTED
+PC-147,دسترس‌پذیری,P0,Keyboard کامل باشد,تمام P0 بدون Pointer قابل انجام و focus قابل مشاهده,Keyboard walkthrough,NOT_STARTED
+PC-148,دسترس‌پذیری,P0,Dialog focus درست باشد,trap، initial focus، escape و restore پاس شود,Component/E2E,NOT_STARTED
+PC-149,دسترس‌پذیری,P0,Contrast و عدم اتکا به رنگ رعایت شود,Themeها و stateها معیار را پاس کنند,Contrast audit,NOT_STARTED
+PC-150,دسترس‌پذیری,P1,Zoom/Reflow 200% باشد,بدون loss of content/function در Viewport هدف,Manual visual,NOT_STARTED
+PC-151,دسترس‌پذیری,P1,Screen reader announcements باشد,Stream/Alert/order/error تغییرها به‌درستی اعلام شوند,Manual SR test,NOT_STARTED
+PC-152,دسترس‌پذیری,P1,جایگزین Canvas موجود باشد,جدول OHLCV و عملیات جایگزین Drawing/selection کار کند,A11y E2E,NOT_STARTED
+PC-153,QA و تحویل,P0,محیط Visual قفل‌شده باشد,browser/font/timezone/clock/data/DPR ثابت و versioned,Harness audit,NOT_STARTED
+PC-154,QA و تحویل,P0,تمام صفحات/Stateها Screenshot داشته باشند,Visual matrix هیچ خانه P0/P1 بدون artifact نداشته باشد,Evidence index,NOT_STARTED
+PC-155,QA و تحویل,P0,Diff خارج Threshold صفر باشد,Expected/Actual/Diff و review برای همه تغییرها,Visual report,NOT_STARTED
+PC-156,QA و تحویل,P0,سه Clean run متوالی باشد,سه اجرای Full suite روی Commit تحویلی سبز باشد,CI run links,NOT_STARTED
+PC-157,QA و تحویل,P0,Flake P0 صفر باشد,هیچ Retry پنهان‌کننده و test flaky در P0,Flake report,NOT_STARTED
+PC-158,QA و تحویل,P0,Migration و Rollback پاس شود,dry-run و rollback/forward-fix در staging موفق,Release report,NOT_STARTED
+PC-159,QA و تحویل,P0,Evidence قابل ردیابی باشد,هر Requirement به test/artifact/commit پیوند داشته باشد,Traceability audit,NOT_STARTED
+PC-160,QA و تحویل,P0,Execution state همیشه قابل Resume باشد,فاز، مانع، action بعدی و فرمان Resume به‌روز باشد,State audit,NOT_STARTED
+PC-161,QA و تحویل,P1,Cross-browser/device matrix پاس شود,Browserهای هدف و Viewportها بدون defect زیاد,Compatibility report,NOT_STARTED
+PC-162,QA و تحویل,P1,Release artifact امضا و دارای SBOM باشد,provenance/hash/SBOM قابل تأیید,Supply-chain report,NOT_STARTED

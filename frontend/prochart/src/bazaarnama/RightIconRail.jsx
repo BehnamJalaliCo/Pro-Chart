@@ -13,7 +13,7 @@
 // می‌تواند مستقیماً setRightTab(key) + نمایشِ پنلِ راست را صدا بزند.
 // ─────────────────────────────────────────────────────────────────────────────
 import React, { useState, useCallback } from 'react';
-import { Star, BellRing, CalendarDays, Newspaper, ScanLine, Lightbulb } from 'lucide-react';
+import { Star, BellRing, CalendarDays, Newspaper, ScanLine, Lightbulb } from './tvIcons';
 
 // آیتم‌های ریل. key دقیقاً متناظرِ کلیدهای rightTab (TABS در RightPanel.jsx) است تا
 // onSelect(key) بدونِ نگاشتِ اضافی به setRightTab وصل شود.
@@ -50,7 +50,7 @@ function tint(color, alpha) {
 //   active   — کلیدِ تبِ فعالِ کنونی (همان rightTab). اگر پنلِ راست بسته باشد null/'' بده.
 //   onSelect — (key: string) => void ؛ کلیکِ روی آیکون این را با کلیدِ آیتم صدا می‌زند.
 //   TH       — توکن‌های تم (accent, text, textStrong, border, bg, chipBgHover, popoverBg…).
-export default function RightIconRail({ active, onSelect, TH }) {
+export default function RightIconRail({ active, onSelect, TH, badges = {} }) {
   // تولتیپِ فعال: { key, top } — top مرکزِ عمودیِ دکمهٔ اشاره‌شده برای هم‌ترازی.
   const [tip, setTip] = useState(null);
 
@@ -111,6 +111,10 @@ export default function RightIconRail({ active, onSelect, TH }) {
                 {/* ریلِ پنل‌سوییچرِ راستِ TV اکتیو را فقط با مربعِ گِردِ tinted نشان می‌دهد
                     (برخلافِ ریلِ ابزارِ چپ، هیچ پیلِ لبه‌ای ندارد) — پس فقط بک‌گراند + رنگ. */}
                 <Icon size={20} strokeWidth={on ? 2.1 : 1.8} />
+                {/* بَجِ شمارش (مثلِ شمارندهٔ آلارمِ ریلِ راستِ TV) — فقط وقتی count>0 */}
+                {badges[key] > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] px-[3px] rounded-full text-[9px] font-bold leading-none flex items-center justify-center tabular-nums" style={{ background: TH.down, color: '#fff' }}>{badges[key] > 9 ? '9+' : badges[key]}</span>
+                )}
               </button>
             );
           })}

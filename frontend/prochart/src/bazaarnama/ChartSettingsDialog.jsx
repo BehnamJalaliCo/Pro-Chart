@@ -17,7 +17,7 @@
 //                symHollow, symThinBars
 //   Status line: slSymbol, slOHLC, slChange, slVolume, slIndTitles, slIndValues,
 //                slIndArgs, slMarketStatus
-//   Scales:      scaleMode (0 عادی/1 لاگ/2 درصد), scaleInvert, scaleLock,
+//   Scales:      scaleMode (0 عادی/1 لاگ/2 درصد/3 پایه۱۰۰), scaleInvert, scaleLock,
 //                scaleCountdown, scaleFontSize, priceLineShown, scaleCurrency, scaleUnit
 //   Appearance:  bgType ('solid'|'gradient'), bgColor, bgColor2, gridVert, gridVertColor,
 //                gridHorz, gridHorzColor, crosshairStyle (0 خط/1 نقطه‌چین),
@@ -29,37 +29,40 @@ import { TIMEZONES } from './scales_crosshair';
 import {
   Settings, X, Palette, Ruler, Eye, CalendarDays, RotateCcw, Save,
   ChevronDown, AlignLeft, Type, Info, Trash2, CandlestickChart, BellRing,
-} from 'lucide-react';
+} from './tvIcons';
 
 // ───────────────────────── پیش‌فرض‌ها (مبنای TVِ دارک) ─────────────────────────
 const DEFAULTS = {
   // Symbol
-  symUpColor: '#26a69a', symDownColor: '#ef5350',
-  symBordersShown: true, symBorderUpColor: '#26a69a', symBorderDownColor: '#ef5350',
-  symWickShown: true, symWickUpColor: '#26a69a', symWickDownColor: '#ef5350',
+  symUpColor: '#089981', symDownColor: '#f23645',
+  symBordersShown: true, symBorderUpColor: '#089981', symBorderDownColor: '#f23645',
+  symWickShown: true, symWickUpColor: '#089981', symWickDownColor: '#f23645',
   symHollow: false, symThinBars: false,
+  symBarColorByPrevClose: false,
   precision: 'default',
   // Status line
   slLogo: true, slSymbol: true, slOHLC: true, slChange: true, slVolume: true,
   slLastDayChange: false,
-  slIndTitles: true, slIndValues: true, slIndArgs: true, slMarketStatus: true,
+  slIndTitles: true, slIndValues: true, slIndArgs: true, slMarketStatus: true, slBackground: true,
   // Scales & lines
   scaleMode: 0, scaleInvert: false, scaleLock: false,
   scaleCountdown: true, scaleFontSize: 12, priceLineShown: true,
-  scaleCurrency: false, scaleUnit: false,
+  scaleCurrency: false, scaleUnit: false, scaleHighLow: false, scaleAvgClose: false, scalePrevClose: false,
+  time12h: false, // قالبِ ساعتِ محورِ زمان: false=۲۴ساعته، true=۱۲ساعته (AM/PM) — هم‌ترازِ «Time hours format»ِ TV
+  dowOnLabels: false, // روزِ هفته روی برچسب‌های محورِ زمان (Day of week on labels — تبِ Scalesِ TV)؛ پیش‌فرض خاموش
   // Appearance / Canvas
   bgType: 'solid', bgColor: '#131722', bgColor2: '#0c0e15',
   gridVert: true, gridVertColor: '#1e222d',
   gridHorz: true, gridHorzColor: '#1e222d',
-  crosshairStyle: 1, crosshairColor: '#9598a1',
+  crosshairStyle: 1, crosshairColor: '#9598a1', crosshairWidth: 1,
   watermarkShown: true, watermarkOpacity: 50,
-  navButtons: true, scrollScale: true,
+  navButtons: true, scrollScale: true, marginTop: 12, marginBottom: 8, marginRight: 6,
   // Trading
   tradeButtons: true,
   // Alerts
   alertLinesShown: true, alertLinesActiveOnly: false,
   // Events
-  evDividends: false, evSplits: false, evEarnings: false,
+  evDividends: false, evSplits: false, evEarnings: false, evEconomic: false, evNews: false,
 };
 
 const TPL_KEY = 'bn_chart_setting_tpls'; // namespaceِ اختصاصی — با هیچ کلیدِ دیگری تداخل ندارد
@@ -278,6 +281,8 @@ function SymbolTab({ TH, s, set }) {
   return (
     <div className="space-y-1">
       <SectionTitle TH={TH} title="بدنهٔ کندل" en="Candle body" />
+      <ToggleRow TH={TH} label="رنگِ میله‌ها بر اساسِ بستهٔ قبل" hint="Color bars based on previous close — هر میله نسبت به بستهٔ میلهٔ قبل سبز/قرمز می‌شود (نه open↔close)"
+        on={s.symBarColorByPrevClose} onToggle={() => set('symBarColorByPrevClose', !s.symBarColorByPrevClose)} />
       <ColorPairRow TH={TH} label="صعودی / نزولی"
         upColor={s.symUpColor} downColor={s.symDownColor}
         onUp={(v) => set('symUpColor', v)} onDown={(v) => set('symDownColor', v)}
@@ -317,6 +322,8 @@ function SymbolTab({ TH, s, set }) {
             { v: 'default', label: 'خودکار' },
             { v: '0', label: '1' }, { v: '1', label: '0.1' }, { v: '2', label: '0.01' },
             { v: '3', label: '0.001' }, { v: '4', label: '0.0001' }, { v: '5', label: '0.00001' },
+            // دقتِ ۶–۸ رقم برای کریپتوی کم‌قیمت (PEPE/SHIB/…) — TV هم تا ۸ رقم اعشار می‌دهد
+            { v: '6', label: '0.000001' }, { v: '7', label: '0.0000001' }, { v: '8', label: '0.00000001' },
           ]}
           onChange={(v) => set('precision', v)} />
       </Row>
@@ -330,24 +337,34 @@ function SymbolTab({ TH, s, set }) {
 }
 
 function StatusTab({ TH, s, set }) {
-  const rows = [
+  // گروه‌بندیِ سه‌بخشیِ TV: ابزار (Instrument) / اندیکاتورها (Indicators) / پس‌زمینه (Background) — ترتیبِ داخلِ هر بخش هم‌ترازِ TV.
+  const instrument = [
     ['slLogo', 'لوگو', 'نمایشِ لوگو/پرچمِ نماد در خطِ وضعیت'],
     ['slSymbol', 'نامِ نماد', 'نمایشِ نماد در خطِ وضعیت'],
     ['slMarketStatus', 'وضعیتِ بازار', 'نشانگرِ باز/بستهٔ بازار'],
     ['slOHLC', 'مقادیرِ OHLC', 'باز/سقف/کف/بسته'],
     ['slChange', 'تغییرات', 'تغییرِ مطلق و درصدیِ کندل'],
-    ['slLastDayChange', 'تغییرِ روزِ قبل', 'تغییر نسبت به بستهٔ سشنِ گذشته (Last day change)'],
     ['slVolume', 'حجم', 'حجمِ کندلِ جاری'],
-    ['slIndTitles', 'عنوانِ اندیکاتورها', 'نامِ اندیکاتورهای فعال'],
-    ['slIndValues', 'مقدارِ اندیکاتورها', 'مقادیرِ زندهٔ اندیکاتورها'],
-    ['slIndArgs', 'آرگومان‌های اندیکاتور', 'پارامترها کنارِ نامِ اندیکاتور'],
+    ['slLastDayChange', 'تغییرِ روزِ قبل', 'تغییر نسبت به بستهٔ سشنِ گذشته (Last day change)'],
   ];
+  // ترتیبِ TV: عنوان → ورودی → مقدار (Titles → Inputs → Values).
+  const indicators = [
+    ['slIndTitles', 'عنوانِ اندیکاتورها', 'نامِ اندیکاتورهای فعال'],
+    ['slIndArgs', 'ورودی‌های اندیکاتور', 'پارامترها کنارِ نامِ اندیکاتور (Inputs)'],
+    ['slIndValues', 'مقدارِ اندیکاتورها', 'مقادیرِ زندهٔ اندیکاتورها'],
+  ];
+  const row = ([k, label, hint]) => (
+    <ToggleRow key={k} TH={TH} label={label} hint={hint} on={s[k]} onToggle={() => set(k, !s[k])} />
+  );
   return (
     <div className="space-y-1">
-      <SectionTitle TH={TH} title="نمایش در خطِ وضعیت" en="Status line" />
-      {rows.map(([k, label, hint]) => (
-        <ToggleRow key={k} TH={TH} label={label} hint={hint} on={s[k]} onToggle={() => set(k, !s[k])} />
-      ))}
+      <SectionTitle TH={TH} title="ابزار" en="Instrument" />
+      {instrument.map(row)}
+      <SectionTitle TH={TH} title="اندیکاتورها" en="Indicators" />
+      {indicators.map(row)}
+      {/* «پس‌زمینه» — هم‌ترازِ توگلِ Backgroundِ تبِ Status lineِ TV؛ پس‌زمینهٔ نیمه‌شفافِ پشتِ خطِ وضعیت (خوانایی روی کندل‌ها). */}
+      <SectionTitle TH={TH} title="پس‌زمینه" en="Background" />
+      {row(['slBackground', 'پس‌زمینه', 'پس‌زمینهٔ نیمه‌شفافِ پشتِ خطِ وضعیت برای خوانایی روی کندل‌ها (Background)'])}
     </div>
   );
 }
@@ -355,11 +372,11 @@ function StatusTab({ TH, s, set }) {
 function ScalesTab({ TH, s, set }) {
   return (
     <div className="space-y-1">
-      <SectionTitle TH={TH} title="حالتِ مقیاس" en="Scale mode" />
+      <SectionTitle TH={TH} title="مقیاسِ قیمت" en="Price scale" />
       <div className="py-1.5">
         <Segmented TH={TH}
           value={s.scaleMode}
-          options={[{ v: 0, label: 'عادی' }, { v: 1, label: 'لگاریتمی' }, { v: 2, label: 'درصدی' }]}
+          options={[{ v: 0, label: 'عادی' }, { v: 1, label: 'لگاریتمی' }, { v: 2, label: 'درصدی' }, { v: 3, label: 'پایه ۱۰۰' }]}
           onChange={(v) => set('scaleMode', v)} />
       </div>
       <ToggleRow TH={TH} label="وارونه‌کردنِ محور" hint="Invert scale — جابه‌جاییِ بالا/پایین"
@@ -367,9 +384,15 @@ function ScalesTab({ TH, s, set }) {
       <ToggleRow TH={TH} label="قفلِ بازهٔ مقیاس" hint="Lock price to bar ratio"
         on={s.scaleLock} onToggle={() => set('scaleLock', !s.scaleLock)} />
 
-      <SectionTitle TH={TH} title="خطوط و برچسب‌ها" en="Lines & labels" />
+      <SectionTitle TH={TH} title="برچسب‌ها و خطوطِ قیمت" en="Price labels & lines" />
       <ToggleRow TH={TH} label="خطِ قیمتِ آخر" hint="نمایشِ خطِ قیمتِ جاری + برچسبِ رنگی"
         on={s.priceLineShown} onToggle={() => set('priceLineShown', !s.priceLineShown)} />
+      <ToggleRow TH={TH} label="برچسبِ سقف/کفِ دیده" hint="High & low price labels — سقف و کفِ بازهٔ دیده‌شده روی محور"
+        on={s.scaleHighLow} onToggle={() => set('scaleHighLow', !s.scaleHighLow)} />
+      <ToggleRow TH={TH} label="برچسبِ میانگینِ بسته" hint="Average close price label — میانگینِ بستهٔ بازهٔ دیده‌شده روی محور"
+        on={s.scaleAvgClose} onToggle={() => set('scaleAvgClose', !s.scaleAvgClose)} />
+      <ToggleRow TH={TH} label="خطِ بستهٔ روزِ قبل" hint="Previous close price line — خطِ داشدِ افقی روی بستهٔ سشنِ روزِ گذشته (مرجعِ رایجِ معامله‌گران)"
+        on={s.scalePrevClose} onToggle={() => set('scalePrevClose', !s.scalePrevClose)} />
       <ToggleRow TH={TH} label="شمارشِ معکوسِ بسته‌شدن" hint="Countdown to bar close روی برچسبِ قیمت"
         on={s.scaleCountdown} onToggle={() => set('scaleCountdown', !s.scaleCountdown)} />
       <ToggleRow TH={TH} label="نمادِ ارز" hint="نمایشِ واحدِ ارزِ نماد کنارِ مقیاس"
@@ -383,6 +406,16 @@ function ScalesTab({ TH, s, set }) {
           options={FONT_SIZES.map((f) => ({ v: f, label: `${f}px` }))}
           onChange={(v) => set('scaleFontSize', Number(v))} />
       </Row>
+
+      {/* مقیاسِ زمان — هم‌ترازِ بخشِ «Time scale»ِ تبِ Scalesِ TV (قالبِ ساعت + روزِ هفته روی برچسب‌ها). */}
+      <SectionTitle TH={TH} title="مقیاسِ زمان" en="Time scale" />
+      <Row TH={TH} label="قالبِ ساعت" hint="Time hours format — نمایشِ ساعتِ محورِ زمان و تگِ کراس‌هیر به‌صورتِ ۲۴ساعته یا ۱۲ساعته (ق.ظ/ب.ظ)">
+        <SelectBox TH={TH} value={s.time12h ? '12' : '24'}
+          options={[{ v: '24', label: '۲۴ساعته' }, { v: '12', label: '۱۲ساعته' }]}
+          onChange={(v) => set('time12h', v === '12')} />
+      </Row>
+      <ToggleRow TH={TH} label="روزِ هفته روی برچسب‌ها" hint="Day of week on labels — افزودنِ نامِ روزِ هفته به برچسب‌های روزِ محورِ زمان (مثلِ TradingView)"
+        on={s.dowOnLabels} onToggle={() => set('dowOnLabels', !s.dowOnLabels)} />
     </div>
   );
 }
@@ -417,6 +450,12 @@ function AppearanceTab({ TH, s, set }) {
           options={[{ v: 0, label: 'یکسره' }, { v: 1, label: 'نقطه‌چین' }]}
           onChange={(v) => set('crosshairStyle', Number(v))} />
       </Row>
+      {/* ضخامتِ کراس‌هیر (۱–۴px) — هم‌ترازِ کنترلِ widthِ کراس‌هیرِ تبِ Canvasِ TV */}
+      <Row TH={TH} label="ضخامتِ خط">
+        <SelectBox TH={TH} value={s.crosshairWidth != null ? s.crosshairWidth : 1}
+          options={[{ v: 1, label: '۱px' }, { v: 2, label: '۲px' }, { v: 3, label: '۳px' }, { v: 4, label: '۴px' }]}
+          onChange={(v) => set('crosshairWidth', Number(v))} />
+      </Row>
       <ColorRow TH={TH} label="رنگِ کراس‌هیر" color={s.crosshairColor} onChange={(v) => set('crosshairColor', v)} />
 
       <SectionTitle TH={TH} title="واترمارک و ناوبری" en="Watermark & navigation" />
@@ -438,6 +477,24 @@ function AppearanceTab({ TH, s, set }) {
         on={s.navButtons} onToggle={() => set('navButtons', !s.navButtons)} />
       <ToggleRow TH={TH} label="اسکرول و مقیاس" hint="اجازهٔ اسکرول/زومِ محورها با درگ"
         on={s.scrollScale} onToggle={() => set('scrollScale', !s.scrollScale)} />
+      {/* حاشیه‌های مقیاس (Top/Bottom margin) — فضای خالیِ بالای بالاترین/پایینِ کف‌ترین قیمت؛ هم‌ترازِ Top/Bottom marginِ تبِ Canvasِ TV */}
+      <SectionTitle TH={TH} title="حاشیه‌های مقیاسِ قیمت" en="Scale margins" />
+      <Row TH={TH} label="حاشیهٔ بالا" hint="فضای خالیِ بالای بالاترین قیمت (٪ ارتفاعِ پِین)">
+        <SelectBox TH={TH} value={s.marginTop != null ? s.marginTop : 12}
+          options={[0, 5, 8, 10, 12, 15, 20, 25, 30].map((p) => ({ v: p, label: `${p}٪` }))}
+          onChange={(v) => set('marginTop', Number(v))} />
+      </Row>
+      <Row TH={TH} label="حاشیهٔ پایین" hint="فضای خالیِ زیرِ پایین‌ترین قیمت (٪ ارتفاعِ پِین)">
+        <SelectBox TH={TH} value={s.marginBottom != null ? s.marginBottom : 8}
+          options={[0, 5, 8, 10, 12, 15, 20, 25, 30].map((p) => ({ v: p, label: `${p}٪` }))}
+          onChange={(v) => set('marginBottom', Number(v))} />
+      </Row>
+      {/* حاشیهٔ راست بر حسبِ میله — هم‌ترازِ «Right margin (bars)»ِ تبِ Canvasِ TV؛ فضای خالیِ سمتِ راستِ آخرین کندل (rightOffsetِ timeScale). */}
+      <Row TH={TH} label="حاشیهٔ راست (میله)" hint="فضای خالیِ سمتِ راستِ آخرین کندل بر حسبِ تعدادِ میله (Right margin)">
+        <SelectBox TH={TH} value={s.marginRight != null ? s.marginRight : 6}
+          options={[0, 3, 6, 9, 12, 15, 20].map((p) => ({ v: p, label: `${p}` }))}
+          onChange={(v) => set('marginRight', Number(v))} />
+      </Row>
     </div>
   );
 }
@@ -473,6 +530,11 @@ function EventsTab({ TH, s, set }) {
   return (
     <div className="space-y-1">
       <SectionTitle TH={TH} title="رویدادها روی چارت" en="Events on chart" />
+      {/* رویدادهای اقتصادی — مربوط به فارکس/فلزات/کریپتوی Pro-Chart (از تقویمِ اقتصادی)، نشانگرِ نقطه‌ای روی کندلِ زمانِ رویداد */}
+      <ToggleRow TH={TH} label="رویدادهای اقتصادی (Economic)" hint="نشانگرِ رویدادهای مرتبط با ارزهای نماد روی محورِ زمان (رنگ بر اساسِ اهمیت)"
+        on={s.evEconomic} onToggle={() => set('evEconomic', !s.evEconomic)} />
+      <ToggleRow TH={TH} label="آخرین اخبار (News)" hint="نشانگرِ بنفشِ اخبارِ اخیر روی کندلِ زمانِ خبر (هم‌ترازِ Latest newsِ TV)"
+        on={s.evNews} onToggle={() => set('evNews', !s.evNews)} />
       <ToggleRow TH={TH} label="سودِ سهام (Dividends)" hint="نشانگرِ D روی محورِ زمان"
         on={s.evDividends} onToggle={() => set('evDividends', !s.evDividends)} />
       <ToggleRow TH={TH} label="تقسیمِ سهام (Splits)" hint="نشانگرِ تقسیم روی محورِ زمان"

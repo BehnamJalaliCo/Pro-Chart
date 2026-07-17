@@ -2,7 +2,15 @@
 // (فیدِ بین‌المللیِ faireconomy/ForexFactory، عنوان‌ها فارسی‌شده توسطِ Claudeِ داخلِ سرور).
 // بدنهٔ تبِ پنلِ راست. props: { symbol, TH }. بدونِ عکس.
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Search, X } from '../tvIcons';
 import { api } from '../../api/client';
+import { CountryFlag } from '../SymbolSearchModal';
+
+// نرمال‌سازیِ فارسی برای سرچِ رویداد (یِ/کِ عربی → فارسی، حذفِ نیم‌فاصله) — هم‌سبکِ سرچِ NewsTab/Indicators.
+const normFa = (s) => (s || '').toString().toLowerCase().replace(/ي/g, 'ی').replace(/ك/g, 'ک').replace(/‌/g, '').trim();
+
+// نگاشتِ ارز → کدِ کشورِ پرچم (مثلِ ستونِ پرچم‌دارِ تقویمِ اقتصادیِ TV). نامعلوم ⇒ fallbackِ CountryFlag کدِ ارز را در جعبه نشان می‌دهد.
+const CCY_COUNTRY = { USD: 'US', EUR: 'EU', GBP: 'GB', JPY: 'JP', CHF: 'CH', CAD: 'CA', AUD: 'AU', NZD: 'NZ', CNY: 'CN' };
 
 const IMPACT = {
   high: { label: 'بالا', dots: 3, color: '#ef4444' },
@@ -22,7 +30,7 @@ const TZONES = [
   { id: 'newyork', label: 'نیویورک', tz: 'America/New_York' },
 ];
 
-function symbolCurrencies(symbol = '') {
+export function symbolCurrencies(symbol = '') {
   const s = symbol.toUpperCase();
   const found = [];
   ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'NZD', 'CNY'].forEach((c) => { if (s.includes(c)) found.push(c); });
@@ -79,10 +87,13 @@ export default function Calendar({ symbol, TH }) {
   // فیلترِ اهمیت (پایین/متوسط/بالا) — همه روشن = بدونِ فیلتر
   const [imp, setImp] = useState({ high: true, medium: true, low: true });
   const [country, setCountry] = useState('all');
+  const [q, setQ] = useState(''); // سرچِ نامِ رویداد (مثلِ سرچِ تقویمِ TV)
   const [tzId, setTzId] = useState('local');
   const [menu, setMenu] = useState(null); // 'country' | 'tz' | null
   const [tick, setTick] = useState(0); // ضربانِ ۶۰ثانیه‌ای برای بازمحاسبهٔ «رویدادِ بعدی»
   const rootRef = useRef(null);
+  const scrollRef = useRef(null);       // ناحیهٔ اسکرولِ رویدادها
+  const dayRefs = useRef({});           // نگاشتِ کلیدِ روز → المانِ سرگروه (برای پرشِ نوارِ هفته)
 
   // «الان» را هر دقیقه تازه کن تا نشانگرِ رویدادِ بعدی زنده بماند
   useEffect(() => { const id = setInterval(() => setTick((t) => t + 1), 60000); return () => clearInterval(id); }, []);
@@ -107,6 +118,9 @@ export default function Calendar({ symbol, TH }) {
   const tz = useMemo(() => (TZONES.find((z) => z.id === tzId) || TZONES[0]).tz, [tzId]);
   const curs = useMemo(() => symbolCurrencies(symbol), [symbol]);
   const countries = useMemo(() => [...new Set((items || []).map((e) => (e.country || '').toUpperCase()).filter(Boolean))].sort(), [items]);
+  // ستونِ «واقعی» فقط وقتی نشان داده می‌شود که حداقل یک رویداد مقدارِ واقعی داشته باشد؛
+  // خوراکِ فعلی فقط پیش‌بینی/قبلی دارد، پس این ستونِ همیشه-خالی حذف می‌شود تا نامِ رویداد جا بگیرد.
+  const hasActual = useMemo(() => (items || []).some((e) => { const a = e.actual ?? e.act; return a != null && a !== ''; }), [items]);
 
   const groups = useMemo(() => {
     let all = (items || []).slice().sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -115,10 +129,12 @@ export default function Calendar({ symbol, TH }) {
     if (!allImp) all = all.filter((e) => imp[e.impact] ?? true);
     if (country !== 'all') all = all.filter((e) => (e.country || '').toUpperCase() === country);
     if (onlyRelevant && curs.length) all = all.filter((e) => curs.includes((e.country || '').toUpperCase()));
+    const ql = normFa(q);
+    if (ql) all = all.filter((e) => normFa(e.title).includes(ql) || normFa(e.country).includes(ql));
     const g = {};
     all.forEach((e) => { const k = dayKey(e.date, tz); (g[k] = g[k] || []).push(e); });
     return Object.entries(g);
-  }, [items, imp, country, onlyRelevant, curs, tz]);
+  }, [items, imp, country, onlyRelevant, curs, tz, q]);
 
   // نخستین رویدادِ آینده (>= الان) — نشانگرِ «بعدی» با ضربانِ آبی، مثل خطِ زمانِ فعلیِ TV
   const nextIso = useMemo(() => {
@@ -177,6 +193,15 @@ export default function Calendar({ symbol, TH }) {
     <div ref={rootRef} className="flex flex-col text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
       <div className="flex items-center gap-1.5 px-3 py-1.5 border-b shrink-0 flex-wrap" style={{ borderColor: TH.border }}>
         <span className="opacity-50 text-[10px]">تقویمِ اقتصادی</span>
+        {/* دکمهٔ «امروز» (مثلِ TV) — پرشِ سریع به رویدادهای امروز؛ فقط وقتی امروز در هفتهٔ جاری رویداد دارد */}
+        {groups.some(([day]) => day === todayKey) && (
+          <button onClick={() => { const el = dayRefs.current[todayKey]; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+            title="پرش به امروز" className="text-[10px] px-2 py-0.5 rounded-md font-medium transition-colors shrink-0"
+            style={{ background: TH.chipBg, border: `1px solid ${TH.border}`, color: TH.textStrong }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
+            امروز
+          </button>
+        )}
         <div className="flex-1" />
         {IMPACT_ORDER.map((k) => <ImpChip key={k} id={k} />)}
         <Dropdown id="country" label="کشور" value={country === 'all' ? '' : country}
@@ -188,21 +213,59 @@ export default function Calendar({ symbol, TH }) {
         <Toggle on={onlyRelevant} set={setOnlyRelevant}>مرتبط با <span dir="ltr">{symbol}</span></Toggle>
       </div>
 
-      {/* سرستونِ actual/forecast/previous — همیشه انتهای ردیف (RTL) */}
-      <div className="flex items-center gap-2 px-3 py-1 border-b shrink-0 text-[9px] opacity-45" style={{ borderColor: TH.border }}>
-        <span className="flex-1">رویداد</span>
-        <span className="w-11 text-left shrink-0" dir="ltr">واقعی</span>
-        <span className="w-11 text-left shrink-0" dir="ltr">پیش‌بینی</span>
-        <span className="w-11 text-left shrink-0" dir="ltr">قبلی</span>
+      {/* سرچِ رویداد (مثلِ سرچِ تقویمِ اقتصادیِ TV) — فیلترِ کلاینتی روی نام/کشورِ رویداد؛ خالی = بی‌اثر */}
+      <div className="px-3 py-1.5 border-b shrink-0" style={{ borderColor: TH.border }}>
+        <div className="flex items-center gap-1.5 px-2 py-1 rounded-md" style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
+          <Search size={12} className="opacity-45 shrink-0" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="جستجوی رویداد…" dir="rtl"
+            className="flex-1 min-w-0 bg-transparent outline-none text-[11px]" style={{ color: TH.textStrong }} />
+          {q && (
+            <button onClick={() => setQ('')} title="پاک‌کردن" className="shrink-0 opacity-50 hover:opacity-100" style={{ color: TH.text }}>
+              <X size={12} />
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="overflow-auto">
+      {/* نوارِ روزهای هفته (خلاصهٔ هر روز + شمارِ رویداد) — هم‌ترازِ نوارِ هفتهٔ TV؛ کلیک ⇒ پرش به آن روز */}
+      {items !== null && groups.length > 0 && (
+        <div className="flex items-stretch gap-1 px-2 py-1.5 border-b shrink-0 overflow-x-auto bn-thin-scroll" style={{ borderColor: TH.border }}>
+          {groups.map(([day, evs]) => {
+            const isToday = day === todayKey;
+            const parts = day.split(' ');
+            const wd = parts[0];
+            const dm = parts.slice(1).join(' ');
+            return (
+              <button key={day} onClick={() => { const el = dayRefs.current[day]; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+                title={`${evs.length} رویداد`}
+                className="flex flex-col items-center justify-center px-2 py-1 rounded-md shrink-0 min-w-[52px] transition-colors"
+                style={{ background: isToday ? `${TH.accent}1f` : TH.chipBg, border: `1px solid ${isToday ? TH.accent + '66' : TH.border}` }}
+                onMouseEnter={(e) => { if (!isToday) e.currentTarget.style.background = TH.chipBgHover; }}
+                onMouseLeave={(e) => { if (!isToday) e.currentTarget.style.background = TH.chipBg; }}>
+                <span className="text-[10px] font-semibold leading-tight" style={{ color: isToday ? TH.accent : TH.textStrong }}>{wd}</span>
+                <span className="text-[9px] leading-tight opacity-60" dir="ltr">{dm}</span>
+                <span className="text-[9px] leading-[13px] mt-0.5 px-1 rounded-full tnum" style={{ background: `${TH.accent}1f`, color: TH.accent }}>{evs.length}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* سرستونِ actual/forecast/previous — همیشه انتهای ردیف (RTL) */}
+      <div className="flex items-center gap-1.5 px-2 py-1 border-b shrink-0 text-[9px] opacity-45" style={{ borderColor: TH.border }}>
+        <span className="flex-1 min-w-0">رویداد</span>
+        {hasActual && <span className="w-11 text-left shrink-0" dir="ltr">واقعی</span>}
+        <span className="w-9 text-left shrink-0" dir="ltr">پیش‌بینی</span>
+        <span className="w-9 text-left shrink-0" dir="ltr">قبلی</span>
+      </div>
+
+      <div ref={scrollRef} className="overflow-auto">
         {items === null && <div className="px-3 py-8 text-center opacity-40 text-[11px]">در حالِ دریافتِ تقویم…</div>}
         {items !== null && groups.length === 0 && (
           <div className="px-3 py-8 text-center opacity-40 text-[11px]">رویدادی برای نمایش نیست.</div>
         )}
         {groups.map(([day, evs]) => (
-          <div key={day}>
+          <div key={day} ref={(el) => { if (el) dayRefs.current[day] = el; }}>
             <div className="sticky top-0 z-10 flex items-center gap-1.5 px-3 py-1 text-[10px] font-semibold border-b" style={{ background: TH.panel, color: TH.textStrong, borderColor: TH.border }}>
               <span>{day}</span>
               {day === todayKey && <span className="px-1 rounded-sm text-[8px] leading-[14px] font-medium" style={{ background: `${TH.accent}1f`, color: TH.accent }}>امروز</span>}
@@ -218,19 +281,23 @@ export default function Calendar({ symbol, TH }) {
               const isNext = e.date === nextIso;
               const rowBg = isNext ? `${TH.accent}14` : 'transparent';
               return (
-                <div key={i} className="flex items-center gap-2 px-3 py-1.5 border-b transition-colors" style={{ borderColor: TH.border, background: rowBg, boxShadow: isNext ? `inset 2px 0 0 ${TH.accent}` : 'none' }}
+                <div key={i} className="flex items-center gap-1.5 px-2 py-1.5 border-b transition-colors" style={{ borderColor: TH.border, background: rowBg, boxShadow: isNext ? `inset 2px 0 0 ${TH.accent}` : 'none' }}
                   onMouseEnter={(ev) => (ev.currentTarget.style.background = TH.chipBgHover)}
                   onMouseLeave={(ev) => (ev.currentTarget.style.background = rowBg)}>
-                  <span className="text-[10px] w-10 shrink-0 inline-flex items-center gap-1 tnum" dir="ltr" style={{ color: isNext ? TH.accent : TH.text, opacity: isNext ? 1 : 0.6 }}>
+                  <span className="text-[10px] w-9 shrink-0 inline-flex items-center gap-1 tnum" dir="ltr" style={{ color: isNext ? TH.accent : TH.text, opacity: isNext ? 1 : 0.6 }}>
                     {isNext && <span className="w-1.5 h-1.5 rounded-full shrink-0" title="رویدادِ بعدی" style={{ background: TH.accent, animation: 'pcGlow 2.4s ease-in-out infinite' }} />}
                     {fmtTime(e.date, tz)}
                   </span>
-                  <span className="text-[10px] font-semibold w-8 shrink-0" dir="ltr" style={{ color: TH.textStrong }}>{e.country}</span>
+                  {/* پرچمِ کشورِ ارز + کد — مثلِ ستونِ پرچم‌دارِ ردیف‌های تقویمِ TV */}
+                  <span className="shrink-0 inline-flex items-center gap-1" dir="ltr">
+                    <CountryFlag code={CCY_COUNTRY[e.country] || e.country} size={13} />
+                    <span className="text-[10px] font-semibold w-7" style={{ color: TH.textStrong }}>{e.country}</span>
+                  </span>
                   <ImpactBars imp={e.impact} />
-                  <span className="text-[11px] leading-4 flex-1 min-w-0 truncate">{e.title}</span>
-                  <ActualCell value={actual} color={actColor} arrow={diff ? (actUp ? 'up' : 'down') : null} TH={TH} />
-                  <span className="w-11 text-left text-[10px] shrink-0 opacity-60 tnum" dir="ltr">{forecast != null && forecast !== '' ? forecast : '—'}</span>
-                  <span className="w-11 text-left text-[10px] shrink-0 opacity-40 tnum" dir="ltr">{previous != null && previous !== '' ? previous : '—'}</span>
+                  <span className="text-[11px] leading-4 flex-1 min-w-0 truncate" title={e.title}>{e.title}</span>
+                  {hasActual && <ActualCell value={actual} color={actColor} arrow={diff ? (actUp ? 'up' : 'down') : null} TH={TH} />}
+                  <span className="w-9 text-left text-[10px] shrink-0 opacity-60 tnum" dir="ltr">{forecast != null && forecast !== '' ? forecast : '—'}</span>
+                  <span className="w-9 text-left text-[10px] shrink-0 opacity-40 tnum" dir="ltr">{previous != null && previous !== '' ? previous : '—'}</span>
                 </div>
               );
             })}

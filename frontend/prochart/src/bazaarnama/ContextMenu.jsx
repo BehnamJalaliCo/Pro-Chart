@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Check, ChevronLeft } from 'lucide-react';
+import { Check, ChevronLeft } from './tvIcons';
 
 // ContextMenu — منوی راست‌کلیکِ عمومیِ سبکِ TradingView (موارد ۱۱۹–۱۲۲).
 // قابلِ استفاده برای چارت / درای / محورِ قیمت‌وزمان / سطحِ قیمت.

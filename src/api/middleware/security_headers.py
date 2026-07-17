@@ -33,6 +33,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # CSP محافظه‌کارانه برای API (نه frontend HTML)
         self._csp = csp_policy or (
             "default-src 'none'; "
+            "object-src 'none'; "
             "frame-ancestors 'none'; "
             "base-uri 'none'; "
             "form-action 'none'"
@@ -53,8 +54,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # جلوگیری از MIME sniffing
         response.headers["X-Content-Type-Options"] = "nosniff"
 
-        # XSS Protection (deprecated در مرورگرهای مدرن ولی همچنان مفید)
-        response.headers["X-XSS-Protection"] = "1; mode=block"
+        # فیلتر قدیمی XSS در مرورگرهای legacy می‌تواند رفتار ناامن ایجاد کند؛
+        # CSP مرز اصلی است و مقدار 0 صریحاً آن فیلتر منسوخ را خاموش می‌کند.
+        response.headers["X-XSS-Protection"] = "0"
 
         # Referrer Policy
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"

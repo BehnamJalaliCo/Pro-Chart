@@ -6,7 +6,8 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
-from jose import JWTError, jwt
+import jwt
+from jwt import InvalidTokenError
 from passlib.context import CryptContext
 
 from src.core.config import settings
@@ -66,15 +67,16 @@ def decode_token(token: str) -> Optional[dict[str, Any]]:
         try:
             return jwt.decode(
                 token, settings.CENTRAL_JWT_PUBLIC_KEY, algorithms=["RS256"],
+                issuer=settings.CENTRAL_JWT_ISSUER,
                 options={"verify_aud": False},
             )
-        except JWTError:
+        except InvalidTokenError:
             pass  # توکنِ مرکزی نبود → مسیرِ قدیمی
     # ۲) HS256 فعلی (بدونِ تغییر)
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         return payload
-    except JWTError as e:
+    except InvalidTokenError as e:
         logger.warning("jwt_decode_failed", error=str(e))
         return None
 
@@ -85,7 +87,6 @@ def verify_access_token(token: str) -> Optional[dict[str, Any]]:
     if payload and payload.get("type") == "access":
         return payload
     return None
-
 
 def verify_refresh_token(token: str) -> Optional[dict[str, Any]]:
     """تأیید توکن نوسازی"""

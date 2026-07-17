@@ -1,7 +1,7 @@
 // نوارِ ناوبریِ پایین — مینیمال، شست‌محور، با انیمیشنِ فنری و دکمهٔ AIِ برجسته (FAB).
 // RTL/LTR-safe: هر تب پیلِ فعالِ خودش را دارد (بدونِ محاسبهٔ پیکسلیِ شکننده).
 import React from 'react';
-import { CandlestickChart, List, Sparkles, Newspaper, User } from 'lucide-react';
+import { CandlestickChart, List, Sparkles, Newspaper, User } from '../bazaarnama/tvIcons';
 import { useApp } from '../appStore';
 import { useT } from '../i18n';
 import { tap } from './haptics';
@@ -65,7 +65,7 @@ export default function BottomNav() {
             onClick={() => setTab(id)}
             aria-label={t(key)}
             className="relative z-[1] flex-1 flex flex-col items-center justify-center gap-1"
-            style={{ color: on ? ACCENT : 'var(--text-muted)' }}
+            style={{ color: on ? ACCENT : 'var(--text-secondary)' }}
           >
             {/* پیلِ فعال — با فنر ظاهر می‌شود */}
             <span

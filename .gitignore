@@ -1,6 +1,7 @@
 # ── رازها (امنیت — هرگز) ──
 .env
 .env.*
+.cf
 secrets/
 *.pem
 *.key
@@ -19,6 +20,10 @@ logs/
 *.log
 backups/
 backup-logs/
+# خروجیِ خودکارِ qa/python/run-clean.sh — trace/گزارشِ Playwright، چند گیگابایت
+artifacts/
+app/artifacts/
+SHA256SUMS
 # ── محتوا/باینریِ سنگین (روی سرور می‌مانند؛ گیت جای باینریِ بزرگ نیست) ──
 avatar_work/
 samples/
@@ -51,6 +56,10 @@ deploy/
 flows/
 monitoring/
 tests/
+# QA harnessهای نگهداری‌شده جزو Source هستند؛ الگوی legacy بالا نباید آن‌ها را
+# پنهان کند. تست‌های قدیمیِ ریشه تا زمان تعیین contract همچنان ignored می‌مانند.
+!qa/tests/
+!qa/tests/**
 run_bot.py
 run_celery.py
 run_signal_engine.py

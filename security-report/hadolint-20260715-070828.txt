@@ -1,0 +1,25 @@
+### ./backtest/Dockerfile.backtest
+-:10 DL3013 [1m[93mwarning[0m: Pin versions in pip. Instead of `pip install <package>` use `pip install <package>==<version>` or `pip install --requirement <requirements file>`
+### ./central-auth/Dockerfile
+-:6 DL3008 [1m[93mwarning[0m: Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`
+### ./backups/nginx-pre-turn443-20260608-002644/mt5/Dockerfile
+-:5 DL3002 [1m[93mwarning[0m: Last USER should not be root
+-:15 DL3008 [1m[93mwarning[0m: Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`
+### ./flows/Dockerfile.flowrunner
+### ./llm_service/Dockerfile
+### ./chart_service/Dockerfile
+-:19 DL3008 [1m[93mwarning[0m: Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`
+-:19 DL3013 [1m[93mwarning[0m: Pin versions in pip. Instead of `pip install <package>` use `pip install <package>==<version>` or `pip install --requirement <requirements file>`
+### ./frontend/panel/Dockerfile
+### ./frontend/ig/Dockerfile
+### ./frontend/prochart/Dockerfile
+### ./frontend/academy/Dockerfile
+### ./frontend/user/Dockerfile
+### ./frontend/website/Dockerfile
+### ./artifacts/qa/referral-only/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T035617Z/scoped-source/frontend/user/Dockerfile
+### ./qa/python/Dockerfile
+### ./Dockerfile
+-:10 DL3008 [1m[93mwarning[0m: Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`
+### ./media/mt5/Dockerfile
+-:5 DL3002 [1m[93mwarning[0m: Last USER should not be root
+-:15 DL3008 [1m[93mwarning[0m: Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`

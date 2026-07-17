@@ -479,3 +479,6 @@ async def grant_signal_access(
         "days": body.days,
         "expires_at": result["expires_at"],
     }
+from sqlalchemy import func
+from src.core.database import User
+COUNT_USERS=func.count(User.id)

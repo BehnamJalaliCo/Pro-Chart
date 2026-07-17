@@ -1,0 +1,29 @@
+{
+  "actionable_targets": [
+    "/home",
+    "/missing",
+    "/new"
+  ],
+  "declared_routes": [
+    "/home",
+    "/login",
+    "/new"
+  ],
+  "excluded_untracked_source": [
+    "frontend/panel/src/android/Bridge.js",
+    "frontend/panel/src/generated/Generated.js",
+    "frontend/panel/src/navigation.test.mjs"
+  ],
+  "fallback_routes": [
+    "*"
+  ],
+  "included_untracked_source": [
+    "frontend/panel/src/navigation.js",
+    "frontend/panel/src/newFeature.js"
+  ],
+  "non_actionable_targets": [
+    "/dead",
+    "/old",
+    "/raw-dead"
+  ]
+}

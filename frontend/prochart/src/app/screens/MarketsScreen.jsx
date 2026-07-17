@@ -1,6 +1,6 @@
 // بازارها — اخبار + تقویمِ اقتصادی (سگمنت). اخبار: فیدِ خلاصه‌شده. تقویم: رویداد با نقطهٔ اهمیت + پیش‌بینی/قبلی/واقعی.
 import React, { useEffect, useState } from 'react';
-import { Newspaper, CalendarDays } from 'lucide-react';
+import { Newspaper, CalendarDays } from '../../bazaarnama/tvIcons';
 import { api } from '../../api/client';
 import { useT } from '../../i18n';
 import { Screen, EmptyState, Loading, ACCENT } from '../ui';

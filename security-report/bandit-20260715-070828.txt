@@ -1,0 +1,94 @@
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:03
+Run started:2026-07-15 07:09:52.397511+00:00
+
+Test results:
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: src/api/routes/_lbank_exec.py:28:13
+27	    ordered = "&".join(f"{k}={params[k]}" for k in sorted(params))
+28	    digest = hashlib.md5(ordered.encode()).hexdigest().upper()
+29	    return hmac.new(secret.encode(), digest.encode(), hashlib.sha256).hexdigest()
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: src/api/routes/_lbank_exec.py:44:19
+43	        "signature_method": "HmacSHA256",
+44	        "echostr": hashlib.md5(str(time.time()).encode()).hexdigest()[:32],
+45	    }
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: src/api/routes/academy.py:1526:8
+1525	        conds += f"AND time >= to_timestamp({upper - n * bs * 4}) "
+1526	    q = "SELECT time,open,high,low,close,COALESCE(volume,0) FROM candles WHERE " + conds + "ORDER BY time DESC LIMIT :n"
+1527	    params = {"s": symbol, "t": tf, "n": n}
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: src/api/routes/bn_gate.py:216:35
+215	async def _get_settings(table: str, sid: int, db) -> dict:
+216	    row = (await db.execute(text(f"SELECT data FROM {table} WHERE student_id=:s"), {"s": sid})).first()
+217	    return dict(row[0]) if row and row[0] else {}
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: src/api/routes/bn_gate.py:223:10
+222	    await db.execute(text(
+223	        f"INSERT INTO {table} (student_id, data, updated_at) VALUES (:s, CAST(:d AS jsonb), now()) "
+224	        f"ON CONFLICT (student_id) DO UPDATE SET data=CAST(:d AS jsonb), updated_at=now()"),
+225	        {"s": sid, "d": json.dumps(data)})
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: src/api/routes/bn_social.py:428:9
+427	                 "GREATEST(0, 72 - EXTRACT(EPOCH FROM (now()-p.created_at))/3600)) DESC, p.id DESC")
+428	    q = ("SELECT p.*, s.username AS author_name, s.tier AS tier FROM bn_posts p "
+429	         "JOIN academy_students s ON s.id=p.author_id " + where + f" ORDER BY {order} LIMIT :lim")
+430	    rows = (await db.execute(text(q), params)).all()
+
+--------------------------------------------------
+>> Issue: [B108:hardcoded_tmp_directory] Probable insecure usage of temp file/directory.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-377 (https://cwe.mitre.org/data/definitions/377.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b108_hardcoded_tmp_directory.html
+   Location: src/publish/academy_drip.py:183:31
+182	            lesson.order_in_level or 1, _LEVEL_FA.get(lesson.level, "دوره"),
+183	            lesson.title_fa, f"/tmp/thumb_{lesson.slug}.jpg", level_key=lesson.level)
+184	        if not thumb:
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 38489
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 158
+		Medium: 5
+		High: 2
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 4
+		Medium: 7
+		High: 154
+Files skipped (0):

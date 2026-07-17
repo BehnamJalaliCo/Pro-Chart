@@ -3,7 +3,7 @@ import {
   Menu, X, LogIn, UserPlus, Crown, LogOut, User, Loader2, Eye, EyeOff,
   Sparkles, Code2, LineChart, List, Bell, Search, CalendarDays,
   HelpCircle, LifeBuoy, FileText, ChevronLeft, ArrowUpRight, Sun, Moon,
-  Check, ShieldCheck, Zap, Star, Users, BadgeCheck,
+  Check, ShieldCheck, Zap, Star, Users, BadgeCheck, Keyboard,
 } from 'lucide-react';
 import { api, tokenStore } from './api/client';
 import bnLogo from './assets/bn-logo.png';
@@ -197,6 +197,7 @@ export default function AuthMenu({ theme = 'dark', panelUrl, onToggleTheme }) {
                       <FeatureChip P={P} icon={<CalendarDays size={18} />} label="تقویم"     onClick={() => feature('bn:rightTab', 'calendar')} />
                       <FeatureChip P={P} icon={<Code2 size={18} />}       label="نمااسکریپت" onClick={() => feature('bn:openScript')} />
                       <FeatureChip P={P} icon={<HelpCircle size={18} />}  label="راهنما"    onClick={() => feature('bn:help')} />
+                      <FeatureChip P={P} icon={<Keyboard size={18} />}    label="میان‌بُرها" onClick={() => feature('bn:shortcuts')} />
                     </div>
                   </Section>
 

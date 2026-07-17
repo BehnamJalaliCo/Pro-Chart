@@ -1,13 +1,13 @@
 // پروفایل — زبان، تم، اتصال مجاز LBank، معرفی OneRoyal، قفل اپ (PIN)، درباره اپ.
 import React, { useEffect, useState } from 'react';
-import { User, Globe, Sun, Moon, Link2, Info, Lock, ChevronDown, Check } from 'lucide-react';
+import { User, Globe, Sun, Moon, Link2, Info, Lock, ChevronDown, Check } from '../../bazaarnama/tvIcons';
 import { api } from '../../api/client';
 import { useApp } from '../../appStore';
 import { useT } from '../../i18n';
 import { Screen, ACCENT } from '../ui';
 import { hasPin, setPin, clearPin } from '../lock';
 import { bioEnabled, setBioEnabled, bioAvailable, bioVerify } from '../biometric';
-import { Fingerprint, Crown, ChevronLeft } from 'lucide-react';
+import { Fingerprint, Crown, ChevronLeft } from '../../bazaarnama/tvIcons';
 import SubscribeScreen from './SubscribeScreen';
 import ReferralDeparture from '../../components/ReferralDeparture';
 
@@ -56,7 +56,7 @@ export default function ProfileScreen() {
   const loadMe = () => api.me().then((r) => setMe(r || {})).catch(() => setMe({}));
   useEffect(() => { loadMe(); }, []);
   const myTier = (me && me.tier) || 'free';
-  const tierColor = myTier === 'premium' ? '#8b5cf6' : myTier === 'vip' ? ACCENT : 'var(--text-muted)';
+  const tierColor = myTier === 'premium' ? '#8b5cf6' : myTier === 'vip' ? ACCENT : 'color-mix(in srgb, var(--text-muted) 82%, #000)';
 
   const refresh = () => api.bnConnectStatus().then((r) => setConn(r || {})).catch(() => setConn({}));
   useEffect(() => { let a = true; api.bnConnectStatus().then((r) => { if (a) setConn(r || {}); }).catch(() => { if (a) setConn({}); }); return () => { a = false; }; }, []);
@@ -93,7 +93,7 @@ export default function ProfileScreen() {
           {title}
         </span>
         <span className="flex items-center gap-2">
-          <span className="font-bold" style={{ fontSize: 11.5, color: connected ? 'var(--up)' : 'var(--text-muted)' }}>{connected ? t('profile.connected') : t('profile.notConnected')}</span>
+          <span className="font-bold" style={{ fontSize: 11.5, color: connected ? 'color-mix(in srgb, var(--up) 68%, var(--text-primary))' : 'var(--text-secondary)' }}>{connected ? t('profile.connected') : t('profile.notConnected')}</span>
           <ChevronDown size={16} style={{ color: 'var(--text-muted)', transform: open === kind ? 'rotate(180deg)' : 'none', transition: 'transform .25s' }} />
         </span>
       </button>
@@ -121,7 +121,7 @@ export default function ProfileScreen() {
           </span>
           <div className="min-w-0 flex-1">
             <div className="font-extrabold" style={{ color: 'var(--text-primary)', fontSize: 16 }}>{(me && (me.full_name || me.username)) || 'Pro-Chart'}</div>
-            <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>{(me && me.username) ? me.username : t('profile.guest')}</div>
+            <div style={{ color: 'var(--text-secondary)', fontSize: 12 }}>{(me && me.username) ? me.username : t('profile.guest')}</div>
           </div>
           {/* نشانِ tier (M3) */}
           <span className="flex items-center gap-1 flex-none font-extrabold" style={{ fontSize: 11, color: '#fff', background: tierColor, borderRadius: 999, padding: '4px 10px' }}>
@@ -137,7 +137,7 @@ export default function ProfileScreen() {
               {t('sub.title')}
             </span>
             <span className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
-              {myTier !== 'premium' && <span style={{ fontSize: 11, fontWeight: 800, color: '#8b5cf6' }}>{t('sub.upgrade')}</span>}
+              {myTier !== 'premium' && <span style={{ fontSize: 11, fontWeight: 800, color: 'color-mix(in srgb, #8b5cf6 72%, var(--text-primary))' }}>{t('sub.upgrade')}</span>}
               <ChevronLeft size={16} />
             </span>
           </button>
@@ -221,7 +221,7 @@ export default function ProfileScreen() {
             <span className="flex items-center gap-3" style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 600 }}>
               <span className="flex items-center justify-center" style={{ width: 34, height: 34, borderRadius: 10, background: 'var(--surface-elevated)', color: ACCENT }}><Info size={17} /></span>{t('profile.version')}
             </span>
-            <span className="tabular-nums" dir="ltr" style={{ fontSize: 12, color: 'var(--text-muted)' }}>1.0.0</span>
+            <span className="tabular-nums" dir="ltr" style={{ fontSize: 12, color: 'var(--text-secondary)' }}>1.0.0</span>
           </div>
         </div>
 

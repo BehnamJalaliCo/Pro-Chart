@@ -26,8 +26,8 @@ function isTypingTarget(el) {
   return false;
 }
 
-// Space روی کنترلِ فوکوس‌پذیر متعلق به همان کنترل است، نه میان‌بُر Replay.
-// target ممکن است فرزند SVG/Span دکمه باشد، پس closest لازم است.
+// Space روی کنترلِ فوکوس‌پذیر متعلق به همان کنترل است (فعال‌سازی native)، نه
+// میان‌بُرِ پخش بازپخش. target ممکن است SVG/Span داخل دکمه باشد، پس closest لازم است.
 function ownsNativeSpaceActivation(el, event) {
   if (!el || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return false;
   if (!(event.key === ' ' || event.code === 'Space')) return false;
@@ -74,9 +74,8 @@ export const SHORTCUTS = [
   { id: 'ray',      group: 'ابزارها', combo: 'Alt+R',   label: 'پرتو (Ray)',          match: (e) => altOnly(e) && k(e) === 'r' },
   { id: 'rect',     group: 'ابزارها', combo: 'Alt+E',   label: 'مستطیل',              match: (e) => altOnly(e) && k(e) === 'e' },
   { id: 'fib',      group: 'ابزارها', combo: 'Alt+F',   label: 'فیبوناچی',            match: (e) => altOnly(e) && k(e) === 'f' },
-  { id: 'channel',  group: 'ابزارها', combo: 'Alt+P',   label: 'کانالِ موازی',        match: (e) => altOnly(e) && k(e) === 'p' },
   { id: 'text',     group: 'ابزارها', combo: 'Alt+X',   label: 'متن',                 match: (e) => altOnly(e) && k(e) === 'x' },
-  { id: 'longshort',group: 'ابزارها', combo: 'Alt+L',   label: 'موقعیتِ خرید/فروش',   match: (e) => altOnly(e) && k(e) === 'l' },
+  // Alt+P/Alt+L طبقِ TradingView به «مقیاسِ درصدی/لگاریتمی» اختصاص دارند (نه ابزارِ ترسیم) — کانال/لانگ‌شورت از ریلِ ابزار در دسترس‌اند. (#۴۴۴)
   { id: 'magnet',   group: 'ابزارها', combo: 'Ctrl+Alt+M', label: 'آهنربا (Magnet)',   match: (e) => ctrlAlt(e) && k(e) === 'm' },
   { id: 'stayDraw', group: 'ابزارها', combo: 'Ctrl+Alt+D', label: 'ماندن در حالتِ ترسیم', match: (e) => ctrlAlt(e) && k(e) === 'd' },
 
@@ -118,13 +117,17 @@ export const SHORTCUTS = [
   { id: 'nudgeDownFast', group: 'ناوبری', combo: 'Shift+↓', label: 'حرکت سریع ترسیم به پایین', match: (e) => shiftOnly(e) && k(e) === 'arrowdown' },
   { id: 'scrollEnd',  group: 'ناوبری', combo: 'End',  label: 'پرش به جدیدترین', match: (e) => noMods(e) && k(e) === 'end' },
   { id: 'scrollHome', group: 'ناوبری', combo: 'Home', label: 'پرش به قدیمی‌ترین', match: (e) => noMods(e) && k(e) === 'home' },
+  { id: 'gotoDate',   group: 'ناوبری', combo: 'Alt+G', label: 'پرش به تاریخ', match: (e) => altOnly(e) && k(e) === 'g' },
   { id: 'fit',        group: 'ناوبری', combo: 'Ctrl+Alt+0', label: 'هم‌اندازه‌سازیِ چارت', match: (e) => ctrlAlt(e) && (e.code === 'Digit0' || e.key === '0') },
   { id: 'resetScale', group: 'ناوبری', combo: 'Ctrl+Alt+S', label: 'بازنشانیِ مقیاسِ قیمت', match: (e) => ctrlAlt(e) && k(e) === 's' },
   { id: 'invertScale', group: 'ناوبری', combo: 'Alt+I', label: 'وارونه‌سازیِ محورِ قیمت', match: (e) => altOnly(e) && k(e) === 'i' },
+  { id: 'percentScale', group: 'ناوبری', combo: 'Alt+P', label: 'مقیاسِ درصدی', match: (e) => altOnly(e) && k(e) === 'p' },
+  { id: 'logScale', group: 'ناوبری', combo: 'Alt+L', label: 'مقیاسِ لگاریتمی', match: (e) => altOnly(e) && k(e) === 'l' },
 
   // ── پنل‌ها / نما ──
   { id: 'toggleRight', group: 'نما', combo: 'Ctrl+R', label: 'نمایش/پنهانِ نوارِ کناری', match: (e) => ctrlOnly(e) && k(e) === 'r' },
-  { id: 'fullscreen',  group: 'نما', combo: 'F', label: 'تمام‌صفحه', match: (e) => noMods(e) && k(e) === 'f' },
+  // «تمام‌صفحه» با میان‌بُرِ ترکیبی تا با «تایپِ حرف → جستجوی نماد»ِ TV تداخل نکند (بارهِ F آزاد شد).
+  { id: 'fullscreen',  group: 'نما', combo: 'Ctrl+Alt+F', label: 'تمام‌صفحه', match: (e) => ctrlAlt(e) && k(e) === 'f' },
   { id: 'toggleTheme', group: 'نما', combo: 'Ctrl+Alt+T', label: 'تمِ تیره/روشن', match: (e) => ctrlAlt(e) && k(e) === 't' },
   { id: 'indicators',  group: 'نما', combo: '/', label: 'بازکردنِ اندیکاتورها', match: (e) => noMods(e) && e.key === '/' },
   { id: 'symbolSearch',group: 'نما', combo: 'Ctrl+K', label: 'جست‌وجوی نماد', allowInInput: false, match: (e) => ctrlOnly(e) && k(e) === 'k' },
@@ -134,6 +137,7 @@ export const SHORTCUTS = [
   // ── چیدمان / چند-چارت ──
   { id: 'saveLayout', group: 'چیدمان', combo: 'Ctrl+S', label: 'ذخیرهٔ چیدمان', allowInInput: true, match: (e) => ctrlOnly(e) && k(e) === 's' },
   { id: 'cycleGrid',  group: 'چیدمان', combo: 'Ctrl+Alt+G', label: 'تعویضِ چیدمانِ شبکه', match: (e) => ctrlAlt(e) && k(e) === 'g' },
+  // «سلولِ بعدی (Tab)» حذف شد: handler نداشت (attachHotkeys skipش می‌کرد) و در راهنما میان‌بُرِ کاذب بود؛ Tab رزروِ مرورگر است و TV هم برای سلول‌ها کلیک می‌گیرد نه Tab. #321
 
   // ── ترید / آلارم ──
   { id: 'newAlert', group: 'ترید', combo: 'Alt+A', label: 'آلارمِ جدید روی قیمتِ نشانگر', match: (e) => altOnly(e) && k(e) === 'a' },
@@ -147,7 +151,8 @@ export const SHORTCUTS = [
   { id: 'replayStepBack', group: 'بازپخش', combo: 'Shift+←', label: 'حرکت سریع ترسیم / گام قبلی بازپخش', match: (e) => shiftOnly(e) && k(e) === 'arrowleft' },
 
   // ── اسکریپت ──
-  { id: 'screenshot', group: 'دیگر', combo: 'S', label: 'اسکرین‌شاتِ چارت', match: (e) => noMods(e) && k(e) === 's' },
+  // «اسکرین‌شات» با میان‌بُرِ ترکیبی تا با «تایپِ حرف → جستجوی نماد»ِ TV تداخل نکند (بارهِ S آزاد شد؛ دکمهٔ دوربین + منوی راست‌کلیک هم دارد).
+  { id: 'screenshot', group: 'دیگر', combo: 'Alt+S', label: 'اسکرین‌شاتِ چارت', match: (e) => altOnly(e) && k(e) === 's' },
   { id: 'saveScript', group: 'دیگر', combo: 'Ctrl+Shift+S', label: 'ذخیرهٔ اسکریپت', allowInInput: true, match: (e) => (e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && k(e) === 's' },
 ].map((s) => ({ prevent: true, allowInInput: false, ...s, combo: fmtKey(s.combo) }));
 

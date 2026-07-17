@@ -1,0 +1,4 @@
+# Local-only Cloudflare cache-purge configuration.
+# Copy to `.cf`, set owner-only permissions (`chmod 600 .cf`), and never commit it.
+CF_API_TOKEN=
+CF_ZONE_ID=

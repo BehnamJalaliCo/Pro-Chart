@@ -35,11 +35,20 @@ TMP = f"/tmp/cp_hourly_{TS}"
 EXC_SUB = ["/node_modules/", "/.git/", "/__pycache__/", "/dist/", "/logs/",
            "/instagram-Ai-Direct/", "/edu_assets/", "/ml_models/", "/backup_work/",
            "/avatar_work/frames/", "/avatar_work/rec", "/avatar_work/voices/",
-           "/avatar_work/Wav2Lip/", "/avatar_work/stage/", "/.cache/"]
+           "/avatar_work/Wav2Lip/", "/avatar_work/stage/", "/.cache/",
+           "/secrets/", "/certbot/", "/backups/", "/backup-logs/",
+           "/.codex-backups/"]
 EXC_AV_EXT = (".webm", ".mp4", ".wav", ".onnx", ".mp3", ".png", ".m4a")
+SECRET_NAMES = {".cf", ".igkey", ".git-credentials", "rclone.conf"}
+SECRET_EXT = (".pem", ".key", ".crt", ".p12", ".pfx")
 
 
 def excluded(p):
+    name = os.path.basename(p.rstrip("/"))
+    if name == ".env" or name.startswith(".env.") or name in SECRET_NAMES:
+        return True
+    if name.lower().endswith(SECRET_EXT):
+        return True
     if p.endswith(".pyc"):
         return True
     for s in EXC_SUB:

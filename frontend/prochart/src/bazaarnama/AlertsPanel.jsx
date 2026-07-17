@@ -23,9 +23,17 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Bell, BellOff, Plus, X, Pencil, Check, Send, MessageSquare, Clock, Repeat, ChevronDown,
-  Mail, Smartphone, Volume2, Webhook, MessageCircle, History, ListChecks } from 'lucide-react';
+  Mail, Smartphone, Volume2, Webhook, MessageCircle, History, ListChecks } from './tvIcons';
 import { api } from '../api/client';
 import { REGISTRY } from './indicators';
+import { priceDigits } from './symbolMeta';
+
+// نمایشِ قیمت با دقتِ درستِ نماد + جداکنندهٔ هزارگان (هم‌راستا با بقیهٔ اپ و TradingView).
+const fmtHeadPrice = (sym, v) => {
+  if (v == null || !Number.isFinite(Number(v))) return v;
+  const d = priceDigits(sym, Number(v));
+  return Number(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+};
 
 // ── واژگانِ منبع/عملگر ───────────────────────────────────────────────────────
 const SOURCES = [
@@ -55,10 +63,12 @@ const OPS = [
   { id: 'below', label: 'کوچک‌تر از', rhs: 'value' },
   { id: 'enter_channel', label: 'ورود به کانال', rhs: 'channel' },
   { id: 'exit_channel', label: 'خروج از کانال', rhs: 'channel' },
-  { id: 'move_up_value', label: 'صعود به اندازهٔ (مقدار)', rhs: 'value' },
-  { id: 'move_down_value', label: 'نزول به اندازهٔ (مقدار)', rhs: 'value' },
+  // ترتیبِ کانونیِ TradingView: «حرکتِ درصدی» پیش از «حرکتِ مقداری» (Moving Up % / Down % → Moving Up / Down). #260
+  //   فقط ترتیبِ نمایشِ dropdown است؛ idها و نگاشتِ سروری دست‌نخورده ⇒ بی‌خطر برای شلیکِ آلارم. [[prochart-alert-ops-alignment]]
   { id: 'pct_up', label: 'صعودِ ٪', rhs: 'value', pct: true },
   { id: 'pct_down', label: 'نزولِ ٪', rhs: 'value', pct: true },
+  { id: 'move_up_value', label: 'صعود به اندازهٔ (مقدار)', rhs: 'value' },
+  { id: 'move_down_value', label: 'نزول به اندازهٔ (مقدار)', rhs: 'value' },
 ];
 
 const OP_SHORT = OPS.reduce((m, o) => { m[o.id] = o.label; return m; }, {});
@@ -119,18 +129,20 @@ function timeAgo(ts) {
 }
 
 // مقادیرِ اولیهٔ فرم.
-const blankForm = (symbol) => ({
+const blankForm = (symbol, price) => ({
   id: null,                 // پُر می‌شود هنگامِ ویرایش
   source: 'price',
   price_field: 'mid',
   indId: '',                // id اندیکاتورِ فعالِ انتخاب‌شده
   indField: 'line',
-  op: 'cross_up',
-  value: '',
+  op: 'cross',                 // پیش‌فرضِ «تقاطع (هر دو جهت)» مثلِ دیفالتِ TradingView
+  // پیش‌پُرکردنِ «مقدار» با قیمتِ جاری مثلِ دیالوگِ Create Alertِ TV (کاربر سپس تنظیم می‌کند). #294
+  // بدونِ جداکنندهٔ هزارگان (toFixed، نه toLocaleString) تا Number() هنگامِ ثبت NaN نشود.
+  value: (price != null && Number.isFinite(Number(price))) ? Number(price).toFixed(priceDigits(symbol, Number(price))) : '',
   and2: false, op2: 'below', value2: '', // شرطِ دومِ AND (آلارمِ چندشرطی)
   lo: '', hi: '',
-  trigger: 'recurring',        // پس‌رو — از freq مشتق می‌شود
-  freq: 'cooldown',            // جدید: دانه‌بندیِ فراوانیِ TV
+  trigger: 'once',             // پس‌رو — از freq مشتق می‌شود
+  freq: 'once',                // پیش‌فرضِ «فقط یک‌بار» مثلِ TradingView (نه recurring؛ ضدِ اسپم و وفادار به دیفالتِ TV)
   cooldownMin: 60,
   expiryH: '',
   name: '',                    // نامِ سفارشیِ آلارم (خالی → autoName)
@@ -145,10 +157,27 @@ const blankForm = (symbol) => ({
   webhook: '',
 });
 
+// صفِ ماژولیِ «افزودنِ آلارم روی اندیکاتور» از منوی «...»ِ لجندِ چارت (سبکِ TradingView).
+// چون پنلِ آلارم ممکن است هنگامِ کلیک بسته/unmount باشد، درخواست در یک متغیرِ ماژولی صف می‌شود
+// (که از remount جان‌سالم به‌در می‌برد) و یک رویداد برای نمونهٔ mount‌شده پخش می‌شود. مصرف یک‌باره است.
+let _pendingIndAlert = null;
+export function queueIndicatorAlert(indId) {
+  _pendingIndAlert = { indId };
+  try { window.dispatchEvent(new CustomEvent('bn:indAlertQueued')); } catch (e) { /* noop */ }
+}
+
+// صفِ «پیش‌پُرکردنِ آلارمِ قیمت» — برای «افزودنِ آلارم روی خط/در قیمت» تا فرمِ AlertsPanel با value/op پُر شود. #277
+// (فرمِ AlertsPanel داخلی است و alFormِ صفحه را نمی‌خواند؛ این پل، پیش‌پُرکردن را واقعی می‌کند.)
+let _pendingSeedAlert = null;
+export function queueSeedAlert(seed) {
+  _pendingSeedAlert = seed || null;
+  try { window.dispatchEvent(new CustomEvent('bn:seedAlert')); } catch (e) { /* noop */ }
+}
+
 // ── کامپوننتِ اصلی ───────────────────────────────────────────────────────────
 export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
   const [list, setList] = useState([]);
-  const [form, setForm] = useState(() => blankForm(symbol));
+  const [form, setForm] = useState(() => blankForm(symbol, price));
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -156,6 +185,37 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
   const mounted = useRef(true);
 
   const set = useCallback((patch) => setForm((f) => ({ ...f, ...patch })), []);
+
+  // مصرفِ صفِ «افزودنِ آلارم روی اندیکاتور» — روی mount (حالتِ تبِ‌بسته) و روی رویداد (حالتِ تبِ‌باز).
+  // بلافاصله پاک می‌شود تا با remount دوباره اعمال نشود.
+  const applyPendingIndAlert = useCallback(() => {
+    if (!_pendingIndAlert) return;
+    const { indId } = _pendingIndAlert;
+    _pendingIndAlert = null;
+    setForm((f) => ({ ...f, id: null, source: 'indicator', indId: indId || '', indField: 'line' }));
+    setTab('alerts');
+  }, []);
+  useEffect(() => {
+    applyPendingIndAlert();
+    const h = () => applyPendingIndAlert();
+    window.addEventListener('bn:indAlertQueued', h);
+    return () => window.removeEventListener('bn:indAlertQueued', h);
+  }, [applyPendingIndAlert]);
+
+  // مصرفِ صفِ «پیش‌پُرکردنِ آلارمِ قیمت» (از «افزودنِ آلارم روی خط/در قیمت») — value/op را در فرم می‌گذارد. #277
+  const applyPendingSeedAlert = useCallback(() => {
+    if (!_pendingSeedAlert) return;
+    const seed = _pendingSeedAlert;
+    _pendingSeedAlert = null;
+    setForm((f) => ({ ...f, id: null, source: 'price', op: seed.op || f.op, value: (seed.value != null ? String(seed.value) : f.value), line: (seed.line && Number.isFinite(seed.line.t1)) ? seed.line : null }));
+    setTab('alerts');
+  }, []);
+  useEffect(() => {
+    applyPendingSeedAlert();
+    const h = () => applyPendingSeedAlert();
+    window.addEventListener('bn:seedAlert', h);
+    return () => window.removeEventListener('bn:seedAlert', h);
+  }, [applyPendingSeedAlert]);
 
   const freqMeta = useMemo(() => FREQS.find((f) => f.id === form.freq) || FREQS[4], [form.freq]);
   const opMeta = useMemo(() => OPS.find((o) => o.id === form.op) || OPS[0], [form.op]);
@@ -185,8 +245,11 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
     if (!v || Number.isNaN(v) || isPct || isChannel) return null;
     const diff = v - price;
     const pips = symbol && /JPY/i.test(symbol) ? diff * 100 : diff * 10000;
+    const pct = price ? (diff / price) * 100 : 0;
     const sign = diff >= 0 ? '+' : '−';
-    return { now: price, target: v, pips: Math.abs(pips), sign };
+    // «pips» فقط برای جفت‌ارزهای فارکس معنا دارد (۶ حرف، بدونِ فلز)؛ برای کریپتو/شاخص/فلز → درصد.
+    const isFxPair = /^[A-Z]{6}$/.test(symbol || '') && !/XA[UG]/.test(symbol || '');
+    return { now: price, target: v, pips: Math.abs(pips), pct: Math.abs(pct), sign, isFxPair };
   }, [form.source, form.value, price, isPct, isChannel, symbol]);
 
   // ── ساختِ نامِ خودکار ──────────────────────────────────────────────────────
@@ -222,6 +285,8 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
     // عملوندِ راست
     if (isChannel) { cond.lo = Number(form.lo); cond.hi = Number(form.hi); cond.value = Number(form.lo); }
     else { cond.value = Number(form.value); }
+    // آلارمِ خطِ شیب‌دار (Trend-Line): لنگرهای (t,p) → سرور سطحِ متحرک را محاسبه می‌کند. #سرور:_line_level
+    if (form.line && Number.isFinite(form.line.t1) && Number.isFinite(form.line.t2)) cond.line = form.line;
     // آلارمِ چندشرطی (AND): شرطِ دوم
     if (!isChannel && form.and2 && form.value2 !== '') {
       cond.conditions = [{ op: form.op, value: Number(form.value) }, { op: form.op2, value: Number(form.value2) }];
@@ -264,7 +329,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       } else {
         await api.bnAlertCreate(payload);
       }
-      setForm(blankForm(symbol));
+      setForm(blankForm(symbol, price));
       await reload();
     } catch (e) {
       setErr('ذخیرهٔ آلارم ناموفق بود.');
@@ -300,6 +365,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       indField: (c.indicator && c.indicator.field) || 'line',
       op,
       value: meta.rhs === 'channel' ? (c.lo ?? '') : (c.value ?? ''),
+      line: (c.line && Number.isFinite(c.line.t1)) ? c.line : null,  // آلارمِ خطِ شیب‌دار — حفظ در ویرایش
       and2: Array.isArray(c.conditions) && c.conditions.length > 1,
       op2: (Array.isArray(c.conditions) && c.conditions[1] && c.conditions[1].op) || 'below',
       value2: (Array.isArray(c.conditions) && c.conditions[1] && c.conditions[1].value != null) ? c.conditions[1].value : '',
@@ -322,7 +388,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
     setShowAdvanced(true);
   }, []);
 
-  const cancelEdit = useCallback(() => setForm(blankForm(symbol)), [symbol]);
+  const cancelEdit = useCallback(() => setForm(blankForm(symbol, price)), [symbol, price]);
 
   // ── لاگِ آلارم — تاریخچهٔ رخدادها از فیلدِ last_triggered_at (نزولی) ─────────
   const logEntries = useMemo(() => (
@@ -350,7 +416,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
               {form.id ? 'ویرایشِ آلارم' : 'سازندهٔ آلارم'} — <span dir="ltr">{symbol} · {DEFAULT_TF}</span>
             </span>
             {price != null && Number.isFinite(Number(price)) && (
-              <FlashNum value={price} TH={TH} className="text-[10px] font-medium" style={{ color: TH.textStrong }}>{price}</FlashNum>
+              <FlashNum value={price} TH={TH} className="text-[10px] font-medium" style={{ color: TH.textStrong }}>{fmtHeadPrice(symbol, price)}</FlashNum>
             )}
           </div>
           {form.id && (
@@ -411,7 +477,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
               <input value={form.hi} onChange={(e) => set({ hi: e.target.value })} placeholder="سقف" dir="ltr" className={`${inputCls} w-14`} style={inputStyle} />
             </>
           ) : (
-            <input value={form.value} onChange={(e) => set({ value: e.target.value })} placeholder={isPct ? '٪' : 'مقدار'} dir="ltr" className={`${inputCls} w-20`} style={inputStyle} />
+            <input value={form.value} onChange={(e) => set({ value: e.target.value, line: null })} placeholder={isPct ? '٪' : 'مقدار'} dir="ltr" className={`${inputCls} w-20`} style={inputStyle} />
           )}
         </div>
 
@@ -437,7 +503,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
           <div className="text-[9px] opacity-60 px-1 tabular-nums flex items-center gap-1" dir="ltr">
             <span>{symbol} → {distancePreview.target} · اکنون</span>
             <FlashNum value={distancePreview.now} TH={TH}>{distancePreview.now}</FlashNum>
-            <span>({distancePreview.sign}{distancePreview.pips.toFixed(1)} pips)</span>
+            <span>({distancePreview.sign}{distancePreview.isFxPair ? `${distancePreview.pips.toFixed(1)} pips` : `${distancePreview.pct.toFixed(2)}٪`})</span>
           </div>
         )}
 
@@ -458,7 +524,8 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
         {/* انقضا */}
         <div className="flex gap-1 items-center">
           <Clock size={11} className="opacity-50" />
-          <input value={form.expiryH} onChange={(e) => set({ expiryH: e.target.value })} placeholder="انقضا (ساعت) — خالی = بدونِ انقضا" dir="ltr" className={`${inputCls} flex-1`} style={inputStyle} />
+          {/* dir=rtl تا placeholderِ فارسی درست از راست شروع شود (با dir=ltr صدرِ «انقضا» بریده و «قضا» دیده می‌شد). */}
+          <input value={form.expiryH} onChange={(e) => set({ expiryH: e.target.value })} inputMode="numeric" placeholder="انقضا (ساعت) — خالی = بدونِ انقضا" dir="rtl" className={`${inputCls} flex-1`} style={inputStyle} />
         </div>
 
         {/* تنظیماتِ بیشتر — پیام + تحویل */}
@@ -472,10 +539,11 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
             <div className="text-[9px] opacity-50">نامِ آلارم</div>
             <input value={form.name} onChange={(e) => set({ name: e.target.value })} placeholder={autoName() || 'نامِ آلارم (خالی = خودکار)'} className={`${inputCls} w-full`} style={inputStyle} />
             <div className="text-[9px] opacity-50 pt-0.5">پیام</div>
-            <input value={form.message} onChange={(e) => set({ message: e.target.value })} placeholder="پیامِ سفارشی (روی متغیرها بزنید)" className={`${inputCls} w-full`} style={inputStyle} />
-            {/* پالتِ متغیرها — همتراز با placeholderهای TV */}
+            {/* پیام چندخطی مثلِ textareaِ پیامِ آلارمِ TV (به‌جای تک‌خطی) — متغیرها می‌توانند در چند خط بیایند؛ قابلِ تغییرِ ارتفاع. */}
+            <textarea value={form.message} onChange={(e) => set({ message: e.target.value })} placeholder="پیامِ سفارشی (روی متغیرها بزنید)" rows={2} className="rounded-md px-2 py-1 outline-none transition-colors min-w-0 w-full resize-y leading-snug" style={inputStyle} />
+            {/* پالتِ متغیرها — همتراز با placeholderهای TV، منهای {{exchange}}: Pro-Chart عمداً مفهومِ صرافی ندارد (قانونِ بدونِ‌بروکر) و نمادها پیشوندِ صرافی ندارند، پس این متغیر به هیچ resolve می‌شد. */}
             <div className="flex gap-1 flex-wrap">
-              {['{{ticker}}', '{{exchange}}', '{{close}}', '{{open}}', '{{high}}', '{{low}}', '{{volume}}', '{{interval}}', '{{time}}', '{{timenow}}', '{{plot_0}}'].map((ph) => (
+              {['{{ticker}}', '{{close}}', '{{open}}', '{{high}}', '{{low}}', '{{volume}}', '{{interval}}', '{{time}}', '{{timenow}}', '{{plot_0}}'].map((ph) => (
                 <button key={ph} onClick={() => set({ message: (form.message || '') + ph })} className="text-[9px] rounded-md px-1.5 py-0.5 transition-colors" style={{ background: TH.chipBg, color: TH.text }} dir="ltr"
                   onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
                   onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{ph}</button>
@@ -575,7 +643,10 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       ) : (
       /* ───────────────── فهرستِ آلارم‌ها ───────────────── */
       list.length === 0 ? (
-        <div className="text-[10px] opacity-40 text-center py-8">هنوز آلارمی ساخته نشده.</div>
+        <div className="text-[11px] opacity-45 text-center leading-relaxed py-8 px-4">
+          {/* پیامِ خالیِ توصیفیِ سبکِ TV («Alerts notify you instantly when your conditions are met. Create one to get started.») */}
+          آلارم‌ها به‌محضِ برآورده‌شدنِ شرط‌ها فوری به شما خبر می‌دهند.<br />برای شروع، بالا یک آلارم بسازید.
+        </div>
       ) : (
         <div>
           <div className="text-[10px] opacity-50 mb-1 px-0.5">آلارم‌های ذخیره‌شده ({list.length})</div>

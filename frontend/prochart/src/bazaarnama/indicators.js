@@ -15,6 +15,9 @@ export const sma = (src, p) => {
   }
   return out;
 };
+// SMAِ آگاه به null — برای MAِ روی خروجیِ اندیکاتورِ دیگر که warmupِ null دارد (مثلِ RSI-based MAِ TV):
+// فقط مقادیرِ متناهیِ پنجره را میانگین می‌گیرد و تا پُرشدنِ کاملِ پنجره null می‌دهد. #330
+export const smaNull = (arr, p) => { const out = new Array(arr.length).fill(null); let sum = 0, cnt = 0; for (let i = 0; i < arr.length; i++) { const v = arr[i]; if (v != null && Number.isFinite(v)) { sum += v; cnt++; } const j = i - p; if (j >= 0) { const w = arr[j]; if (w != null && Number.isFinite(w)) { sum -= w; cnt--; } } if (cnt === p) out[i] = sum / p; } return out; };
 
 export const ema = (src, p) => {
   const out = new Array(src.length).fill(null);
@@ -49,7 +52,8 @@ export const hma = (src, p) => {
   const diff = src.map((_, i) => (w1[i] != null && w2[i] != null ? 2 * w1[i] - w2[i] : null));
   const filled = diff.map((v) => (v == null ? 0 : v));
   const h = wma(filled, sq);
-  return h.map((v, i) => (diff[i] == null ? null : v));
+  // فقط وقتی پنجرهٔ کاملِ sq از diff واقعی باشد خروجی بده — تا صفرهای جعلیِ warmup لبهٔ چپ را خراب نکنند (~√p بارِ اول).
+  return h.map((v, i) => { for (let j = 0; j < sq; j++) if (i - j < 0 || diff[i - j] == null) return null; return v; });
 };
 
 export const rsi = (closes, p = 14) => {
@@ -67,7 +71,7 @@ export const rsi = (closes, p = 14) => {
 export const macd = (closes, fast = 12, slow = 26, sig = 9) => {
   const ef = ema(closes, fast), es = ema(closes, slow);
   const line = closes.map((_, i) => (ef[i] != null && es[i] != null ? ef[i] - es[i] : null));
-  const signal = ema(line.map((v) => (v == null ? 0 : v)), sig).map((v, i) => (line[i] == null ? null : v));
+  const signal = ema(line, sig).map((v, i) => (line[i] == null ? null : v));
   const hist = line.map((v, i) => (v != null && signal[i] != null ? v - signal[i] : null));
   return { macd: line, signal, hist };
 };
@@ -106,7 +110,7 @@ export const stoch = (highs, lows, closes, p = 14, d = 3) => {
     for (let j = 0; j < p; j++) { hh = Math.max(hh, highs[i - j]); ll = Math.min(ll, lows[i - j]); }
     k[i] = hh === ll ? 50 : ((closes[i] - ll) / (hh - ll)) * 100;
   }
-  const dd = sma(k.map((v) => (v == null ? 0 : v)), d).map((v, i) => (k[i] == null ? null : v));
+  const dd = smaNull(k, d);
   return { k, d: dd };
 };
 
@@ -218,8 +222,10 @@ export const supertrend = (highs, lows, closes, p = 10, mult = 3) => {
     if (a[i] == null) continue;
     const mid = (highs[i] + lows[i]) / 2;
     let ub = mid + mult * a[i], lb = mid - mult * a[i];
-    if (up != null) ub = closes[i - 1] > up ? Math.max(ub, up) : ub;
-    if (dn != null) lb = closes[i - 1] < dn ? Math.min(lb, dn) : lb;
+    // رَچِتِ باندِ نهاییِ استانداردِ SuperTrend: باند تا وقتی قیمت داخلش است سفت می‌ماند، فقط با شکست ریست می‌شود.
+    // (قبلاً منطق معکوس بود ⇒ باند هر بار دوباره پهن می‌شد و خطِ SuperTrend به‌شدت غلط بود — هم‌کلاسِ باگِ نمااسکریپت #۵۸.)
+    if (up != null) ub = (ub < up || closes[i - 1] > up) ? ub : up;
+    if (dn != null) lb = (lb > dn || closes[i - 1] < dn) ? lb : dn;
     if (dir === 1 && closes[i] < (dn ?? lb)) dir = -1;
     else if (dir === -1 && closes[i] > (up ?? ub)) dir = 1;
     up = ub; dn = lb;
@@ -229,16 +235,17 @@ export const supertrend = (highs, lows, closes, p = 10, mult = 3) => {
 };
 
 // CCI
-export const cci = (highs, lows, closes, p = 20) => {
-  const tp = closes.map((_, i) => (highs[i] + lows[i] + closes[i]) / 3);
-  const m = sma(tp, p);
-  const out = new Array(closes.length).fill(null);
-  for (let i = p - 1; i < closes.length; i++) {
-    let md = 0; for (let j = 0; j < p; j++) md += Math.abs(tp[i - j] - m[i]);
-    md /= p; out[i] = md ? (tp[i] - m[i]) / (0.015 * md) : 0;
+// هستهٔ CCI روی هر سریِ منبع (پیش‌فرضِ TV: hlc3) — انحراف نسبت به SMA تقسیم بر ۰٫۰۱۵×میانگینِ‌انحراف.
+const _cciCore = (src, p) => {
+  const m = sma(src, p);
+  const out = new Array(src.length).fill(null);
+  for (let i = p - 1; i < src.length; i++) {
+    let md = 0; for (let j = 0; j < p; j++) md += Math.abs(src[i - j] - m[i]);
+    md /= p; out[i] = md ? (src[i] - m[i]) / (0.015 * md) : 0;
   }
   return out;
 };
+export const cci = (highs, lows, closes, p = 20) => _cciCore(closes.map((_, i) => (highs[i] + lows[i] + closes[i]) / 3), p);
 
 // Williams %R
 export const williamsR = (highs, lows, closes, p = 14) => {
@@ -312,8 +319,35 @@ export const adx = (highs, lows, closes, p = 14) => {
 };
 
 // DEMA / TEMA
-export const dema = (closes, p = 20) => { const e = ema(closes, p), e2 = ema(e.map((v) => (v == null ? 0 : v)), p); return closes.map((_, i) => (e[i] != null && e2[i] != null ? 2 * e[i] - e2[i] : null)); };
-export const tema = (closes, p = 20) => { const e1 = ema(closes, p), e2 = ema(e1.map((v) => (v == null ? 0 : v)), p), e3 = ema(e2.map((v) => (v == null ? 0 : v)), p); return closes.map((_, i) => (e1[i] != null && e2[i] != null && e3[i] != null ? 3 * e1[i] - 3 * e2[i] + e3[i] : null)); };
+// نسخهٔ ADX که +DI و −DI را هم برمی‌گرداند (برای قاعدهٔ crossover-محورِ Technical Rating). #265
+// دقیقاً همان محاسبهٔ adx بالا؛ فقط pdi/ndi را هم ذخیره می‌کند (تستِ elementwise تضمینِ یکسانیِ adx می‌دهد).
+export const adxDI = (highs, lows, closes, p = 14) => {
+  const n = closes.length;
+  if (n < p + 2) return null;
+  const tr = new Array(n).fill(0), pdm = new Array(n).fill(0), ndm = new Array(n).fill(0);
+  for (let i = 1; i < n; i++) {
+    tr[i] = Math.max(highs[i] - lows[i], Math.abs(highs[i] - closes[i - 1]), Math.abs(lows[i] - closes[i - 1]));
+    const up = highs[i] - highs[i - 1], dn = lows[i - 1] - lows[i];
+    pdm[i] = up > dn && up > 0 ? up : 0; ndm[i] = dn > up && dn > 0 ? dn : 0;
+  }
+  const sm = (a) => { const o = new Array(n).fill(null); let s = 0; for (let i = 1; i <= p; i++) s += a[i]; o[p] = s; for (let i = p + 1; i < n; i++) { s = s - s / p + a[i]; o[i] = s; } return o; };
+  const str = sm(tr), spd = sm(pdm), snd = sm(ndm);
+  const plusDI = new Array(n).fill(null), minusDI = new Array(n).fill(null), adxArr = new Array(n).fill(null);
+  let adxPrev = null, dxs = [];
+  for (let i = p; i < n; i++) {
+    if (str[i] == null || !str[i]) continue;
+    const pdi = 100 * spd[i] / str[i], ndi = 100 * snd[i] / str[i];
+    plusDI[i] = pdi; minusDI[i] = ndi;
+    const dx = (pdi + ndi) ? 100 * Math.abs(pdi - ndi) / (pdi + ndi) : 0;
+    dxs.push(dx);
+    if (dxs.length === p) { adxPrev = dxs.reduce((x, y) => x + y, 0) / p; adxArr[i] = adxPrev; }
+    else if (adxPrev != null) { adxPrev = (adxPrev * (p - 1) + dx) / p; adxArr[i] = adxPrev; }
+  }
+  return { adx: adxArr, plusDI, minusDI };
+};
+
+export const dema = (closes, p = 20) => { const e = ema(closes, p), e2 = ema(e, p); return closes.map((_, i) => (e[i] != null && e2[i] != null ? 2 * e[i] - e2[i] : null)); }; // ema خودش null-skip/seed-on-first-real دارد؛ map(null→0) قبلی EMAِ تودرتو را با صفرِ جعلی seed می‌کرد ⇒ ~۹۰ بارِ اولِ خروجی به‌شدت غلط.
+export const tema = (closes, p = 20) => { const e1 = ema(closes, p), e2 = ema(e1, p), e3 = ema(e2, p); return closes.map((_, i) => (e1[i] != null && e2[i] != null && e3[i] != null ? 3 * e1[i] - 3 * e2[i] + e3[i] : null)); }; // مثلِ dema: EMAِ تودرتو بدونِ map(null→0) تا روی اولین مقدارِ واقعی seed شود.
 
 // VWMA
 export const vwma = (closes, vols, p = 20) => { const pv = closes.map((c, i) => c * (vols[i] || 0)); const spv = sma(pv, p), sv = sma(vols.map((v) => v || 0), p); return closes.map((_, i) => (spv[i] != null && sv[i] ? spv[i] / sv[i] : null)); };
@@ -364,8 +398,8 @@ export const cmf = (highs, lows, closes, vols, p = 20) => {
 export const stochRsi = (closes, p = 14, k = 3, d = 3) => {
   const r = rsi(closes, p), n = closes.length, raw = new Array(n).fill(null);
   for (let i = p - 1; i < n; i++) { let hh = -Infinity, ll = Infinity, ok = 0; for (let j = 0; j < p; j++) { const v = r[i - j]; if (v == null) continue; ok = 1; hh = Math.max(hh, v); ll = Math.min(ll, v); } if (ok && r[i] != null) raw[i] = hh === ll ? 0 : 100 * (r[i] - ll) / (hh - ll); }
-  const ks = sma(raw.map((v) => (v == null ? 0 : v)), k).map((v, i) => (raw[i] == null ? null : v));
-  const ds = sma(ks.map((v) => (v == null ? 0 : v)), d).map((v, i) => (ks[i] == null ? null : v));
+  const ks = smaNull(raw, k);
+  const ds = smaNull(ks, d);
   return { k: ks, d: ds };
 };
 
@@ -389,9 +423,25 @@ export const cmo = (closes, p = 9) => {
 };
 
 // Pivot Points (کلاسیک، چرخشی روی کندلِ قبل) → P/R1/R2/S1/S2
-export const pivots = (highs, lows, closes) => {
+// نقاطِ پیووتِ کلاسیک — سطوحِ افقیِ ثابت که از HLCِ *دورهٔ قبل* (پیش‌فرض: روزِ قبل) محاسبه
+// و در سراسرِ دورهٔ جاری صاف نگه داشته می‌شوند (مثلِ TradingView). times=مُهرِ زمانیِ ثانیه‌ایِ هر بار.
+// بدونِ times به رفتارِ قدیمی (بارِ قبل) برمی‌گردد.
+export const pivots = (highs, lows, closes, times) => {
   const n = closes.length, p = new Array(n).fill(null), r1 = new Array(n).fill(null), r2 = new Array(n).fill(null), s1 = new Array(n).fill(null), s2 = new Array(n).fill(null);
-  for (let i = 1; i < n; i++) { const pp = (highs[i - 1] + lows[i - 1] + closes[i - 1]) / 3; p[i] = pp; r1[i] = 2 * pp - lows[i - 1]; s1[i] = 2 * pp - highs[i - 1]; r2[i] = pp + (highs[i - 1] - lows[i - 1]); s2[i] = pp - (highs[i - 1] - lows[i - 1]); }
+  const setLevels = (i, pv) => { if (!pv) return; const pp = (pv.H + pv.L + pv.C) / 3; p[i] = pp; r1[i] = 2 * pp - pv.L; s1[i] = 2 * pp - pv.H; r2[i] = pp + (pv.H - pv.L); s2[i] = pp - (pv.H - pv.L); };
+  if (!times || !times.length) {
+    for (let i = 1; i < n; i++) setLevels(i, { H: highs[i - 1], L: lows[i - 1], C: closes[i - 1] });
+    return { p, r1, r2, s1, s2 };
+  }
+  const dayOf = (t) => Math.floor((t || 0) / 86400); // مرزِ روزِ UTC
+  let curDay = null, dH = -Infinity, dL = Infinity, dC = null, prev = null;
+  for (let i = 0; i < n; i++) {
+    const d = dayOf(times[i]);
+    if (curDay === null) { curDay = d; dH = highs[i]; dL = lows[i]; dC = closes[i]; }
+    else if (d !== curDay) { prev = { H: dH, L: dL, C: dC }; curDay = d; dH = highs[i]; dL = lows[i]; dC = closes[i]; }
+    else { dH = Math.max(dH, highs[i]); dL = Math.min(dL, lows[i]); dC = closes[i]; }
+    setLevels(i, prev); // سطوحِ دورهٔ جاری از HLCِ دورهٔ قبل ⇒ در طولِ دوره صاف می‌مانند
+  }
   return { p, r1, r2, s1, s2 };
 };
 
@@ -423,60 +473,77 @@ export const gmma = (src) => {
   return { short: shortL.map((p) => ema(src, p)), long: longL.map((p) => ema(src, p)) };
 };
 
+// منبعِ قیمت (هم‌ترازِ input.sourceِ TV): close/open/high/low + قیمت‌های ترکیبی.
+// پیش‌فرض/نامعلوم ⇒ close ⇒ رفتارِ قبلی دست‌نخورده (بدونِ رگرسیون برای اندیکاتورهای ذخیره‌شده).
+export const SOURCE_OPTS = ['close', 'open', 'high', 'low', 'hl2', 'hlc3', 'ohlc4', 'hlcc4'];
+export const resolveSrc = (c, name) => {
+  switch (name) {
+    case 'open': return c.open;
+    case 'high': return c.high;
+    case 'low': return c.low;
+    case 'hl2': return c.high.map((h, i) => (h + c.low[i]) / 2);
+    case 'hlc3': return c.high.map((h, i) => (h + c.low[i] + c.close[i]) / 3);
+    case 'ohlc4': return c.high.map((h, i) => (c.open[i] + h + c.low[i] + c.close[i]) / 4);
+    // HLCC4 = (H + L + 2×C)/4 — منبعِ هشتمِ TV (وزنِ دوبرابرِ close). #262
+    case 'hlcc4': return c.high.map((h, i) => (h + c.low[i] + 2 * c.close[i]) / 4);
+    default: return c.close;
+  }
+};
+
 // رجیستریِ اندیکاتورها (برای UI). pane: 'main' (اورلی) یا 'sub'.
 export const REGISTRY = {
-  ma:   { label: 'میانگین متحرک (MA)', pane: 'main', inputs: { period: 20 }, color: '#60a5fa', calc: (c, i) => ({ line: sma(c.close, i.period) }) },
-  ema:  { label: 'EMA', pane: 'main', inputs: { period: 20 }, color: '#f59e0b', calc: (c, i) => ({ line: ema(c.close, i.period) }) },
-  wma:  { label: 'WMA', pane: 'main', inputs: { period: 20 }, color: '#a78bfa', calc: (c, i) => ({ line: wma(c.close, i.period) }) },
-  hma:  { label: 'HMA (هال)', pane: 'main', inputs: { period: 21 }, color: '#22d3ee', calc: (c, i) => ({ line: hma(c.close, i.period) }) },
+  ma:   { label: 'میانگین متحرک (MA)', pane: 'main', inputs: { period: 20, source: 'close' }, color: '#60a5fa', calc: (c, i) => ({ line: sma(resolveSrc(c, i.source), i.period) }) },
+  ema:  { label: 'EMA', pane: 'main', inputs: { period: 20, source: 'close' }, color: '#f59e0b', calc: (c, i) => ({ line: ema(resolveSrc(c, i.source), i.period) }) },
+  wma:  { label: 'WMA', pane: 'main', inputs: { period: 20, source: 'close' }, color: '#a78bfa', calc: (c, i) => ({ line: wma(resolveSrc(c, i.source), i.period) }) },
+  hma:  { label: 'HMA (هال)', pane: 'main', inputs: { period: 21, source: 'close' }, color: '#22d3ee', calc: (c, i) => ({ line: hma(resolveSrc(c, i.source), i.period) }) },
   vwap: { label: 'VWAP (سشن‌محور)', pane: 'main', inputs: {}, color: '#e879f9', calc: (c) => ({ line: vwap(c.high, c.low, c.close, c.volume, c.time) }) },
-  avwap: { label: 'VWAP لنگرانداخته (±σ)', pane: 'main', inputs: { anchorBars: 100, mult: 1 }, color: '#e879f9', calc: (c, i) => { const r = avwap(c.high, c.low, c.close, c.volume, i.anchorBars, i.mult); return { lines: [{ data: r.vwap, color: '#e879f9' }, { data: r.upper, color: '#a855f7', dashed: true }, { data: r.lower, color: '#a855f7', dashed: true }] }; } },
+  avwap: { label: 'VWAP لنگرانداخته (±σ)', pane: 'main', inputs: { anchorBars: 100, mult: 1 }, color: '#e879f9', calc: (c, i) => { const r = avwap(c.high, c.low, c.close, c.volume, i.anchorBars, i.mult); return { lines: [{ data: r.vwap, color: '#e879f9' }, { data: r.upper, color: '#a855f7' }, { data: r.lower, color: '#a855f7' }], cloud: [1, 2], cloudColors: ['rgba(168,85,247,0.09)'] }; } }, // باندهای ±σ توپر + پُرشدگیِ بنفشِ کم‌رنگِ بینشان
   choppiness: { label: 'شاخصِ چاپینس', pane: 'sub', inputs: { period: 14 }, color: '#94a3b8', calc: (c, i) => ({ line: choppiness(c.high, c.low, c.close, i.period), guides: [61.8, 38.2] }) },
   vortex: { label: 'وُرتکس (VI±)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e', calc: (c, i) => { const r = vortex(c.high, c.low, c.close, i.period); return { line: r.plus, signal: r.minus }; } },
-  dpo: { label: 'DPO', pane: 'sub', inputs: { period: 20 }, color: '#f59e0b', calc: (c, i) => ({ line: dpo(c.close, i.period), guides: [0] }) },
+  dpo: { label: 'DPO', pane: 'sub', inputs: { period: 20, source: 'close' }, color: '#f59e0b', calc: (c, i) => ({ line: dpo(resolveSrc(c, i.source), i.period), guides: [0] }) },
   bop: { label: 'موازنهٔ قدرت (BOP)', pane: 'sub', inputs: {}, color: '#8b5cf6', calc: (c) => ({ line: bop(c.open, c.high, c.low, c.close), guides: [0] }) },
   eom: { label: 'سهولتِ حرکت (EOM)', pane: 'sub', inputs: { period: 14 }, color: '#06b6d4', calc: (c, i) => ({ line: eom(c.high, c.low, c.volume, i.period), guides: [0] }) },
-  elderRay: { label: 'اِلدر ری (قدرتِ گاو/خرس)', pane: 'sub', inputs: { period: 13 }, color: '#22c55e', calc: (c, i) => { const r = elderRay(c.high, c.low, c.close, i.period); return { line: r.bull, signal: r.bear, guides: [0] }; } },
+  elderRay: { label: 'اِلدر ری (قدرتِ گاو/خرس)', pane: 'sub', inputs: { period: 13 }, color: '#22c55e', calc: (c, i) => { const r = elderRay(c.high, c.low, c.close, i.period); return { hists: [{ data: r.bull, color: '#22c55e' }, { data: r.bear, color: '#ef4444' }], guides: [0] }; } }, // دو هیستوگرام: قدرتِ گاو سبز + قدرتِ خرس قرمز مثلِ TV
   chandeKroll: { label: 'استاپِ چاند کرول', pane: 'main', inputs: { p: 10, x: 1, q: 9 }, color: '#ef4444', calc: (c, i) => { const r = chandeKroll(c.high, c.low, c.close, i.p, i.x, i.q); return { lines: [{ data: r.high, color: '#ef4444' }, { data: r.low, color: '#22c55e' }] }; } },
   massIndex: { label: 'شاخصِ توده', pane: 'sub', inputs: { period: 9, sum: 25 }, color: '#f59e0b', calc: (c, i) => ({ line: massIndex(c.high, c.low, i.period, i.sum), guides: [27, 26.5] }) },
-  coppock: { label: 'منحنیِ کاپاک', pane: 'sub', inputs: {}, color: '#8b5cf6', calc: (c) => ({ line: coppock(c.close), guides: [0] }) },
-  kst: { label: 'KST', pane: 'sub', inputs: {}, color: '#06b6d4', calc: (c) => { const r = kst(c.close); return { line: r.line, signal: r.signal, guides: [0] }; } },
+  coppock: { label: 'منحنیِ کاپاک', pane: 'sub', inputs: { source: 'close' }, color: '#8b5cf6', calc: (c, i) => ({ line: coppock(resolveSrc(c, i.source)), guides: [0] }) },
+  kst: { label: 'KST', pane: 'sub', inputs: { source: 'close' }, color: '#06b6d4', calc: (c, i) => { const r = kst(resolveSrc(c, i.source)); return { line: r.line, signal: r.signal, guides: [0] }; } },
   alligator: { label: 'تمساحِ ویلیامز', pane: 'main', inputs: {}, color: '#3b82f6', calc: (c) => { const r = alligator(c.high, c.low); return { lines: [{ data: r.jaw, color: '#3b82f6' }, { data: r.teeth, color: '#ef4444' }, { data: r.lips, color: '#22c55e' }] }; } },
   rvi: { label: 'سرزندگیِ نسبی (RVI)', pane: 'sub', inputs: {}, color: '#22c55e', calc: (c) => { const r = rvi(c.open, c.high, c.low, c.close); return { line: r.line, signal: r.signal, guides: [0] }; } },
-  bbWidth: { label: 'پهنای باندِ بولینگر', pane: 'sub', inputs: { period: 20, mult: 2 }, color: '#f59e0b', calc: (c, i) => ({ line: bbWidth(c.close, i.period, i.mult) }) },
-  stc: { label: 'چرخهٔ روندِ شاف (STC)', pane: 'sub', inputs: { fast: 23, slow: 50, cycle: 10 }, color: '#8b5cf6', calc: (c, i) => ({ line: stc(c.close, i.fast, i.slow, i.cycle), guides: [75, 25] }) },
-  netVolume: { label: 'حجمِ خالص', pane: 'sub', inputs: {}, color: '#26a69a', calc: (c) => ({ line: netVolume(c.open, c.close, c.volume), guides: [0] }) },
-  stdErrBands: { label: 'باندهای خطای معیار', pane: 'main', inputs: { period: 21, mult: 2 }, color: '#3b82f6', calc: (c, i) => { const r = stdErrBands(c.close, i.period, i.mult); return { lines: [{ data: r.mid, color: '#3b82f6' }, { data: r.up, color: '#94a3b8', dashed: true }, { data: r.dn, color: '#94a3b8', dashed: true }] }; } },
-  accelerator: { label: 'نوسان‌سازِ شتاب (AC)', pane: 'sub', inputs: {}, color: '#26a69a', calc: (c) => ({ line: accelerator(c.high, c.low), guides: [0] }) },
+  bbWidth: { label: 'پهنای باندِ بولینگر', pane: 'sub', inputs: { period: 20, mult: 2, source: 'close' }, color: '#f59e0b', calc: (c, i) => ({ line: bbWidth(resolveSrc(c, i.source), i.period, i.mult) }) },
+  stc: { label: 'چرخهٔ روندِ شاف (STC)', pane: 'sub', inputs: { fast: 23, slow: 50, cycle: 10, source: 'close' }, color: '#8b5cf6', calc: (c, i) => ({ line: stc(resolveSrc(c, i.source), i.fast, i.slow, i.cycle), guides: [75, 25] }) },
+  netVolume: { label: 'حجمِ خالص', pane: 'sub', inputs: {}, color: '#089981', calc: (c) => ({ hist: netVolume(c.open, c.close, c.volume), histMode: 'sign', guides: [0] }) }, // هیستوگرامِ سبز/قرمز بر اساسِ علامت مثلِ TV
+  stdErrBands: { label: 'باندهای خطای معیار', pane: 'main', inputs: { period: 21, mult: 2 }, color: '#3b82f6', calc: (c, i) => { const r = stdErrBands(c.close, i.period, i.mult); return { lines: [{ data: r.mid, color: '#3b82f6' }, { data: r.up, color: '#60a5fa' }, { data: r.dn, color: '#60a5fa' }], cloud: [1, 2], cloudColors: ['rgba(96,165,250,0.07)'] }; } }, // باندهای توپر + پُرشدگیِ آبیِ کم‌رنگ مثلِ TV
+  accelerator: { label: 'نوسان‌سازِ شتاب (AC)', pane: 'sub', inputs: {}, color: '#089981', calc: (c) => ({ hist: accelerator(c.high, c.low), guides: [0] }) }, // هیستوگرامِ دورنگِ مومنتوم مثلِ TV
   chaikinVol: { label: 'نوسانِ چایکین', pane: 'sub', inputs: { period: 10 }, color: '#f59e0b', calc: (c, i) => ({ line: chaikinVol(c.high, c.low, i.period), guides: [0] }) },
   mtfEma: { label: 'EMA چندتایم‌فریمی (×factor)', pane: 'main', inputs: { period: 50, factor: 4 }, color: '#22d3ee', calc: (c, i) => ({ line: _expandA(ema(_resampleC(c, i.factor).close, i.period), i.factor, c.close.length) }) },
   mtfRsi: { label: 'RSI چندتایم‌فریمی (×factor)', pane: 'sub', inputs: { period: 14, factor: 4 }, color: '#f59e0b', calc: (c, i) => ({ line: _expandA(rsi(_resampleC(c, i.factor).close, i.period), i.factor, c.close.length), guides: [70, 30] }) },
-  bb:   { label: 'باند بولینگر', pane: 'main', inputs: { period: 20, mult: 2 }, color: '#94a3b8', calc: (c, i) => { const b = bollinger(c.close, i.period, i.mult); return { upper: b.upper, basis: b.basis, lower: b.lower, multi: true }; } },
-  supertrend: { label: 'سوپرترند', pane: 'main', inputs: { period: 10, mult: 3 }, color: '#10b981', calc: (c, i) => ({ line: supertrend(c.high, c.low, c.close, i.period, i.mult).line }) },
-  rsi:  { label: 'RSI', pane: 'sub', inputs: { period: 14 }, color: '#a78bfa', calc: (c, i) => ({ line: rsi(c.close, i.period), guides: [30, 70], range: [0, 100] }) },
-  macd: { label: 'MACD', pane: 'sub', inputs: { fast: 12, slow: 26, sig: 9 }, color: '#60a5fa', calc: (c, i) => { const m = macd(c.close, i.fast, i.slow, i.sig); return { line: m.macd, signal: m.signal, hist: m.hist, macd: true }; } },
-  stoch:{ label: 'استوکاستیک', pane: 'sub', inputs: { period: 14, d: 3 }, color: '#34d399', calc: (c, i) => { const s = stoch(c.high, c.low, c.close, i.period, i.d); return { line: s.k, signal: s.d, guides: [20, 80], range: [0, 100] }; } },
+  bb:   { label: 'باند بولینگر', pane: 'main', inputs: { period: 20, mult: 2, source: 'close' }, color: '#94a3b8', calc: (c, i) => { const b = bollinger(resolveSrc(c, i.source), i.period, i.mult); return { upper: b.upper, basis: b.basis, lower: b.lower, multi: true }; } },
+  supertrend: { label: 'سوپرترند', pane: 'main', inputs: { period: 10, mult: 3 }, color: '#10b981', calc: (c, i) => { const r = supertrend(c.high, c.low, c.close, i.period, i.mult); const up = r.line.map((v, k) => (r.trend[k] === 1 ? v : null)); const dn = r.line.map((v, k) => (r.trend[k] === -1 ? v : null)); return { lines: [{ data: up, color: '#10b981', gaps: true }, { data: dn, color: '#ef4444', gaps: true }] }; } }, // خطِ دورنگِ سوپرترند: سبز صعودی / قرمز نزولی (مثلِ TV)
+  rsi:  { label: 'RSI', pane: 'sub', inputs: { period: 14, source: 'close', maLength: 14 }, color: '#a78bfa', calc: (c, i) => { const r = rsi(resolveSrc(c, i.source), i.period); return { line: r, signal: (i.maLength > 0 ? smaNull(r, i.maLength) : null), guides: [30, 70], range: [0, 100], zone: [30, 70] }; } }, // «RSI-based MA»ِ پیش‌فرضِ TV (خطِ دومِ نارنجی؛ maLength=0 خاموشش می‌کند). #330
+  macd: { label: 'MACD', pane: 'sub', inputs: { fast: 12, slow: 26, sig: 9, source: 'close' }, color: '#60a5fa', calc: (c, i) => { const m = macd(resolveSrc(c, i.source), i.fast, i.slow, i.sig); return { line: m.macd, signal: m.signal, hist: m.hist, macd: true }; } },
+  stoch:{ label: 'استوکاستیک', pane: 'sub', inputs: { period: 14, d: 3 }, color: '#34d399', calc: (c, i) => { const s = stoch(c.high, c.low, c.close, i.period, i.d); return { line: s.k, signal: s.d, guides: [20, 80], range: [0, 100], zone: [20, 80] }; } },
   atr:  { label: 'ATR', pane: 'sub', inputs: { period: 14 }, color: '#fb7185', calc: (c, i) => ({ line: atr(c.high, c.low, c.close, i.period) }) },
-  cci:  { label: 'CCI', pane: 'sub', inputs: { period: 20 }, color: '#f472b6', calc: (c, i) => ({ line: cci(c.high, c.low, c.close, i.period), guides: [-100, 100] }) },
-  willr:{ label: 'ویلیامز %R', pane: 'sub', inputs: { period: 14 }, color: '#facc15', calc: (c, i) => ({ line: williamsR(c.high, c.low, c.close, i.period), guides: [-20, -80], range: [-100, 0] }) },
+  cci:  { label: 'CCI', pane: 'sub', inputs: { period: 20, source: 'hlc3' }, color: '#f472b6', calc: (c, i) => ({ line: _cciCore(resolveSrc(c, i.source), i.period), guides: [-100, 100], zone: [-100, 100] }) },
+  willr:{ label: 'ویلیامز %R', pane: 'sub', inputs: { period: 14 }, color: '#facc15', calc: (c, i) => ({ line: williamsR(c.high, c.low, c.close, i.period), guides: [-20, -80], range: [-100, 0], zone: [-80, -20] }) },
   obv:  { label: 'OBV', pane: 'sub', inputs: {}, color: '#38bdf8', calc: (c) => ({ line: obv(c.close, c.volume) }) },
   adx:  { label: 'ADX', pane: 'sub', inputs: { period: 14 }, color: '#f97316', calc: (c, i) => ({ line: adx(c.high, c.low, c.close, i.period), guides: [25] }) },
-  donchian: { label: 'کانال دونچیان', pane: 'main', inputs: { period: 20 }, color: '#94a3b8', calc: (c, i) => { const d = donchian(c.high, c.low, i.period); return { lines: [{ data: d.upper, color: '#60a5fa', dashed: true }, { data: d.basis, color: '#94a3b8' }, { data: d.lower, color: '#60a5fa', dashed: true }] }; } },
-  keltner: { label: 'کانال کلتنر', pane: 'main', inputs: { period: 20, mult: 2 }, color: '#f472b6', calc: (c, i) => { const k = keltner(c.high, c.low, c.close, i.period, i.mult); return { lines: [{ data: k.upper, color: '#f472b6', dashed: true }, { data: k.basis, color: '#f472b6' }, { data: k.lower, color: '#f472b6', dashed: true }] }; } },
-  ichimoku: { label: 'ایچیموکو', pane: 'main', inputs: { tenkan: 9, kijun: 26, span: 52 }, color: '#22d3ee', calc: (c, i) => { const k = ichimoku(c.high, c.low, c.close, i.tenkan, i.kijun, i.span); return { lines: [{ data: k.tenkan, color: '#3b82f6' }, { data: k.kijun, color: '#ef4444' }, { data: k.spanA, color: '#22c55e', dashed: true }, { data: k.spanB, color: '#f59e0b', dashed: true }] }; } },
-  dema: { label: 'DEMA (نمایی دوگانه)', pane: 'main', inputs: { period: 20 }, color: '#38bdf8', calc: (c, i) => ({ line: dema(c.close, i.period) }) },
-  tema: { label: 'TEMA (نمایی سه‌گانه)', pane: 'main', inputs: { period: 20 }, color: '#fb923c', calc: (c, i) => ({ line: tema(c.close, i.period) }) },
+  donchian: { label: 'کانال دونچیان', pane: 'main', inputs: { period: 20 }, color: '#94a3b8', calc: (c, i) => { const d = donchian(c.high, c.low, i.period); return { lines: [{ data: d.upper, color: '#60a5fa' }, { data: d.basis, color: '#94a3b8' }, { data: d.lower, color: '#60a5fa' }], cloud: [0, 2], cloudColors: ['rgba(96,165,250,0.07)'] }; } }, // باندهای توپر + پُرشدگیِ آبیِ کم‌رنگ مثلِ دونچیانِ TV
+  keltner: { label: 'کانال کلتنر', pane: 'main', inputs: { period: 20, mult: 2 }, color: '#f472b6', calc: (c, i) => { const k = keltner(c.high, c.low, c.close, i.period, i.mult); return { lines: [{ data: k.upper, color: '#f472b6' }, { data: k.basis, color: '#f472b6' }, { data: k.lower, color: '#f472b6' }], cloud: [0, 2], cloudColors: ['rgba(244,114,182,0.08)'] }; } }, // باندهای توپر + پُرشدگیِ صورتیِ کم‌رنگ بینِ بالا/پایین مثلِ کلتنرِ TV
+  ichimoku: { label: 'ایچیموکو', pane: 'main', inputs: { tenkan: 9, kijun: 26, span: 52 }, color: '#22d3ee', calc: (c, i) => { const k = ichimoku(c.high, c.low, c.close, i.tenkan, i.kijun, i.span); return { lines: [{ data: k.tenkan, color: '#3b82f6' }, { data: k.kijun, color: '#ef4444' }, { data: k.spanA, color: '#22c55e' }, { data: k.spanB, color: '#f59e0b' }], cloud: [2, 3] }; } }, // Senkou A/B توپر + ابرِ سبز/قرمزِ بینِ آن‌ها (indexِ 2/3) مثلِ TV
+  dema: { label: 'DEMA (نمایی دوگانه)', pane: 'main', inputs: { period: 20, source: 'close' }, color: '#38bdf8', calc: (c, i) => ({ line: dema(resolveSrc(c, i.source), i.period) }) },
+  tema: { label: 'TEMA (نمایی سه‌گانه)', pane: 'main', inputs: { period: 20, source: 'close' }, color: '#fb923c', calc: (c, i) => ({ line: tema(resolveSrc(c, i.source), i.period) }) },
   vwma: { label: 'VWMA (وزنیِ حجمی)', pane: 'main', inputs: { period: 20 }, color: '#c084fc', calc: (c, i) => ({ line: vwma(c.close, c.volume, i.period) }) },
-  psar: { label: 'پارابولیک SAR', pane: 'main', inputs: { start: 0.02, inc: 0.02, max: 0.2 }, color: '#a855f7', calc: (c, i) => ({ lines: [{ data: psar(c.high, c.low, i.start, i.inc, i.max), color: '#a855f7', dashed: true }] }) },
-  pivots: { label: 'نقاطِ پیووت (کلاسیک)', pane: 'main', inputs: {}, color: '#94a3b8', calc: (c) => { const v = pivots(c.high, c.low, c.close); return { lines: [{ data: v.r2, color: '#ef4444', dashed: true }, { data: v.r1, color: '#f87171', dashed: true }, { data: v.p, color: '#94a3b8' }, { data: v.s1, color: '#4ade80', dashed: true }, { data: v.s2, color: '#22c55e', dashed: true }] }; } },
+  psar: { label: 'پارابولیک SAR', pane: 'main', inputs: { start: 0.02, inc: 0.02, max: 0.2 }, color: '#a855f7', calc: (c, i) => { const s = psar(c.high, c.low, i.start, i.inc, i.max); const below = s.map((v, k) => (v == null ? null : (v <= c.close[k] ? v : null))); const above = s.map((v, k) => (v == null ? null : (v > c.close[k] ? v : null))); return { lines: [{ data: below, color: '#a855f7', dashed: true, gaps: true }, { data: above, color: '#a855f7', dashed: true, gaps: true }] }; } }, // شکستِ خط در چرخشِ SAR (بدونِ خطِ اتصالِ اریب از رویِ قیمت) مثلِ TV
+  pivots: { label: 'نقاطِ پیووت (کلاسیک)', pane: 'main', inputs: {}, color: '#94a3b8', calc: (c) => { const v = pivots(c.high, c.low, c.close, c.time); return { lines: [{ data: v.r2, color: '#ef4444', dashed: true, gaps: true }, { data: v.r1, color: '#f87171', dashed: true, gaps: true }, { data: v.p, color: '#94a3b8', gaps: true }, { data: v.s1, color: '#4ade80', dashed: true, gaps: true }, { data: v.s2, color: '#22c55e', dashed: true, gaps: true }] }; } },
   aroon: { label: 'آرون (Aroon)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e', calc: (c, i) => { const a = aroon(c.high, c.low, i.period); return { line: a.up, signal: a.down, guides: [30, 70], range: [0, 100] }; } },
-  mfi: { label: 'MFI (جریانِ نقدینگی)', pane: 'sub', inputs: { period: 14 }, color: '#10b981', calc: (c, i) => ({ line: mfi(c.high, c.low, c.close, c.volume, i.period), guides: [20, 80], range: [0, 100] }) },
+  mfi: { label: 'MFI (جریانِ نقدینگی)', pane: 'sub', inputs: { period: 14 }, color: '#10b981', calc: (c, i) => ({ line: mfi(c.high, c.low, c.close, c.volume, i.period), guides: [20, 80], range: [0, 100], zone: [20, 80] }) },
   cmf: { label: 'CMF (پولِ چایکین)', pane: 'sub', inputs: { period: 20 }, color: '#0ea5e9', calc: (c, i) => ({ line: cmf(c.high, c.low, c.close, c.volume, i.period), guides: [0] }) },
-  stochrsi: { label: 'استوکاستیک RSI', pane: 'sub', inputs: { period: 14, k: 3, d: 3 }, color: '#34d399', calc: (c, i) => { const s = stochRsi(c.close, i.period, i.k, i.d); return { line: s.k, signal: s.d, guides: [20, 80], range: [0, 100] }; } },
-  ao: { label: 'اسیلاتورِ شگفت‌انگیز (AO)', pane: 'sub', inputs: {}, color: '#60a5fa', calc: (c) => ({ line: ao(c.high, c.low), guides: [0] }) },
-  tsi: { label: 'TSI (قدرتِ واقعی)', pane: 'sub', inputs: { short: 13, long: 25 }, color: '#f472b6', calc: (c, i) => ({ line: tsi(c.close, i.short, i.long), guides: [0] }) },
-  cmo: { label: 'CMO (مومنتومِ چاند)', pane: 'sub', inputs: { period: 9 }, color: '#fbbf24', calc: (c, i) => ({ line: cmo(c.close, i.period), guides: [-50, 50] }) },
-  alma: { label: 'ALMA (آرنو لِگو)', pane: 'main', inputs: { period: 9, offset: 0.85, sigma: 6 }, color: '#2dd4bf', calc: (c, i) => ({ line: alma(c.close, i.period, i.offset, i.sigma) }) },
+  stochrsi: { label: 'استوکاستیک RSI', pane: 'sub', inputs: { period: 14, k: 3, d: 3, source: 'close' }, color: '#34d399', calc: (c, i) => { const s = stochRsi(resolveSrc(c, i.source), i.period, i.k, i.d); return { line: s.k, signal: s.d, guides: [20, 80], range: [0, 100], zone: [20, 80] }; } },
+  ao: { label: 'اسیلاتورِ شگفت‌انگیز (AO)', pane: 'sub', inputs: {}, color: '#60a5fa', calc: (c) => ({ hist: ao(c.high, c.low), guides: [0] }) }, // هیستوگرامِ دورنگِ مومنتوم مثلِ TV
+  tsi: { label: 'TSI (قدرتِ واقعی)', pane: 'sub', inputs: { short: 13, long: 25, source: 'close' }, color: '#f472b6', calc: (c, i) => ({ line: tsi(resolveSrc(c, i.source), i.short, i.long), guides: [0] }) },
+  cmo: { label: 'CMO (مومنتومِ چاند)', pane: 'sub', inputs: { period: 9, source: 'close' }, color: '#fbbf24', calc: (c, i) => ({ line: cmo(resolveSrc(c, i.source), i.period), guides: [-50, 50], zone: [-50, 50] }) },
+  alma: { label: 'ALMA (آرنو لِگو)', pane: 'main', inputs: { period: 9, offset: 0.85, sigma: 6, source: 'close' }, color: '#2dd4bf', calc: (c, i) => ({ line: alma(resolveSrc(c, i.source), i.period, i.offset, i.sigma) }) },
   maRibbon: { label: 'نوارِ میانگین‌ها (MA Ribbon)', pane: 'main', inputs: { base: 20, step: 10, count: 6 }, color: '#60a5fa', calc: (c, i) => { const rs = maRibbon(c.close, i.base, i.step, i.count, 'sma'); const pal = ['#60a5fa', '#38bdf8', '#22d3ee', '#2dd4bf', '#34d399', '#4ade80', '#a3e635', '#facc15']; return { lines: rs.map((data, k) => ({ data, color: pal[k % pal.length] })) }; } },
   gmma: { label: 'گاپی (GMMA)', pane: 'main', inputs: {}, color: '#3b82f6', calc: (c) => { const g = gmma(c.close); return { lines: [...g.short.map((data) => ({ data, color: '#3b82f6' })), ...g.long.map((data) => ({ data, color: '#ef4444' }))] }; } },
   maCross: { label: 'تقاطعِ میانگین‌ها (MA Cross)', pane: 'main', inputs: { fast: 10, slow: 30 }, color: '#22c55e', calc: (c, i) => ({ lines: [{ data: sma(c.close, i.fast), color: '#22c55e' }, { data: sma(c.close, i.slow), color: '#ef4444' }] }) },

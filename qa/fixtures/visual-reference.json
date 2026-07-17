@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "prochart-synthetic-market-v1",
+  "provenance": "Fully synthetic QA data; no production or customer records.",
+  "fixedAt": "2026-07-14T12:34:56.000Z",
+  "workspace": {
+    "symbol": "EURUSD",
+    "tf": "H1",
+    "chartType": "candles",
+    "theme": "light",
+    "tz": "Asia/Tehran"
+  },
+  "watchlist": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY",
+    "USDCHF",
+    "XAUUSD"
+  ],
+  "symbols": {
+    "EURUSD": {
+      "digits": 5,
+      "step": 0.00011,
+      "mid": 1.14212,
+      "bid": 1.1421,
+      "ask": 1.14214,
+      "volumeBase": 1800
+    },
+    "GBPUSD": {
+      "digits": 5,
+      "step": 0.00013,
+      "mid": 1.33923,
+      "bid": 1.3392,
+      "ask": 1.33926,
+      "volumeBase": 1650
+    },
+    "USDJPY": {
+      "digits": 3,
+      "step": 0.037,
+      "mid": 162.214,
+      "bid": 162.204,
+      "ask": 162.224,
+      "volumeBase": 2100
+    },
+    "USDCHF": {
+      "digits": 5,
+      "step": 0.00009,
+      "mid": 0.80936,
+      "bid": 0.80933,
+      "ask": 0.80939,
+      "volumeBase": 1450
+    },
+    "XAUUSD": {
+      "digits": 2,
+      "step": 1.75,
+      "mid": 4048.14,
+      "bid": 4047.94,
+      "ask": 4048.34,
+      "volumeBase": 2600
+    }
+  },
+  "news": [
+    {
+      "id": "synthetic-news-eur-1",
+      "title": "دادهٔ آزمایشی: بازار ارز در محدودهٔ ثابت",
+      "summary": "این خبر کاملاً ساختگی است و فقط برای مرجع بصری پایدار استفاده می‌شود.",
+      "source": "QA FIXTURE",
+      "ts": 1784031896,
+      "url": "https://example.invalid/qa/synthetic-news-eur-1"
+    },
+    {
+      "id": "synthetic-news-gold-1",
+      "title": "دادهٔ آزمایشی: طلا بدون تغییر در سناریوی مرجع",
+      "summary": "هیچ دادهٔ زنده یا اطلاعات کاربری در این Fixture وجود ندارد.",
+      "source": "QA FIXTURE",
+      "ts": 1784028296,
+      "url": "https://example.invalid/qa/synthetic-news-gold-1"
+    }
+  ]
+}

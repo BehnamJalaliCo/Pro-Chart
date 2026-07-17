@@ -4,11 +4,12 @@
 // توکن‌محورِ TH (تمِ چارت) + دوزبانه (useT + fallbackِ محلیِ tx).
 // اجرای واقعی فقط برای LBank است؛ سفارش فارکس صرفاً پیش‌نمایش محلی می‌ماند.
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, AlertTriangle } from 'lucide-react';
+import { ShoppingCart, AlertTriangle } from './tvIcons';
 import { useT } from '../i18n';
 import { useApp } from '../appStore';
 import { api } from '../api/client';
 import { bump } from '../app/haptics';
+import { priceDigits } from './symbolMeta';
 
 const PCTS = [25, 50, 75, 100];
 const LEV_PRESETS = [5, 10, 20, 50, 100];
@@ -17,6 +18,8 @@ const ORDER_TYPES = ['market', 'limit', 'stop', 'stop_limit', 'trailing'];
 const TIFS = ['GTC', 'IOC', 'FOK'];
 const num = (s) => parseFloat(String(s == null ? '' : s).replace(/,/g, '')) || 0;
 const fmt = (n) => (Number.isFinite(n) ? n.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '—');
+// قیمت (نه مبلغِ USDT) با دقتِ ثابتِ نماد + جداکنندهٔ هزارگان — هم‌راستا با محور/لجندِ چارت.
+const fmtPx = (sym, n) => { if (!Number.isFinite(n)) return '—'; const d = priceDigits(sym, n); return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }); };
 
 export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, submitOrder, curPrice, livePrice, fmtPrice, available = null }) {
   const t = useT();
@@ -55,6 +58,9 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
   const fee = cost * 0.0005;
   const tp = num(order?.tp), sl = num(order?.sl);
   const risk = Math.abs(px - sl), reward = Math.abs(tp - px);
+  // فاصلهٔ TP/SL به پیپ و درصد (هم‌ترازِ نمایشِ فاصله در تیکتِ TV) — فقط نمایشی، مدیریتِ ریسک.
+  const _pd = Math.max(1, priceDigits(symbol, px || 1)); const pipSize = Math.pow(10, -(_pd - 1)); const isFx6 = /^[A-Z]{6}$/.test(symbol || '');
+  const distHint = (v) => { if (!(v > 0) || !(px > 0)) return ''; const d = Math.abs(v - px); const pct = (d / px * 100).toFixed(2); return isFx6 ? `${Math.round(d / pipSize)} pip · ${pct}٪` : `${pct}٪`; };
   const rr = risk ? (reward / risk).toFixed(2) : null;
   const riskAmt = sl ? risk * amt : 0;      // زیانِ محتمل تا SL (USDT)
   const rewardAmt = tp ? reward * amt : 0;  // سودِ محتمل تا TP (USDT)
@@ -135,6 +141,8 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
 
   const pickSide = (s) => { startTrade(s); };
   const applyPct = (p) => { setPct(p); const a = (notional / (px || 1)) * (p / 100); setAmount(a ? a.toFixed(isCrypto ? 4 : 2) : ''); };
+  // استپرِ ±ِ مقدار (سبکِ –/+ِ فیلدِ Quantityِ TV) — گامِ تطبیقی بر اساسِ بزرگیِ مقدار؛ کف صفر.
+  const stepAmount = (dir) => { const cur = num(amount); const step = cur >= 100 ? 1 : cur >= 10 ? 0.1 : 0.01; const next = Math.max(0, Math.round((cur + dir * step) / step) * step); setAmount(String(+next.toFixed(isCrypto ? 4 : 2))); setPct(0); };
   const setField = (key, v) => setOrder((o) => (o ? { ...o, [key]: num(v) } : o));
 
   const baseUnit = isCrypto ? (symbol || '').replace(/USDT|USDC|USD$/,'') || symbol : symbol;
@@ -215,8 +223,10 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
           <span>{t('trade.amount')}</span><span dir="ltr">≈ {fmt(cost)} USDT</span>
         </div>
         <div style={fieldBox}>
-          <input value={amount} onChange={(e) => { setAmount(e.target.value); setPct(0); }} placeholder="0.00" inputMode="decimal" dir="ltr" className="tabular-nums" style={inputCss} />
-          <span className="text-[11px] font-bold" style={{ color: TH.text }}>{baseUnit}</span>
+          <button onClick={() => stepAmount(-1)} aria-label="کاهشِ مقدار" className="shrink-0 flex items-center justify-center rounded-md" style={{ width: 26, height: 26, border: 0, cursor: 'pointer', color: TH.text, background: TH.chipBgHover, fontWeight: 800, fontSize: 16, lineHeight: 1 }}>−</button>
+          <input value={amount} onChange={(e) => { setAmount(e.target.value); setPct(0); }} placeholder="0.00" inputMode="decimal" dir="ltr" className="tabular-nums" style={{ ...inputCss, textAlign: 'center' }} />
+          <span className="text-[11px] font-bold shrink-0" style={{ color: TH.text }}>{baseUnit}</span>
+          <button onClick={() => stepAmount(1)} aria-label="افزایشِ مقدار" className="shrink-0 flex items-center justify-center rounded-md mr-1" style={{ width: 26, height: 26, border: 0, cursor: 'pointer', color: TH.text, background: TH.chipBgHover, fontWeight: 800, fontSize: 16, lineHeight: 1 }}>+</button>
         </div>
         {/* درصدِ موجودی */}
         <div className="flex gap-1.5 mt-2">
@@ -250,17 +260,19 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
           <div style={cell}>
             <div className="text-[10.5px] font-bold mb-1" style={{ color: TH.up }}>🎯 {t('trade.tp')}</div>
             <input value={order.tp ?? ''} onChange={(e) => setField('tp', e.target.value)} inputMode="decimal" dir="ltr" className="tabular-nums" style={{ ...inputCss, fontSize: 13 }} />
+            {distHint(tp) && <div className="text-[9px] mt-0.5 tabular-nums" dir="ltr" style={{ color: TH.up, opacity: 0.7 }}>{distHint(tp)}</div>}
           </div>
           <div style={cell}>
             <div className="text-[10.5px] font-bold mb-1" style={{ color: TH.down }}>🛑 {t('trade.sl')}</div>
             <input value={order.sl ?? ''} onChange={(e) => setField('sl', e.target.value)} inputMode="decimal" dir="ltr" className="tabular-nums" style={{ ...inputCss, fontSize: 13 }} />
+            {distHint(sl) && <div className="text-[9px] mt-0.5 tabular-nums" dir="ltr" style={{ color: TH.down, opacity: 0.7 }}>{distHint(sl)}</div>}
           </div>
         </div>
       )}
 
       {/* خلاصهٔ سفارش */}
       <div className="rounded-xl px-3 py-2.5 text-[12px] space-y-1" style={{ background: TH.subtle }}>
-        <Row TH={TH} k={tx('قیمتِ ورود', 'Entry')} v={px ? `${fmt(px)} USDT` : '—'} />
+        <Row TH={TH} k={tx('قیمتِ ورود', 'Entry')} v={px ? `${fmtPx(symbol, px)} USDT` : '—'} />
         {isStopish && <Row TH={TH} k={tx('ماشه', 'Trigger')} v={stopPx ? fmt(stopPx) : '—'} />}
         <Row TH={TH} k={t('trade.cost')} v={`${fmt(cost)} USDT`} />
         <Row TH={TH} k={t('trade.margin')} v={`${fmt(margin)} USDT`} />
@@ -271,7 +283,7 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
             vColor={TH.textStrong} />
         )}
         <Row TH={TH} k={t('trade.fee')} v={`${fmt(fee)} USDT`} />
-        {liq > 0 && <Row TH={TH} k={tx('لیکوییدِ تخمینی', 'Est. liq.')} v={fmt(liq)} vColor="#e8a33d" />}
+        {liq > 0 && <Row TH={TH} k={tx('لیکوییدِ تخمینی', 'Est. liq.')} v={fmtPx(symbol, liq)} vColor="#e8a33d" />}
       </div>
 
       {/* اعتبارسنجی — خطاهای مسدودکننده و هشدارها */}
@@ -294,7 +306,9 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
       <button onClick={onAction} disabled={connected && blocking}
         className="w-full flex items-center justify-center gap-2 rounded-xl active:scale-[.98] transition-transform"
         style={{ height: 50, border: 0, cursor: (connected && blocking) ? 'not-allowed' : 'pointer', opacity: (connected && blocking) ? .55 : 1, fontFamily: 'inherit', fontWeight: 800, fontSize: 15, color: '#fff', background: side === 'buy' ? TH.up : TH.down, boxShadow: '0 10px 22px -8px rgba(0,0,0,.3)' }}>
-        <ShoppingCart size={17} /> {side === 'buy' ? t('trade.buy') : t('trade.sell')} {baseUnit}
+        <ShoppingCart size={17} className="shrink-0" />
+        {/* برچسبِ پویا سبکِ TV: «خرید 0.5 EURUSD @ بازار» / «… @ 1.14000 حدی» — نمایشِ سمت+مقدار+نماد+نوع/قیمت پیش از کلیک */}
+        <span className="truncate">{side === 'buy' ? t('trade.buy') : t('trade.sell')}{Number(amount) > 0 ? ` ${amount}` : ''} {baseUnit} @ {orderType === 'market' ? typeLabel('market') : ((isLimitish ? limitPx : stopPx) > 0 ? `${fmtPx(symbol, isLimitish ? limitPx : stopPx)} ${typeLabel(orderType)}` : typeLabel(orderType))}</span>
       </button>
       {!connected && (
         <div className="text-center" style={{ fontSize: 10.5, color: TH.text, opacity: .7, marginTop: -4 }}>

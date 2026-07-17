@@ -8,14 +8,25 @@ function newsKey(a, i) {
   return (a && (a.id || a.url)) || `${a?.ts || ''}|${a?.title || ''}` || `i${i}`;
 }
 
-// زمانِ نسبیِ فارسی از unix-seconds
+// زمانِ نسبیِ فارسی از unix-seconds — سبکِ TradingView: هم‌اکنون/دقیقه/ساعت، «دیروز»
+// برای ۱ روز، و برای قدیمی‌ترها (≥۷ روز) به تاریخِ شمسیِ کوتاه (مثلِ «۱۵ تیر») برمی‌گردد
+// به‌جای «۱۲ روز پیش»ِ بی‌فایده. تاریخ در try/catch است تا اگر Intlِ fa نبود امن degrade کند.
 function relTime(ts) {
   if (!ts) return '';
   const s = Math.max(0, Date.now() / 1000 - ts);
   if (s < 60) return 'هم‌اکنون';
   const m = Math.floor(s / 60); if (m < 60) return `${m} دقیقه پیش`;
   const h = Math.floor(m / 60); if (h < 24) return `${h} ساعت پیش`;
-  const d = Math.floor(h / 24); return `${d} روز پیش`;
+  const d = Math.floor(h / 24);
+  if (d === 1) return 'دیروز';
+  if (d < 7) return `${d} روز پیش`;
+  try { return new Intl.DateTimeFormat('fa-IR', { day: 'numeric', month: 'long' }).format(new Date(ts * 1000)); } catch (e) { return `${d} روز پیش`; }
+}
+
+// زمانِ مطلقِ انتشار (برای tooltipِ زمانِ نسبی) — TV زمانِ دقیق را در نمای خبر نشان می‌دهد؛ اینجا روی hoverِ «۲ دقیقه پیش».
+function absTime(ts) {
+  if (!ts) return '';
+  try { return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(ts * 1000)); } catch (e) { return ''; }
 }
 
 function symbolKeywords(symbol = '') {
@@ -64,6 +75,10 @@ const TICKER_KW = {
   GBP: ['پوند', 'gbp'], JPY: ['ین', 'jpy'], OIL: ['نفت', 'oil'], BTC: ['بیت‌کوین', 'بیت', 'bitcoin', 'btc'],
   ETH: ['اتریوم', 'ethereum', 'eth'], NAS: ['نزدک', 'nasdaq'], US30: ['داو', 'dow'], US500: ['اس‌اند‌پی', 's&p'],
 };
+// نگاشتِ برچسبِ خبر → نمادِ قابلِ‌معاملهٔ Pro-Chart (فقط نمادهای موجود). USD/OIL نگاشتِ تک‌نماد ندارند ⇒ کلیک‌ناپذیر.
+// هم‌ترازِ «پیل‌های نمادِ مرتبطِ» خبرِ TV که با کلیک نمادِ چارت را عوض می‌کنند.
+const TAG_SYMBOL = { XAU: 'XAUUSD', EUR: 'EURUSD', GBP: 'GBPUSD', JPY: 'USDJPY', BTC: 'BTCUSDT', ETH: 'ETHUSDT', NAS: 'NAS100', US30: 'US30', US500: 'US500' };
+
 function newsTickers(a) {
   const hay = `${a?.title || ''} ${a?.summary || ''}`.toLowerCase();
   const out = [];
@@ -75,6 +90,8 @@ export default function NewsTab({ symbol, TH }) {
   const [items, setItems] = useState(null); // null=loading
   const [onlyRelevant, setOnlyRelevant] = useState(false);
   const [cat, setCat] = useState('all');
+  const [active, setActive] = useState(null); // خبرِ بازشده در پیش‌نمایشِ درون‌برنامه‌ای (مثلِ pop-up dialogِ خبرِ TV)
+  const shownRef = useRef([]);                 // آینهٔ لیستِ نمایش‌داده‌شده — برای ناوبریِ ↑/↓ در خواننده (بدونِ closureِ کهنه)
   const [, setTick] = useState(0);            // فقط برای تازه‌کردنِ زمانِ نسبی
   const seenRef = useRef(null);               // مجموعهٔ کلیدهای دیده‌شده (null = قبل از اولین بار)
   const [freshKeys, setFreshKeys] = useState(() => new Set()); // اخبارِ تازه‌رسیده (فلَش)
@@ -94,6 +111,25 @@ export default function NewsTab({ symbol, TH }) {
     const id = setInterval(() => setTick((t) => (t + 1) % 1e6), 30000);
     return () => clearInterval(id);
   }, []);
+
+  // Esc → بستنِ خواننده؛ ↑/↓ → خبرِ قبلی/بعدی (ناوبریِ کیبوردِ خواننده مثلِ TV)
+  useEffect(() => {
+    if (!active) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') { e.stopPropagation(); setActive(null); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        const list = shownRef.current || [];
+        if (!list.length) return;
+        e.preventDefault(); e.stopPropagation();
+        let idx = list.findIndex((a) => a === active || (active.url && a.url === active.url) || (active.id != null && a.id === active.id));
+        if (idx < 0) idx = 0;
+        const next = e.key === 'ArrowDown' ? Math.min(list.length - 1, idx + 1) : Math.max(0, idx - 1);
+        if (list[next] && list[next] !== active) setActive(list[next]);
+      }
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [active]);
 
   // تشخیصِ خبرِ تازه‌رسیده → فلَشِ کوتاه + برچسبِ «جدید» که خودش پاک می‌شود
   useEffect(() => {
@@ -131,10 +167,16 @@ export default function NewsTab({ symbol, TH }) {
     return c;
   }, [bySymbol]);
 
+  // اگر دستهٔ فعال زیرِ فیلترِ فعلی خالی شد (چیپش پنهان می‌شود)، به «همه» برگرد تا کاربر روی فهرستِ خالی گیر نکند
+  useEffect(() => {
+    if (cat !== 'all' && (catCounts[cat] || 0) === 0) setCat('all');
+  }, [cat, catCounts]);
+
   const shown = useMemo(() => {
     if (cat === 'all') return bySymbol;
     return bySymbol.filter((a) => newsCats(a).has(cat));
   }, [bySymbol, cat]);
+  shownRef.current = shown; // همگام برای ناوبریِ کیبورد در خواننده
 
   const impactColor = (n) => (n >= 8 ? TH.down : n >= 5 ? '#f59e0b' : TH.text);
 
@@ -207,20 +249,20 @@ export default function NewsTab({ symbol, TH }) {
           const isFresh = freshKeys.has(k);
           const dot = impactColor(impact);
           return (
-            <button key={k} onClick={() => a.url && window.open(a.url, '_blank', 'noopener,noreferrer')}
-              title={a.url ? 'بازکردنِ خبر در منبع' : undefined} aria-label={a.url ? `بازکردنِ خبر: ${a.title}` : a.title}
+            <button key={k} onClick={() => setActive(a)}
+              title="پیش‌نمایشِ خبر" aria-label={`پیش‌نمایشِ خبر: ${a.title}`}
               className={`group relative block w-full text-right pl-3 pr-3 py-2.5 border-b transition-colors${isFresh ? ' flash-up' : ''}`}
-              style={{ borderColor: TH.border, cursor: a.url ? 'pointer' : 'default' }}
-              onMouseEnter={(e) => { if (a.url) e.currentTarget.style.background = TH.chipBgHover; }}
+              style={{ borderColor: TH.border, cursor: 'pointer' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; }}
               onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
               {/* نوارِ اهمیت (لبهٔ راست، سبکِ News Flowِ TV) */}
               {hot && <span className="absolute top-0 bottom-0 right-0 w-[2px]" style={{ background: TH.down }} />}
               {/* ردیفِ متا: منبع · زمان + برچسب‌ها */}
               <div className="flex items-center gap-1.5 mb-1" dir="ltr">
                 <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot }} />
-                <span className="text-[9.5px] font-semibold uppercase tracking-wide truncate" style={{ color: TH.text, opacity: 0.8, maxWidth: 130 }}>{a.source}</span>
+                <span className="text-[9.5px] font-semibold uppercase tracking-wide truncate" style={{ color: TH.text, opacity: 0.8, maxWidth: 130 }} title={a.source || ''}>{a.source}</span>
                 <span className="text-[9px] opacity-40">·</span>
-                <span className="text-[9.5px] whitespace-nowrap opacity-55" style={{ color: TH.text }} dir="rtl">{relTime(a.ts)}</span>
+                <span className="text-[9.5px] whitespace-nowrap opacity-55" style={{ color: TH.text }} dir="rtl" title={absTime(a.ts)}>{relTime(a.ts)}</span>
                 <span className="flex-1" />
                 {isFresh && (
                   <span className="shrink-0 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold whitespace-nowrap"
@@ -239,20 +281,86 @@ export default function NewsTab({ symbol, TH }) {
               </div>
               {/* تیتر */}
               <div className="text-[12px] leading-[18px]" style={{ color: TH.textStrong }}>{a.title}</div>
-              {a.summary && <div className="text-[10px] leading-[17px] mt-1 opacity-60">{a.summary}</div>}
+              {a.summary && <div className="text-[10px] leading-[17px] mt-1 opacity-60 line-clamp-2">{a.summary}</div>}
               {/* برچسبِ نمادهای مرتبط */}
               {tickers.length > 0 && (
                 <div className="flex items-center flex-wrap gap-1 mt-1.5" dir="ltr">
-                  {tickers.map((t) => (
-                    <span key={t} className="tnum px-1.5 h-[16px] rounded leading-[16px] text-[9px] font-semibold"
-                      style={{ background: TH.chipBg, color: TH.text }}>{t}</span>
-                  ))}
+                  {tickers.map((t) => {
+                    const sym = TAG_SYMBOL[t];
+                    // نمادِ نگاشت‌شده ⇒ پیلِ کلیک‌پذیر که نمادِ چارت را عوض می‌کند (سبکِ نمادِ مرتبطِ خبرِ TV)؛
+                    // stopPropagation تا کلیک، بازکردنِ منبعِ ردیف را تریگر نکند.
+                    if (sym) return (
+                      <span key={t} role="button" tabIndex={0}
+                        onClick={(e) => { e.stopPropagation(); try { window.dispatchEvent(new CustomEvent('bn:setSymbol', { detail: sym })); } catch (err) {} }}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); e.preventDefault(); try { window.dispatchEvent(new CustomEvent('bn:setSymbol', { detail: sym })); } catch (err) {} } }}
+                        title={`نمایشِ ${sym} روی چارت`}
+                        className="tnum px-1.5 h-[16px] rounded leading-[16px] text-[9px] font-semibold cursor-pointer transition-colors duration-[120ms]"
+                        style={{ background: TH.chipBg, color: TH.accent }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = TH.chipBg; }}>{t}</span>
+                    );
+                    return (
+                      <span key={t} className="tnum px-1.5 h-[16px] rounded leading-[16px] text-[9px] font-semibold"
+                        style={{ background: TH.chipBg, color: TH.text }}>{t}</span>
+                    );
+                  })}
                 </div>
               )}
             </button>
           );
         })}
       </div>
+
+      {/* پیش‌نمایشِ درون‌برنامه‌ایِ خبر — معادلِ green-appleِ pop-up dialogِ خبرِ TV (staying in-app؛ متنِ کاملِ خلاصه + زمانِ مطلق + نمادهای مرتبط + دکمهٔ منبع) */}
+      {active && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center p-4" dir="rtl"
+          style={{ background: 'rgba(0,0,0,.45)' }}
+          onMouseDown={(e) => { if (e.target === e.currentTarget) setActive(null); }}>
+          <div className="w-full max-w-[440px] max-h-[80vh] flex flex-col rounded-xl shadow-2xl overflow-hidden"
+            style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+            {/* هدر: منبع · زمانِ مطلق + بستن */}
+            <div className="flex items-center gap-2 px-3 h-10 border-b shrink-0" style={{ borderColor: TH.border }}>
+              <span className="w-2 h-2 rounded-full shrink-0" style={{ background: impactColor(active.impact || 0) }} />
+              <span className="text-[10px] font-semibold uppercase tracking-wide truncate" style={{ color: TH.text, opacity: 0.85 }} dir="ltr">{active.source}</span>
+              <span className="text-[9px] opacity-40">·</span>
+              <span className="text-[10px] opacity-60 whitespace-nowrap">{absTime(active.ts) || relTime(active.ts)}</span>
+              <span className="flex-1" />
+              <button onClick={() => setActive(null)} title="بستن" aria-label="بستن" className="shrink-0 p-1 rounded-md transition-colors" style={{ color: TH.text }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+              </button>
+            </div>
+            {/* بدنه: تیتر + متنِ کاملِ خلاصه */}
+            <div className="px-4 py-3 overflow-y-auto min-h-0">
+              <div className="text-[15px] font-bold leading-7 mb-2" style={{ color: TH.textStrong }}>{active.title}</div>
+              {active.summary && <div className="text-[12.5px] leading-6 opacity-80" style={{ color: TH.text }}>{active.summary}</div>}
+              {/* نمادهای مرتبط — کلیک: نمایش روی چارت + بستن */}
+              {(() => { const tk = newsTickers(active); return tk.length > 0 && (
+                <div className="flex items-center flex-wrap gap-1 mt-3" dir="ltr">
+                  {tk.map((t) => { const sym = TAG_SYMBOL[t]; return (
+                    <span key={t} role={sym ? 'button' : undefined} tabIndex={sym ? 0 : undefined}
+                      onClick={sym ? () => { try { window.dispatchEvent(new CustomEvent('bn:setSymbol', { detail: sym })); } catch (err) {} setActive(null); } : undefined}
+                      title={sym ? `نمایشِ ${sym} روی چارت` : undefined}
+                      className={`tnum px-2 h-[20px] rounded leading-[20px] text-[10px] font-semibold ${sym ? 'cursor-pointer' : ''}`}
+                      style={{ background: TH.chipBg, color: sym ? TH.accent : TH.text }}>{t}</span>
+                  ); })}
+                </div>
+              ); })()}
+            </div>
+            {/* پاورقی: دکمهٔ بازکردن در منبع */}
+            {active.url && (
+              <div className="px-4 py-2.5 border-t shrink-0" style={{ borderColor: TH.border }}>
+                <button onClick={() => window.open(active.url, '_blank', 'noopener,noreferrer')}
+                  className="w-full flex items-center justify-center gap-1.5 h-9 rounded-lg text-[12.5px] font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: TH.accent }}>
+                  <span>خواندنِ کاملِ خبر در منبع</span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -72,7 +72,8 @@ function arrowHead(ctx, x0, y0, x1, y1, size) {
 // برچسبِ جعبه‌ای کوچک (پس‌زمینه + متن) — استفادهٔ مشترکِ callout/note/pricelabel/measure
 function labelBox(ctx, x, y, text, opts) {
   opts = opts || {};
-  const lines = String(text).split('\n');
+  // چندخطی مثلِ ابزارِ Textِ TV: هم نیولاینِ واقعی (paste) هم «\n»ِ تایپ‌شده در prompt — هم‌راستا با هستهٔ text (#295/#296). #298
+  const lines = String(text).replace(/\\n/g, '\n').split('\n');
   ctx.font = (opts.font || '11px IRANYekanX, Ravagh, Vazirmatn, sans-serif');
   let w = 0; lines.forEach((ln) => { w = Math.max(w, ctx.measureText(ln).width); });
   const padX = 6, padY = 4, lh = 14, bw = w + padX * 2, bh = lines.length * lh + padY * 2;
@@ -88,6 +89,34 @@ function labelBox(ctx, x, y, text, opts) {
   lines.forEach((ln, i) => ctx.fillText(ln, bx + padX, by + padY + i * lh));
   ctx.textBaseline = 'alphabetic';
   return { bx, by, bw, bh };
+}
+// hit-testِ منحنیِ بزیه با نمونه‌برداری: P = نقاطِ صفحه‌ای، order=2 (درجه۲) یا 3 (درجه۳).
+function bezierHit(P, x, y, order) {
+  if (!P || P.some((q) => !q || q.x == null || q.y == null)) return false;
+  const N = 26; let prev = null;
+  for (let i = 0; i <= N; i++) {
+    const t = i / N, u = 1 - t; let q;
+    if (order === 2) q = { x: u * u * P[0].x + 2 * u * t * P[1].x + t * t * P[2].x, y: u * u * P[0].y + 2 * u * t * P[1].y + t * t * P[2].y };
+    else q = { x: u * u * u * P[0].x + 3 * u * u * t * P[1].x + 3 * u * t * t * P[2].x + t * t * t * P[3].x, y: u * u * u * P[0].y + 3 * u * u * t * P[1].y + 3 * u * t * t * P[2].y + t * t * t * P[3].y };
+    if (prev) { const C = q.x - prev.x, D = q.y - prev.y, len = C * C + D * D; const tt = len ? Math.max(0, Math.min(1, ((x - prev.x) * C + (y - prev.y) * D) / len)) : 0; if (Math.hypot(x - (prev.x + tt * C), y - (prev.y + tt * D)) < 6) return true; }
+    prev = q;
+  }
+  return false;
+}
+// نقاطِ نمونه‌شدهٔ کمانِ دایره‌ایِ گذرنده از سه نقطهٔ صفحه‌ای A→B→C (برای ابزارِ Arc). اگر هم‌خط بودند ⇒ خطِ راست.
+function arcPoints(A, B, C, N) {
+  const d = 2 * (A.x * (B.y - C.y) + B.x * (C.y - A.y) + C.x * (A.y - B.y));
+  if (Math.abs(d) < 1e-3) return [A, C];
+  const A2 = A.x * A.x + A.y * A.y, B2 = B.x * B.x + B.y * B.y, C2 = C.x * C.x + C.y * C.y;
+  const ux = (A2 * (B.y - C.y) + B2 * (C.y - A.y) + C2 * (A.y - B.y)) / d;
+  const uy = (A2 * (C.x - B.x) + B2 * (A.x - C.x) + C2 * (B.x - A.x)) / d;
+  const r = Math.hypot(A.x - ux, A.y - uy);
+  const un = (a, ref) => { while (a - ref > Math.PI) a -= 2 * Math.PI; while (a - ref < -Math.PI) a += 2 * Math.PI; return a; };
+  const a0 = Math.atan2(A.y - uy, A.x - ux);
+  const aB = un(Math.atan2(B.y - uy, B.x - ux), a0);
+  const a1 = un(Math.atan2(C.y - uy, C.x - ux), aB);
+  const out = []; for (let i = 0; i <= N; i++) { const a = a0 + (a1 - a0) * i / N; out.push({ x: ux + r * Math.cos(a), y: uy + r * Math.sin(a) }); }
+  return out;
 }
 // تبدیلِ لیستِ نسبت به سطح: [{ratio, price}]
 function fibLevels(d, base, diff) {
@@ -152,7 +181,12 @@ export const EXT_REGISTRY = {
   // خطِ صلیبی: افقی + عمودی از یک لنگر
   crossline: {
     label: 'خطِ صلیبی', points: 2,
-    draw(ctx, d, api) { const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d); seg(ctx, 0, a.y, api.W, a.y); seg(ctx, a.x, 0, a.x, api.H); ctx.fillText(d.p0.p.toFixed(api.digits()), a.x + 4, a.y - 3); },
+    draw(ctx, d, api) { const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d); seg(ctx, 0, a.y, api.W, a.y); seg(ctx, a.x, 0, a.x, api.H);
+      // tagِ قیمت (لبهٔ راست) + tagِ تاریخ (پایین، مرکزِ خط) — رنگی، سبکِ TV و هم‌سبک با خطِ افقی/عمودی. (#282→#288)
+      const col = d.color || '#3b82f6', th = 15, pad = 4; ctx.save(); ctx.font = '11px sans-serif'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+      const pl = d.p0.p.toFixed(api.digits()); const pw = ctx.measureText(pl).width, ptW = pw + pad * 2, pTx = api.W - ptW - 2; ctx.fillStyle = col; ctx.globalAlpha = 0.95; ctx.fillRect(pTx, a.y - th / 2, ptW, th); ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.fillText(pl, pTx + pad, a.y);
+      if (d.p0.t != null) { const dl = api.timeFmt(d.p0.t); if (dl) { const s = String(dl); const dw = ctx.measureText(s).width, dtW = dw + pad * 2; let dTx = a.x - dtW / 2; dTx = Math.max(2, Math.min(dTx, api.W - dtW - 2)); const dTy = api.H - th - 1; ctx.fillStyle = col; ctx.globalAlpha = 0.95; ctx.fillRect(dTx, dTy, dtW, th); ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.fillText(s, dTx + pad, dTy + th / 2); } }
+      ctx.restore(); },
     hit(d, x, y, api) { const a = px(api, d.p0); if (!ok(a)) return false; return Math.abs(y - a.y) < 7 || Math.abs(x - a.x) < 7; },
   },
 
@@ -392,7 +426,7 @@ export const EXT_REGISTRY = {
   cypher: { label: 'الگوی سایفر', points: 5, draw: drawPattern(['X', 'A', 'B', 'C', 'D'], true), hit: hitPoly },
   tripattern: {
     label: 'مثلثِ الگو', points: 3,
-    draw(ctx, d, api) { const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return; style(ctx, d); ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.lineTo(P[1].x, P[1].y); ctx.lineTo(P[2].x, P[2].y); ctx.closePath(); ctx.globalAlpha = 0.1; ctx.fill(); ctx.globalAlpha = 1; ctx.stroke(); },
+    draw(ctx, d, api) { const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return; style(ctx, d); ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.lineTo(P[1].x, P[1].y); ctx.lineTo(P[2].x, P[2].y); ctx.closePath(); ctx.globalAlpha = (d.fillOpacity != null ? d.fillOpacity : 0.1); ctx.fillStyle = d.fill || d.color || '#2962FF'; ctx.fill(); ctx.fillStyle = d.color || '#2962FF'; ctx.globalAlpha = 1; ctx.stroke(); },
     hit: hitPoly,
   },
   hns: { label: 'سر و شانه', points: 5, draw: drawPattern(['LS', 'H', 'RS', '', ''], false), hit: hitPoly },
@@ -475,7 +509,9 @@ export const EXT_REGISTRY = {
       const X = Math.min(a.x, b.x), Y = Math.min(a.y, b.y), w = Math.abs(b.x - a.x), h = Math.abs(b.y - a.y);
       style(ctx, d); ctx.globalAlpha = 0.1; ctx.fillRect(X, Y, w, h); ctx.globalAlpha = 1; ctx.strokeRect(X, Y, w, h);
       const dp = d.p1.p - d.p0.p, pct = d.p0.p ? dp / d.p0.p * 100 : 0, bars = Math.round(w / (api.barWidth() || 6)), dt = Math.abs(d.p1.t - d.p0.t);
-      labelBox(ctx, X + w / 2, Y + h / 2, `${dp.toFixed(api.digits())}  (${pct.toFixed(2)}%)\n${Math.abs(bars)} بار  |  ${Math.floor(dt / 3600)} ساعت`, { anchor: 'center', border: d.color });
+      // بازهٔ زمانی تطبیقی (روز/ساعت/دقیقه) — یک‌دست با ابزارِ ruler و Measureِ TV؛ پیش‌تر همیشه «ساعت» بود (بازهٔ کوتاه ⇒ «۰ ساعت»، بازهٔ چندروزه ⇒ ساعتِ خام).
+      const timeStr = dt >= 86400 ? `${Math.floor(dt / 86400)} روز` : dt >= 3600 ? `${Math.floor(dt / 3600)} ساعت` : `${Math.max(0, Math.floor(dt / 60))} دقیقه`;
+      labelBox(ctx, X + w / 2, Y + h / 2, `${dp.toFixed(api.digits())}  (${pct.toFixed(2)}%)\n${Math.abs(bars)} بار  |  ${timeStr}`, { anchor: 'center', border: d.color });
     },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; return x >= Math.min(a.x, b.x) - 7 && x <= Math.max(a.x, b.x) + 7 && y >= Math.min(a.y, b.y) - 7 && y <= Math.max(a.y, b.y) + 7; },
   },
@@ -516,8 +552,11 @@ export const EXT_REGISTRY = {
       const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return;
       style(ctx, d); dash(ctx, true); seg(ctx, a.x, a.y, b.x, b.y); dash(ctx, false);
       const dp = d.p1.p - d.p0.p, pct = d.p0.p ? dp / d.p0.p * 100 : 0, bars = Math.round((b.x - a.x) / (api.barWidth() || 6));
+      // بازهٔ زمانی (روز/ساعت/دقیقه) — مثلِ ابزارِ Measureِ TV که قیمت/٪/بار/زمان را نشان می‌دهد.
+      const dt = Math.abs((d.p1.t || 0) - (d.p0.t || 0));
+      const timeStr = dt >= 86400 ? `${Math.floor(dt / 86400)} روز` : dt >= 3600 ? `${Math.floor(dt / 3600)} ساعت` : `${Math.max(0, Math.floor(dt / 60))} دقیقه`;
       ctx.fillStyle = dp >= 0 ? 'rgba(34,197,94,.12)' : 'rgba(239,68,68,.12)'; ctx.fillRect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x), Math.abs(b.y - a.y));
-      labelBox(ctx, b.x, b.y, `${dp >= 0 ? '▲' : '▼'} ${Math.abs(dp).toFixed(api.digits())} (${pct.toFixed(2)}%)\n${Math.abs(bars)} بار`, { anchor: 'above', bg: dp >= 0 ? 'rgba(22,101,52,.92)' : 'rgba(127,29,29,.92)' });
+      labelBox(ctx, b.x, b.y, `${dp >= 0 ? '▲' : '▼'} ${Math.abs(dp).toFixed(api.digits())} (${pct.toFixed(2)}%)\n${Math.abs(bars)} بار  ·  ${timeStr}`, { anchor: 'above', bg: dp >= 0 ? 'rgba(22,101,52,.92)' : 'rgba(127,29,29,.92)' });
     },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; return distSeg(x, y, a.x, a.y, b.x, b.y) < 8; },
   },
@@ -526,19 +565,19 @@ export const EXT_REGISTRY = {
   // دایره (به‌صورتِ بیضیِ محاطِ مربع‌شده)
   circle: {
     label: 'دایره', points: 2,
-    draw(ctx, d, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return; const r = Math.hypot(b.x - a.x, b.y - a.y); style(ctx, d); ctx.globalAlpha = 0.1; ctx.beginPath(); ctx.arc(a.x, a.y, r, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke(); },
+    draw(ctx, d, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return; const r = Math.hypot(b.x - a.x, b.y - a.y); style(ctx, d); ctx.globalAlpha = (d.fillOpacity != null ? d.fillOpacity : 0.1); ctx.beginPath(); ctx.arc(a.x, a.y, r, 0, Math.PI * 2); ctx.fillStyle = d.fill || d.color || '#2962FF'; ctx.fill(); ctx.fillStyle = d.color || '#2962FF'; ctx.globalAlpha = 1; ctx.stroke(); },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; const r = Math.hypot(b.x - a.x, b.y - a.y); return Math.abs(Math.hypot(x - a.x, y - a.y) - r) < 8; },
   },
   // بیضیِ محاطِ جعبه
   ellipse: {
     label: 'بیضی', points: 2,
-    draw(ctx, d, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return; const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2, rx = Math.abs(b.x - a.x) / 2, ry = Math.abs(b.y - a.y) / 2; style(ctx, d); ctx.globalAlpha = 0.1; ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke(); },
+    draw(ctx, d, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return; const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2, rx = Math.abs(b.x - a.x) / 2, ry = Math.abs(b.y - a.y) / 2; style(ctx, d); ctx.globalAlpha = (d.fillOpacity != null ? d.fillOpacity : 0.1); ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); ctx.fillStyle = d.fill || d.color || '#2962FF'; ctx.fill(); ctx.fillStyle = d.color || '#2962FF'; ctx.globalAlpha = 1; ctx.stroke(); },
     hit(d, x, y, api) { const a = px(api, d.p0), b = px(api, d.p1); if (!ok(a) || !ok(b)) return false; const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2, rx = Math.abs(b.x - a.x) / 2 || 1, ry = Math.abs(b.y - a.y) / 2 || 1; const e = Math.hypot((x - cx) / rx, (y - cy) / ry); return Math.abs(e - 1) < 0.12; },
   },
   // مثلث (۳ رأس)
   triangle: {
     label: 'مثلث', points: 3,
-    draw(ctx, d, api) { const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return; style(ctx, d); ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.lineTo(P[1].x, P[1].y); ctx.lineTo(P[2].x, P[2].y); ctx.closePath(); ctx.globalAlpha = 0.1; ctx.fill(); ctx.globalAlpha = 1; ctx.stroke(); },
+    draw(ctx, d, api) { const P = d.pts.map((p) => px(api, p)); if (P.some((p) => !ok(p)) || P.length < 3) return; style(ctx, d); ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.lineTo(P[1].x, P[1].y); ctx.lineTo(P[2].x, P[2].y); ctx.closePath(); ctx.globalAlpha = (d.fillOpacity != null ? d.fillOpacity : 0.1); ctx.fillStyle = d.fill || d.color || '#2962FF'; ctx.fill(); ctx.fillStyle = d.color || '#2962FF'; ctx.globalAlpha = 1; ctx.stroke(); },
     hit: hitPoly,
   },
   // مستطیلِ چرخیده (۳نقطه: جهت از p0→p1، عرض از p2)
@@ -549,7 +588,7 @@ export const EXT_REGISTRY = {
       const ux = P[1].x - P[0].x, uy = P[1].y - P[0].y, L = Math.hypot(ux, uy) || 1; const nx = -uy / L, ny = ux / L;
       const w = ((P[2].x - P[0].x) * nx + (P[2].y - P[0].y) * ny);
       const c = [P[0], P[1], { x: P[1].x + nx * w, y: P[1].y + ny * w }, { x: P[0].x + nx * w, y: P[0].y + ny * w }];
-      style(ctx, d); ctx.beginPath(); ctx.moveTo(c[0].x, c[0].y); c.slice(1).forEach((p) => ctx.lineTo(p.x, p.y)); ctx.closePath(); ctx.globalAlpha = 0.1; ctx.fill(); ctx.globalAlpha = 1; ctx.stroke();
+      style(ctx, d); ctx.beginPath(); ctx.moveTo(c[0].x, c[0].y); c.slice(1).forEach((p) => ctx.lineTo(p.x, p.y)); ctx.closePath(); ctx.globalAlpha = (d.fillOpacity != null ? d.fillOpacity : 0.1); ctx.fillStyle = d.fill || d.color || '#2962FF'; ctx.fill(); ctx.fillStyle = d.color || '#2962FF'; ctx.globalAlpha = 1; ctx.stroke();
     },
     hit: hitPoly,
   },
@@ -615,6 +654,138 @@ export const EXT_REGISTRY = {
     },
     hit(d, x, y, api) { const a = px(api, d.p0); if (!ok(a)) return false; return Math.hypot(x - a.x, y - a.y) < 16; },
   },
+  // پرچمِ نشانه (گلیفِ تک‌لنگر) — هم‌ترازِ «Flag Mark»ِ TV: میله + بادبانِ مثلثیِ رنگی روی نقطهٔ لنگر.
+  flag: {
+    label: 'پرچمِ نشانه', points: 2,
+    draw(ctx, d, api) {
+      const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d);
+      const H = 18, W = 11; const topY = a.y - H;
+      // میلهٔ پرچم
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(a.x, topY); ctx.stroke();
+      // بادبانِ مثلثی (پُرشده با رنگِ ترسیم)
+      ctx.beginPath(); ctx.moveTo(a.x, topY); ctx.lineTo(a.x + W, topY + 4); ctx.lineTo(a.x, topY + 8); ctx.closePath();
+      ctx.fillStyle = d.color || '#2962FF'; ctx.fill();
+      if (d.text) labelBox(ctx, a.x + W + 4, topY - 2, d.text, { border: d.color });
+    },
+    hit(d, x, y, api) { const a = px(api, d.p0); if (!ok(a)) return false; return Math.hypot(x - a.x, y - (a.y - 9)) < 14; },
+  },
+  // تابلوِ راهنما (Signpost) — تک‌لنگر: میله + تابلوِ رنگی با نوکِ پیکانی و متن (هم‌ترازِ Signpostِ TV).
+  signpost: {
+    label: 'تابلوِ راهنما', points: 2,
+    draw(ctx, d, api) {
+      const a = px(api, d.p0); if (!ok(a)) return; style(ctx, d);
+      const H = 22, topY = a.y - H;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(a.x, topY); ctx.stroke();
+      // تابلوِ راهنما تک‌خطیِ ثابت‌ارتفاع است؛ نیولاین (تایپ‌شده «\n» یا واقعی) به فاصله جمع می‌شود تا بک‌اسلشِ خام دیده نشود. #298
+      const txt = (d.text || 'راهنما').replace(/\\n|[\r\n]/g, ' ');
+      ctx.font = '11px IRANYekanX, Ravagh, Vazirmatn, sans-serif';
+      const w = ctx.measureText(txt).width + 18;
+      ctx.fillStyle = d.color || '#2962FF';
+      ctx.beginPath();
+      ctx.moveTo(a.x + 7, topY - 9); ctx.lineTo(a.x + 7 + w, topY - 9); ctx.lineTo(a.x + 7 + w, topY + 9);
+      ctx.lineTo(a.x + 7, topY + 9); ctx.lineTo(a.x, topY); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+      ctx.fillText(txt, a.x + 15, topY); ctx.textBaseline = 'alphabetic';
+    },
+    hit(d, x, y, api) { const a = px(api, d.p0); if (!ok(a)) return false; return (Math.abs(x - a.x) < 7 && y <= a.y && y >= a.y - 22) || Math.hypot(x - (a.x + 20), y - (a.y - 22)) < 18; },
+  },
+  // نشانگرِ فلشِ رو‌به‌بالا (Arrow mark up) — تک‌لنگر: فلشِ پُرِ رو‌به‌بالا (سیگنالِ خرید). متمایز از arrowdirِ خطی.
+  arrowup: {
+    label: 'نشانگرِ فلشِ بالا', points: 2,
+    draw(ctx, d, api) {
+      const a = px(api, d.p0); if (!ok(a)) return; const s = 9; ctx.fillStyle = d.color || '#089981';
+      ctx.beginPath(); ctx.moveTo(a.x, a.y - s); ctx.lineTo(a.x + s, a.y + 2); ctx.lineTo(a.x + 3, a.y + 2);
+      ctx.lineTo(a.x + 3, a.y + s + 4); ctx.lineTo(a.x - 3, a.y + s + 4); ctx.lineTo(a.x - 3, a.y + 2); ctx.lineTo(a.x - s, a.y + 2); ctx.closePath(); ctx.fill();
+    },
+    hit(d, x, y, api) { const a = px(api, d.p0); if (!ok(a)) return false; return Math.hypot(x - a.x, y - a.y) < 14; },
+  },
+  // نشانگرِ فلشِ رو‌به‌پایین (Arrow mark down) — تک‌لنگر: فلشِ پُرِ رو‌به‌پایین (سیگنالِ فروش).
+  arrowdown: {
+    label: 'نشانگرِ فلشِ پایین', points: 2,
+    draw(ctx, d, api) {
+      const a = px(api, d.p0); if (!ok(a)) return; const s = 9; ctx.fillStyle = d.color || '#f23645';
+      ctx.beginPath(); ctx.moveTo(a.x, a.y + s); ctx.lineTo(a.x + s, a.y - 2); ctx.lineTo(a.x + 3, a.y - 2);
+      ctx.lineTo(a.x + 3, a.y - s - 4); ctx.lineTo(a.x - 3, a.y - s - 4); ctx.lineTo(a.x - 3, a.y - 2); ctx.lineTo(a.x - s, a.y - 2); ctx.closePath(); ctx.fill();
+    },
+    hit(d, x, y, api) { const a = px(api, d.p0); if (!ok(a)) return false; return Math.hypot(x - a.x, y - a.y) < 14; },
+  },
+  // خطِ چندتکه (Polyline) — چند-نقطه‌ایِ باز: کلیک برای هر رأس، دابل‌کلیک/Enter برای پایان (هم‌ترازِ Polylineِ TV).
+  //   points:-1 و freehand نیست ⇒ در DrawingLayer.down شاخهٔ اختصاصی نقاط را جمع می‌کند. handleها از مسیرِ عمومیِ pts می‌آیند.
+  polyline: {
+    label: 'خطِ چندتکه', points: -1,
+    draw(ctx, d, api) {
+      const P = (d.pts || []).map((p) => px(api, p)).filter(ok);
+      if (P.length < 2) return; style(ctx, d);
+      ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); for (let i = 1; i < P.length; i++) ctx.lineTo(P[i].x, P[i].y); ctx.stroke();
+    },
+    hit(d, x, y, api) {
+      const P = (d.pts || []).map((p) => px(api, p));
+      for (let i = 0; i < P.length - 1; i++) {
+        const a = P[i], bb = P[i + 1]; if (!ok(a) || !ok(bb)) continue;
+        const C = bb.x - a.x, D = bb.y - a.y, len = C * C + D * D;
+        const t = len ? Math.max(0, Math.min(1, ((x - a.x) * C + (y - a.y) * D) / len)) : 0;
+        if (Math.hypot(x - (a.x + t * C), y - (a.y + t * D)) < 6) return true;
+      }
+      return false;
+    },
+  },
+  // مسیرِ پیکان‌دار (Path) — مثلِ polyline ولی با سرپیکان در انتها. جمعِ نقاط در DrawingLayer.down با polyline مشترک است.
+  path: {
+    label: 'مسیرِ پیکان‌دار', points: -1,
+    draw(ctx, d, api) {
+      const P = (d.pts || []).map((p) => px(api, p)).filter(ok);
+      if (P.length < 2) return; style(ctx, d);
+      ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); for (let i = 1; i < P.length; i++) ctx.lineTo(P[i].x, P[i].y); ctx.stroke();
+      const a = P[P.length - 2], bb = P[P.length - 1]; arrowHead(ctx, a.x, a.y, bb.x, bb.y, 13);
+    },
+    hit(d, x, y, api) {
+      const P = (d.pts || []).map((p) => px(api, p));
+      for (let i = 0; i < P.length - 1; i++) {
+        const a = P[i], bb = P[i + 1]; if (!ok(a) || !ok(bb)) continue;
+        const C = bb.x - a.x, D = bb.y - a.y, len = C * C + D * D;
+        const t = len ? Math.max(0, Math.min(1, ((x - a.x) * C + (y - a.y) * D) / len)) : 0;
+        if (Math.hypot(x - (a.x + t * C), y - (a.y + t * D)) < 6) return true;
+      }
+      return false;
+    },
+  },
+  // منحنی (Curve/quadratic bezier) — ۳ نقطه: آغاز · کنترل · پایان (points:3 ⇒ در EXT_NEED، جمعِ خودکارِ نقاط).
+  curve: {
+    label: 'منحنی', points: 3,
+    draw(ctx, d, api) {
+      const P = (d.pts || []).map((p) => px(api, p)); if (P.length < 3 || P.some((q) => !ok(q))) return; style(ctx, d);
+      ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.quadraticCurveTo(P[1].x, P[1].y, P[2].x, P[2].y); ctx.stroke();
+    },
+    hit(d, x, y, api) { return bezierHit((d.pts || []).map((p) => px(api, p)), x, y, 2); },
+  },
+  // منحنیِ دوگانه (Double curve/cubic bezier) — ۴ نقطه: آغاز · کنترل۱ · کنترل۲ · پایان (points:4).
+  doublecurve: {
+    label: 'منحنیِ دوگانه', points: 4,
+    draw(ctx, d, api) {
+      const P = (d.pts || []).map((p) => px(api, p)); if (P.length < 4 || P.some((q) => !ok(q))) return; style(ctx, d);
+      ctx.beginPath(); ctx.moveTo(P[0].x, P[0].y); ctx.bezierCurveTo(P[1].x, P[1].y, P[2].x, P[2].y, P[3].x, P[3].y); ctx.stroke();
+    },
+    hit(d, x, y, api) { return bezierHit((d.pts || []).map((p) => px(api, p)), x, y, 3); },
+  },
+  // کمان (Arc) — ۳ نقطه: آغاز · میانی (کنترلِ خمیدگی) · پایان؛ کمانِ دایره‌ایِ گذرنده از هر سه (points:3).
+  arc: {
+    label: 'کمان', points: 3,
+    draw(ctx, d, api) {
+      const P = (d.pts || []).map((p) => px(api, p)); if (P.length < 3 || P.some((q) => !ok(q))) return; style(ctx, d);
+      const S = arcPoints(P[0], P[1], P[2], 30);
+      ctx.beginPath(); ctx.moveTo(S[0].x, S[0].y); for (let i = 1; i < S.length; i++) ctx.lineTo(S[i].x, S[i].y); ctx.stroke();
+    },
+    hit(d, x, y, api) {
+      const P = (d.pts || []).map((p) => px(api, p)); if (P.length < 3 || P.some((q) => !ok(q))) return false;
+      const S = arcPoints(P[0], P[1], P[2], 30);
+      for (let i = 0; i < S.length - 1; i++) {
+        const a = S[i], bb = S[i + 1], C = bb.x - a.x, D = bb.y - a.y, len = C * C + D * D;
+        const t = len ? Math.max(0, Math.min(1, ((x - a.x) * C + (y - a.y) * D) / len)) : 0;
+        if (Math.hypot(x - (a.x + t * C), y - (a.y + t * D)) < 6) return true;
+      }
+      return false;
+    },
+  },
 };
 
 // ── سازندهٔ تابعِ draw برای الگوهای پلی‌لاینِ برچسب‌دار ──────────────────────
@@ -678,7 +849,7 @@ function hitFork(d, x, y, api) {
 // ── handlesِ پیش‌فرض برای تک‌لنگرها (p0) ────────────────────────────────────
 // ابزارهایی که فقط p0 دارند (hray/crossline/pricelabel/note/arrowdir...) یک handle می‌خواهند.
 // بقیه (p0+p1 یا pts) را خودِ DrawingLayer از مسیرِ عمومی می‌سازد.
-const SINGLE_ANCHOR = new Set(['hray', 'crossline', 'pricelabel', 'note', 'arrowdir']);
+const SINGLE_ANCHOR = new Set(['hray', 'crossline', 'pricelabel', 'note', 'arrowdir', 'flag', 'signpost', 'arrowup', 'arrowdown']);
 
 // ════════════════════════════════════════════════════════════════════════════
 // خروجی‌های آماده‌برای‌وصل‌شدن
@@ -709,6 +880,7 @@ export function extApi(layer) {
     p: (y) => layer._p(y),
     barWidth: () => layer._barWidth(),
     digits: () => (layer && Number.isFinite(layer.digits)) ? layer.digits : 5, // دقتِ اعشارِ نمادِ فعال برای برچسبِ ابزارِ اندازه‌گیری (پیش‌فرض ۵ = رفتارِ قبلی)
+    timeFmt: (t) => { try { return layer.timeFmt ? String(layer.timeFmt(t) || '') : ''; } catch (e) { return ''; } }, // فرمترِ زمانِ tz-aware برای برچسبِ تاریخِ خطِ صلیبی (#282)
     get W() { return layer.canvas.width; },
     get H() { return layer.canvas.height; },
     candles: layer.candles,

@@ -7,7 +7,20 @@
 #           bash cf_purge.sh <url> ...  → purge فقط این URLها
 set -euo pipefail
 CFENV="$(dirname "$0")/.cf"
+if [ -L "$CFENV" ]; then
+  echo "cf_purge: فایلِ .cf نباید symbolic link باشد" >&2
+  exit 2
+fi
 [ -f "$CFENV" ] || { echo "cf_purge: فایلِ .cf نیست (توکن/zone تنظیم نشده)"; exit 2; }
+if [ "$(stat -c '%u' -- "$CFENV")" != "$(id -u)" ]; then
+  echo "cf_purge: مالکِ .cf باید کاربرِ اجراکننده باشد" >&2
+  exit 2
+fi
+CF_MODE="$(stat -c '%a' -- "$CFENV")"
+if (( (8#$CF_MODE & 077) != 0 )); then
+  echo "cf_purge: دسترسیِ .cf بیش‌ازحد باز است؛ chmod 600 .cf اجرا شود" >&2
+  exit 2
+fi
 set -a; . "$CFENV"; set +a
 : "${CF_API_TOKEN:?CF_API_TOKEN لازم است}"; : "${CF_ZONE_ID:?CF_ZONE_ID لازم است}"
 API="https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache"

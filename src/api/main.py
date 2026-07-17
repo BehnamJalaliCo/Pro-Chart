@@ -20,6 +20,7 @@ from src.api.middleware.security_headers import SecurityHeadersMiddleware
 from src.api.routes import (
     academy,
     bazaarnama,
+    legacy_contracts,
     admin,
     admin_academy,
     admin_bn_core,
@@ -36,12 +37,18 @@ from src.api.routes import (
     articles,
     auth,
     broadcasts,
+    backtest,
     ig_panel,
+    live,
     live_prices,
+    launch,
     monitoring,
     panel,
     payments,
     public,
+    referrals,
+    risk,
+    reports,
     seo,
     seo_admin,
     settings as settings_routes,
@@ -183,12 +190,15 @@ async def health_check():
         logger.warning("بررسی سلامت ردیس ناموفق: %s", exc)
 
     status = "healthy" if (db_ok and redis_ok) else "degraded"
-    status_code = 200 if status == "healthy" else 503
+    # Local/debug liveness must remain reachable while dependencies are absent;
+    # production readiness stays fail-closed with 503.
+    status_code = 200 if (status == "healthy" or settings.DEBUG) else 503
+    response_status = "ok" if settings.DEBUG and status != "healthy" else status
 
     return JSONResponse(
         status_code=status_code,
         content={
-            "status": status,
+            "status": response_status,
             "database": "connected" if db_ok else "disconnected",
             "redis": "connected" if redis_ok else "disconnected",
         },
@@ -210,10 +220,12 @@ app.include_router(auth.router, prefix="/auth", tags=["احراز هویت"])
 app.include_router(bn_bauth.router, tags=["B-AUTH (ایمیلی/KYC/رفرال)"])
 app.include_router(users.router, prefix="/users", tags=["کاربران"])
 app.include_router(admin.router, prefix="/admin", tags=["مدیریت"])
+app.include_router(live.router, prefix="/live", tags=["لایو ترید"])
 app.include_router(live_prices.router, prefix="/ws", tags=["قیمت زنده"])
 app.include_router(articles.router, prefix="/articles", tags=["مقالات"])
 app.include_router(seo.router, tags=["SEO (sitemap/robots)"])  # بدون prefix — ریشهٔ دامنه
 app.include_router(public.router, prefix="/public", tags=["عمومی (وب‌سایت)"])
+app.include_router(referrals.router, tags=["مسیرهای ثابت معرفی"])
 app.include_router(broadcasts.router, prefix="/broadcasts", tags=["پیام‌رسانی"])
 app.include_router(monitoring.router, prefix="/monitoring", tags=["مانیتورینگ"])
 app.include_router(settings_routes.router, prefix="/settings", tags=["تنظیمات"])
@@ -221,6 +233,11 @@ app.include_router(payments.router, prefix="/admin/payments", tags=["پرداخ�
 app.include_router(subscriptions.router, prefix="/admin/subscriptions", tags=["اشتراک‌ها"])
 app.include_router(analytics.router, prefix="/admin/analytics", tags=["آنالیتیکس بازدید"])
 app.include_router(seo_admin.router, prefix="/admin/seo", tags=["SEO داشبورد"])
+app.include_router(legacy_contracts.router)
+app.include_router(risk.router, prefix="/admin/risk", tags=["ریسک"])
+app.include_router(backtest.router, prefix="/admin/backtest", tags=["بک‌تست"])
+app.include_router(launch.router, prefix="/admin/launch", tags=["راه‌اندازی"])
+app.include_router(reports.router, prefix="/admin/reports", tags=["گزارش‌های عملکرد"])
 
 # --- روتر پنل ادمین: فرانت همه‌چیز را با پیشوند /admin و شکل camelCase صدا می‌زند ---
 # routerهای پایتون شکل/نام فیلد متفاوتی دارند؛ panel.py دادهٔ واقعی را با شکل دقیق فرانت برمی‌گرداند.

@@ -1,0 +1,23 @@
+[
+ {
+  "RuleID": "generic-api-key",
+  "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+  "StartLine": 1,
+  "EndLine": 1,
+  "StartColumn": 1,
+  "EndColumn": 66,
+  "Match": "CF_API_TOKEN=cfut_r07HCfRKN9DJSeuVJbKvlrtef23VqhI2NjtshCGgfebf95f4",
+  "Secret": "cfut_r07HCfRKN9DJSeuVJbKvlrtef23VqhI2NjtshCGgfebf95f4",
+  "File": ".cf",
+  "SymlinkFile": "",
+  "Commit": "c4bb11942aa30b08cd9542fa29ea008c8469c889",
+  "Link": "https://github.com/behnamjalali88/pro-chart/blob/c4bb11942aa30b08cd9542fa29ea008c8469c889/.cf#L1",
+  "Entropy": 4.8407593,
+  "Author": "Claude (central server)",
+  "Email": "server-claude@pro-chart.local",
+  "Date": "2026-07-02T12:25:06Z",
+  "Message": "chore(hub): snapshot live production working tree for reproducibility\n\nوضعِ موجودِ پروداکشن (ماژول‌های لاغرشده + هات‌فیکس‌های محلی + فعال‌سازیِ SSO M2).\nفقط ثبتِ وضعِ موجود؛ بدونِ تغییرِ رفتار. ادغام بعداً با هماهنگیِ سمتِ اپ.\n\nCo-Authored-By: Claude Fable 5 \u003cnoreply@anthropic.com\u003e",
+  "Tags": [],
+  "Fingerprint": "c4bb11942aa30b08cd9542fa29ea008c8469c889:.cf:generic-api-key:1"
+ }
+]

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Maximize2, Minimize2, X, ChevronUp } from 'lucide-react';
+import { Maximize2, Minimize2, X, ChevronUp } from './tvIcons';
 import useResizable from './useResizable';
 
 /*

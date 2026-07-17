@@ -2,7 +2,7 @@
 // انتخابِ پلن (ماهانه ۲۵/۳۰روز، سالانه ۲۰۰/۳۶۵ طبقِ payment/submit بک‌اند) → آدرسِ کیفِ BEP-20
 // (کپی) → ثبتِ tx_hash → تأییدِ خودکار روی زنجیره → پرمیوم. overlay تمام‌صفحه روی پروفایل.
 import React, { useEffect, useState } from 'react';
-import { X, Crown, Check, Copy, Loader2 } from 'lucide-react';
+import { X, Crown, Check, Copy, Loader2 } from '../../bazaarnama/tvIcons';
 import { api } from '../../api/client';
 import { useT } from '../../i18n';
 import { ACCENT } from '../ui';

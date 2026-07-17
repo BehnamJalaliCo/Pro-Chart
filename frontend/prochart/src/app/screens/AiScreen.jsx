@@ -1,6 +1,6 @@
 // سیگنال‌های AI — ستاپ‌های فعالِ هوش مصنوعی با ورود/حدضرر/اهداف. تپ → بازکردنِ چارتِ همان نماد.
 import React, { useEffect, useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles } from '../../bazaarnama/tvIcons';
 import { api } from '../../api/client';
 import { useApp } from '../../appStore';
 import { useT } from '../../i18n';
@@ -42,22 +42,24 @@ export default function AiScreen() {
           {state.list.map((s, i) => {
             const dir = (s.direction || s.side || '').toString().toLowerCase();
             const isBuy = dir.includes('buy') || dir.includes('long');
-            const col = isBuy ? '#089981' : '#f23645';
+            const col = isBuy
+              ? 'color-mix(in srgb, var(--up) 68%, #000)'
+              : 'color-mix(in srgb, var(--down) 68%, #000)';
             const tps = s.tps || [s.tp1, s.tp2, s.tp3].filter((x) => x != null);
             return (
               <li key={s.id || i}>
                 <button onClick={() => open(s.symbol)} className="w-full text-start active:scale-[.99] transition-transform"
                   style={{ padding: 14, borderRadius: 18, background: 'var(--surface-card)', border: '1px solid var(--surface-border)' }}>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="font-extrabold" style={{ color: 'var(--text-primary)', fontSize: 15 }}>{s.symbol || '—'} <span style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 600 }}>{s.tf || ''}</span></span>
+                    <span className="font-extrabold" style={{ color: 'var(--text-primary)', fontSize: 15 }}>{s.symbol || '—'} <span style={{ color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600 }}>{s.tf || ''}</span></span>
                     <span className="font-bold" style={{ fontSize: 12, color: '#fff', background: col, padding: '3px 10px', borderRadius: 20 }}>
                       {isBuy ? t('ai.buy') : t('ai.sell')}
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-2" dir="ltr">
-                    <Cell label={t('ai.entry')} value={fmt(s.entry)} color={ACCENT} />
-                    <Cell label={t('ai.sl')} value={fmt(s.sl)} color="#ef4444" />
-                    <Cell label={t('ai.tp')} value={fmt(tps[0])} color="#22c55e" />
+                    <Cell label={t('ai.entry')} value={fmt(s.entry)} color="color-mix(in srgb, var(--accent) 72%, var(--text-primary))" />
+                    <Cell label={t('ai.sl')} value={fmt(s.sl)} color="color-mix(in srgb, var(--down) 68%, var(--text-primary))" />
+                    <Cell label={t('ai.tp')} value={fmt(tps[0])} color="color-mix(in srgb, var(--up) 68%, var(--text-primary))" />
                   </div>
                 </button>
               </li>
@@ -72,7 +74,7 @@ export default function AiScreen() {
 function Cell({ label, value, color }) {
   return (
     <div style={{ background: 'var(--surface-elevated)', borderRadius: 12, padding: '8px 10px', textAlign: 'center' }}>
-      <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 3 }}>{label}</div>
+      <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 3 }}>{label}</div>
       <div className="tabular-nums font-extrabold" style={{ fontSize: 13, color }}>{value}</div>
     </div>
   );

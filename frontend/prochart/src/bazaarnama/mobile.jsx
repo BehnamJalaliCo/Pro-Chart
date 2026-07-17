@@ -212,7 +212,9 @@ export function MobileToolSheet({ TH, open, onClose, title, children, maxVh = 70
 export function CompactTopBar({ TH, symbol, livePrice, priceDir, fmtPrice, marketOpen, tf, chartType, chartLabel, onSearch, onPickTf, onPickType, onMore, SymbolLogo, MenuIcon }) {
   const btn = (extra) => ({ minWidth: 36, minHeight: 36, background: TH.chipBg, color: TH.textStrong, ...extra });
   // فاز۲: رنگ و فلَشِ قیمتِ زنده بر اساسِ جهتِ حرکت (سبز/قرمز). key=livePrice انیمیشن را روی هر تیک بازپخش می‌کند.
-  const priceColor = priceDir === 'down' ? TH.down : TH.up;
+  const priceColor = priceDir === 'down'
+    ? (TH.downText || TH.down)
+    : (TH.upText || TH.up);
   const flashClass = priceDir === 'down' ? 'pc-flash-down' : priceDir === 'up' ? 'pc-flash-up' : '';
   return (
     <div dir="rtl" className="flex items-center gap-1.5 px-2 py-1.5 border-b" style={{ borderColor: TH.border }}>

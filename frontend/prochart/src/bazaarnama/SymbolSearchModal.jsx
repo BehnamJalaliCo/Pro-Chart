@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Search, X, Star } from 'lucide-react';
+import { Search, X, Star, Clock } from './tvIcons';
 import SymbolLogo from './SymbolLogo';
 import VirtualList from './VirtualList';
 import { searchSymbols, highlightPositions } from './fuzzy';
@@ -52,7 +52,7 @@ const FLAGS = {
 };
 
 // دایرهٔ نه؛ مستطیلِ گِردِ ۳:۲ سبکِ TradingView (رینگِ ظریف، بدونِ سایه). fallback: کدِ خاکستری.
-function CountryFlag({ code, size = 18 }) {
+export function CountryFlag({ code, size = 18 }) {
   const g = FLAGS[code];
   const w = size, h = Math.round(size * 2 / 3);
   const cid = `bnfl_${code}_${size}`;
@@ -95,7 +95,7 @@ const pushRecent = (s) => {
 
 // مدالِ جستجوی نمادِ حرفه‌ای (fuzzy + دسته‌بندی + لوگو + اسکرولِ مجازی + ناوبریِ کیبورد).
 // propها backward-compatible: TH اختیاری (با fallback تیره)؛ coarse برای حالتِ لمسی.
-export default function SymbolSearchModal({ open, onClose, metaList = [], watch = [], current, onPick, TH, coarse = false }) {
+export default function SymbolSearchModal({ open, onClose, metaList = [], watch = [], current, onPick, TH, coarse = false, compareMode = false, seed = '' }) {
   const T = TH || { panel: '#131722', border: '#2a2e39', text: '#b2b5be', textStrong: '#d1d4dc', accent: '#2962FF', chipBg: 'rgba(255,255,255,.06)', chipBgHover: 'rgba(255,255,255,.10)' };
   const [q, setQ] = useState('');
   const [dq, setDq] = useState('');       // debounced
@@ -105,7 +105,7 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
 
   // debounce ۸۰ms (معادلِ symbol_search_request_delay در TradingView)
   useEffect(() => { const t = setTimeout(() => setDq(q), 80); return () => clearTimeout(t); }, [q]);
-  useEffect(() => { if (open) { setQ(''); setDq(''); setCat('all'); setActive(0); setTimeout(() => inputRef.current && inputRef.current.focus(), 30); } }, [open]);
+  useEffect(() => { if (open) { const s = seed || ''; setQ(s); setDq(s); setCat('all'); setActive(0); setTimeout(() => { if (inputRef.current) { inputRef.current.focus(); const n = inputRef.current.value.length; try { inputRef.current.setSelectionRange(n, n); } catch (e) {} } }, 30); } }, [open]); // seed = تایپِ حرف روی چارت (سبکِ type-to-searchِ TV)
 
   // #۷/۱۴۹ فقط نمادهای دارای لوگوی واقعی (فارکس/کریپتو/فلز/شاخص/انرژی)؛ سهام‌های تصادفیِ
   // بی‌لوگو (A/AA/AAL…) که فقط مونوگرامِ خاکستری می‌گیرند از جهانِ جستجو حذف می‌شوند.
@@ -144,15 +144,24 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
         style={{ background: T.panel, border: `1px solid ${T.border}`, maxHeight: '84vh' }}
         onClick={(e) => e.stopPropagation()} onKeyDown={onKey}>
 
+        {/* سرتیترِ دیالوگ (عنوان + بستن) — هم‌ترازِ «Symbol search»ِ TV */}
+        <div className="flex items-center justify-between px-4 pt-3 pb-1 shrink-0">
+          <span className="font-bold text-[15px]" style={{ color: T.textStrong }}>{compareMode ? 'مقایسهٔ نماد' : 'جستجوی نماد'}</span>
+          <button onClick={onClose} aria-label="بستن" className="opacity-60 hover:opacity-100 p-1 -mr-1 rounded" style={{ color: T.text }}><X size={18} /></button>
+        </div>
+
         {/* نوارِ جستجو */}
-        <div className="flex items-center gap-2 px-4 shrink-0" style={{ height: 56, borderBottom: `1px solid ${T.border}` }}>
+        <div className="flex items-center gap-2 px-4 shrink-0" style={{ height: 52, borderBottom: `1px solid ${T.border}` }}>
           <Search size={18} className="opacity-60" style={{ color: T.text }} />
           <input ref={inputRef} dir="ltr" value={q} onChange={(e) => setQ(e.target.value)}
             placeholder="جستجوی نماد… (EURUSD، طلا، BTC)"
             className="flex-1 bg-transparent outline-none text-base tabular-nums placeholder:opacity-50"
             style={{ color: T.textStrong }} />
+          {q && (
+            <button onClick={() => { setQ(''); inputRef.current && inputRef.current.focus(); }} aria-label="پاک‌کردن"
+              className="opacity-55 hover:opacity-100 shrink-0 p-0.5 rounded-full" style={{ color: T.text }}><X size={15} /></button>
+          )}
           <kbd className="text-[11px] opacity-50 px-1.5 py-0.5 rounded border" style={{ borderColor: T.border, color: T.text }}>Esc</kbd>
-          <button onClick={onClose} aria-label="بستن" className="opacity-60 hover:opacity-100" style={{ color: T.text }}><X size={18} /></button>
         </div>
 
         {/* تب‌های دسته‌بندی */}
@@ -178,7 +187,7 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
               <button key={'r' + s} onClick={() => pick(s)} className="flex items-center gap-1 px-2 rounded-lg" dir="ltr"
                 style={{ height: 30, background: T.chipBg, color: T.textStrong }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = T.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = T.chipBg)}>
-                <SymbolLogo symbol={s} size={16} /> {s}
+                <Clock size={11} className="opacity-45 shrink-0" /> <SymbolLogo symbol={s} size={16} /> {s}
               </button>
             ))}
             {cleanWatch.filter((s) => !recent.includes(s)).slice(0, 6).map((s) => (
@@ -200,7 +209,6 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
               const isActive = i === active;
               const isCur = m.symbol === current;
               const flag = flagCodeOf(m);
-              const tc = TYPE_COLOR[m.cat] || TYPE_COLOR.other;
               return (
                 <button onClick={() => pick(m.symbol)} onMouseEnter={() => setActive(i)}
                   role="option" aria-selected={isActive}
@@ -211,21 +219,22 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
                   <span className="text-[14px] font-bold leading-tight shrink-0" dir="ltr">{mark(m.symbol, highlightPositions(m.symbol, qSym), T)}</span>
                   <span className="flex-1 min-w-0 text-[12.5px] opacity-55 leading-tight truncate">{mark(m.desc, highlightPositions(m.desc, qDesc), T)}</span>
                   {watchSet.has(m.symbol) && <Star size={13} className="text-amber-400 shrink-0" />}
-                  {/* trailing meta سبکِ TradingView: پرچمِ کشور + برچسبِ بازار (نقطهٔ رنگیِ کلاس) */}
+                  {/* trailing meta سبکِ TradingView: برچسبِ نوع = متنِ کوچکِ خاکستریِ ساده (نه پیلِ رنگی) + پرچم — دقیقاً مثلِ تگِ نوعِ ردیف‌های جستجوی TV (دکلوتر). */}
                   <div className="flex items-center gap-2 shrink-0">
-                    {flag && <CountryFlag code={flag} size={coarse ? 20 : 18} />}
-                    <span className="flex items-center gap-1.5 px-2 rounded-md text-[10.5px] font-semibold tabular-nums"
-                      style={{ height: 22, minWidth: 52, justifyContent: 'center', color: tc, background: tc + '1f' }}>
-                      <span style={{ width: 6, height: 6, borderRadius: 99, background: tc }} />
+                    <span className="text-[11px] whitespace-nowrap opacity-50" style={{ color: T.text }}>
                       {CAT_FA[m.cat] || m.cat}
                     </span>
+                    {flag && <CountryFlag code={flag} size={coarse ? 20 : 18} />}
                   </div>
                 </button>
               );
             }}
           />
         ) : (
-          <div className="py-10 text-center text-sm opacity-50" style={{ color: T.text }}>نمادی مطابقِ «{q}» پیدا نشد</div>
+          <div className="py-10 text-center text-sm opacity-50" style={{ color: T.text }}>
+            {/* کوئریِ ناتهی ⇒ «پیدا نشد»؛ کوئریِ خالی (جهانِ نماد هنوز بارگذاری نشده) ⇒ راهنمای تایپ به‌جای پیغامِ گمراه‌کنندهٔ «مطابقِ «» پیدا نشد». */}
+            {qDesc ? `نمادی مطابقِ «${q}» پیدا نشد` : 'برای جستجو، نامِ نماد را تایپ کنید — مثلِ EURUSD، طلا یا BTC'}
+          </div>
         )}
 
         {/* فوترِ راهنمای کیبورد سبکِ TradingView (ناوبریِ کامل: پیمایش/انتخاب/بستن) + شمارشِ نتایج */}

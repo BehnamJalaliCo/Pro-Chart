@@ -276,41 +276,41 @@ const _src = (c, i) => (Array.isArray(i && i.source) ? i.source : c.close);
 export const EXT_REGISTRY_A = {
   // ===== §5.1 روند / میانگین‌های متحرک =====
   smma: {
-    label: 'SMMA / RMA (وایلدر)', pane: 'main', inputs: { period: 14 }, color: '#84cc16',
+    label: 'SMMA / RMA (وایلدر)', pane: 'main', inputs: { source: 'close', period: 14 }, color: '#84cc16',
     calc: (c, i) => ({ line: _smma(_src(c, i), i.period) }),
   },
   zlema: {
-    label: 'ZLEMA (تأخیرِ صفر)', pane: 'main', inputs: { period: 21 }, color: '#2dd4bf',
+    label: 'ZLEMA (تأخیرِ صفر)', pane: 'main', inputs: { source: 'close', period: 21 }, color: '#2dd4bf',
     calc: (c, i) => ({ line: _zlema(_src(c, i), i.period) }),
   },
   kama: {
-    label: 'KAMA (تطبیقی کافمن)', pane: 'main', inputs: { period: 10, fast: 2, slow: 30 }, color: '#fb923c',
+    label: 'KAMA (تطبیقی کافمن)', pane: 'main', inputs: { source: 'close', period: 10, fast: 2, slow: 30 }, color: '#fb923c',
     calc: (c, i) => ({ line: _kama(_src(c, i), i.period, i.fast, i.slow) }),
   },
   t3: {
-    label: 'T3 (تیلسون)', pane: 'main', inputs: { period: 10, volume: 0.7 }, color: '#e879f9',
+    label: 'T3 (تیلسون)', pane: 'main', inputs: { source: 'close', period: 10, volume: 0.7 }, color: '#e879f9',
     calc: (c, i) => ({ line: _t3(_src(c, i), i.period, i.volume) }),
   },
   mcginley: {
-    label: 'مک‌گینلی داینامیک', pane: 'main', inputs: { period: 14 }, color: '#facc15',
+    label: 'مک‌گینلی داینامیک', pane: 'main', inputs: { source: 'close', period: 14 }, color: '#facc15',
     calc: (c, i) => ({ line: _mcginley(_src(c, i), i.period) }),
   },
   linreg: {
-    label: 'منحنیِ رگرسیون خطی', pane: 'main', inputs: { period: 100 }, color: '#38bdf8',
+    label: 'منحنیِ رگرسیون خطی', pane: 'main', inputs: { source: 'close', period: 100 }, color: '#38bdf8',
     calc: (c, i) => ({ line: _linreg(_src(c, i), i.period, 0) }),
   },
   lsma: {
-    label: 'LSMA (کمترین‌مربعات)', pane: 'main', inputs: { period: 25, offset: 0 }, color: '#a78bfa',
+    label: 'LSMA (کمترین‌مربعات)', pane: 'main', inputs: { source: 'close', period: 25, offset: 0 }, color: '#a78bfa',
     calc: (c, i) => ({ line: _linreg(_src(c, i), i.period, i.offset) }),
   },
   trix: {
-    label: 'TRIX', pane: 'sub', inputs: { period: 18, sig: 9 }, color: '#f472b6',
+    label: 'TRIX', pane: 'sub', inputs: { source: 'close', period: 18, sig: 9 }, color: '#f472b6',
     calc: (c, i) => { const t = _trix(_src(c, i), i.period, i.sig); return { line: t.line, signal: t.signal, guides: [0] }; },
   },
 
   // ===== §5.3 نوسان =====
   bbpercent: {
-    label: 'باند بولینگر ٪B', pane: 'sub', inputs: { period: 20, mult: 2 }, color: '#22d3ee',
+    label: 'باند بولینگر ٪B', pane: 'sub', inputs: { source: 'close', period: 20, mult: 2 }, color: '#22d3ee',
     calc: (c, i) => {
       const s = _src(c, i), b = _bb(s, i.period, i.mult);
       const line = b.upper.map((u, k) => (u != null && b.lower[k] != null && u - b.lower[k] ? (s[k] - b.lower[k]) / (u - b.lower[k]) : null));
@@ -318,7 +318,7 @@ export const EXT_REGISTRY_A = {
     },
   },
   bbw: {
-    label: 'پهنای باند بولینگر', pane: 'sub', inputs: { period: 20, mult: 2 }, color: '#94a3b8',
+    label: 'پهنای باند بولینگر', pane: 'sub', inputs: { source: 'close', period: 20, mult: 2 }, color: '#94a3b8',
     calc: (c, i) => {
       const s = _src(c, i), b = _bb(s, i.period, i.mult);
       const line = b.upper.map((u, k) => (u != null && b.basis[k] ? (u - b.lower[k]) / b.basis[k] : null));
@@ -326,11 +326,11 @@ export const EXT_REGISTRY_A = {
     },
   },
   stddev: {
-    label: 'انحراف معیار', pane: 'sub', inputs: { period: 20 }, color: '#fb7185',
+    label: 'انحراف معیار', pane: 'sub', inputs: { source: 'close', period: 20 }, color: '#fb7185',
     calc: (c, i) => ({ line: _stdev(_src(c, i), i.period) }),
   },
   envelopes: {
-    label: 'پاکت‌ها (Envelopes)', pane: 'main', inputs: { period: 20, pct: 1 }, color: '#a78bfa',
+    label: 'پاکت‌ها (Envelopes)', pane: 'main', inputs: { source: 'close', period: 20, pct: 1 }, color: '#a78bfa',
     calc: (c, i) => {
       const b = _sma(_src(c, i), i.period);
       return {
@@ -353,10 +353,10 @@ export const EXT_REGISTRY_A = {
   // ===== §5.2 مومنتوم / اسیلاتور =====
   dmi: {
     label: 'DMI (جهت‌دارِ +DI/−DI)', pane: 'sub', inputs: { period: 14 }, color: '#22c55e',
-    calc: (c, i) => { const r = _dmi(c.high, c.low, c.close, i.period); return { line: r.plus, signal: r.minus, guides: [25], range: [0, 100] }; },
+    calc: (c, i) => { const r = _dmi(c.high, c.low, c.close, i.period); return { line: r.plus, signal: r.minus, signal2: r.adx, signal2Color: '#64748b', guides: [25], range: [0, 100] }; }, // +DI سبز / −DI نارنجی / ADX خاکستریِ متوسط (روی هر دو تمِ روشن/تیره دیده شود) — مثلِ DMIِ TradingView
   },
   ppo: {
-    label: 'PPO (درصدیِ قیمت)', pane: 'sub', inputs: { fast: 12, slow: 26, sig: 9 }, color: '#60a5fa',
+    label: 'PPO (درصدیِ قیمت)', pane: 'sub', inputs: { source: 'close', fast: 12, slow: 26, sig: 9 }, color: '#60a5fa',
     calc: (c, i) => { const p = _ppo(_src(c, i), i.fast, i.slow, i.sig); return { line: p.line, signal: p.signal, hist: p.hist, macd: true }; },
   },
 };

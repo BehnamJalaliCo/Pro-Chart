@@ -75,7 +75,7 @@ if [[ -f ".env" ]]; then
         openssl enc -aes-256-cbc -pbkdf2 -iter 100000 -salt \
             -in .env \
             -out "${BACKUP_DIR}/env_${TIMESTAMP}.enc" \
-            -pass "pass:${BACKUP_PASSPHRASE}"
+            -pass env:BACKUP_PASSPHRASE
         # حذف permission سطحی
         chmod 600 "${BACKUP_DIR}/env_${TIMESTAMP}.enc"
         echo "   ✅ .env رمزدار شد (AES-256-CBC، iter 100k)"

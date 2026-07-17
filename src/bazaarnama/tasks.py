@@ -29,6 +29,26 @@ def _run(coro):
         loop.close()
 
 
+def _line_level(cond: dict, now_dt: datetime):
+    """سطحِ هدفِ یک آلارمِ خطِ شیب‌دار (Trend-Line) در لحظهٔ now.
+
+    اگر cond["line"] دو لنگرِ زمانی/قیمتی داشته باشد (t1,p1,t2,p2 با t به ثانیهٔ یونیکس)،
+    قیمتِ خط با درون‌یابیِ خطی (و برون‌یابی برای زمانِ آینده) برگردانده می‌شود؛ وگرنه None.
+    افزایشی و بی‌اثر روی آلارم‌های موجود که فیلدِ line ندارند.
+    """
+    ln = cond.get("line")
+    if not isinstance(ln, dict):
+        return None
+    try:
+        t1 = float(ln["t1"]); p1 = float(ln["p1"])
+        t2 = float(ln["t2"]); p2 = float(ln["p2"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    if t2 == t1:
+        return p2
+    return p1 + (p2 - p1) * (now_dt.timestamp() - t1) / (t2 - t1)
+
+
 async def _check() -> dict:
     from src.core.redis_client import redis_client
 
@@ -79,6 +99,8 @@ async def _check() -> dict:
                 val = float(cond.get("value") or 0)
             except (TypeError, ValueError):
                 continue
+            # سطحِ خطِ شیب‌دار (اگر آلارم لنگرهای line داشته باشد) — None برای آلارم‌های معمولی.
+            line_lvl = _line_level(cond, now)
             # قیمتِ قبلی برای شرط‌های تقاطع/درصد
             prev = None
             try:
@@ -105,6 +127,24 @@ async def _check() -> dict:
                 if o in ("pct_up", "pct_down") and prev:
                     chg = (mid - prev) / prev * 100.0
                     return (o == "pct_up" and chg >= v) or (o == "pct_down" and chg <= -v)
+                # حرکتِ مطلق (Moving Up/Down by value مثلِ TradingView): قیمت از تیکِ قبل به‌اندازهٔ v حرکت کند.
+                if o == "move_up_value":
+                    return prev is not None and (mid - prev) >= v
+                if o == "move_down_value":
+                    return prev is not None and (prev - mid) >= v
+                # کانال (Entering/Exiting Channel مثلِ TV): مرزها lo/hi از خودِ cond؛ لبه‌ای (ورود/خروج نسبت به تیکِ قبل).
+                if o in ("enter_channel", "exit_channel"):
+                    if prev is None:
+                        return False
+                    lo = float(cond.get("lo") or 0.0)
+                    hi = float(cond.get("hi") or 0.0)
+                    if lo > hi:
+                        lo, hi = hi, lo
+                    inside_now = lo <= mid <= hi
+                    inside_prev = lo <= prev <= hi
+                    if o == "enter_channel":
+                        return inside_now and not inside_prev
+                    return (not inside_now) and inside_prev
                 return False
             # آلارمِ چندشرطی (AND): اگر conditions آرایه باشد، همهٔ شرط‌ها باید با هم برقرار شوند
             conds = cond.get("conditions")
@@ -114,7 +154,7 @@ async def _check() -> dict:
                 except (TypeError, ValueError):
                     hit = False
             else:
-                hit = _one(op, val)
+                hit = _one(op, line_lvl if line_lvl is not None else val)
             if not hit:
                 continue
 

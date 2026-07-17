@@ -1,11 +1,12 @@
 # FastAPI & Web
-fastapi==0.115.6
+fastapi==0.139.0
+starlette==1.3.1
 uvicorn[standard]==0.34.0
-python-multipart==0.0.27
+python-multipart==0.0.32
 websockets==14.1
 
 # Telegram Bot
-aiogram==3.15.0
+aiogram==3.29.1
 
 # Database
 sqlalchemy[asyncio]==2.0.36
@@ -20,7 +21,7 @@ redis[hiredis]==5.2.1
 celery[redis]==5.4.0
 
 # Authentication
-python-jose[cryptography]==3.4.0
+PyJWT[crypto]==2.13.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 
@@ -36,15 +37,14 @@ twelvedata==1.2.28
 yfinance==1.4.1
 curl_cffi==0.15.0
 
-# Technical Analysis — pinned for numba/talib compat
+# Technical Analysis — نسخه‌های مورد استفادهٔ Source فعلی؛ pandas-ta/numba استفاده نمی‌شوند.
 numpy==2.2.6
 pandas==2.2.3
-TA-Lib==0.4.32
+TA-Lib==0.7.0
 
 # Machine Learning
-xgboost==2.1.3
-lightgbm==4.5.0
-torch==2.5.1
+xgboost-cpu==2.1.3
+lightgbm==4.6.0
 optuna==4.1.0
 scikit-learn==1.6.0
 joblib==1.4.2
@@ -52,14 +52,13 @@ joblib==1.4.2
 # Logging & Monitoring
 structlog==24.4.0
 prometheus-client==0.21.1
-prometheus-fastapi-instrumentator==7.0.2
 
 # System Monitoring
 psutil==6.1.1
 
 # Utilities
 httpx==0.28.1
-aiohttp>=3.10.11,<3.11  # سقف به‌خاطرِ aiogram 3.15؛ آخرین نسخهٔ امنِ این بازه
+aiohttp==3.14.1
 python-dotenv==1.2.2
 orjson==3.11.6
 jinja2==3.1.6
@@ -72,7 +71,7 @@ bleach==6.2.0
 pandera>=0.18,<0.21
 
 # Performance — uvloop (حلقهٔ async سریع‌تر؛ در entrypointها با fast_loop فعال می‌شود).
-# نکته: optuna==4.1.0 و TA-Lib==0.4.32 و pandas-ta از قبل بالاتر در همین فایل هستند.
+# نکته: optuna==4.1.0 و TA-Lib==0.7.0 از قبل بالاتر در همین فایل هستند.
 uvloop>=0.19,<0.22
 
 # MLflow client (skinny — سبک، فقط لاگ/ترکینگ از داخلِ trainer)

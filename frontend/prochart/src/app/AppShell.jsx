@@ -18,7 +18,8 @@ export default function AppShell({ desktop = false }) {
   const tab = useApp((s) => s.tab);
   return (
     <div className="pc-approot flex flex-col overflow-hidden">
-      <div className="relative flex-1 min-h-0">
+      <main className="relative flex-1 min-h-0">
+        {(desktop || tab === 'chart') && <h1 className="sr-only">Pro-Chart — چارت حرفه‌ای بازارهای مالی</h1>}
         {/* چارت — همیشه mount، پایهٔ ناحیهٔ صفحه */}
         <BazaarNama />
         {/* overlayها — فقط روی موبایل و فقط وقتی تبِ مربوطه فعال است */}
@@ -26,7 +27,7 @@ export default function AppShell({ desktop = false }) {
         {!desktop && tab === 'ai' && <AiScreen />}
         {!desktop && tab === 'markets' && <MarketsScreen />}
         {!desktop && tab === 'profile' && <ProfileScreen />}
-      </div>
+      </main>
       {!desktop && <BottomNav />}
     </div>
   );

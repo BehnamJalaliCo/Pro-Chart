@@ -41,7 +41,7 @@ function withAlpha(color, a) {
 const clamp = (lo, hi, x) => Math.max(lo, Math.min(hi, x));
 
 // رنگ‌های پیش‌فرض (اگر فراخواننده تم را پاس ندهد) — هم‌تراز با THEMES.dark در BazaarNama.jsx
-const DEF = { up: '#26a69a', down: '#ef5350', accent: '#2962FF' };
+const DEF = { up: '#089981', down: '#f23645', accent: '#2962FF' };
 
 // ────────────────────────────────────────────────────────────────────────────
 //  ۴ — Volume Candles  (نوعِ «کندل»)
@@ -172,17 +172,25 @@ export function highLowOptions() {
 // ────────────────────────────────────────────────────────────────────────────
 export function kagiSpec(cs, opts = {}) {
   const up = opts.up || DEF.up, down = opts.down || DEF.down;
-  const pts = kagi(cs, opts.reversal); // [{t,value}, ...]
+  const pts = kagi(cs, opts.reversal, opts.atrLen); // [{t,value}, ...]
   if (pts.length < 2) {
     return { segments: pts.length ? [{ thick: false, color: up, points: pts.map((p) => ({ time: p.t, value: p.value })) }] : [] };
   }
-  // پاسِ تعیینِ ضخامت: thick (yang) وقتی سطح از shoulderِ پیشین بالاتر رود، thin (yin) زیرِ waist.
-  let shoulder = -Infinity, waist = Infinity, thick = false;
+  // پاسِ تعیینِ ضخامت: خطِ Kagi وقتی از shoulderِ *پیشین* (قلهٔ قبلی) بالاتر رود yang (ضخیم/سبز)
+  // و وقتی زیرِ waistِ پیشین (درّهٔ قبلی) افت کند yin (نازک/قرمز) می‌شود. shoulder/waist در هر
+  // برگشت به‌روز می‌شوند — نه بیشینه/کمینهٔ سراسری. (باگِ قبلی: با max/minِ سراسری، در روندِ
+  // نزولی سقفِ اولیه دیگر شکسته نمی‌شد ⇒ خط همیشه نازک/قرمز می‌ماند.)
+  let thick = false, lastShoulder = -Infinity, lastWaist = Infinity;
   const flags = []; // ضخامتِ هر قطعهٔ a→b (به ازای i از 1..n-1)
   for (let i = 1; i < pts.length; i++) {
-    const v = pts[i].value;
-    if (v > shoulder) { thick = true; shoulder = v; }
-    if (v < waist)    { thick = false; waist = v; }
+    const prev = pts[i - 1].value, cur = pts[i].value;
+    if (cur > prev) {           // قطعهٔ صعودی — prev یک درّه (waist) است
+      if (lastShoulder !== -Infinity && cur > lastShoulder) thick = true;
+      lastWaist = prev;
+    } else if (cur < prev) {    // قطعهٔ نزولی — prev یک قله (shoulder) است
+      if (lastWaist !== Infinity && cur < lastWaist) thick = false;
+      lastShoulder = prev;
+    }
     flags.push(thick);
   }
   // نقاطِ راست‌گوشه + خرد کردن به run هایی با ضخامتِ یکسان
@@ -191,7 +199,7 @@ export function kagiSpec(cs, opts = {}) {
   for (let i = 1; i < pts.length; i++) {
     const a = pts[i - 1], b = pts[i];
     const t = flags[i - 1];
-    const corner = { time: b.t, value: a.value };  // پله: ابتدا افقی تا زمانِ b، سپس عمودی
+    const corner = { time: b.t - 1, value: a.value };  // پله: افقی تا لحظهٔ قبلِ b، سپس عمودی. زمانِ منحصربه‌فرد (نه دوتاییِ b.t) تا سریِ خطیِ lightweight-charts خطای «Value is null»/ترتیب ندهد.
     if (!cur || cur.thick !== t) {
       if (cur) segments.push(cur);
       cur = { thick: t, color: t ? up : down, points: [{ time: a.t, value: a.value }] };
@@ -223,7 +231,7 @@ export function kagiSegmentOptions(seg) {
 // ────────────────────────────────────────────────────────────────────────────
 export function pnfColumns(cs, opts = {}) {
   if (!cs.length) return { cells: [], markers: [], columns: [], box: 1 };
-  const box = opts.box || avgRange(cs) || 1;
+  const box = opts.box || avgRange(cs, opts.atrLen || 14) || 1;
   const reversal = opts.reversal || 3;
   const q = (p) => Math.round(p / box) * box;          // کوانتایزِ قیمت به مضربِ box
   const columns = [];                                   // { dir:+1/-1, from, to }
@@ -253,29 +261,46 @@ export function pnfColumns(cs, opts = {}) {
   }
   if (col) columns.push(col);
 
-  // رندر: هر ستون یک «time» یکتا (ایندکسِ ستون، با مبنای زمانِ اولین کندل تا محورِ زمان معتبر بماند)
+  // رندر: هر ستون یک «time» یکتا — ستون‌ها به‌طور یکنواخت روی کلِ بازهٔ زمانیِ کندل‌ها پخش می‌شوند
+  // تا P&F مثلِ TV در سراسرِ عرضِ چارت دیده شود (نه فشرده در یک ثانیه لبهٔ چپ).
   const up = opts.up || DEF.up, down = opts.down || DEF.down;
-  const t0 = cs[0].t, step = 1;
+  const t0 = cs[0].t, tEnd = cs[cs.length - 1].t;
+  const step = columns.length > 1 ? Math.max(2, (tEnd - t0) / (columns.length - 1)) : 2;
   const cells = [];
   const markers = [];
+  // هر گلیفِ X/O یک «time» یکتاست — lightweight-charts نشانگرها را فقط با زمان‌های
+  // صعودیِ یکتا رندر می‌کند؛ زمانِ تکراری ⇒ هیچ نشانگری کشیده نمی‌شود (علتِ خالی‌بودنِ P&F).
+  // پس درونِ هر ستون هر سطح را با آفستِ ۱ثانیه‌ایِ یکتا می‌گذاریم؛ در زوومِ عادی این آفست‌ها
+  // به یک پیکسل جمع می‌شوند ⇒ ستونِ عمودیِ X/O مثلِ TV. یکتایی هم خطای «Value is null» را می‌بندد.
+  // segments: هر ستون یک خطِ نزدیک‌به‌عمودیِ رنگی (lo→hi با دو زمانِ t,t+1 که در زوومِ عادی
+  // به یک پیکسل جمع می‌شوند ⇒ ستونِ عمودی). سبزِ X برای صعودی، قرمزِ O برای نزولی. این روش
+  // مطمئن رندر می‌شود (برخلافِ markers که روی خطِ نامرئی در این نسخه کشیده نمی‌شوند).
+  const segments = [];
+  let lastT = t0 - 1;
   columns.forEach((cl, idx) => {
-    const time = t0 + idx * step;
+    const baseTime = Math.round(t0 + idx * step);
     const lo = Math.min(cl.from, cl.to), hi = Math.max(cl.from, cl.to);
+    // خطِ ستونِ نزدیک‌عمودی — hi را حداقل نیم‌box بالاتر از lo نگه می‌داریم تا حتی ستونِ تک‌جعبه هم دیده شود.
+    const top = Math.max(hi, lo + box * 0.5);
+    segments.push({ dir: cl.dir, color: cl.dir > 0 ? up : down, points: [{ time: baseTime, value: lo }, { time: baseTime + 1, value: top }] });
+    // cells/markers هم نگه داشته می‌شوند (autoscale + سازگاری) — زمان‌های یکتای صعودی.
+    let t = Math.max(baseTime, lastT + 1);
     for (let lvl = lo; lvl <= hi + 1e-9; lvl += box) {
-      cells.push({ time, value: lvl });
-      markers.push({
-        time, position: 'inBar',
-        color: cl.dir > 0 ? up : down,
-        shape: cl.dir > 0 ? 'square' : 'circle', // X≈مربع، O≈دایره (نزدیک‌ترین گلیفِ نیتیو)
-        text: cl.dir > 0 ? 'X' : 'O',
-      });
+      cells.push({ time: t, value: lvl });
+      markers.push({ time: t, position: 'inBar', color: cl.dir > 0 ? up : down, shape: cl.dir > 0 ? 'square' : 'circle' });
+      lastT = t;
+      t += 1;
     }
   });
-  return { cells, markers, columns, box };
+  return { cells, markers, columns, segments, box };
 }
 // گزینه‌های سریِ نامرئیِ میزبانِ گلیف‌های P&F
 export function pnfHostOptions() {
   return { color: 'rgba(0,0,0,0)', lineWidth: 1, pointMarkersVisible: false, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false };
+}
+// گزینه‌های خطِ ضخیمِ هر ستونِ P&F (نمایشِ عمودیِ رنگی، بی‌خط/برچسبِ قیمت)
+export function pnfSegmentOptions(seg) {
+  return { color: seg.color, lineWidth: 6, lineJoin: 'round', priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false };
 }
 
 // ────────────────────────────────────────────────────────────────────────────

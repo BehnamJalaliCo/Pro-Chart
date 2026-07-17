@@ -27,12 +27,16 @@ const authStore = {
 // ───────────────────────── primitives ─────────────────────────
 
 // ورودیِ رمز با آیکونِ چشم (موجود — حفظِ سازگاری)
-function PwInput({ value, onChange, placeholder }) {
+function PwInput({ value, onChange, placeholder, disabled = false }) {
   const [show, setShow] = React.useState(false);
   return (
     <div className="relative">
-      <input className={inp + ' pl-9'} style={FS} type={show ? 'text' : 'password'} placeholder={placeholder} value={value} onChange={onChange} dir="ltr" />
-      <button type="button" tabIndex={-1} onClick={() => setShow((s) => !s)} className="absolute left-2 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 text-gray-300">
+      <input className={inp + ' pl-9'} style={FS} type={show ? 'text' : 'password'} placeholder={placeholder} value={value} onChange={onChange}
+        disabled={disabled} aria-disabled={disabled || undefined} dir="ltr" />
+      <button type="button" disabled={disabled} aria-disabled={disabled || undefined}
+        aria-label={show ? 'پنهان‌کردنِ رمزِ عبور' : 'نمایشِ رمزِ عبور'}
+        onClick={() => { if (!disabled) setShow((s) => !s); }}
+        className="absolute left-2 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 text-gray-300 disabled:cursor-not-allowed disabled:hover:opacity-60">
         {show ? <EyeOff size={16} /> : <Eye size={16} />}
       </button>
     </div>
@@ -1243,10 +1247,10 @@ function SecurityTab() {
       </div>
 
       <Card title="تغییرِ رمزِ عبور" icon={<Lock size={16} className="text-gray-300" />} action={<SoonBadge />}>
-        <div className="space-y-2 opacity-50 pointer-events-none">
-          <PwInput value="" onChange={() => {}} placeholder="رمزِ فعلی" />
-          <PwInput value="" onChange={() => {}} placeholder="رمزِ جدید" />
-          <PwInput value="" onChange={() => {}} placeholder="تکرارِ رمزِ جدید" />
+        <div className="space-y-2 opacity-50">
+          <PwInput value="" placeholder="رمزِ فعلی" disabled />
+          <PwInput value="" placeholder="رمزِ جدید" disabled />
+          <PwInput value="" placeholder="تکرارِ رمزِ جدید" disabled />
           <button disabled className="w-full py-2 rounded-lg bg-indigo-600 font-bold">ذخیره</button>
         </div>
       </Card>

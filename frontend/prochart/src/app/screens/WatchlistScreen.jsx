@@ -1,11 +1,13 @@
 // واچ‌لیست + پوزیشن‌ها — دو زیرنما با سگمنت. واچ‌لیست: قیمتِ زنده + اسپارک‌لاین + تغییر.
 // پوزیشن‌ها: هدرِ خلاصهٔ چسبان (اکوییتی/P&L) + کارتِ پوزیشن با سود/زیان. تپ روی نماد → چارت.
 import React, { useEffect, useState } from 'react';
-import { List, Search, Briefcase } from 'lucide-react';
+import { List, Search, Briefcase } from '../../bazaarnama/tvIcons';
 import { api } from '../../api/client';
 import { useApp } from '../../appStore';
 import { useT } from '../../i18n';
 import { Screen, EmptyState, Loading, Sparkline, ACCENT } from '../ui';
+import SymbolLogo from '../../bazaarnama/SymbolLogo';
+import { dispatchOpenSearch } from '../appEvents';
 
 const numf = (n) => { const v = Number(n); if (!Number.isFinite(v)) return '—'; const a = Math.abs(v); return v.toFixed(a >= 100 ? 2 : a >= 1 ? 4 : 5); };
 const money = (n) => { const v = Number(n); return Number.isFinite(v) ? v.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '—'; };
@@ -81,7 +83,7 @@ export default function WatchlistScreen() {
   const open = (symbol) => { if (symbol) { try { window.dispatchEvent(new CustomEvent('bn:setSymbol', { detail: symbol })); } catch (e) {} } setTab('chart'); };
 
   const right = sub === 'watch' ? (
-    <button aria-label={t('common.search')} className="flex items-center justify-center active:scale-90 transition-transform"
+    <button type="button" aria-label={t('common.search')} onClick={() => dispatchOpenSearch()} className="flex items-center justify-center active:scale-90 transition-transform"
       style={{ width: 38, height: 38, borderRadius: 12, background: 'var(--surface-card)', border: '1px solid var(--surface-border)', color: 'var(--text-secondary)' }}>
       <Search size={17} />
     </button>
@@ -98,15 +100,21 @@ export default function WatchlistScreen() {
             : (
               <ul className="p-3 pt-2 flex flex-col gap-2">
                 {wl.rows.map((r) => {
-                  const up = Number(r.chg) >= 0; const col = r.chg == null ? 'var(--text-muted)' : up ? 'var(--up)' : 'var(--down)';
+                  const up = Number(r.chg) >= 0;
+                  const col = r.chg == null
+                    ? 'var(--text-secondary)'
+                    : up
+                      ? 'color-mix(in srgb, var(--up) 68%, var(--text-primary))'
+                      : 'color-mix(in srgb, var(--down) 68%, var(--text-primary))';
                   return (
                     <li key={r.symbol}>
                       <button onClick={() => open(r.symbol)} className="w-full flex items-center gap-3 text-start active:scale-[.99] transition-transform"
                         style={{ padding: '11px 12px', borderRadius: 16, background: 'var(--surface-card)', border: '1px solid var(--surface-border)', boxShadow: 'var(--elev-1)' }}>
-                        <span className="flex items-center justify-center flex-none" style={{ width: 36, height: 36, borderRadius: '50%', background: `linear-gradient(135deg, ${ACCENT}, #8b5cf6)`, color: '#fff', fontWeight: 800, fontSize: 11 }}>{r.symbol.slice(0, 2)}</span>
+                        {/* لوگوی واقعیِ نماد (پرچمِ فارکس / آیکونِ کریپتو / شمشِ فلز) — هم‌ترازِ واچ‌لیستِ دسکتاپ، به‌جای مونوگرامِ دوحرفی. */}
+                        <span className="flex-none"><SymbolLogo symbol={r.symbol} size={36} /></span>
                         <span className="flex-1 min-w-0">
                           <span className="block font-extrabold truncate" style={{ color: 'var(--text-primary)', fontSize: 13.5 }}>{r.symbol}</span>
-                          <span className="block" style={{ color: 'var(--text-muted)', fontSize: 10.5 }}>{t('common.price')}</span>
+                          <span className="block" style={{ color: 'var(--text-secondary)', fontSize: 10.5 }}>{t('common.price')}</span>
                         </span>
                         <Sparkline data={r.spark} up={up} />
                         <span className="text-end" dir="ltr">
@@ -146,7 +154,7 @@ export default function WatchlistScreen() {
                       <div key={p.id || i} className="p-3" style={i ? { borderTop: '1px solid var(--surface-border)' } : undefined}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="flex items-center justify-center" style={{ width: 30, height: 30, borderRadius: '50%', background: `linear-gradient(135deg, ${ACCENT}, #8b5cf6)`, color: '#fff', fontWeight: 800, fontSize: 10 }}>{(p.symbol || '').slice(0, 2)}</span>
+                            <span className="flex-none"><SymbolLogo symbol={p.symbol || ''} size={30} /></span>
                             <b style={{ fontSize: 14, color: 'var(--text-primary)' }}>{p.symbol}</b>
                             {p.leverage && <span style={{ fontSize: 10, color: 'var(--text-muted)' }} dir="ltr">{p.leverage}×</span>}
                           </div>

@@ -7,7 +7,10 @@ export const ACCENT = '#2962FF';
 export function Screen({ title, right, children }) {
   return (
     <div
-      className="absolute inset-0 flex flex-col overflow-hidden pc-screen-in"
+      // z-50: چارتِ همیشه‌mount کانواس‌هایی با z-index 1/2 دارد؛ بدونِ z-index صریح این اسکرینِ
+      // overlay (z=auto=0) زیرِ کانواس‌ها می‌رفت و کندل‌ها از پشتِ صفحاتِ بازارها/واچ‌لیست/AI/پروفایل
+      // بیرون می‌زدند. z-50 اسکرین را بالای همهٔ محتوای چارت می‌بَرد (نوارِ ناوبریِ پایین بیرونِ این کانتینر است).
+      className="absolute inset-0 z-50 flex flex-col overflow-hidden pc-screen-in"
       style={{ background: 'var(--surface-default)' }}
     >
       <header

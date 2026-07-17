@@ -1,0 +1,356 @@
+
+Report Summary
+
+┌──────────────────────────────────────────────────────────────────────────────────┬────────────┬─────────────────┬─────────┬───────────────────┐
+│                                      Target                                      │    Type    │ Vulnerabilities │ Secrets │ Misconfigurations │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ artifacts/qa/referral-only/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T03- │    npm     │        0        │    -    │         -         │
+│ 5617Z/scoped-source/frontend/user/package-lock.json                              │            │                 │         │                   │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ avatar_work/Wav2Lip/requirements.txt                                             │    pip     │       10        │    -    │         -         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ central-auth/requirements.txt                                                    │    pip     │        1        │    -    │         -         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/panel/package-lock.json                                                 │    npm     │        0        │    -    │         -         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/prochart/package-lock.json                                              │    npm     │        0        │    -    │         -         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/user/package-lock.json                                                  │    npm     │        0        │    -    │         -         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/website/package-lock.json                                               │    npm     │        1        │    -    │         -         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ requirements.txt                                                                 │    pip     │        0        │    -    │         -         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ Dockerfile                                                                       │ dockerfile │        -        │    -    │         0         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ artifacts/qa/referral-only/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T03- │ dockerfile │        -        │    -    │         1         │
+│ 5617Z/scoped-source/frontend/user/Dockerfile                                     │            │                 │         │                   │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ backtest/Dockerfile.backtest                                                     │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ backups/nginx-pre-turn443-20260608-002644/mt5/Dockerfile                         │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ central-auth/Dockerfile                                                          │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ chart_service/Dockerfile                                                         │ dockerfile │        -        │    -    │         0         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ flows/Dockerfile.flowrunner                                                      │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/academy/Dockerfile                                                      │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/ig/Dockerfile                                                           │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/panel/Dockerfile                                                        │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/prochart/Dockerfile                                                     │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/user/Dockerfile                                                         │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ frontend/website/Dockerfile                                                      │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ llm_service/Dockerfile                                                           │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ media/mt5/Dockerfile                                                             │ dockerfile │        -        │    -    │         1         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ qa/python/Dockerfile                                                             │ dockerfile │        -        │    -    │         0         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┼───────────────────┤
+│ secrets/seo/service_account.json                                                 │    text    │        -        │    2    │         -         │
+└──────────────────────────────────────────────────────────────────────────────────┴────────────┴─────────────────┴─────────┴───────────────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+avatar_work/Wav2Lip/requirements.txt (pip)
+==========================================
+Total: 10 (HIGH: 8, CRITICAL: 2)
+
+┌───────────────┬─────────────────────┬──────────┬────────┬───────────────────┬────────────────────┬──────────────────────────────────────────────────────────────┐
+│    Library    │    Vulnerability    │ Severity │ Status │ Installed Version │   Fixed Version    │                            Title                             │
+├───────────────┼─────────────────────┼──────────┼────────┼───────────────────┼────────────────────┼──────────────────────────────────────────────────────────────┤
+│ numpy         │ CVE-2021-41495      │ HIGH     │ fixed  │ 1.17.1            │ 1.19               │ numpy: NULL pointer dereference in numpy.sort in in the      │
+│               │                     │          │        │                   │                    │ PyArray_DescrNew() due to...                                 │
+│               │                     │          │        │                   │                    │ https://avd.aquasec.com/nvd/cve-2021-41495                   │
+├───────────────┼─────────────────────┤          │        ├───────────────────┼────────────────────┼──────────────────────────────────────────────────────────────┤
+│ opencv-python │ CVE-2019-14491      │          │        │ 4.1.0.25          │ 3.4.7.28, 4.1.1.26 │ opencv: out-of-bounds read in function                       │
+│               │                     │          │        │                   │                    │ cv::predictOrdered<cv::HaarEvaluator> in                     │
+│               │                     │          │        │                   │                    │ modules/objdetect/src/cascadedetect.hpp leads to dos         │
+│               │                     │          │        │                   │                    │ https://avd.aquasec.com/nvd/cve-2019-14491                   │
+│               ├─────────────────────┤          │        │                   │                    ├──────────────────────────────────────────────────────────────┤
+│               │ CVE-2019-14492      │          │        │                   │                    │ opencv: out-of-bounds read in function                       │
+│               │                     │          │        │                   │                    │ HaarEvaluator::OptFeature::calc() in cascadedetect.hpp       │
+│               │                     │          │        │                   │                    │ leading to DoS                                               │
+│               │                     │          │        │                   │                    │ https://avd.aquasec.com/nvd/cve-2019-14492                   │
+│               ├─────────────────────┤          │        │                   ├────────────────────┼──────────────────────────────────────────────────────────────┤
+│               │ CVE-2019-14493      │          │        │                   │ 4.1.1.26           │ opencv: NULL pointer dereference in function                 │
+│               │                     │          │        │                   │                    │ cv::XMLParser::parse() in persistence_xml.cpp leading to     │
+│               │                     │          │        │                   │                    │ DoS...                                                       │
+│               │                     │          │        │                   │                    │ https://avd.aquasec.com/nvd/cve-2019-14493                   │
+│               ├─────────────────────┤          │        │                   ├────────────────────┼──────────────────────────────────────────────────────────────┤
+│               │ CVE-2019-5064       │          │        │                   │ 4.2.0.32           │ opencv: Heap buffer overflow in persistence_json.cpp while   │
+│               │                     │          │        │                   │                    │ parsing crafted JSON file                                    │
+│               │                     │          │        │                   │                    │ https://avd.aquasec.com/nvd/cve-2019-5064                    │
+│               ├─────────────────────┤          │        │                   ├────────────────────┼──────────────────────────────────────────────────────────────┤
+│               │ GHSA-qr4w-53vh-m672 │          │        │                   │ 4.8.1.78           │ opencv-python bundled libwebp binaries in wheels that are    │
+│               │                     │          │        │                   │                    │ vulnerable to CVE-2023-4863                                  │
+│               │                     │          │        │                   │                    │ https://github.com/advisories/GHSA-qr4w-53vh-m672            │
+├───────────────┼─────────────────────┼──────────┤        ├───────────────────┼────────────────────┼──────────────────────────────────────────────────────────────┤
+│ torch         │ CVE-2022-45907      │ CRITICAL │        │ 1.1.0             │ 1.13.1             │ In PyTorch before trunk/89695,                               │
+│               │                     │          │        │                   │                    │ torch.jit.annotations.parse_type_line c ...                  │
+│               │                     │          │        │                   │                    │ https://avd.aquasec.com/nvd/cve-2022-45907                   │
+│               ├─────────────────────┤          │        │                   ├────────────────────┼──────────────────────────────────────────────────────────────┤
+│               │ CVE-2025-32434      │          │        │                   │ 2.6.0              │ PyTorch is a Python package that provides tensor computation │
+│               │                     │          │        │                   │                    │ with stro ......                                             │
+│               │                     │          │        │                   │                    │ https://avd.aquasec.com/nvd/cve-2025-32434                   │
+│               ├─────────────────────┼──────────┤        │                   ├────────────────────┼──────────────────────────────────────────────────────────────┤
+│               │ CVE-2024-31580      │ HIGH     │        │                   │ 2.2.0              │ PyTorch before v2.2.0 was discovered to contain a heap       │
+│               │                     │          │        │                   │                    │ buffer overflow ......                                       │
+│               │                     │          │        │                   │                    │ https://avd.aquasec.com/nvd/cve-2024-31580                   │
+│               ├─────────────────────┤          │        │                   │                    ├──────────────────────────────────────────────────────────────┤
+│               │ CVE-2024-31583      │          │        │                   │                    │ Pytorch before version v2.2.0 was discovered to contain a    │
+│               │                     │          │        │                   │                    │ use-after-fr ...                                             │
+│               │                     │          │        │                   │                    │ https://avd.aquasec.com/nvd/cve-2024-31583                   │
+└───────────────┴─────────────────────┴──────────┴────────┴───────────────────┴────────────────────┴──────────────────────────────────────────────────────────────┘
+
+central-auth/requirements.txt (pip)
+===================================
+Total: 1 (HIGH: 0, CRITICAL: 1)
+
+┌─────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬──────────────────────────────────────────────────────────────┐
+│   Library   │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                            Title                             │
+├─────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ python-jose │ CVE-2024-33663 │ CRITICAL │ fixed  │ 3.3.0             │ 3.4.0         │ python-jose: algorithm confusion with OpenSSH ECDSA keys and │
+│             │                │          │        │                   │               │ other key formats                                            │
+│             │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2024-33663                   │
+└─────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴──────────────────────────────────────────────────────────────┘
+
+frontend/website/package-lock.json (npm)
+========================================
+Total: 1 (HIGH: 1, CRITICAL: 0)
+
+┌───────────┬────────────────┬──────────┬────────┬───────────────────┬─────────────────────┬──────────────────────────────────────────────────────────────┐
+│  Library  │ Vulnerability  │ Severity │ Status │ Installed Version │    Fixed Version    │                            Title                             │
+├───────────┼────────────────┼──────────┼────────┼───────────────────┼─────────────────────┼──────────────────────────────────────────────────────────────┤
+│ form-data │ CVE-2026-12143 │ HIGH     │ fixed  │ 4.0.5             │ 2.5.6, 3.0.5, 4.0.6 │ form-data: form-data: Form field override via CRLF injection │
+│           │                │          │        │                   │                     │ https://avd.aquasec.com/nvd/cve-2026-12143                   │
+└───────────┴────────────────┴──────────┴────────┴───────────────────┴─────────────────────┴──────────────────────────────────────────────────────────────┘
+
+artifacts/qa/referral-only/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T035617Z/scoped-source/frontend/user/Dockerfile (dockerfile)
+========================================================================================================================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+backtest/Dockerfile.backtest (dockerfile)
+=========================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+backups/nginx-pre-turn443-20260608-002644/mt5/Dockerfile (dockerfile)
+=====================================================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Last USER command in Dockerfile should not be 'root'
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+ backups/nginx-pre-turn443-20260608-002644/mt5/Dockerfile:5
+────────────────────────────────────────
+   5 [ USER root
+────────────────────────────────────────
+
+
+
+central-auth/Dockerfile (dockerfile)
+====================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+flows/Dockerfile.flowrunner (dockerfile)
+========================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+frontend/academy/Dockerfile (dockerfile)
+========================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+frontend/ig/Dockerfile (dockerfile)
+===================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+frontend/panel/Dockerfile (dockerfile)
+======================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+frontend/prochart/Dockerfile (dockerfile)
+=========================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+frontend/user/Dockerfile (dockerfile)
+=====================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+frontend/website/Dockerfile (dockerfile)
+========================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+llm_service/Dockerfile (dockerfile)
+===================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+media/mt5/Dockerfile (dockerfile)
+=================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Last USER command in Dockerfile should not be 'root'
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+ media/mt5/Dockerfile:5
+────────────────────────────────────────
+   5 [ USER root
+────────────────────────────────────────
+
+
+
+secrets/seo/service_account.json (secrets)
+==========================================
+Total: 2 (HIGH: 1, CRITICAL: 1)
+
+CRITICAL: Google (gcp-service-account)
+════════════════════════════════════════
+Google (GCP) Service-account
+────────────────────────────────────────
+ secrets/seo/service_account.json:2 (offset: 4 bytes)
+────────────────────────────────────────
+   1   {
+   2 [   *************************,
+   3     "project_id": "pro-chart-seo",
+────────────────────────────────────────
+
+
+HIGH: AsymmetricPrivateKey (private-key)
+════════════════════════════════════════
+Asymmetric Private Key
+────────────────────────────────────────
+ secrets/seo/service_account.json:5 (offset: 173 bytes)
+────────────────────────────────────────
+   3     "project_id": "pro-chart-seo",
+   4     "private_key_id": "967e27291040800c512442badf8ebb373efdcbca",
+   5 [ : "-----BEGIN PRIVATE KEY-----**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY
+   6     "client_email": "seo-bot@pro-chart-seo.iam.gserviceaccount.com",
+────────────────────────────────────────
+
+
