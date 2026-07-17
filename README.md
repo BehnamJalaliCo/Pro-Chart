@@ -825,8 +825,7 @@ The state machine is `NOT_STARTED → BASELINING → BASELINED → IN_PROGRESS �
 
 **Third-party notice.** `lightweight-charts` is used under its own license. Every indicator and drawing-tool **formula** here is reimplemented from public descriptions — `drawtools_ext.js` states this rule and holds to it.
 
-> [!CAUTION]
-> **The rule is currently violated in one place.** `src/bazaarnama/tvIcons.jsx` overrides 23 lucide icons with SVG path data whose own header comment reads *«استخراجِ مستقیم از TradingView»* — extracted directly from TradingView. Path geometry is a copyrightable asset. This is tracked as **V-1 (P0)** in [`docs/parity/TV_GAP_REGISTER.md`](docs/parity/TV_GAP_REGISTER.md) and must be replaced with original artwork before this repository is made public.
+**Icons.** `src/bazaarnama/tvIcons.jsx` overrides 23 lucide icons with SVG path data taken from TradingView (its header comment says so plainly). The owner states this use is covered by an agreement with TradingView. It is tracked as **V-1** in [`docs/parity/TV_GAP_REGISTER.md`](docs/parity/TV_GAP_REGISTER.md) — as a *consistency* issue, not a licensing one: the app currently mixes two icon systems (lucide's 2px round strokes on a 24×24 grid beside TradingView's 1px filled 28×28).
 
 > [!WARNING]
 > **Financial risk.** This software is a technical-analysis and order-routing tool. It is **not** financial advice, and it makes **no guarantee of profit** — a constraint written into the product spec itself. Trading leveraged instruments carries substantial risk of loss. `TRADING_MODE` defaults to `paper` and crypto execution defaults to **off**; both are safe defaults, and both are your responsibility to change knowingly.
