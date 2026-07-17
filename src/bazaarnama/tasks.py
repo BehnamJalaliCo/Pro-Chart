@@ -159,7 +159,14 @@ async def _check() -> dict:
                 continue
 
             trigger = cond.get("trigger") or "recurring"  # once | recurring
-            if trigger == "recurring" and a.last_triggered_at and (now - a.last_triggered_at).total_seconds() < _COOLDOWN:
+            # کول‌داونِ سفارشی (cond.cooldown_s) — پیش‌تر ذخیره می‌شد و نادیده گرفته می‌شد،
+            # پس گزینهٔ «هربار با کول‌داونِ N دقیقه» در رابط همیشه ۱ ساعت عمل می‌کرد.
+            try:
+                cd = int(cond.get("cooldown_s") or _COOLDOWN)
+            except (TypeError, ValueError):
+                cd = _COOLDOWN
+            cd = max(0, cd)
+            if trigger == "recurring" and a.last_triggered_at and (now - a.last_triggered_at).total_seconds() < cd:
                 continue
 
             a.last_triggered_at = now
@@ -174,10 +181,56 @@ async def _check() -> dict:
             logger.info("bn_alert_triggered", alert_id=a.id, symbol=sym, op=op, value=val, price=mid)
             if cond.get("telegram"):
                 await _send_telegram(f"🔔 {msg}")
+            if cond.get("webhook"):
+                await _send_webhook(str(cond["webhook"]), {
+                    "alert_id": a.id, "symbol": sym, "price": mid, "op": op,
+                    "value": val, "tf": a.tf or "", "message": msg,
+                    "triggered_at": now.isoformat(),
+                })
         if triggered or any((c.condition or {}).get("expiry") for c in alerts):
             await s.commit()
 
     return {"checked": len(alerts), "triggered": triggered}
+
+
+async def _send_webhook(url: str, payload: dict) -> None:
+    """ارسالِ هشدار به وبهوکِ کاربر.
+
+    پیش‌تر cond["webhook"] ذخیره می‌شد و هرگز ارسال نمی‌شد — رابط کانالی را وعده
+    می‌داد که وجود نداشت.
+
+    امنیت: URL را کاربر می‌دهد، پس این یک سطحِ SSRF است. فقط https، و میزبان‌های
+    داخلی/لوپ‌بک/لینک‌لوکال رد می‌شوند تا نتوان از سرور به شبکهٔ داخلی درخواست زد.
+    """
+    import ipaddress
+    import socket
+    from urllib.parse import urlparse
+
+    import aiohttp
+
+    try:
+        u = urlparse(url)
+        if u.scheme != "https" or not u.hostname:
+            logger.warning("bn_alert_webhook_rejected", reason="scheme", url=url[:80])
+            return
+        # resolve و ردِ فضای آدرسِ خصوصی
+        infos = await asyncio.get_running_loop().getaddrinfo(u.hostname, None)
+        for info in infos:
+            ip = ipaddress.ip_address(info[4][0])
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
+                logger.warning("bn_alert_webhook_rejected", reason="private_ip", host=u.hostname)
+                return
+    except (ValueError, socket.gaierror) as exc:
+        logger.warning("bn_alert_webhook_rejected", reason="resolve", error=str(exc))
+        return
+
+    try:
+        async with aiohttp.ClientSession() as sess:
+            async with sess.post(url, json=payload, timeout=aiohttp.ClientTimeout(total=10)) as r:
+                if r.status >= 400:
+                    logger.warning("bn_alert_webhook_status", status=r.status, url=url[:80])
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("bn_alert_webhook_failed", error=str(exc), url=url[:80])
 
 
 async def _send_telegram(text: str) -> None:

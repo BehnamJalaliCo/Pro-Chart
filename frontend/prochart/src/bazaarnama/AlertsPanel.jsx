@@ -22,8 +22,7 @@
 //   indicators  : array   — اندیکاتورهای فعالِ روی چارت [{ id, key, inputs, color }]
 // ─────────────────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Bell, BellOff, Plus, X, Pencil, Check, Send, MessageSquare, Clock, Repeat, ChevronDown,
-  Mail, Smartphone, Volume2, Webhook, MessageCircle, History, ListChecks } from './tvIcons';
+import { Bell, BellOff, Plus, X, Pencil, Check, Send, MessageSquare, Clock, Repeat, ChevronDown, Volume2, Webhook, History, ListChecks } from './tvIcons';
 import { api } from '../api/client';
 import { REGISTRY } from './indicators';
 import { priceDigits } from './symbolMeta';
@@ -36,12 +35,21 @@ const fmtHeadPrice = (sym, v) => {
 };
 
 // ── واژگانِ منبع/عملگر ───────────────────────────────────────────────────────
+// موتورِ سمتِ سرور (src/bazaarnama/tasks.py) قیمتِ زندهٔ Redis را می‌سنجد و — برای
+// خطِ ترسیم‌شده — سطحِ متحرک را با _line_level از لنگرهای (t,p) درون‌یابی می‌کند.
+//
+// اندیکاتور و واچ‌لیست هنوز سمتِ سرور پیاده نشده‌اند. پیش‌تر رابط هر دو را ارائه
+// می‌داد و `cond.type` ثابت 'price' فرستاده می‌شد — یعنی «RSI از ۷۰ رد شد» بی‌صدا
+// به‌عنوانِ «**قیمت** از ۷۰ رد شد» ارزیابی می‌شد. کاربر هشدارِ غلط می‌گرفت، نه خطا.
+// تا وقتی موتور ارزیابیِ اندیکاتور نداشته باشد، گزینه غیرفعال می‌ماند (disabled با
+// دلیل) — وعدهٔ نشدنی از سکوتِ صادقانه بدتر است.
 const SOURCES = [
   { id: 'price', label: 'قیمتِ نماد' },
-  { id: 'indicator', label: 'اندیکاتور' },
+  { id: 'indicator', label: 'اندیکاتور', disabled: true, why: 'موتورِ سرور هنوز اندیکاتور را ارزیابی نمی‌کند — به‌زودی' },
   { id: 'drawing', label: 'خطِ ترسیم‌شده' },
-  { id: 'watchlist', label: 'کلِ واچ‌لیست' },
+  { id: 'watchlist', label: 'کلِ واچ‌لیست', disabled: true, why: 'موتورِ سرور فعلاً تک‌نماد است — به‌زودی' },
 ];
+const SOURCE_ENABLED = (id) => !SOURCES.find((x) => x.id === id)?.disabled;
 
 // فراوانیِ تریگر — همتراز با TradingView (Only Once / Once Per Bar / Once Per Bar Close / Per Minute).
 //  trigger (پس‌رو): once | recurring؛ frequency (جدید) دانه‌بندیِ دقیق را نگه می‌دارد.
@@ -274,11 +282,9 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       telegram: !!form.telegram,
       in_app: true,
       popup: !!form.popup,
-      // کانال‌های تحویلِ افزوده (graceful — سرور کلیدهای ناشناخته را نگه می‌دارد)
-      push: !!form.push,
-      email: !!form.email,
-      sms: !!form.sms,
-      sound: !!form.sound,
+      sound: !!form.sound,   // سمتِ کلاینت پخش می‌شود — به سرور نیازی ندارد
+      // push/email/sms عمداً فرستاده نمی‌شوند: سرور آن‌ها را dispatch نمی‌کند و
+      // ذخیره‌شان فقط وعدهٔ نشدنی را در DB ماندگار می‌کرد. رابط هم پنهانشان می‌کند.
     };
     if (form.webhook && form.webhook.trim()) cond.webhook = form.webhook.trim();
     if (form.source === 'watchlist') cond.scope = 'watchlist';
@@ -296,9 +302,10 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
     else if (form.source === 'indicator') {
       const it = indicators.find((i) => i.id === form.indId);
       if (it) cond.indicator = { id: it.key, params: it.inputs || {}, field: form.indField };
-    } else if (form.source === 'drawing') {
-      cond.line = { note: 'انتخاب از منوی ترسیم' }; // geometry سمتِ چارت پر می‌شود
     }
+    // نکته: cond.line بالاتر از form.line (لنگرهای t1/p1/t2/p2) پر شده. پیش‌تر این‌جا
+    // با `{ note: '…' }` **بازنویسی می‌شد** و هندسه را نابود می‌کرد — پس سرور چیزی برای
+    // درون‌یابی نداشت و آلارمِ ترسیم ذاتاً ناکارآمد بود. حالا دست نمی‌خورد.
     // تریگر/کول‌داون — کول‌داون فقط در حالتِ «هربار با کول‌داون»
     if (form.freq === 'cooldown') cond.cooldown_s = Math.max(0, Math.round(Number(form.cooldownMin) || 60) * 60);
     // انقضا
@@ -427,7 +434,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
         {/* منبع */}
         <div className="flex gap-1">
           <select value={form.source} onChange={(e) => set({ source: e.target.value })} title="منبعِ شرط" className={`${inputCls} flex-1`} style={selStyle}>
-            {SOURCES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+            {SOURCES.map((s) => <option key={s.id} value={s.id} disabled={!!s.disabled} title={s.why || ''}>{s.label}{s.disabled ? ' — به‌زودی' : ''}</option>)}
           </select>
           {(form.source === 'price' || form.source === 'watchlist') && (
             <select value={form.price_field} onChange={(e) => set({ price_field: e.target.value })} title="فیلدِ قیمت" className={`${inputCls} w-20`} style={selStyle}>
@@ -556,21 +563,11 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
                 <input type="checkbox" checked={form.popup} onChange={(e) => set({ popup: e.target.checked })} />
                 <MessageSquare size={11} className="opacity-60" /> پاپ‌آپ
               </label>
-              <label className="flex items-center gap-1 cursor-pointer">
-                <input type="checkbox" checked={form.push} onChange={(e) => set({ push: e.target.checked })} />
-                <Smartphone size={11} className="opacity-60" /> پوش
-              </label>
+              {/* پوش/ایمیل/پیامک برداشته شدند: سرور آن‌ها را dispatch نمی‌کرد — تیک می‌خوردند
+                  و هیچ‌وقت چیزی نمی‌رسید. وقتی موتور پیاده‌شان کرد برمی‌گردند. */}
               <label className="flex items-center gap-1 cursor-pointer">
                 <input type="checkbox" checked={form.sound} onChange={(e) => set({ sound: e.target.checked })} />
                 <Volume2 size={11} className="opacity-60" /> صدا
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer">
-                <input type="checkbox" checked={form.email} onChange={(e) => set({ email: e.target.checked })} />
-                <Mail size={11} className="opacity-60" /> ایمیل
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer">
-                <input type="checkbox" checked={form.sms} onChange={(e) => set({ sms: e.target.checked })} />
-                <MessageCircle size={11} className="opacity-60" /> پیامک
               </label>
               <label className="flex items-center gap-1 cursor-pointer">
                 <input type="checkbox" checked={form.telegram} onChange={(e) => set({ telegram: e.target.checked })} />
