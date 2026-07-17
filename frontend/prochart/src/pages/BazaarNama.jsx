@@ -3512,7 +3512,7 @@ export default function BazaarNama() {
               return (
                 <div className="absolute inset-0 z-30 grid gap-1 p-1" style={{ background: TH.bg, gridTemplateColumns: L.cols, gridTemplateRows: L.rows }}>
                   {Array.from({ length: L.cells }).map((_, i) => (
-                    <MiniChart key={i} symbols={symbols} tf={tf} initial={i === 0 ? symbol : (watch[i] || symbols[i] || symbol)} syncBus={syncBusRef.current} syncSymbol={syncSymbol} syncTime={syncTime} syncCrosshair={syncCrosshair} />
+                    <MiniChart key={i} symbols={symbols} tf={tf} initial={i === 0 ? symbol : (watch[i] || symbols[i] || symbol)} syncBus={syncBusRef.current} syncSymbol={syncSymbol} syncTime={syncTime} syncCrosshair={syncCrosshair} overlays={overlays} />
                   ))}
                 </div>
               );

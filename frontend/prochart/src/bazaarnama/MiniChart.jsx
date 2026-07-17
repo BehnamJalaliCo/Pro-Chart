@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
-import { createChart, CandlestickSeries } from 'lightweight-charts';
+import { createChart, CandlestickSeries, LineSeries } from 'lightweight-charts';
+import { REGISTRY } from './indicators';
 import { api } from '../api/client';
 import { useApp } from '../appStore';
 import { priceDigits } from './symbolMeta';
@@ -78,10 +79,11 @@ export function Sparkline({ data, up, width = 56, height = 22, stroke, fill = tr
 }
 
 // چارتِ کوچکِ مستقل برای حالتِ چند-چارت (هر کدام نماد + تایم‌فریمِ خود)
-export default function MiniChart({ symbols = [], tf, initial, syncBus = null, syncSymbol = false, syncTime = true, syncCrosshair = true }) {
+export default function MiniChart({ symbols = [], tf, initial, syncBus = null, syncSymbol = false, syncTime = true, syncCrosshair = true, overlays = [] }) {
   const elRef = useRef(null);
   const chartRef = useRef(null);
   const seriesRef = useRef(null);
+  const ovSeriesRef = useRef([]); // سری‌های اورلیِ اندیکاتور (فاز ۷.۱ — سلول‌ها اندیکاتورِ چارتِ اصلی را نشان می‌دهند)
   const theme = useApp((s) => s.theme) || 'light';
   const th = PAL[theme] || PAL.dark;
   const [symbol, setSymbol] = useState(initial || 'EURUSD');
@@ -147,6 +149,26 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null, s
       { const d = priceDigits(symbol); try { seriesRef.current.applyOptions({ priceFormat: grpFmt(d) }); } catch (e) { /* noop */ } }
       const cs = (r.candles || []).map((c) => ({ time: c.t, open: c.o, high: c.h, low: c.l, close: c.c }));
       seriesRef.current.setData(cs);
+      // اورلیِ اندیکاتور (فاز ۷.۱): همان اندیکاتورهای main-paneِ چارتِ اصلی روی این سلول.
+      // فقط pane:'main' (خطیِ روی قیمت) — نه sub-pane. سری‌های قبلی پاک می‌شوند تا نشت نکنند.
+      try { for (const ss of ovSeriesRef.current) { try { chartRef.current.removeSeries(ss); } catch (e) {} } } catch (e) {}
+      ovSeriesRef.current = [];
+      const raw = (r.candles || []).map((c) => ({ o: c.o, h: c.h, l: c.l, c: c.c, v: c.v, t: c.t }));
+      const cndl = { open: raw.map((x) => x.o), high: raw.map((x) => x.h), low: raw.map((x) => x.l), close: raw.map((x) => x.c), volume: raw.map((x) => x.v), time: raw.map((x) => x.t) };
+      for (const ov of (overlays || [])) {
+        const def = REGISTRY[ov.key];
+        if (!def || def.pane !== 'main') continue;
+        try {
+          const out = def.calc(cndl, { ...(def.inputs || {}), ...(ov.inputs || {}) });
+          const lines = out.lines ? out.lines : (out.line ? [{ data: out.line, color: def.color }] : []);
+          for (const ln of lines) {
+            if (!Array.isArray(ln.data)) continue;
+            const ser = chartRef.current.addSeries(LineSeries, { color: ln.color || def.color || '#888', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+            ser.setData(ln.data.map((v, i) => (v == null ? null : { time: cs[i] && cs[i].time, value: v })).filter((x) => x && x.time != null));
+            ovSeriesRef.current.push(ser);
+          }
+        } catch (e) { /* یک اندیکاتورِ خراب نباید سلول را بشکند */ }
+      }
       chartRef.current && chartRef.current.timeScale().fitContent();
       if (cs.length) {
         const n = cs[cs.length - 1];
@@ -156,7 +178,7 @@ export default function MiniChart({ symbols = [], tf, initial, syncBus = null, s
       }
     }).catch(() => {});
     return () => { stop = true; };
-  }, [symbol, tf]);
+  }, [symbol, tf, overlays]);
 
   const isDark = theme === 'dark';
   const priceColor = dir === 'up' ? th.up : dir === 'down' ? th.down : th.text;
