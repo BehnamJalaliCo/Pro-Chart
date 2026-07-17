@@ -456,7 +456,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
                 {indicatorFields(selInd.key).map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
               </select>
             )}
-            {liveInds.length === 0 && <span className="text-[9px] opacity-50 self-center">ابتدا یک اندیکاتور به چارت بیفزایید</span>}
+            {liveInds.length === 0 && <span className="text-[11px] opacity-50 self-center">ابتدا یک اندیکاتور به چارت بیفزایید</span>}
           </div>
         )}
 
@@ -523,7 +523,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
             <div className="flex items-center gap-1 rounded-md px-2 h-[26px]" style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
               <Repeat size={11} className="opacity-50" />
               <input value={form.cooldownMin} onChange={(e) => set({ cooldownMin: e.target.value })} title="کول‌داون (دقیقه)" dir="ltr" className="w-10 bg-transparent outline-none tabular-nums" />
-              <span className="opacity-50 text-[9px]">دقیقه</span>
+              <span className="opacity-50 text-[11px]">دقیقه</span>
             </div>
           )}
         </div>
@@ -543,9 +543,9 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
         {showAdvanced && (
           <div className="space-y-1.5 pt-0.5">
             {/* نامِ آلارم — همتراز با فیلدِ Alert name در TV؛ خالی → نامِ خودکار */}
-            <div className="text-[9px] opacity-50">نامِ آلارم</div>
+            <div className="text-[11px] opacity-50">نامِ آلارم</div>
             <input value={form.name} onChange={(e) => set({ name: e.target.value })} placeholder={autoName() || 'نامِ آلارم (خالی = خودکار)'} className={`${inputCls} w-full`} style={inputStyle} />
-            <div className="text-[9px] opacity-50 pt-0.5">پیام</div>
+            <div className="text-[11px] opacity-50 pt-0.5">پیام</div>
             {/* پیام چندخطی مثلِ textareaِ پیامِ آلارمِ TV (به‌جای تک‌خطی) — متغیرها می‌توانند در چند خط بیایند؛ قابلِ تغییرِ ارتفاع. */}
             <textarea value={form.message} onChange={(e) => set({ message: e.target.value })} placeholder="پیامِ سفارشی (روی متغیرها بزنید)" rows={2} className="rounded-md px-2 py-1 outline-none transition-colors min-w-0 w-full resize-y leading-snug" style={inputStyle} />
             {/* پالتِ متغیرها — همتراز با placeholderهای TV، منهای {{exchange}}: Pro-Chart عمداً مفهومِ صرافی ندارد (قانونِ بدونِ‌بروکر) و نمادها پیشوندِ صرافی ندارند، پس این متغیر به هیچ resolve می‌شد. */}
@@ -557,7 +557,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
               ))}
             </div>
             {/* کانال‌های تحویل — popup/push/email/sms/sound/telegram/webhook */}
-            <div className="text-[9px] opacity-50 pt-0.5">کانال‌های تحویل</div>
+            <div className="text-[11px] opacity-50 pt-0.5">کانال‌های تحویل</div>
             <div className="flex items-center gap-x-3 gap-y-1 flex-wrap">
               <label className="flex items-center gap-1 cursor-pointer">
                 <input type="checkbox" checked={form.popup} onChange={(e) => set({ popup: e.target.checked })} />
@@ -674,8 +674,8 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
-                  {fired && <span className="text-[9px] rounded px-1" style={{ color: TH.up, background: `${TH.up}1a` }}>رخ داد</span>}
-                  {expired && <span className="text-[9px] rounded px-1 opacity-60" style={{ background: TH.subtle }}>منقضی</span>}
+                  {fired && <span className="text-[11px] rounded px-1" style={{ color: TH.up, background: `${TH.up}1a` }}>رخ داد</span>}
+                  {expired && <span className="text-[11px] rounded px-1 opacity-60" style={{ background: TH.subtle }}>منقضی</span>}
                   <Pencil size={11} className="opacity-0 group-hover:opacity-50 hover:!opacity-90 cursor-pointer transition-opacity" onClick={() => edit(a)} title="ویرایش" />
                   <X size={12} className="opacity-40 hover:opacity-90 cursor-pointer transition-opacity" style={{ color: TH.down }} onClick={() => remove(a.id)} title="حذف" />
                 </div>

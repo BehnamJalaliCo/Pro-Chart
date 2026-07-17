@@ -2562,7 +2562,7 @@ export default function BazaarNama() {
               {/* بازه‌های سفارشی (Add custom intervalِ TV) */}
               {customTfs.length > 0 && (
                 <div>
-                  <div className="px-2 pt-1.5 pb-0.5 text-[9px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>سفارشی</div>
+                  <div className="px-2 pt-1.5 pb-0.5 text-[11px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>سفارشی</div>
                   {customTfs.map((c) => { const on = tf === c.id; return (
                     <div key={c.id} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={on ? { color: TH.accent, background: TH.chipActive } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
                       <button onClick={() => { setTf(c.id); setTfMenu(false); }} className="flex-1 text-right tabular-nums" dir="ltr">{c.id}</button>
@@ -2972,7 +2972,7 @@ export default function BazaarNama() {
                   </button>
                   <div className="flex flex-col items-center justify-center px-0.5" style={{ color: TH.text }}>
                     <span className="text-[11px] tabular-nums leading-tight font-medium">{_spreadPts != null ? Math.round(_spreadPts) : '—'}</span>
-                    <span className="text-[8px] leading-none opacity-55">اسپرد</span>
+                    <span className="text-[11px] leading-none opacity-55">اسپرد</span>
                   </div>
                   <button type="button" onClick={() => startTrade('buy')} title="خرید (Buy) — بازکردنِ تیکتِ سفارش"
                     className="flex flex-col items-center justify-center px-2.5 py-0.5 rounded-md shadow-sm transition-colors duration-[120ms]"
@@ -3158,7 +3158,7 @@ export default function BazaarNama() {
                   {/* بخشِ اندیکاتورها (هم‌ترازِ Object Treeِ TV که هم اندیکاتور هم ترسیم را فهرست می‌کند) */}
                   {legendItems.length > 0 && (
                     <>
-                      <div className="px-2 pt-1.5 pb-0.5 text-[9px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>اندیکاتورها</div>
+                      <div className="px-2 pt-1.5 pb-0.5 text-[11px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>اندیکاتورها</div>
                       {legendItems.map((it) => (
                         <div key={it.id} className="flex items-center gap-1.5 px-2 py-1 border-b transition-colors duration-[120ms] hover:bg-black/5" style={{ borderColor: TH.border }}>
                           <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: it.color }} />
@@ -3172,7 +3172,7 @@ export default function BazaarNama() {
                     </>
                   )}
                   {/* بخشِ ترسیم‌ها */}
-                  {drawList.length > 0 && <div className="px-2 pt-1.5 pb-0.5 text-[9px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>ترسیم‌ها</div>}
+                  {drawList.length > 0 && <div className="px-2 pt-1.5 pb-0.5 text-[11px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>ترسیم‌ها</div>}
                   {drawList.length === 0 && legendItems.length === 0 && <div className="px-3 py-3 opacity-40 text-center">آبجکتی نیست</div>}
                   {drawList.map((d, i) => (
                     <div key={i} draggable={!d.locked}
@@ -3510,7 +3510,7 @@ export default function BazaarNama() {
                 </button>
                 {tzBarOpen && (
                   <div className="fixed z-[80] rounded-lg border w-40 p-1 shadow-2xl" dir="rtl" style={{ background: TH.popoverBg, borderColor: TH.border, right: tzAnchor.right, bottom: tzAnchor.bottom }}>
-                    <div className="px-2 pt-0.5 pb-1 text-[9px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>منطقهٔ زمانی</div>
+                    <div className="px-2 pt-0.5 pb-1 text-[11px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>منطقهٔ زمانی</div>
                     <div className="max-h-52 overflow-y-auto bn-thin-scroll">
                       {TIMEZONES.map((z) => { const on = tz === z.id; return (
                         <button key={z.id} onClick={() => { setTz(z.id); setTzBarOpen(false); }} className="flex items-center gap-2 w-full text-right px-2 py-1.5 text-[12px] rounded-md" style={{ color: TH.textStrong, background: on ? TH.chipBg : 'transparent' }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>

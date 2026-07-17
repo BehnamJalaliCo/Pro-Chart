@@ -20,16 +20,12 @@
   --accent: #2962ff; --accent-weak: rgba(41,98,255,.14); --accent-2: #a78bfa;
   --up: #26a69a; --up-weak: rgba(38,166,154,.16); --down: #ef5350; --down-weak: rgba(239,83,80,.16);
   --warn: #f0b95d; --danger: #ff6169; --success: #2db39a;
-  --border-strong: #31394b; --ring: rgba(94,140,255,.45);
   --elev-1: 0 1px 2px rgba(0,0,0,.4), 0 10px 26px -12px rgba(0,0,0,.6);
   --elev-2: 0 2px 8px rgba(0,0,0,.5), 0 20px 44px -16px rgba(0,0,0,.7);
 }
 
 /* مقیاس‌های مستقل از تم (تایپ/فاصله/گوشه) — توکنِ لایهٔ ۱ */
 :root {
-  --fs-xs: 11px; --fs-sm: 12.5px; --fs-md: 14px; --fs-lg: 17px; --fs-xl: 22px; --fs-2xl: 30px;
-  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px;
-  --r-sm: 9px; --r-md: 14px; --r-lg: 20px; --r-xl: 26px; --r-full: 999px;
 }
 
 /* تمِ روشن — رنگ‌های دقیقِ TradingView light */
@@ -50,7 +46,6 @@
   --accent: #2962FF; --accent-weak: rgba(41,98,255,.10); --accent-2: #8b5cf6;
   --up: #089981; --up-weak: rgba(8,153,129,.12); --down: #f23645; --down-weak: rgba(242,54,69,.12);
   --warn: #e8a33d; --danger: #e5484d; --success: #12a594;
-  --border-strong: #d7dceb; --ring: rgba(41,98,255,.35);
   --elev-1: 0 1px 2px rgba(16,24,40,.04), 0 10px 26px -12px rgba(16,24,40,.14);
   --elev-2: 0 2px 8px rgba(16,24,40,.06), 0 20px 44px -16px rgba(16,24,40,.18);
 }
@@ -97,12 +92,9 @@ input[type=number]::-webkit-inner-spin-button { opacity: 0.4; }
   /* §۲ فاصله‌گذاری (Grid 2/4/8) */
   --pc-space-0: 0px;  --pc-space-1: 2px;  --pc-space-2: 4px;  --pc-space-3: 6px;
   --pc-space-4: 8px;  --pc-space-5: 10px; --pc-space-6: 12px; --pc-space-8: 16px;
-  --pc-space-10: 20px; --pc-space-12: 24px;
   /* §۲ شعاع */
   --pc-radius-xs: 2px; --pc-radius-sm: 4px; --pc-radius-md: 6px; --pc-radius-lg: 8px; --pc-radius-xl: 12px;
   /* §۵ فونت + line-height */
-  --pc-font-xs: 11px; --pc-font-sm: 12px; --pc-font-md: 13px; --pc-font-lg: 14px; --pc-font-xl: 16px;
-  --pc-line-xs: 14px; --pc-line-sm: 16px; --pc-line-md: 18px; --pc-line-lg: 20px;
   /* §۲۳ مدت/easing */
   --pc-duration-fast: 80ms; --pc-duration-normal: 120ms; --pc-duration-slow: 180ms;
   --pc-ease-standard: cubic-bezier(0.2, 0, 0, 1);
@@ -118,8 +110,6 @@ input[type=number]::-webkit-inner-spin-button { opacity: 0.4; }
   --pc-text-primary: var(--text-primary);
   --pc-text-secondary: var(--text-secondary);
   --pc-text-muted: var(--text-muted);
-  --pc-candle-up: #26a69a;
-  --pc-candle-down: #ef5350;
 }
 
 /* §۵ اعداد هم‌عرض (tabular) — ترازِ دقیقِ قیمت‌ها بدونِ پرشِ بصری */
@@ -256,8 +246,6 @@ button, [role="button"], a, summary, .pc-btn {
   /* جفت‌رنگِ کندل/UI — تم‌آگاه مثلِ --up/--down: در دارک تونِ پرجانِ #26a69a/#ef5350
      برای متنِ تغییر روی پس‌زمینهٔ تیره (نه تونِ روشنِ #089981 که مرده دیده می‌شود). */
   --pc-up: #26a69a; --pc-up-ui: #26a69a; --pc-down: #ef5350; --pc-down-ui: #ef5350;
-  --pc-grid: rgba(255,255,255,.06); --pc-crosshair: #9598a1;
-  --pc-shadow: 0 2px 4px rgba(0,0,0,.2), 0 2px 12px rgba(0,0,0,.4);
   /* دیسیپلینِ شعاع: کنترل 4px · popup 6px · dialog 8px (به‌صورتِ var) */
   --pc-radius-control: 4px; --pc-radius-popup: 6px; --pc-radius-dialog: 8px;
   /* استانداردِ ترانزیشن 120–200ms ease-out */
@@ -275,8 +263,6 @@ button, [role="button"], a, summary, .pc-btn {
   --pc-text: #131722; --pc-text-2: #5d606b; --pc-text-muted: #787b86;
   --pc-accent: #2962ff; --pc-accent-hover: #1e53e5; --pc-accent-tint: rgba(41,98,255,.08);
   --pc-up: #26a69a; --pc-up-ui: #089981; --pc-down: #ef5350; --pc-down-ui: #f23645;
-  --pc-grid: rgba(0,0,0,.06); --pc-crosshair: #9598a1;
-  --pc-shadow: 0 2px 4px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.1);
 }
 
 /* اعداد هم‌عرضِ TV — قیمت/درصد/محور هرگز نلرزد؛ در RTL با dir="ltr" روی خودِ عدد */
@@ -403,7 +389,6 @@ button, [role="button"], a, summary, .pc-btn {
   --pc-elev-pop: var(--pc-elev-menu);
   /* ringِ فوکاسِ کیبورد — دقیقاً رنگِ accentِ TV، شفافیتِ محسوس ولی نه پرنویز */
   --pc-focus-ring: 0 0 0 2px var(--pc-bg), 0 0 0 4px rgba(41,98,255,.55);
-  --pc-focus-color: #2962ff;
   /* hairlineِ شارپِ ۱px تم‌آگاه (نامِ رنگی مستقیم برای border-color خام) */
   --pc-hairline-color: #2a2e39;
 }

@@ -275,7 +275,7 @@ export default function RightPanel({
                       <span>{b ? '🟢' : '🔴'}</span>
                       <span className="font-bold whitespace-nowrap" dir="ltr">{s.symbol}·{s.tf}</span>
                       <span className="text-[9px] px-1.5 py-0.5 rounded-full whitespace-nowrap" style={{ background: sv[1] + '22', color: sv[1] }}>{sv[0]}</span>
-                      {cur && <span className="text-[9px] text-violet-400 whitespace-nowrap">• روی چارت</span>}
+                      {cur && <span className="text-[11px] text-violet-400 whitespace-nowrap">• روی چارت</span>}
                     </button>
                     <button onClick={() => deleteSignal(s)} title="حذفِ سیگنال" className="opacity-40 hover:opacity-100 shrink-0"><X size={12} /></button>
                   </div>
@@ -764,7 +764,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
             <span className="shrink-0" style={{ width: 22 }} />
           </div>
         ) : (
-          <div className="flex items-center gap-1 w-full px-2 h-6 text-[9px] font-semibold tracking-wide select-none border-b" style={{ color: TH.text, borderColor: TH.border }}>
+          <div className="flex items-center gap-1 w-full px-2 h-7 text-[11px] font-semibold tracking-wide select-none border-b" style={{ color: TH.text, borderColor: TH.border }}>
             {meta.showLogo && <span className="shrink-0" style={{ width: logoSz }} />}
             <button type="button" onClick={() => toggleSort('name')} title="مرتب‌سازی بر اساسِ نماد" className="flex-1 min-w-[52px] text-left cursor-pointer hover:opacity-100 tabular-nums" dir="ltr" style={{ color: meta.sortBy === 'name' ? TH.accent : 'inherit', opacity: meta.sortBy === 'name' ? 1 : undefined }}>نماد{sortArrow('name')}</button>
             <button type="button" onClick={() => toggleSort('price')} title="مرتب‌سازی بر اساسِ آخرین قیمت" className="text-right shrink-0 w-[44px] cursor-pointer hover:opacity-100 tabular-nums" dir="ltr" style={{ color: meta.sortBy === 'price' ? TH.accent : 'inherit', opacity: meta.sortBy === 'price' ? 1 : undefined }}>آخرین{sortArrow('price')}</button>

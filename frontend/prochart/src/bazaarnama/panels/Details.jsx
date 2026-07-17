@@ -594,7 +594,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
                 <div key={c.key} className="rounded-md px-1.5 py-1 text-center" style={{ background: TH.chipBg }}>
                   <div className="text-[10px] font-extrabold leading-tight" style={{ color: c.vf.color }}>{c.vf.label}</div>
                   <div className="text-[8.5px] opacity-55 mb-0.5">{c.title}</div>
-                  <div className="flex items-center justify-center gap-1 text-[9px] tnum" title="فروش · خنثی · خرید">
+                  <div className="flex items-center justify-center gap-1 text-[11px] tnum" title="فروش · خنثی · خرید">
                     <b style={{ color: RATING_FA.sell.color }}>{c.s}</b>
                     <span className="opacity-30">·</span>
                     <b style={{ color: RATING_FA.neutral.color }}>{c.n}</b>
