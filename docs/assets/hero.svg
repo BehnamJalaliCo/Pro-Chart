@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" width="1200" height="340" role="img" aria-label="Pro-Chart — بازارنما">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0e14"/>
+      <stop offset="55%" stop-color="#0e1420"/>
+      <stop offset="100%" stop-color="#0b0e14"/>
+    </linearGradient>
+    <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2979FF" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#2979FF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#9ad0ff"/>
+      <stop offset="100%" stop-color="#00C853"/>
+      <animate attributeName="x1" values="-1;0;-1" dur="8s" repeatCount="indefinite"/>
+      <animate attributeName="x2" values="0;1;0" dur="8s" repeatCount="indefinite"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="plot"><rect x="0" y="0" width="1200" height="340"/></clipPath>
+  </defs>
+
+  <rect width="1200" height="340" fill="url(#bg)"/>
+
+  <!-- grid -->
+  <g stroke="#1b2433" stroke-width="1" clip-path="url(#plot)">
+    <path d="M0 60H1200M0 120H1200M0 180H1200M0 240H1200M0 300H1200"/>
+    <path d="M150 0V340M300 0V340M450 0V340M600 0V340M750 0V340M900 0V340M1050 0V340"/>
+  </g>
+
+  <!-- area under the line -->
+  <path d="M60,250 L140,232 L220,244 L300,206 L380,218 L460,180 L540,196 L620,158 L700,170 L780,132 L860,148 L940,110 L1020,124 L1100,86 L1140,96 L1140,340 L60,340 Z"
+        fill="url(#areaFill)" opacity="0">
+    <animate attributeName="opacity" values="0;1" dur="1.2s" begin="2.4s" fill="freeze"/>
+  </path>
+
+  <!-- price line -->
+  <path d="M60,250 L140,232 L220,244 L300,206 L380,218 L460,180 L540,196 L620,158 L700,170 L780,132 L860,148 L940,110 L1020,124 L1100,86 L1140,96"
+        fill="none" stroke="#2979FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+        filter="url(#glow)" stroke-dasharray="1600" stroke-dashoffset="1600">
+    <animate attributeName="stroke-dashoffset" from="1600" to="0" dur="2.4s" fill="freeze" calcMode="spline" keySplines="0.22 1 0.36 1"/>
+  </path>
+
+  <!-- candles: each grows from its own baseline -->
+  <g stroke-linecap="butt">
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="0.10s" fill="freeze"/>
+      <line x1="100" y1="238" x2="100" y2="286" stroke="#00C853" stroke-width="2"/>
+      <rect x="93" y="250" width="14" height="26" rx="1.5" fill="#00C853"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="0.22s" fill="freeze"/>
+      <line x1="180" y1="220" x2="180" y2="268" stroke="#00C853" stroke-width="2"/>
+      <rect x="173" y="232" width="14" height="24" rx="1.5" fill="#00C853"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="0.34s" fill="freeze"/>
+      <line x1="260" y1="232" x2="260" y2="278" stroke="#FF1744" stroke-width="2"/>
+      <rect x="253" y="244" width="14" height="22" rx="1.5" fill="#FF1744"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="0.46s" fill="freeze"/>
+      <line x1="340" y1="192" x2="340" y2="242" stroke="#00C853" stroke-width="2"/>
+      <rect x="333" y="206" width="14" height="24" rx="1.5" fill="#00C853"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="0.58s" fill="freeze"/>
+      <line x1="420" y1="206" x2="420" y2="252" stroke="#FF1744" stroke-width="2"/>
+      <rect x="413" y="218" width="14" height="22" rx="1.5" fill="#FF1744"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="0.70s" fill="freeze"/>
+      <line x1="500" y1="166" x2="500" y2="216" stroke="#00C853" stroke-width="2"/>
+      <rect x="493" y="180" width="14" height="24" rx="1.5" fill="#00C853"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="0.82s" fill="freeze"/>
+      <line x1="580" y1="182" x2="580" y2="228" stroke="#FF1744" stroke-width="2"/>
+      <rect x="573" y="194" width="14" height="22" rx="1.5" fill="#FF1744"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="0.94s" fill="freeze"/>
+      <line x1="660" y1="144" x2="660" y2="194" stroke="#00C853" stroke-width="2"/>
+      <rect x="653" y="158" width="14" height="24" rx="1.5" fill="#00C853"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="1.06s" fill="freeze"/>
+      <line x1="740" y1="158" x2="740" y2="204" stroke="#FF1744" stroke-width="2"/>
+      <rect x="733" y="170" width="14" height="22" rx="1.5" fill="#FF1744"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="1.18s" fill="freeze"/>
+      <line x1="820" y1="118" x2="820" y2="168" stroke="#00C853" stroke-width="2"/>
+      <rect x="813" y="132" width="14" height="24" rx="1.5" fill="#00C853"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="1.30s" fill="freeze"/>
+      <line x1="900" y1="134" x2="900" y2="180" stroke="#FF1744" stroke-width="2"/>
+      <rect x="893" y="146" width="14" height="22" rx="1.5" fill="#FF1744"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="1.42s" fill="freeze"/>
+      <line x1="980" y1="96" x2="980" y2="146" stroke="#00C853" stroke-width="2"/>
+      <rect x="973" y="110" width="14" height="24" rx="1.5" fill="#00C853"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".35s" begin="1.54s" fill="freeze"/>
+      <line x1="1060" y1="110" x2="1060" y2="156" stroke="#FF1744" stroke-width="2"/>
+      <rect x="1053" y="122" width="14" height="22" rx="1.5" fill="#FF1744"/></g>
+  </g>
+
+  <!-- live price dot -->
+  <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".4s" begin="2.4s" fill="freeze"/>
+    <circle cx="1140" cy="96" r="5" fill="#00C853"/>
+    <circle cx="1140" cy="96" r="5" fill="none" stroke="#00C853" stroke-width="2">
+      <animate attributeName="r" values="5;18" dur="2s" begin="2.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.9;0" dur="2s" begin="2.6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- crosshair sweep -->
+  <g opacity="0.5">
+    <line x1="0" y1="0" x2="0" y2="340" stroke="#5b7fa6" stroke-width="1" stroke-dasharray="4 4">
+      <animate attributeName="x1" values="120;1120;120" dur="14s" begin="3s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/>
+      <animate attributeName="x2" values="120;1120;120" dur="14s" begin="3s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/>
+    </line>
+  </g>
+
+  <!-- wordmark -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1" dur="1s" begin="2.6s" fill="freeze"/>
+    <text x="60" y="72" font-family="'Segoe UI',Roboto,system-ui,sans-serif" font-size="52" font-weight="700" fill="url(#titleGrad)">Pro·Chart</text>
+    <text x="60" y="106" font-family="'Segoe UI',Roboto,system-ui,sans-serif" font-size="21" font-weight="500" fill="#7d90a8" letter-spacing="1.5">بازارنما — Persian-first trading terminal</text>
+    <rect x="60" y="122" width="0" height="3" rx="1.5" fill="#00C853">
+      <animate attributeName="width" values="0;300" dur="1.2s" begin="3s" fill="freeze" calcMode="spline" keySplines="0.22 1 0.36 1"/>
+    </rect>
+  </g>
+</svg>

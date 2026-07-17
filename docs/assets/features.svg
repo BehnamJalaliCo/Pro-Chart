@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 200" width="1200" height="200" role="img" aria-label="Feature counters">
+  <defs>
+    <style>
+      .n { font-family:'Segoe UI',Roboto,system-ui,sans-serif; font-size:44px; font-weight:800; }
+      .l { font-family:'Segoe UI',Roboto,system-ui,sans-serif; font-size:13px; font-weight:500; fill:#7d90a8; letter-spacing:1.2px; }
+      .card { fill:#111823; stroke:#1e2836; stroke-width:1; }
+    </style>
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2979FF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#2979FF" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#2979FF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="200" fill="#0b0e14"/>
+
+  <g>
+    <!-- 108 indicators -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".6s" begin="0.1s" fill="freeze"/>
+      <rect class="card" x="24" y="34" width="216" height="132" rx="12"/>
+      <text class="n" x="132" y="98" text-anchor="middle" fill="#00C853">108</text>
+      <text class="l" x="132" y="128" text-anchor="middle">INDICATORS</text>
+      <rect x="24" y="34" width="216" height="132" rx="12" fill="url(#sweep)" opacity="0">
+        <animate attributeName="opacity" values="0;0.8;0" dur="2.5s" begin="1.2s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <!-- 100 drawing tools -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".6s" begin="0.25s" fill="freeze"/>
+      <rect class="card" x="264" y="34" width="216" height="132" rx="12"/>
+      <text class="n" x="372" y="98" text-anchor="middle" fill="#2979FF">~100</text>
+      <text class="l" x="372" y="128" text-anchor="middle">DRAWING TOOLS</text>
+      <rect x="264" y="34" width="216" height="132" rx="12" fill="url(#sweep)" opacity="0">
+        <animate attributeName="opacity" values="0;0.8;0" dur="2.5s" begin="1.5s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <!-- 2 script engines -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".6s" begin="0.4s" fill="freeze"/>
+      <rect class="card" x="504" y="34" width="216" height="132" rx="12"/>
+      <text class="n" x="612" y="98" text-anchor="middle" fill="#FFA000">2</text>
+      <text class="l" x="612" y="128" text-anchor="middle">SCRIPT ENGINES</text>
+      <rect x="504" y="34" width="216" height="132" rx="12" fill="url(#sweep)" opacity="0">
+        <animate attributeName="opacity" values="0;0.8;0" dur="2.5s" begin="1.8s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <!-- 66 tables -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".6s" begin="0.55s" fill="freeze"/>
+      <rect class="card" x="744" y="34" width="216" height="132" rx="12"/>
+      <text class="n" x="852" y="98" text-anchor="middle" fill="#9ad0ff">66</text>
+      <text class="l" x="852" y="128" text-anchor="middle">DB TABLES</text>
+      <rect x="744" y="34" width="216" height="132" rx="12" fill="url(#sweep)" opacity="0">
+        <animate attributeName="opacity" values="0;0.8;0" dur="2.5s" begin="2.1s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <!-- 100% persian -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1" dur=".6s" begin="0.7s" fill="freeze"/>
+      <rect class="card" x="984" y="34" width="192" height="132" rx="12"/>
+      <text class="n" x="1080" y="98" text-anchor="middle" fill="#FF1744">RTL</text>
+      <text class="l" x="1080" y="128" text-anchor="middle">PERSIAN-FIRST</text>
+      <rect x="984" y="34" width="192" height="132" rx="12" fill="url(#sweep)" opacity="0">
+        <animate attributeName="opacity" values="0;0.8;0" dur="2.5s" begin="2.4s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+  </g>
+</svg>
