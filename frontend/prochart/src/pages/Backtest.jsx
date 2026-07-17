@@ -524,7 +524,7 @@ export default function Backtest() {
               </button>
               {/* دکمهٔ بزرگِ «بازِ بعدی» */}
               <button onClick={() => { setPlaying(false); stepForward(); }} disabled={atEnd} title="کندلِ بعدی (→)"
-                className="px-4 py-2.5 rounded-xl bg-brand-green text-white font-black flex items-center gap-2 disabled:opacity-40">
+                className="px-4 py-2.5 rounded-xl bg-brand-green-strong text-white font-black flex items-center gap-2 disabled:opacity-40">
                 <SkipForward size={18} /> کندلِ بعدی
               </button>
 

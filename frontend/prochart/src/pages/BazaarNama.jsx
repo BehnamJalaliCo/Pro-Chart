@@ -260,7 +260,7 @@ const THEMES = {
     gridLine: 'rgba(255,255,255,.05)', // خطِ داخلیِ گرید: بسیار کم‌رنگ مثلِ TV (نه به پررنگیِ border)
     text: '#b2b5be', textStrong: '#d1d4dc',
     up: '#089981', down: '#f23645', // سبز/قرمزِ up/down هم‌ترازِ پالتِ فعلیِ TV (قبلاً #26a69a/#ef5350ِ قدیمی بود؛ تمِ روشن از قبل درست بود)
-    chipBg: 'rgba(255,255,255,.06)', chipBgHover: 'rgba(255,255,255,.10)',
+    chipBg: 'transparent', chipBgHover: 'rgba(255,255,255,.10)', chipActive: 'rgba(255,255,255,.06)',
     subtle: 'rgba(255,255,255,.04)', popoverBg: 'rgba(30,34,45,.98)',
     overlayMask: 'rgba(0,0,0,.42)', accent: '#2962FF', accentAi: '#8b5cf6',
     tpColor: '#22c55e', slColor: '#ef4444', crosshairLabelBg: '#4c525e',
@@ -274,7 +274,7 @@ const THEMES = {
     // متن‌های جهت‌دارِ تمِ روشن باید روی panel/tint/flash هم WCAG AA بمانند؛
     // رنگ‌های اصلیِ نمودار و حاشیه‌ها عمداً دست‌نخورده‌اند.
     upText: '#086d5c', downText: '#b42335', accentText: '#1e53e5',
-    chipBg: 'rgba(0,0,0,.04)', chipBgHover: 'rgba(0,0,0,.07)',
+    chipBg: 'transparent', chipBgHover: 'rgba(0,0,0,.08)', chipActive: 'rgba(0,0,0,.06)',
     subtle: 'rgba(0,0,0,.03)', popoverBg: 'rgba(255,255,255,.98)',
     overlayMask: 'rgba(255,255,255,.8)', accent: '#2962FF', accentAi: '#7c3aed',
     tpColor: '#22c55e', slColor: '#ef4444', crosshairLabelBg: '#434651',
@@ -2552,7 +2552,7 @@ export default function BazaarNama() {
                 <div key={gLabel}>
                   <div className="px-2 pt-1.5 pb-0.5 text-[9px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>{gLabel}</div>
                   {gTfs.map((t) => { const on = tf === t; const fav = tfFavs.includes(t); return (
-                    <div key={t} className="group flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={on ? { color: TH.accent, background: TH.chipBg } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
+                    <div key={t} className="group flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={on ? { color: TH.accent, background: TH.chipActive } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
                       <button onClick={() => { setTf(t); setTfMenu(false); }} className="flex-1 text-right tabular-nums" dir="ltr">{TF_LABEL[t] || t} <span className="text-[10px] opacity-50">{TF_TITLE[t]}</span></button>
                       {/* ستارهٔ منتخب: منتخب‌ها همیشه پیدا (پُر)، غیرِمنتخب فقط روی hoverِ ردیف — مثلِ TV و یک‌دست با دیالوگِ اندیکاتور (دکلوتر). */}
                       <button onClick={() => toggleTfFav(t)} title={fav ? 'حذف از منتخب' : 'افزودن به منتخب'} className={fav ? '' : 'opacity-0 group-hover:opacity-100 transition-opacity duration-[120ms]'}><Star size={13} style={fav ? { fill: TH.accent, color: TH.accent } : { color: TH.text, opacity: 0.55 }} /></button>
@@ -2564,7 +2564,7 @@ export default function BazaarNama() {
                 <div>
                   <div className="px-2 pt-1.5 pb-0.5 text-[9px] font-semibold uppercase tracking-wider select-none" style={{ color: TH.text, opacity: 0.45 }}>سفارشی</div>
                   {customTfs.map((c) => { const on = tf === c.id; return (
-                    <div key={c.id} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={on ? { color: TH.accent, background: TH.chipBg } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
+                    <div key={c.id} className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded" style={on ? { color: TH.accent, background: TH.chipActive } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
                       <button onClick={() => { setTf(c.id); setTfMenu(false); }} className="flex-1 text-right tabular-nums" dir="ltr">{c.id}</button>
                       <button onClick={() => removeCustomTf(c.id)} title="حذفِ بازهٔ سفارشی" className="opacity-50 hover:opacity-100" style={{ color: TH.text }}><X size={12} /></button>
                     </div>); })}
@@ -2582,7 +2582,7 @@ export default function BazaarNama() {
         </div>
         <div data-menu className="relative">
           <button onClick={() => setCtMenu((v) => !v)} title={`نوعِ چارت: ${(CHART_TYPES.find((c) => c.id === chartType) || {}).label || ''}`} className="flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors duration-[120ms]" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{(() => { const CtI = (CHART_TYPES.find((c) => c.id === chartType) || {}).Icon || CandlestickChart; return <CtI size={17} />; })()}<ChevronDown size={13} /></button>
-          {ctMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-52 max-h-[70vh] overflow-auto pc-pop" style={{ background: TH.panel, borderColor: TH.border }}><div className="px-3 pt-1.5 pb-1 text-[10px] font-bold tracking-wider select-none flex items-center justify-between" style={{ color: TH.text, opacity: 0.55 }}><span>نوعِ چارت</span><span dir="ltr" className="opacity-70">CHART TYPE</span></div>{CHART_TYPES.map((ct, ci) => { const I = ct.Icon || CandlestickChart; const on = chartType === ct.id; const sep = ci > 0 && CHART_TYPES[ci - 1].grp !== ct.grp; return (<React.Fragment key={ct.id}>{sep && <div className="my-1 border-t" style={{ borderColor: TH.border }} />}<button onClick={() => { setChartType(ct.id); setCtMenu(false); }} className="flex items-center gap-2 w-full text-right px-3 py-1.5 text-sm whitespace-nowrap transition-colors duration-[120ms]" style={on ? { color: TH.accent, background: TH.chipBg } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}><I size={15} style={{ color: on ? TH.accent : TH.text }} /> {ct.label}</button></React.Fragment>); })}</div>)}
+          {ctMenu && (<div className="absolute z-40 mt-1 border rounded-lg w-52 max-h-[70vh] overflow-auto pc-pop" style={{ background: TH.panel, borderColor: TH.border }}><div className="px-3 pt-1.5 pb-1 text-[10px] font-bold tracking-wider select-none flex items-center justify-between" style={{ color: TH.text, opacity: 0.55 }}><span>نوعِ چارت</span><span dir="ltr" className="opacity-70">CHART TYPE</span></div>{CHART_TYPES.map((ct, ci) => { const I = ct.Icon || CandlestickChart; const on = chartType === ct.id; const sep = ci > 0 && CHART_TYPES[ci - 1].grp !== ct.grp; return (<React.Fragment key={ct.id}>{sep && <div className="my-1 border-t" style={{ borderColor: TH.border }} />}<button onClick={() => { setChartType(ct.id); setCtMenu(false); }} className="flex items-center gap-2 w-full text-right px-3 py-1.5 text-sm whitespace-nowrap transition-colors duration-[120ms]" style={on ? { color: TH.accent, background: TH.chipActive } : { color: TH.textStrong }} onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }} onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}><I size={15} style={{ color: on ? TH.accent : TH.text }} /> {ct.label}</button></React.Fragment>); })}</div>)}
         </div>
         {/* تنظیماتِ نوعِ چارتِ غیرِزمانی (آجرِ Renko/بازگشتِ Kagi/جعبهٔ P&F/…) — فقط وقتی نوعِ فعال غیرِزمانی است، مثلِ چرخ‌دندهٔ کنارِ نوعِ چارتِ TV */}
         {CT_CFG[chartType] && (
@@ -2742,7 +2742,7 @@ export default function BazaarNama() {
                 </label>
               </div>
               {SESSIONS.map((s) => { const on = sessionSel.includes(s.id); return (
-                <button key={s.id} onClick={() => { setSessionSel((sel) => sel.includes(s.id) ? sel.filter((x) => x !== s.id) : [...sel, s.id]); if (!sessionsOn) setSessionsOn(true); }} className="flex items-center gap-2.5 w-full text-right px-2 py-2 text-[12px] rounded-lg" style={{ color: TH.textStrong, background: on ? (TH.chipBg) : 'transparent' }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = on ? TH.chipBg : 'transparent')}>
+                <button key={s.id} onClick={() => { setSessionSel((sel) => sel.includes(s.id) ? sel.filter((x) => x !== s.id) : [...sel, s.id]); if (!sessionsOn) setSessionsOn(true); }} className="flex items-center gap-2.5 w-full text-right px-2 py-2 text-[12px] rounded-lg" style={{ color: TH.textStrong, background: on ? (TH.chipActive) : 'transparent' }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = on ? TH.chipActive : 'transparent')}>
                   <span className="w-4 h-4 rounded flex items-center justify-center shrink-0" style={{ background: on ? s.edge : 'transparent', border: `1.5px solid ${on ? s.edge : TH.border}` }}>{on && <span className="text-[10px] text-white leading-none">✓</span>}</span>
                   <span className="w-3 h-3 rounded shrink-0" style={{ background: s.color, border: `1px solid ${s.edge}` }} />
                   <span className="flex-1 font-medium">{s.label}</span>
@@ -2756,7 +2756,7 @@ export default function BazaarNama() {
               <div className="px-2 pb-1 text-[11px] font-bold" style={{ color: TH.textStrong }}>منطقهٔ زمانی (نمایشِ ساعت)</div>
               <div className="max-h-40 overflow-y-auto bn-thin-scroll">
                 {TIMEZONES.map((z) => { const on = tz === z.id; return (
-                  <button key={z.id} onClick={() => setTz(z.id)} className="flex items-center gap-2.5 w-full text-right px-2 py-1.5 text-[12px] rounded-lg" style={{ color: TH.textStrong, background: on ? TH.chipBg : 'transparent' }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = on ? TH.chipBg : 'transparent')}>
+                  <button key={z.id} onClick={() => setTz(z.id)} className="flex items-center gap-2.5 w-full text-right px-2 py-1.5 text-[12px] rounded-lg" style={{ color: TH.textStrong, background: on ? TH.chipBg : 'transparent' }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = on ? TH.chipActive : 'transparent')}>
                     <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${on ? TH.accent : TH.border}` }}>{on && <span className="w-2 h-2 rounded-full" style={{ background: TH.accent }} />}</span>
                     <span className="flex-1">{z.label}</span>
                   </button>

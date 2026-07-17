@@ -108,11 +108,21 @@ export default function App() {
 
   useEffect(() => {
     if (!ready) return undefined;
-    const MIN = 1500; // حداقل نمایشِ اسپلش برای حسِ سینمایی
+    // اسپلش به‌محضِ آماده‌شدن می‌رود. پیش‌تر MIN=1500 بود «برای حسِ سینمایی» که با
+    // fadeِ ۶۲۰ms یعنی ~۲۱۲۰ms کفِ سختِ تأخیر — روی اپی که در ۲۸۸ms رندر می‌شود.
+    //
+    // چرا هیچ متریکی این را نگرفت: LCP تستِ occlusion نمی‌کند. محتوا **پشتِ** اسپلشِ
+    // مات رندر می‌شد، پس LCP عددِ ۲۸۸ms را گزارش می‌کرد در حالی که کاربر ۲۳۳۰ms
+    // صبر می‌کرد. یعنی گیتِ LCP سبز بود و تجربهٔ واقعی از LCPِ ۲۱۶۴msِ TradingView
+    // بدتر. اندازه‌گیریِ ۲۰۲۶-۰۷-۱۷ — docs/parity/TV_GAP_REGISTER.md §۰.۱
+    //
+    // فقط یک فریم صبر می‌کنیم تا محوشدن جهش نکند.
+    const MIN = 0;
+    const FADE_MS = 200; // پیش‌تر ۶۲۰
     const elapsed = Date.now() - startRef.current;
     const wait = Math.max(0, MIN - elapsed);
-    const t1 = setTimeout(() => setFadeOut(true), wait);        // شروعِ محوشدن
-    const t2 = setTimeout(() => setBootDone(true), wait + 620); // برداشتن از DOM بعدِ ترنزیشن
+    const t1 = setTimeout(() => setFadeOut(true), wait);           // شروعِ محوشدن
+    const t2 = setTimeout(() => setBootDone(true), wait + FADE_MS); // برداشتن از DOM بعدِ ترنزیشن
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [ready]);
 

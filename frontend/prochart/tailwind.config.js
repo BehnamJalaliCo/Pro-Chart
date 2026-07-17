@@ -5,7 +5,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: { green: '#00C853', red: '#FF1744', blue: '#2979FF', amber: '#FFA000' },
+        // brand.<c>          — رنگِ روشن. برای **متن روی پس‌زمینهٔ تیره** و تینتِ آلفا (bg-brand-x/10).
+        // brand.<c>.strong   — نسخهٔ تیرهٔ AA. برای **پس‌زمینهٔ متنِ سفید**.
+        //
+        // یک توکن نمی‌تواند هر دو کار را بکند: #00C853 با متنِ سفید کنتراستِ ۲.۲۴ می‌دهد
+        // (حداقلِ AA برابرِ ۴.۵ است) ولی روی پس‌زمینهٔ تیره درست و خواناست. پیش‌تر هر ۴
+        // کلاسِ .btn-* از نسخهٔ روشن استفاده می‌کردند و همگی AA را رد می‌کردند:
+        //   blue 3.98 · green 2.24 · red 3.85 · amber 2.04
+        // مقادیرِ strong همان‌هایی‌اند که TH در BazaarNama.jsx از قبل ساخته و تأیید کرده
+        // (upText/downText/accentText) — کارش انجام شده بود، فقط دکمه‌ها ازش استفاده نمی‌کردند.
+        brand: {
+          green: { DEFAULT: '#00C853', strong: '#086d5c' }, // ۶.۲۶ روی سفید
+          red:   { DEFAULT: '#FF1744', strong: '#b42335' }, // ۶.۵۰
+          blue:  { DEFAULT: '#2962FF', strong: '#1e53e5' }, // ۶.۱۳ — DEFAULT با --accent یکی شد (پیش‌تر #2979FF بود: دو آبیِ متفاوت هم‌زمان)
+          amber: { DEFAULT: '#FFA000', strong: '#8a5a00' }, // ۵.۹۳
+        },
         surface: {
           DEFAULT: 'var(--surface-default)', card: 'var(--surface-card)', elevated: 'var(--surface-elevated)',
           border: 'var(--surface-border)', hover: 'var(--surface-hover)',

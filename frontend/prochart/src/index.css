@@ -68,9 +68,10 @@ body {
 @layer components {
   /* شعاعِ منضبطِ TradingView: کنترل 6px، کارت 8px (نه pill) + وزنِ 600 (نه 700) */
   .card { @apply bg-surface-card border border-surface-border rounded-lg; }
-  .btn-primary { @apply bg-brand-blue text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
-  .btn-success { @apply bg-brand-green text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
-  .btn-danger  { @apply bg-brand-red text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
+  /* پس‌زمینهٔ متنِ سفید ⇒ واریانتِ strong (AA). نسخهٔ روشن کنتراستِ ۲.۰–۴.۰ می‌داد. */
+  .btn-primary { @apply bg-brand-blue-strong text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
+  .btn-success { @apply bg-brand-green-strong text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
+  .btn-danger  { @apply bg-brand-red-strong text-white font-semibold rounded-md px-4 py-2 hover:opacity-90 transition disabled:opacity-50; }
   .btn-ghost   { @apply bg-surface-elevated text-text-secondary font-medium rounded-md px-4 py-2 hover:bg-surface-hover transition; }
   .input { @apply w-full bg-surface-elevated border border-surface-border text-text-primary rounded-md px-3 py-2 focus:border-brand-blue focus:outline-none; }
   .label { @apply block text-sm text-text-secondary mb-1.5; }
@@ -168,7 +169,8 @@ button, [role="button"], a, summary, .pc-btn {
   /* تم‌آگاه: با متغیرهای CSS روشن/تاریک هماهنگ می‌شود (پیش‌فرض روشن) */
   background:
     radial-gradient(900px 600px at 50% 34%, color-mix(in srgb, #2962FF 9%, var(--surface-default)) 0%, var(--surface-default) 70%);
-  opacity: 1; transition: opacity .55s cubic-bezier(.4,0,.2,1);
+  /* باید با FADE_MS در App.jsx یکی بماند — وگرنه اسپلش وسطِ محوشدن از DOM حذف می‌شود */
+  opacity: 1; transition: opacity .2s cubic-bezier(.4,0,.2,1);
   overflow: hidden;
 }
 .pc-launch--out { opacity: 0; pointer-events: none; }
