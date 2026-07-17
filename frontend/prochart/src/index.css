@@ -115,6 +115,14 @@ input[type=number]::-webkit-inner-spin-button { opacity: 0.4; }
   /* §۵ فونت + line-height */
   /* §۲۳ مدت/easing */
   --pc-duration-fast: 80ms; --pc-duration-normal: 120ms; --pc-duration-slow: 180ms;
+  /* زمان‌بندیِ لایه‌ای (فاز ۴.۶): تأیید فوری، نشست نرم.
+     رنگ سریع می‌پرد (کاربر «شنیدم» را حس می‌کند)، پس‌زمینه آرام می‌نشیند.
+     ورود می‌تواند overshoot کند (easeOutBack)؛ خروج هرگز (فقط easeOut). */
+  --pc-t-color: 60ms;      /* رنگ/متن — تأییدِ فوری */
+  --pc-t-surface: 260ms;   /* پس‌زمینه/سطح — نشستِ نرم */
+  --pc-t-press: 90ms;      /* فشار — سریع و قاطع */
+  --pc-ease-settle: cubic-bezier(0.2, 0, 0, 1);       /* نشست */
+  --pc-ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1); /* ورود با overshoot */
   --pc-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   /* §۴ رنگ‌های توکن (نگاشت به متغیرهای تمِ موجود تا تک‌منبع بماند) */
   --pc-bg-page: var(--bg-body);
@@ -151,10 +159,11 @@ body { text-rendering: optimizeLegibility; -moz-osx-font-smoothing: grayscale; }
 
 /* میکرو‌اینتراکشنِ یکدست — همهٔ کنترل‌ها snappy و native (120ms ease-out، بدون scale) */
 button, [role="button"], a, summary, .pc-btn {
-  transition: background-color var(--pc-duration-normal) var(--pc-ease-standard),
-              color var(--pc-duration-normal) var(--pc-ease-standard),
-              border-color var(--pc-duration-normal) var(--pc-ease-standard),
-              box-shadow var(--pc-duration-slow) var(--pc-ease-standard);
+  /* لایه‌ای: رنگ/متن فوری (۶۰ms)، پس‌زمینه نرم (۲۶۰ms). سایه با پس‌زمینه هماهنگ. */
+  transition: color var(--pc-t-color) var(--pc-ease-settle),
+              border-color var(--pc-t-color) var(--pc-ease-settle),
+              background-color var(--pc-t-surface) var(--pc-ease-settle),
+              box-shadow var(--pc-t-surface) var(--pc-ease-settle);
 }
 
 /* دکمهٔ آیکونیِ سبکِ TradingView (hover = fill، active = tintِ آبی، بدون scale) */

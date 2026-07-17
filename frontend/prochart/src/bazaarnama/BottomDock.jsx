@@ -74,7 +74,7 @@ export default function BottomDock({
           title="کشیدن برای تغییرِ ارتفاع (دابل‌کلیک: بازنشانی)"
         >
           <div
-            className="mx-auto mt-[3px] h-[2px] w-10 rounded-full transition-all duration-150 group-hover:w-16"
+            className="mx-auto mt-[3px] h-[2px] w-10 rounded-full transition-transform duration-150 group-hover:w-16"
             style={{ background: dragging ? TH.accent : TH.border, opacity: dragging ? 1 : undefined }}
             onMouseEnter={(e) => { if (!dragging) e.currentTarget.style.background = TH.accent; }}
             onMouseLeave={(e) => { if (!dragging) e.currentTarget.style.background = TH.border; }}

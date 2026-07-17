@@ -636,7 +636,7 @@ function Switch({ TH, on, onToggle, disabled }) {
       disabled={!!disabled} aria-disabled={!!disabled}
       className="relative inline-flex items-center w-9 h-5 rounded-full transition-colors duration-[150ms] shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
       style={{ background: on ? TH.accent : TH.border }}>
-      <span className="absolute w-3.5 h-3.5 rounded-full bg-white transition-all duration-[150ms]"
+      <span className="absolute w-3.5 h-3.5 rounded-full bg-white transition-transform duration-[150ms]"
         style={{ right: on ? '2px' : '18px', boxShadow: 'var(--pc-shadow-chip)' }} />
     </button>
   );

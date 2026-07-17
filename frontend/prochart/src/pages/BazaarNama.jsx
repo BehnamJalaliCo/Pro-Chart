@@ -2673,16 +2673,16 @@ export default function BazaarNama() {
               <div className="my-1 border-t" style={{ borderColor: TH.border }} />
               <button onClick={() => setSyncSymbol((v) => !v)} className="flex items-center justify-between gap-2 w-full text-right px-2 py-1.5 text-sm rounded-md transition-colors duration-[120ms]" onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')} title="با روشن‌بودن، تغییرِ نماد در هر سلول همهٔ سلول‌ها را همگام می‌کند">
                 <span className="flex items-center gap-1.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M8 7h8a4 4 0 0 1 0 8h-1" /><path d="M16 17H8a4 4 0 0 1 0-8h1" /></svg> همگام‌سازیِ نماد</span>
-                <span className="w-8 h-4 rounded-full relative transition-colors duration-[120ms]" style={{ background: syncSymbol ? TH.accent : TH.border }}><span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all duration-[120ms]" style={{ [syncSymbol ? 'right' : 'left']: 2 }} /></span>
+                <span className="w-8 h-4 rounded-full relative transition-colors duration-[120ms]" style={{ background: syncSymbol ? TH.accent : TH.border }}><span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-colors duration-[120ms]" style={{ [syncSymbol ? 'right' : 'left']: 2 }} /></span>
               </button>
               {/* سینکِ کراس‌هیر و زمان بینِ سلول‌ها — پیش‌فرض روشن (مثلِ TV)؛ قابلِ خاموش‌کردن مثلِ گزینه‌های Sync در چند-چارتِ TV. */}
               <button onClick={() => setSyncCrosshair((v) => !v)} className="flex items-center justify-between gap-2 w-full text-right px-2 py-1.5 text-sm rounded-md transition-colors duration-[120ms]" onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')} title="با روشن‌بودن، کراس‌هیرِ همهٔ سلول‌ها هم‌زمان حرکت می‌کند">
                 <span className="flex items-center gap-1.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 3v18M3 12h18" /></svg> همگام‌سازیِ کراس‌هیر</span>
-                <span className="w-8 h-4 rounded-full relative transition-colors duration-[120ms]" style={{ background: syncCrosshair ? TH.accent : TH.border }}><span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all duration-[120ms]" style={{ [syncCrosshair ? 'right' : 'left']: 2 }} /></span>
+                <span className="w-8 h-4 rounded-full relative transition-colors duration-[120ms]" style={{ background: syncCrosshair ? TH.accent : TH.border }}><span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-colors duration-[120ms]" style={{ [syncCrosshair ? 'right' : 'left']: 2 }} /></span>
               </button>
               <button onClick={() => setSyncTime((v) => !v)} className="flex items-center justify-between gap-2 w-full text-right px-2 py-1.5 text-sm rounded-md transition-colors duration-[120ms]" onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')} title="با روشن‌بودن، اسکرول/زومِ زمانی همهٔ سلول‌ها هم‌گام می‌شود">
                 <span className="flex items-center gap-1.5"><Clock size={13} /> همگام‌سازیِ زمان</span>
-                <span className="w-8 h-4 rounded-full relative transition-colors duration-[120ms]" style={{ background: syncTime ? TH.accent : TH.border }}><span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all duration-[120ms]" style={{ [syncTime ? 'right' : 'left']: 2 }} /></span>
+                <span className="w-8 h-4 rounded-full relative transition-colors duration-[120ms]" style={{ background: syncTime ? TH.accent : TH.border }}><span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-colors duration-[120ms]" style={{ [syncTime ? 'right' : 'left']: 2 }} /></span>
               </button>
             </div>
           )}
@@ -2740,7 +2740,7 @@ export default function BazaarNama() {
                 <label className="flex items-center gap-1 text-[10px] cursor-pointer" style={{ color: TH.text }} onClick={() => setSessionsOn((v) => !v)}>
                   <span>نمایش</span>
                   <span className="relative inline-block w-7 h-4 rounded-full transition-colors" style={{ background: sessionsOn ? TH.accent : TH.border }}>
-                    <span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" style={{ [sessionsOn ? 'left' : 'right']: '2px' }} />
+                    <span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform" style={{ [sessionsOn ? 'left' : 'right']: '2px' }} />
                   </span>
                 </label>
               </div>
@@ -2819,7 +2819,7 @@ export default function BazaarNama() {
                   <row.Icon size={14} style={{ color: row.on ? TH.accent : TH.text }} />
                   <span className="flex-1">{row.label}</span>
                   <span className="relative inline-block w-7 h-4 rounded-full transition-colors shrink-0" style={{ background: row.on ? TH.accent : TH.border }}>
-                    <span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" style={{ [row.on ? 'left' : 'right']: '2px' }} />
+                    <span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform" style={{ [row.on ? 'left' : 'right']: '2px' }} />
                   </span>
                 </button>
               ))}

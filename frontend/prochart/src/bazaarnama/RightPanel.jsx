@@ -238,7 +238,7 @@ export default function RightPanel({
               style={active ? { color: accTxt } : { color: TH.text }}>
               <Icon size={13} className="shrink-0" />
               <span>{l}</span>
-              <span className="absolute left-1.5 right-1.5 -bottom-px h-[2px] rounded-full transition-all duration-150"
+              <span className="absolute left-1.5 right-1.5 -bottom-px h-[2px] rounded-full transition-transform duration-150"
                 style={{ background: acc, opacity: active ? 1 : 0, transform: active ? 'scaleX(1)' : 'scaleX(0.4)' }} />
             </button>
           );
