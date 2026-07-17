@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 from celery import Celery
 from celery.schedules import crontab
 
@@ -32,9 +34,10 @@ celery_app.conf.update(
         "src.signals.tracker",
         "src.core.celery_app",
         "src.bot.tasks",
-        "src.copy.tasks",
+        # src.copy.tasks و src.ml.ensemble حذف شدند: **وجود ندارند**. هر ورکری که از
+        # این ریپو بالا می‌آمد با ModuleNotFoundError می‌مرد — یعنی هیچ‌وقت هیچ تسکی
+        # اجرا نشده. آلارم‌های کاربران هرگز ارزیابی نمی‌شدند.
         "src.ml.trainer",
-        "src.ml.ensemble",
         "src.news.ingest",
         "src.news.blog",
         "src.news.academy_seo",
@@ -256,3 +259,31 @@ def health_check_task() -> dict:
         "memory_percent": psutil.virtual_memory().percent,
         "disk_percent": psutil.disk_usage("/").percent,
     }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# حالتِ «فقط بازارنما» — BN_CELERY_PROCHART_ONLY=1
+#
+# چرا لازم است: زمان‌بندیِ بالا ۳۴ ورودی دارد که مالِ استکِ قدیمیِ CoinePro FX است
+# (اینستاگرام، SEO، ML، کپی‌ترید). استکِ prochart هیچ‌کدام را ندارد و ۸ تای آن‌ها
+# به توابعِ ناموجود ارجاع می‌دهند — یعنی beat هر بار خطا می‌دهد.
+#
+# مهم‌تر: کامنتِ جداسازیِ صف در همین فایل حادثهٔ ۲۰۲۶-۰۶-۱۹ را ثبت کرده — تسک‌های
+# اینستاگرام با تکرارِ ۲–۳ ثانیه صف را به ۲۴۰هزار تسک رساندند و تریدینگ را گرسنه
+# کردند. بالاآوردنِ کورِ کلِ زمان‌بندی روی prochart همان تله است.
+#
+# پس در این حالت فقط دو تسکِ بازارنما زمان‌بندی می‌شوند: ارزیابیِ آلارمِ کاربران و
+# ردیابیِ TP/SL سیگنال‌های AI. هر دو فقط به Redis (قیمتِ زنده) و DB نیاز دارند.
+if os.getenv("BN_CELERY_PROCHART_ONLY", "").strip() in {"1", "true", "True"}:
+    celery_app.conf.beat_schedule = {
+        "bn-check-alerts": {
+            "task": "src.bazaarnama.tasks.check_alerts",
+            "schedule": 60.0,
+        },
+        "bn-check-ai-signals": {
+            "task": "src.bazaarnama.tasks.check_ai_signals",
+            "schedule": 60.0,
+        },
+    }
+    # فقط ماژول‌هایی که این دو تسک لازم دارند — بدونِ بار کردنِ بات/اینستاگرام/SEO/ML.
+    celery_app.conf.include = ["src.core.celery_app", "src.bazaarnama.tasks"]

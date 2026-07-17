@@ -278,6 +278,42 @@ services:
           memory: 512M
           cpus: '0.5'
 
+  # ── ورکرِ آلارمِ بازارنما ──────────────────────────────────────────────────
+  # چرا وجود دارد: تا امروز **هیچ ورکرِ Celeryای در این استک نبود**، پس
+  # src.bazaarnama.tasks.check_alerts هرگز اجرا نمی‌شد — آلارم‌های کاربران فقط در DB
+  # می‌نشستند و هیچ‌وقت ارزیابی نمی‌شدند. رابط آلارم می‌ساخت، سرور هیچ‌وقت نمی‌سنجید.
+  #
+  # BN_CELERY_PROCHART_ONLY=1 زمان‌بندی را به دو تسکِ بازارنما محدود می‌کند. کلِ
+  # زمان‌بندیِ قدیمی (۳۴ ورودی) مالِ استکِ CoinePro FX است؛ ۸ تای آن به توابعِ ناموجود
+  # ارجاع می‌دهد، و تسک‌های اینستاگرامش با تکرارِ ۲–۳ ثانیه همان چیزی‌اند که در
+  # حادثهٔ ۲۰۲۶-۰۶-۱۹ صف را به ۲۴۰هزار تسک رساندند و تریدینگ را گرسنه کردند.
+  #
+  # `-B` بیت را داخلِ همین ورکر اجرا می‌کند (تک‌نمونه — دو نمونه یعنی آلارمِ تکراری).
+  # concurrency=2 کافی است: دو تسکِ دقیقه‌ای که فقط Redis و DB می‌خوانند.
+  bn-alerts-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    # -s /tmp/… : کانتینر با USER 1000 اجرا می‌شود و /app قابلِ نوشتن نیست؛ beat
+    # پیش‌فرض فایلِ زمان‌بندی را در cwd می‌سازد → PermissionError و هیچ تیکی اجرا نمی‌شد.
+    command: celery -A src.core.celery_app:celery_app worker -B -l info -c 2 -Q celery -s /tmp/celerybeat-schedule --without-gossip --without-mingle
+    depends_on:
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+    environment:
+      BN_CELERY_PROCHART_ONLY: '1'
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
 volumes:
   tsdb_data:
   redis_data:

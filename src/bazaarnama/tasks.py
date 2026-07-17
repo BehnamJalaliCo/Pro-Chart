@@ -22,11 +22,41 @@ _COOLDOWN = 3600  # ثانیه — جلوگیری از تکرارِ آلارم
 
 
 def _run(coro):
+    """اجرای یک coroutine در یک event loopِ تازه، با آزادسازیِ pool‌ها پیش از بستنِ loop.
+
+    چرا آزادسازی لازم است: `engine` (asyncpg) و `redis_client` singletonهای ماژول‌اند و
+    اتصالاتِ pool به **همان loopی که ساخته‌شان** قفل می‌شوند. بدونِ dispose، فراخوانیِ
+    دوم به بعد با «got Future attached to a different loop» می‌شکست — یعنی در یک ورکرِ
+    Celery فقط تیکِ اول کار می‌کرد و بقیه برای همیشه خطا می‌دادند.
+    (بازتولیدشده: اجرای اولِ check_alerts سه آلارم را چک کرد، اجرای دوم شکست.)
+
+    آزادسازی **داخلِ** همان loop انجام می‌شود تا سوکت‌ها تمیز بسته شوند. هزینه‌اش یک
+    اتصالِ تازهٔ DB/Redis در هر تیکِ ۶۰ ثانیه‌ای است — ناچیز.
+    """
     loop = asyncio.new_event_loop()
     try:
         return loop.run_until_complete(coro)
     finally:
+        for teardown in (_dispose_db(), _dispose_redis()):
+            try:
+                loop.run_until_complete(teardown)
+            except Exception:  # noqa: BLE001 — آزادسازی هرگز نباید نتیجهٔ تسک را ببلعد
+                pass
         loop.close()
+
+
+async def _dispose_db() -> None:
+    from src.core.database import engine
+
+    await engine.dispose()
+
+
+async def _dispose_redis() -> None:
+    from src.core.redis_client import redis_client
+
+    if getattr(redis_client, "_pool", None) is not None:
+        await redis_client.close()
+        redis_client._pool = None  # noqa: SLF001 — وگرنه تیکِ بعدی از poolِ بسته استفاده می‌کند
 
 
 def _line_level(cond: dict, now_dt: datetime):
