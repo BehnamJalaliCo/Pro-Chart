@@ -41,6 +41,8 @@ chart_service/node_modules/
 *.JPG
 *.JPEG
 *.bak.*
+*.bak
+*.bak-*
 
 # ── بخش‌های coinepro fx ──
 # پیش‌تر کنار گذاشته می‌شدند چون در دیپلویِ pro-chart استفاده نمی‌شوند؛ اکنون به
