@@ -104,6 +104,14 @@ async def current_student(
     if p.get("scope") != "academy" and not central:
         raise HTTPException(status_code=401, detail="توکنِ نامعتبر.")
     sid = int(p.get("sid", 0) or 0)
+    if sid > 0:
+        try:
+            if await redis_client.client.exists(f"bn:deleted:{sid}"):
+                raise HTTPException(status_code=401, detail="این حساب برای همیشه حذف شده است؛ برای استفاده باید از ابتدا ثبت‌نام کنید.")
+        except HTTPException:
+            raise
+        except Exception:
+            pass
     if central and sid <= 0:
         # نگاشتِ کاربرِ قدیمی↔مرکزی (جدولِ مرکزی legacy_student_id را نگه می‌دارد)
         sid = int(p.get("legacy_student_id", 0) or 0)
@@ -594,6 +602,8 @@ async def me(st: AcademyStudent = Depends(current_student), db: AsyncSession = D
     ach_count = (await db.execute(select(func.count()).select_from(AcademyAchievement).where(
         AcademyAchievement.student_id == st.id))).scalar() or 0
     av = (await db.execute(select(AcademyAvatar).where(AcademyAvatar.student_id == st.id))).scalar_one_or_none()
+    from src.api.routes.admin_roles import role_for as _rf, permissions_for as _pf
+    _arole = _rf(st); _aperms = _pf(_arole)
     return {"username": st.username, "full_name": st.full_name, "tier": tier,
             "account_type": getattr(st, "account_type", None),
             "phone_number": st.phone_number,
@@ -607,7 +617,8 @@ async def me(st: AcademyStudent = Depends(current_student), db: AsyncSession = D
             "progress_pct": round(100 * len(done_ids) / max(1, total), 1),
             "xp": xp, "badges": badges, "by_level": by_level,
             "quizzes_taken": len(quiz_scores), "avg_quiz": avg_quiz,
-            "streak": streak_out, "achievements_count": ach_count}
+            "streak": streak_out, "achievements_count": ach_count,
+            "role": _arole, "permissions": _aperms}
 
 
 @router.get("/catalog")

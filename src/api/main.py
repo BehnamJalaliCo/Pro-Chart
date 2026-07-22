@@ -37,6 +37,21 @@ from src.api.routes import (
     articles,
     auth,
     broadcasts,
+    chart_stream,
+    portfolio,
+    trade,
+    markets,
+    admin_panel,
+    admin_users,
+    admin_subs,
+    admin_ops,
+    copy,
+    signals_feed,
+    home,
+    security,
+    symbols_catalog,
+    account_delete,
+    admin_central,
     backtest,
     ig_panel,
     live,
@@ -244,6 +259,21 @@ app.include_router(reports.router, prefix="/admin/reports", tags=["گزارش‌
 app.include_router(panel.router, prefix="/admin", tags=["پنل ادمین"])
 app.include_router(user_panel.router, prefix="/user", tags=["پنل کاربری VIP"])
 app.include_router(academy.router, prefix="/academy", tags=["آکادمی VIP"])
+app.include_router(chart_stream.router, prefix="/academy", tags=["استریمِ زندهٔ چارت (WebSocket)"])
+app.include_router(portfolio.router, prefix="/academy", tags=["پرتفویِ زنده (فاز۴)"])
+app.include_router(trade.router, prefix="/academy", tags=["تریدِ واقعی (فاز۵)"])
+app.include_router(symbols_catalog.router, prefix="/academy", tags=["کاتالوگِ نماد (هم‌ترازی TradingView)"])
+app.include_router(markets.router, prefix="/academy", tags=["مارکت/صرافی (فاز۶)"])
+app.include_router(admin_panel.router, prefix="/academy", tags=["پنلِ ادمین (فاز۸)"])
+app.include_router(admin_users.router, prefix="/academy", tags=["پنلِ ادمین — کاربران (۸B)"])
+app.include_router(admin_subs.router, prefix="/academy", tags=["پنلِ ادمین — اشتراک/KYC (۸C)"])
+app.include_router(admin_ops.router, prefix="/academy", tags=["پنلِ ادمین — signals/copy/tickets/broadcast/audit (۸D)"])
+app.include_router(copy.router, prefix="/academy", tags=["کپی‌ترید (فاز۷ 7A)"])
+app.include_router(signals_feed.router, prefix="/academy", tags=["سیگنال فاز۷ 7B"])
+app.include_router(home.router, prefix="/academy", tags=["هوم/داشبورد (فاز۷ 7C)"])
+app.include_router(security.router, prefix="/academy", tags=["سکیوریتی (فاز۷ 7D)"])
+app.include_router(account_delete.router, prefix="/academy", tags=["حذفِ ریشه‌ایِ حساب"])
+app.include_router(admin_central.router, prefix="/academy", tags=["ادمینِ مرکزی (اشتراکِ چندسروری)"])
 app.include_router(bn_r8.router, prefix="/academy/bn", tags=["کپی‌تریدِ فارکسِ زنده"])
 app.include_router(bazaarnama.router, prefix="/academy/bn", tags=["بازارنما (TradingView ایرانی)"])
 app.include_router(bn_user_extra.router, prefix="/academy/bn", tags=["بازارنما — پنل کاربر"])

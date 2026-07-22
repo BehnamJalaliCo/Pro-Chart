@@ -643,6 +643,8 @@ class AcademyStudent(Base):
     full_name: Mapped[str] = mapped_column(String(120), nullable=True)
     tier: Mapped[str] = mapped_column(String(20), default="free")        # free/vip/premium — ادمین تعیین می‌کند
     status: Mapped[str] = mapped_column(String(20), default="active")    # active/disabled
+    role: Mapped[str] = mapped_column(String(20), default="user", server_default="user", nullable=True)  # admin role (فاز۸)
+    suspended_until: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)  # تعلیقِ موقت (فاز۸)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)  # null = نامحدود
     notes: Mapped[str] = mapped_column(Text, nullable=True)              # یادداشتِ ادمین
     created_by: Mapped[int] = mapped_column(Integer, nullable=True)      # admin.id (null = ثبت‌نامِ خودسرویس)
