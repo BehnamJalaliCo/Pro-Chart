@@ -45,6 +45,7 @@ import { buildMeta } from '../bazaarnama/symbolMeta';
 import ScreenshotMenu from '../bazaarnama/ScreenshotMenu';
 import { captureChart, canvasToBlob, copyBlobToClipboard, downloadBlob } from '../bazaarnama/screenshot';
 import RightPanel from '../bazaarnama/RightPanel';
+import Partners from '../bazaarnama/Partners';
 import IndicatorsDialog from '../bazaarnama/IndicatorsDialog';
 import ChartSettingsDialog from '../bazaarnama/ChartSettingsDialog';
 import RightIconRail from '../bazaarnama/RightIconRail';
@@ -585,6 +586,9 @@ export default function BazaarNama() {
   const [layoutMenu, setLayoutMenu] = useState(false); // منوی «چیدمان/لایوت» (ذخیره/بارگذاری)
   const [showShortcuts, setShowShortcuts] = useState(false); // دیالوگِ راهنمای میان‌بُرها
   const [symModal, setSymModal] = useState(false); // #7 مدالِ جستجوی نماد
+  // مودالِ پارتنرها (LBank/OneRoyal) — تریگرش فقط روی برنچِ توسعه بود و هرگز به main نیامده بود؛
+  // اینجا بازوصل شد (رفرالِ #۱۶۲). دکمه CTAِ توپرِ accent است (تنها CTAِ مجازِ تولبار، LUXE §۲.۲).
+  const [partnersOpen, setPartnersOpen] = useState(false);
   const [searchSeed, setSearchSeed] = useState(''); // حرفِ اولیه هنگام «تایپ روی چارت → جستجو» (سبکِ TV)
   const [symModalMode, setSymModalMode] = useState('switch'); // 'switch' = تعویضِ نماد | 'compare' = افزودن به مقایسه
   const [sheet, setSheet] = useState('none'); // #4 شیتِ موبایلِ فعال: none|tf|sym|type|draw|ind|tabs
@@ -3005,6 +3009,7 @@ export default function BazaarNama() {
         <button onClick={() => { setRightTab('alerts'); setShowRight(true); }} title="افزودنِ هشدارِ قیمت" className="relative flex items-center gap-1 px-2 h-7 rounded text-sm transition-colors duration-[120ms]" style={(rightTab === 'alerts' && showRight) ? { background: 'var(--pc-accent-tint)', color: 'var(--pc-accent)' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!(rightTab === 'alerts' && showRight)) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!(rightTab === 'alerts' && showRight)) e.currentTarget.style.background = TH.chipBg; }}><Bell size={18} />{savedAlerts.length > 0 && (<span className="absolute -top-1 -right-1 min-w-[14px] h-[14px] px-[3px] rounded-full text-[10px] font-semibold leading-none flex items-center justify-center pc-num-ltr" style={{ background: TH.down, color: '#fff' }}>{savedAlerts.length > 9 ? '9+' : savedAlerts.length}</span>)}</button>
         <button onClick={() => { if (replay.on) exitReplay(); else if (replayPick) setReplayPick(false); else setReplayPick(true); }} title={replay.on ? 'خروج از بازپخش' : replayPick ? 'لغوِ انتخابِ نقطهٔ شروع' : 'بازپخشِ تاریخی (Replay)'} aria-label="بازپخشِ تاریخی" className="flex items-center gap-1 px-2 h-7 rounded text-sm transition-colors duration-[120ms]" style={(replay.on || replayPick) ? { background: 'var(--pc-accent-tint)', color: 'var(--pc-accent)' } : { background: TH.chipBg }} onMouseEnter={(e) => { if (!replay.on && !replayPick) e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { if (!replay.on && !replayPick) e.currentTarget.style.background = TH.chipBg; }}><Play size={18} /></button>
         <button onClick={getAiSignal} disabled={aiBusy} className="flex items-center gap-1 px-2 h-7 rounded text-sm disabled:opacity-60 transition-opacity duration-[120ms]" style={{ background: 'rgba(139,92,246,.12)', color: TH.accentAi }} title={`سیگنالِ AI — ستاپِ کاملِ AI در همین نماد/تایم‌فریم${aiQuota ? ` (${aiQuota.remaining}/${aiQuota.limit})` : ''}`}><Sparkles size={18} className={aiBusy ? 'animate-pulse' : ''} /></button>
+        <button onClick={() => setPartnersOpen(true)} title="صرافی و بروکرِ پیشنهادی — افتتاحِ حساب (LBank / One Royal)" className="flex items-center gap-1 px-2.5 h-7 rounded text-[12px] font-semibold text-white transition-opacity duration-[120ms] hover:opacity-90" style={{ background: TH.accent }}>صرافی/بروکر</button>
         <span className="pc-toolbar-sep shrink-0" />
         {/* واگرد/ازنو/درختِ آبجکت — از ریلِ چپ به تولبارِ بالا منتقل شد (جای TV، audit #8) */}
         <button onClick={() => { drawRef.current && drawRef.current.undo(); treeRefresh(); }} disabled={!(drawRef.current && drawRef.current.canUndo())} title="واگرد (Ctrl+Z)" className="w-7 h-7 flex items-center justify-center rounded transition-colors duration-[120ms] disabled:opacity-30" style={{ background: TH.chipBg }} onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}><Undo2 size={18} /></button>
@@ -4266,6 +4271,7 @@ export default function BazaarNama() {
 
       {/* بات‌اِم‌شیتِ موبایل (فقط زیرِ ۷۶۸px) — دسترسی به ابزارها/تب‌ها در صفحهٔ کوچک */}
       {/* #7 مدالِ جستجوی نمادِ حرفه‌ای (fuzzy + دسته‌بندی + اسکرولِ مجازی + کیبورد) */}
+      <Partners open={partnersOpen} onClose={() => setPartnersOpen(false)} TH={TH} />
       <SymbolSearchModal open={symModal} seed={searchSeed} compareMode={symModalMode === 'compare'} onClose={() => { setSymModal(false); setSymModalMode('switch'); setSearchSeed(''); }} metaList={symbolMeta} watch={watch} current={symbol} onPick={(s) => { if (symModalMode === 'compare') { window.dispatchEvent(new CustomEvent('bn:addCompare', { detail: s })); } else { setSymbol(s); } }} TH={TH} coarse={bp.coarse} />
 
       {/* دیالوگِ کاملِ اندیکاتورها (پاریتیِ TV) — با کلیک روی هر مورد addInd صدا زده می‌شود؛ دیالوگ برای افزودنِ پیاپی باز می‌مانَد */}
