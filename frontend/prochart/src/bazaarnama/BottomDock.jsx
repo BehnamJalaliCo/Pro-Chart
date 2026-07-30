@@ -53,7 +53,7 @@ export default function BottomDock({
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
 
-  const HEADER = 32; // ارتفاعِ تقریبیِ هدر برای حالتِ کمینه
+  const HEADER = 36; // ارتفاعِ نوارِ تب‌ها (LUXE §۴: نوارِ فرعی/تب‌ها = ۳۶px) — مبنای حالتِ کمینه هم هست
   const bodyHeight = minimized ? 0 : (maximized ? maxHeight : size);
   const active = tabs.find((t) => t.key === curKey);
 
@@ -97,19 +97,19 @@ export default function BottomDock({
                 aria-selected={on}
                 title={typeof t.label === 'string' ? t.label : undefined}
                 onClick={() => { selectTab(t.key); if (minimized) setMinimized(false); }}
-                className="relative flex items-center gap-1 px-2.5 h-7 rounded-md whitespace-nowrap transition-colors"
+                className="relative flex items-center gap-1 px-2.5 h-7 rounded whitespace-nowrap transition-colors"
                 style={
                   on
                     ? { color: TH.textStrong, fontWeight: 600 }
                     : { color: TH.text }
                 }
-                onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
+                onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = 'var(--pc-hover)'; }}
                 onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}
               >
                 {t.icon}
                 <span>{t.label}</span>
                 {on && (
-                  <span className="absolute left-2 right-2 -bottom-px h-[2px] rounded-full" style={{ background: TH.accent }} />
+                  <span className="absolute left-2 right-2 -bottom-px h-[2px]" style={{ background: TH.accent }} />
                 )}
               </button>
             );
@@ -129,7 +129,7 @@ export default function BottomDock({
             className={iconBtn}
             style={iconStyle}
             title={minimized ? 'بازکردن' : 'کمینه'}
-            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
+            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--pc-hover)')}
             onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
           >
             {minimized ? <ChevronUp size={14} /> : <Minimize2 size={14} />}
@@ -139,7 +139,7 @@ export default function BottomDock({
             className={iconBtn}
             style={iconStyle}
             title={maximized ? 'بازگشت' : 'بیشینه'}
-            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
+            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--pc-hover)')}
             onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
           >
             <Maximize2 size={14} />
@@ -150,7 +150,7 @@ export default function BottomDock({
               className={iconBtn}
               style={iconStyle}
               title="بستن"
-              onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBg; e.currentTarget.style.color = TH.down; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--pc-hover)'; e.currentTarget.style.color = 'var(--danger)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = TH.text; }}
             >
               <X size={14} />
@@ -194,7 +194,7 @@ export function NotesTab({ TH, storageKey = 'bn_notes' }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="یادداشت‌های معاملاتیِ شما… (به‌صورتِ محلی ذخیره می‌شود)"
-        className="flex-1 w-full resize-none rounded-md p-3 text-sm leading-7 outline-none"
+        className="flex-1 w-full resize-none rounded p-3 text-sm leading-7 outline-none"
         style={{ background: TH.chipBg, color: TH.textStrong, border: `1px solid ${TH.border}` }}
       />
       <div className="text-[10px] mt-1 opacity-40 text-left tabular-nums" dir="ltr" style={{ color: TH.text }}>
@@ -224,7 +224,7 @@ function Stat({ TH, label, value, sub, tone }) {
       style={{ background: TH.subtle, border: `1px solid ${TH.border}` }}
     >
       <span className="text-[10px] opacity-60 whitespace-nowrap" style={{ color: TH.text }}>{label}</span>
-      <span className="text-sm font-bold tabular-nums" dir="ltr" style={{ color }}>{value}</span>
+      <span className="text-sm font-semibold tabular-nums" dir="ltr" style={{ color }}>{value}</span>
       {sub && <span className="text-[10px] opacity-50 tabular-nums" dir="ltr" style={{ color: TH.text }}>{sub}</span>}
     </div>
   );
@@ -239,7 +239,7 @@ function MRow({ TH, label, value, tone }) {
   return (
     <div className="flex items-center justify-between py-1 border-b" style={{ borderColor: TH.border }}>
       <span className="text-xs opacity-70" style={{ color: TH.text }}>{label}</span>
-      <span className="text-xs font-bold tabular-nums" dir="ltr" style={{ color }}>{value}</span>
+      <span className="text-xs font-semibold tabular-nums" dir="ltr" style={{ color }}>{value}</span>
     </div>
   );
 }
@@ -354,13 +354,13 @@ export function StrategyTesterTab({ TH, children, result, properties }) {
               <button
                 key={k}
                 onClick={() => setSub(k)}
-                className="relative px-2.5 h-7 rounded-md whitespace-nowrap transition-colors"
+                className="relative px-2.5 h-7 rounded whitespace-nowrap transition-colors"
                 style={on ? { color: TH.accent, fontWeight: 600 } : { color: TH.text }}
-                onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
+                onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = 'var(--pc-hover)'; }}
                 onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}
               >
                 {l}
-                {on && <span className="absolute left-2 right-2 -bottom-px h-[2px] rounded-full" style={{ background: TH.accent }} />}
+                {on && <span className="absolute left-2 right-2 -bottom-px h-[2px]" style={{ background: TH.accent }} />}
               </button>
             );
           })}
@@ -494,7 +494,7 @@ export function StrategyTesterTab({ TH, children, result, properties }) {
 
   return (
     <div className="h-full flex flex-col items-center justify-center gap-2 text-center px-6" dir="rtl">
-      <div className="text-sm font-bold" style={{ color: TH.textStrong }}>تستِ استراتژی</div>
+      <div className="text-sm font-semibold" style={{ color: TH.textStrong }}>تستِ استراتژی</div>
       <p className="text-xs opacity-60 max-w-xs leading-6" style={{ color: TH.text }}>
         یک اسکریپتِ استراتژی بنویسید و «بک‌تست» را بزنید تا نتایجِ کامل
         (منحنیِ سرمایه، جدولِ معاملات و معیارهای عملکرد) این‌جا با عرضِ کامل نمایش داده شود.

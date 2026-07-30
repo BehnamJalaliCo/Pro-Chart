@@ -251,7 +251,7 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose && onClose(); }}
     >
       <div
-        className="w-full max-w-[880px] rounded-lg overflow-hidden flex flex-col pc-pop"
+        className="w-full max-w-[880px] rounded-lg overflow-hidden flex flex-col"
         style={{
           height: 'min(600px, 88vh)',
           background: TH.panel,
@@ -262,12 +262,12 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
         onMouseDown={(e) => e.stopPropagation()}
       >
         {/* ───────── هدر: عنوان + سرچِ زنده + بستن ───────── */}
-        <div className="flex items-center gap-3 px-4 h-[52px] shrink-0 border-b" style={{ borderColor: TH.border }}>
+        <div className="flex items-center gap-3 px-4 h-10 shrink-0 border-b" style={{ borderColor: TH.border }}>
           <div className="flex items-center gap-2 shrink-0">
-            <Activity size={18} style={{ color: TH.accent }} />
-            <span className="font-bold text-[14px]">اندیکاتورها، سنجه‌ها و استراتژی‌ها</span>
+            <Activity size={18} style={{ color: TH.text }} />
+            <span className="font-semibold text-[14px]">اندیکاتورها، سنجه‌ها و استراتژی‌ها</span>
           </div>
-          <div className="flex-1 min-w-0 flex items-center gap-2 h-8 px-2.5 rounded-md"
+          <div className="flex-1 min-w-0 flex items-center gap-2 h-8 px-2.5 rounded"
             style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
             <Search size={15} style={{ color: TH.text }} />
             <input
@@ -275,7 +275,7 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={`جستجو در میانِ ${allItems.length} اندیکاتور…`}
-              className="flex-1 bg-transparent outline-none text-[13px] min-w-0"
+              className="flex-1 bg-transparent outline-none text-[12px] min-w-0"
               style={{ color: TH.textStrong }}
             />
             {q && (
@@ -286,24 +286,25 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
             )}
           </div>
           <button onClick={() => onClose && onClose()} title="بستن (Esc)"
-            className="p-1.5 rounded-md transition-colors duration-[120ms] shrink-0"
+            className="pc-iconbtn w-7 h-7 shrink-0"
             style={{ color: TH.text }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
+            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
             onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
             <X size={18} />
           </button>
         </div>
 
         {/* ───────── تب‌ها: Indicators / Strategies / Profiles / Patterns (پیل مثلِ TV) ───────── */}
-        <div className="flex items-center gap-2 px-4 py-2.5 shrink-0 border-b" style={{ borderColor: TH.border }}>
+        <div className="flex items-center gap-2 px-4 h-9 shrink-0 border-b" style={{ borderColor: TH.border }}>
           {TABS.map((t) => {
             const on = tab === t.id;
             return (
               <button key={t.id} onClick={() => { setTab(t.id); setCat('technicals'); }}
-                className="px-3.5 h-8 rounded-full text-[13px] font-semibold transition-colors duration-[120ms]"
+                className="px-3 h-9 text-[12px] font-semibold transition-colors duration-[120ms]"
                 style={{
-                  color: on ? (TH.panel === '#f0f3fa' ? '#fff' : TH.textStrong) : TH.text,
-                  background: on ? (TH.panel === '#f0f3fa' ? '#131722' : TH.chipBg) : 'transparent',
+                  color: on ? TH.accent : TH.text,
+                  background: 'transparent',
+                  borderBottom: on ? `2px solid ${TH.accent}` : '2px solid transparent',
                 }}
                 onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.subtle; }}
                 onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
@@ -316,10 +317,10 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
         {/* ───────── بدنه: دستهٔ کناری + لیست ───────── */}
         <div className="flex-1 flex min-h-0">
           {/* دستهٔ کناری (سمتِ شروع/راستِ RTL — همان «چپِ» TV). روی تب‌هایی که کاتالوگِ per-category ندارند (استراتژی/پروفایل/الگو) کم‌رنگ + غیرفعال می‌شود (سبکِ TV: دسته‌های نامرتبط خاکستری) تا کلیکِ بی‌اثر/گمراه‌کننده نباشد. */}
-          <div className={`w-[190px] shrink-0 border-l overflow-y-auto bn-thin-scroll py-1.5 transition-opacity duration-[120ms] ${tab !== 'indicators' ? 'opacity-40 pointer-events-none' : ''}`} style={{ borderColor: TH.border, background: TH.subtle }} aria-hidden={tab !== 'indicators'}>
+          <div className={`w-[190px] shrink-0 pc-hairline-e overflow-y-auto bn-thin-scroll py-1.5 transition-opacity duration-[120ms] ${tab !== 'indicators' ? 'opacity-40 pointer-events-none' : ''}`} style={{ background: TH.subtle }} aria-hidden={tab !== 'indicators'}>
             {CAT_GROUPS.map((grp) => (
               <div key={grp.id} className="mb-1">
-                <div className="px-4 pt-2.5 pb-1 text-[10px] font-bold tracking-wider opacity-45 flex items-center gap-1.5">
+                <div className="px-4 pt-2.5 pb-1 text-[10px] font-semibold uppercase flex items-center gap-1.5" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>
                   <span>{grp.label}</span>
                   <span dir="ltr" className="opacity-70">{grp.en}</span>
                 </div>
@@ -329,19 +330,19 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
                   const count = c.id === 'favorites' ? favs.length : (c.id === 'technicals' ? allItems.length : 0);
                   return (
                     <button key={c.id} onClick={() => setCat(c.id)}
-                      className="w-full flex items-center gap-2.5 px-4 py-1.5 text-[13px] text-right transition-colors duration-[120ms]"
+                      className="w-full flex items-center gap-2.5 px-4 h-7 text-[12px] text-start transition-colors duration-[120ms]"
                       style={{
                         color: on ? TH.textStrong : TH.text,
-                        background: on ? TH.chipBg : 'transparent',
-                        fontWeight: on ? 700 : 500,
-                        borderRight: on ? `2px solid ${TH.accent}` : '2px solid transparent',
+                        background: on ? 'var(--pc-accent-tint)' : 'transparent',
+                        fontWeight: on ? 600 : 500,
+                        borderInlineStart: on ? `2px solid ${TH.accent}` : '2px solid transparent',
                       }}
-                      onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }}
+                      onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
                       onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
                       <Icon size={16} style={{ color: on ? TH.accent : TH.text, fill: c.id === 'favorites' && on ? TH.accent : 'none' }} />
                       <span className="flex-1">{c.label}</span>
                       {count > 0 && (
-                        <span className="text-[10px] tabular-nums opacity-60 tnum" dir="ltr">{count}</span>
+                        <span className="text-[11px] tabular-nums tnum" dir="ltr" style={{ color: 'var(--pc-text-muted)' }}>{count}</span>
                       )}
                     </button>
                   );
@@ -357,11 +358,11 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
             ) : (
               <div className="pb-1.5">
                 {/* سرتیترِ لیستِ الفبایی — «SCRIPT NAME»ِ TV */}
-                <div className="sticky top-0 z-10 px-4 py-1.5 text-[10.5px] font-bold tracking-wider flex items-center gap-1.5"
-                  style={{ color: TH.text, background: TH.panel, borderBottom: `1px solid ${TH.border}` }}>
+                <div className="sticky top-0 z-10 px-4 py-1.5 text-[11px] font-semibold flex items-center gap-1.5"
+                  style={{ color: 'var(--pc-text-muted)', background: TH.panel, borderBottom: `1px solid ${TH.border}` }}>
                   <span>نامِ اسکریپت</span>
-                  <span className="opacity-40" dir="ltr">SCRIPT NAME</span>
-                  <span className="opacity-40 tabular-nums tnum mr-auto" dir="ltr">{filtered.length}</span>
+                  <span className="text-[10px] uppercase opacity-70" dir="ltr" style={{ letterSpacing: '.4px' }}>SCRIPT NAME</span>
+                  <span className="opacity-70 tabular-nums tnum ms-auto" dir="ltr">{filtered.length}</span>
                 </div>
                 {filtered.map((it, idx) => {
                   const isFav = favs.includes(it.key);
@@ -370,37 +371,37 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
                   return (
                     <div key={it.key}
                       ref={isNav ? navRowRef : null}
-                      className="group flex items-center gap-2.5 px-4 py-2 cursor-pointer transition-colors duration-[120ms]"
+                      className="group flex items-center gap-2.5 px-4 h-7 pc-hairline-b cursor-pointer transition-colors duration-[120ms]"
                       title={it.desc}
                       onClick={() => handlePick(it.key)}
-                      onMouseEnter={(e) => { setNavIdx(idx); e.currentTarget.style.background = TH.chipBg; }}
-                      onMouseLeave={(e) => (e.currentTarget.style.background = isNav ? TH.chipBg : 'transparent')}
-                      style={{ background: isNav ? TH.chipBg : 'transparent' }}>
+                      onMouseEnter={(e) => { setNavIdx(idx); e.currentTarget.style.background = TH.chipBgHover; }}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = isNav ? TH.chipBgHover : 'transparent')}
+                      style={{ background: isNav ? TH.chipBgHover : 'transparent' }}>
                       {/* نام‌ها */}
                       <div className="flex-1 min-w-0 flex items-center gap-2">
-                        <span className="text-[13px] font-medium truncate" style={{ color: TH.textStrong }}>{it.label}</span>
-                        <span className="text-[11.5px] truncate opacity-55" dir="ltr" style={{ color: TH.text }}>{it.eng}</span>
+                        <span className="text-[12px] font-medium truncate" style={{ color: TH.textStrong }}>{it.label}</span>
+                        <span className="text-[11px] truncate" dir="ltr" style={{ color: 'var(--pc-text-muted)' }}>{it.eng}</span>
                         {it.badge && (
                           // بَج‌های TV: «NEW» نارنجیِ توپُر، «BETA» خاکستریِ خنثی (نه سبز/آبی) — رنگ‌بندیِ دقیقِ دیالوگِ اندیکاتورِ TV.
-                          <span className="shrink-0 text-[9px] font-bold px-1.5 py-px rounded"
+                          <span className="shrink-0 text-[10px] font-semibold uppercase px-1.5 py-px rounded"
                             dir="ltr"
                             style={it.badge === 'NEW'
-                              ? { color: '#fff', background: '#f7963b' }
-                              : { color: TH.text, background: TH.chipBg, opacity: 0.85 }}>
+                              ? { color: '#f7963b', background: 'transparent', border: `1px solid ${TH.border}`, letterSpacing: '.4px' }
+                              : { color: 'var(--pc-text-muted)', background: 'transparent', border: `1px solid ${TH.border}`, letterSpacing: '.4px' }}>
                             {it.badge}
                           </span>
                         )}
                       </div>
 
                       {/* بَجِ pane (روی چارت / پنجرهٔ جدا) — فقط هنگامِ hover */}
-                      <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-[120ms]"
-                        style={{ color: TH.text, background: TH.chipBg }}>
+                      <span className="shrink-0 text-[11px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-[120ms]"
+                        style={{ color: 'var(--pc-text-muted)', background: 'transparent' }}>
                         {it.pane === 'main' ? 'روی چارت' : 'پنجرهٔ جدا'}
                       </span>
 
                       {/* فیدبکِ افزودن (هنگامِ hover) */}
                       {justAdded ? (
-                        <span className="shrink-0 text-[11px] font-bold" style={{ color: TH.up }}>✓ افزوده شد</span>
+                        <span className="shrink-0 text-[11px] font-semibold" style={{ color: TH.up }}>✓ افزوده شد</span>
                       ) : (
                         <span className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-[120ms]" style={{ color: TH.accent }}>
                           <ChevronLeft size={16} />
@@ -441,7 +442,7 @@ export default function IndicatorsDialog({ open, onClose, TH, onPick, onHelp, on
           <Info size={13} className="opacity-60" />
           <span className="opacity-70">برای افزودن روی اندیکاتور کلیک کنید؛ دیالوگ باز می‌مانَد تا چند افزودنِ پیاپی ممکن باشد.</span>
           {/* راهنمای کیبورد (هم‌رفتار با SymbolSearchModal) — پیمایش/افزودن/بستن */}
-          <span className="mr-auto flex items-center gap-2 opacity-55 select-none" dir="ltr">
+          <span className="ms-auto flex items-center gap-2 opacity-55 select-none" dir="ltr">
             <span className="tabular-nums">↑↓</span><span className="opacity-70">پیمایش</span>
             <span className="tabular-nums">↵</span><span className="opacity-70">افزودن</span>
             <span className="tabular-nums">Esc</span><span className="opacity-70">بستن</span>
@@ -472,10 +473,10 @@ function EmptyState({ TH, tab, cat, hasQuery, onOpenScripts }) {
       <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: TH.chipBg }}>
         <Icon size={22} style={{ color: TH.text }} />
       </div>
-      <div className="text-[14px] font-bold" style={{ color: TH.textStrong }}>{title}</div>
+      <div className="text-[14px] font-semibold" style={{ color: TH.textStrong }}>{title}</div>
       <div className="text-[12px] max-w-[320px] leading-relaxed" style={{ color: TH.text }}>{sub}</div>
       {editorBtn && onOpenScripts && (
-        <button onClick={onOpenScripts} className="mt-1 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-semibold transition-opacity duration-[120ms]" style={{ background: TH.accent, color: '#fff' }}>
+        <button onClick={onOpenScripts} className="mt-1 flex items-center gap-1.5 px-3 py-1.5 rounded text-[12px] font-semibold transition-opacity duration-[120ms] hover:opacity-90" style={{ background: TH.accent, color: '#fff' }}>
           <FileCode2 size={13} /> بازکردنِ ویرایشگرِ نمااسکریپت
         </button>
       )}

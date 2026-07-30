@@ -223,21 +223,21 @@ export default function CodeEditor({ value: rawValue, onChange, onRun, onSave, o
             style={{ position: 'absolute', inset: 0, margin: 0, padding: PAD, font: FONT, lineHeight: LH + 'px', whiteSpace: 'pre', overflow: 'auto', background: 'transparent', color: 'transparent', caretColor: '#e5e7eb', border: 'none', outline: 'none', resize: 'none', tabSize: 2 }} />
           {/* امضای تابعِ فعال */}
           {hint && (
-            <div style={{ position: 'absolute', top: Math.max(PAD, PAD + (line0 + 1) * LH - scrollY), left: hintLeft, zIndex: 25, background: '#161b27', border: '1px solid #2a3142', borderRadius: 6, boxShadow: 'var(--pc-shadow-modal)', padding: '4px 10px', maxWidth: 360, pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', top: Math.max(PAD, PAD + (line0 + 1) * LH - scrollY), left: hintLeft, zIndex: 25, background: '#161b27', border: '1px solid #2a3142', borderRadius: 6, boxShadow: 'var(--pc-shadow-pop)', padding: '4px 10px', maxWidth: 360, pointerEvents: 'none' }}>
               <span style={{ font: FONT, fontSize: 12, color: '#7dd3fc' }}>{hint.sig}</span>
               <span style={{ fontSize: 11, color: '#8a93a6', marginInlineStart: 8 }}>{hint.desc}</span>
             </div>
           )}
           {/* اتوکامپلیت */}
           {ac && (
-            <div style={{ position: 'absolute', top: Math.max(PAD, ac.top), left: Math.min(ac.left, 400), zIndex: 30, background: '#161b27', border: '1px solid #2a3142', borderRadius: 6, boxShadow: 'var(--pc-shadow-modal)', minWidth: 200, maxWidth: 420, maxHeight: 240, overflow: 'auto' }}>
+            <div style={{ position: 'absolute', top: Math.max(PAD, ac.top), left: Math.min(ac.left, 400), zIndex: 30, background: '#161b27', border: '1px solid #2a3142', borderRadius: 6, boxShadow: 'var(--pc-shadow-pop)', minWidth: 200, maxWidth: 420, maxHeight: 240, overflow: 'auto' }}>
               {ac.items.map((it, i) => {
                 const d = DOCS[it];
                 return (
                   <div key={it} onMouseDown={(e) => { e.preventDefault(); accept(taRef.current, it); }}
-                    style={{ display: 'flex', alignItems: 'baseline', gap: 8, padding: '4px 10px', fontSize: 12, cursor: 'pointer', background: i === ac.idx ? '#2962FF' : 'transparent', color: i === ac.idx ? '#fff' : '#cbd2e0' }}>
+                    style={{ display: 'flex', alignItems: 'baseline', gap: 8, padding: '4px 10px', fontSize: 12, cursor: 'pointer', background: i === ac.idx ? 'rgba(41,98,255,.16)' : 'transparent', color: i === ac.idx ? '#7dd3fc' : '#cbd2e0' }}>
                     <span style={{ font: FONT }}>{it}</span>
-                    {d && <span style={{ fontSize: 10.5, color: i === ac.idx ? 'rgba(255,255,255,.75)' : '#6b7280', marginInlineStart: 'auto', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 190 }}>{d.desc}</span>}
+                    {d && <span style={{ fontSize: 11, color: '#6b7280', marginInlineStart: 'auto', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 190 }}>{d.desc}</span>}
                   </div>
                 );
               })}
@@ -249,20 +249,20 @@ export default function CodeEditor({ value: rawValue, onChange, onRun, onSave, o
         {help && (
           <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 300, zIndex: 40, background: '#0e1420', borderInlineStart: '1px solid #1b2130', display: 'flex', flexDirection: 'column' }} dir="rtl">
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', borderBottom: '1px solid #1b2130' }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#c084fc' }}>ƒ راهنمای توابع</span>
+              <span style={{ fontSize: 12, fontWeight: 600, color: '#cbd2e0' }}>ƒ راهنمای توابع</span>
               <button onClick={() => setHelp(false)} title="بستن" style={{ marginInlineStart: 'auto', color: '#8a93a6', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 15, lineHeight: 1 }}>×</button>
             </div>
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="جستجوی تابع…" style={{ margin: 8, padding: '5px 8px', fontSize: 12, background: '#161b27', color: '#d1d4dc', border: '1px solid #2a3142', borderRadius: 4, outline: 'none' }} />
             <div style={{ flex: 1, overflow: 'auto', padding: '0 4px 8px' }}>
               {refList.map((g) => (
                 <div key={g.g} style={{ marginBottom: 8 }}>
-                  <div style={{ fontSize: 10.5, color: '#6b7280', padding: '4px 6px 2px', fontWeight: 700 }}>{g.g}</div>
+                  <div style={{ fontSize: 10, color: '#6b7280', padding: '4px 6px 2px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.4px' }}>{g.g}</div>
                   {g.items.map(([sig, desc], i) => (
                     <div key={i} onMouseDown={(e) => { e.preventDefault(); insertText((sig.match(/^[A-Za-z_][A-Za-z0-9_.]*/) || [sig])[0]); }}
                       title="درجِ نامِ تابع در محلِ کرسر" style={{ padding: '3px 6px', borderRadius: 4, cursor: 'pointer' }}
                       onMouseEnter={(e) => { e.currentTarget.style.background = '#161b27'; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
-                      <div dir="ltr" style={{ font: FONT, fontSize: 11.5, color: '#7dd3fc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{sig}</div>
-                      <div style={{ fontSize: 10.5, color: '#8a93a6' }}>{desc}</div>
+                      <div dir="ltr" style={{ font: FONT, fontSize: 11, color: '#7dd3fc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{sig}</div>
+                      <div style={{ fontSize: 11, color: '#8a93a6' }}>{desc}</div>
                     </div>
                   ))}
                 </div>

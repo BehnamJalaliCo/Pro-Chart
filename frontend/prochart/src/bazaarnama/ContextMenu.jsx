@@ -28,7 +28,7 @@ import { Check, ChevronLeft } from './tvIcons';
 //       onClick : بعد از فراخوانی، منو بسته می‌شود (مگر آیتم submenu باشد)
 
 const MENU_W = 236;      // عرضِ ثابتِ منو (px) — برای clamp/flip
-const EST_ROW = 30;      // ارتفاعِ تقریبیِ هر ردیف — برای تخمینِ اولیه پیش از اندازه‌گیری
+const EST_ROW = 28;      // ارتفاعِ تقریبیِ هر ردیف (LUXE §۴: ردیفِ منو = ۲۸px) — برای تخمینِ اولیه پیش از اندازه‌گیری
 const EDGE = 8;          // فاصلهٔ ایمن از لبهٔ صفحه
 
 // یک زیرمنو یا منوی ریشه. بازگشتی رندر می‌شود تا submenuها کار کنند.
@@ -67,7 +67,7 @@ function MenuPanel({ items, TH, onClose, style, dir = 'rtl', autoClamp = true })
     <div
       ref={ref}
       dir={dir}
-      className="fixed z-[81] p-1 text-[12.5px]"
+      className="fixed z-[81] p-1 text-[12px]"
       style={{
         ...pos,
         width: MENU_W,
@@ -87,7 +87,7 @@ function MenuPanel({ items, TH, onClose, style, dir = 'rtl', autoClamp = true })
         if (!it) return null;
         if (it.separator) return <div key={i} className="my-1 mx-1 border-t" style={{ borderColor: TH.border }} />;
         if (it.header != null) return (
-          <div key={i} className="px-2.5 pt-1.5 pb-1 text-[10px] font-bold tracking-wide truncate" style={{ color: TH.textStrong, opacity: 0.72 }} dir={it.headerDir || dir}>
+          <div key={i} className="px-2.5 pt-1.5 pb-1 text-[10px] font-semibold tracking-wide truncate" style={{ color: 'var(--pc-text-muted)' }} dir={it.headerDir || dir}>
             {it.header}
           </div>
         );
@@ -95,7 +95,7 @@ function MenuPanel({ items, TH, onClose, style, dir = 'rtl', autoClamp = true })
         const disabled = !!it.disabled;
         const danger = !!it.danger;
         const hasSub = Array.isArray(it.submenu) && it.submenu.length > 0;
-        const color = disabled ? TH.text : danger ? TH.down : TH.textStrong;
+        const color = disabled ? TH.text : danger ? 'var(--danger)' : TH.textStrong;
         const isSubOpen = openSub === i;
 
         const activate = () => {
@@ -113,13 +113,13 @@ function MenuPanel({ items, TH, onClose, style, dir = 'rtl', autoClamp = true })
               type="button"
               disabled={disabled}
               onClick={activate}
-              className={`${rowBase} px-2.5 py-1.5 ${disabled ? 'cursor-default' : ''}`}
-              style={{ color, minHeight: 30, opacity: disabled ? 0.42 : 1, background: isSubOpen ? TH.chipBg : 'transparent' }}
-              onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.background = TH.chipBg; }}
+              className={`${rowBase} px-2.5 py-1 ${disabled ? 'cursor-default' : ''}`}
+              style={{ color, minHeight: 28, opacity: disabled ? 0.42 : 1, background: isSubOpen ? 'var(--pc-hover)' : 'transparent' }}
+              onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.background = 'var(--pc-hover)'; }}
               onMouseLeave={(e) => { if (!disabled && !isSubOpen) e.currentTarget.style.background = 'transparent'; }}
             >
               {/* آیکون (یا جای‌گیرِ هم‌عرض تا برچسب‌ها هم‌تراز بمانند) */}
-              <span className="shrink-0 flex items-center justify-center" style={{ width: 16, color: danger && !disabled ? TH.down : TH.text }}>
+              <span className="shrink-0 flex items-center justify-center" style={{ width: 16, color: danger && !disabled ? 'var(--danger)' : TH.text }}>
                 {it.checked ? <Check size={14} style={{ color: TH.accent }} /> : (it.icon || null)}
               </span>
               <span className="flex-1 truncate">{it.label}</span>

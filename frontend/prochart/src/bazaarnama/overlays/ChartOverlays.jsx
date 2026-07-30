@@ -98,14 +98,14 @@ function SymbolHead({ TH, symbol, tf, market, chartType, name, showLogo = true, 
   return (
     <>
       {showLogo && <SymbolLogo symbol={symbol} size={18} />}
-      <span className="text-[13px] font-bold whitespace-nowrap tracking-tight" dir="ltr"
+      <span className="text-[13px] font-semibold whitespace-nowrap tracking-tight" dir="ltr"
         style={{ color: TH.textStrong, letterSpacing: '-.01em' }}>{symbol}</span>
       {showName && full && (
         // نامِ توصیفی روی موبایل (کمترِ از ۵۶۰px) مخفی می‌شود تا لجندِ OHLC از لبهٔ چپِ صفحه بیرون نزند (سبکِ لجندِ فشردهٔ موبایلِ TV).
         <span className="text-[11px] whitespace-nowrap font-medium max-w-[168px] truncate hidden min-[560px]:inline-block" style={{ color: TH.text, opacity: 0.74 }}>{full}</span>
       )}
       {(mk || tf) && (
-        <span className="text-[10px] tnum whitespace-nowrap font-medium" dir="ltr" style={{ color: TH.text, opacity: 0.55 }}>
+        <span className="text-[11px] tnum whitespace-nowrap font-medium" dir="ltr" style={{ color: TH.text, opacity: 0.55 }}>
           {tf}{tf && mk ? ' · ' : ''}{mk}
         </span>
       )}
@@ -138,8 +138,8 @@ function OhlcTape({ legend, col, TH, dir }) {
           <span className="font-medium" style={{ color: TH.text, opacity: 0.5 }}>{k}</span>
           {/* فقط Close با تیکِ زنده فلَش می‌زند (مثلِ TV) تا حسِ زنده‌بودن بدهد */}
           {k === 'C'
-            ? <FlashNum value={v} dir={dir} className="font-semibold px-0.5 -mx-0.5" style={{ color: col }}>{ohlcFmt(v, dig)}</FlashNum>
-            : <span className="font-semibold" style={{ color: col }}>{ohlcFmt(v, dig)}</span>}
+            ? <FlashNum value={v} dir={dir} className="pc-num-ltr font-semibold px-0.5 -mx-0.5" style={{ color: col }}>{ohlcFmt(v, dig)}</FlashNum>
+            : <span className="pc-num-ltr font-semibold" style={{ color: col }}>{ohlcFmt(v, dig)}</span>}
         </span>
       ))}
     </span>
@@ -152,10 +152,10 @@ function VolumeRow({ vol, dir, TH, fmtVol, compact }) {
   const str = typeof fmtVol === 'function' ? fmtVol(vol) : dwFmtVol(null, vol);
   if (str == null) return null;
   const nd = normDir(dir);
-  const col = nd === 'up' ? TH.up : nd === 'down' ? TH.down : TH.text;
+  const col = nd === 'up' ? (TH.upText || TH.up) : nd === 'down' ? (TH.downText || TH.down) : TH.text;
   if (compact) {
     return (
-      <span className="flex items-center gap-1 rounded px-1.5 h-6 text-[12px] shrink-0" style={{ background: TH.chipBg, color: TH.textStrong }} dir="rtl">
+      <span className="flex items-center gap-1 rounded px-1.5 h-6 text-[11px] shrink-0" style={{ background: TH.chipBg, color: TH.textStrong }} dir="rtl">
         <span className="rounded-[2px] shrink-0" style={{ width: 9, height: 9, background: col, opacity: 0.55, boxShadow: `0 0 0 1px ${TH.border}` }} />
         <span className="whitespace-nowrap">حجم</span>
         <FlashNum value={vol} dir={dir} className="tnum tabular-nums font-medium px-0.5 -mx-0.5" style={{ color: col }}>{str}</FlashNum>
@@ -167,8 +167,8 @@ function VolumeRow({ vol, dir, TH, fmtVol, compact }) {
       onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
       onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
       <span className="rounded-[2px] shrink-0" style={{ width: 10, height: 10, background: col, opacity: 0.55, boxShadow: `0 0 0 1px ${TH.border}` }} />
-      <span className="text-[12px] font-semibold whitespace-nowrap" style={{ color: TH.textStrong }}>حجم</span>
-      <FlashNum value={vol} dir={dir} className="text-[12px] tabular-nums whitespace-nowrap font-medium px-0.5 -mx-0.5" style={{ color: col, direction: 'ltr' }}>{str}</FlashNum>
+      <span className="text-[11px] font-semibold whitespace-nowrap" style={{ color: TH.textStrong }}>حجم</span>
+      <FlashNum value={vol} dir={dir} className="text-[11px] tabular-nums whitespace-nowrap font-medium px-0.5 -mx-0.5" style={{ color: col, direction: 'ltr' }}>{str}</FlashNum>
     </div>
   );
 }
@@ -193,13 +193,13 @@ export function Legend({ legend, TH, symbol, tf, market, name, chartType, priceD
   const _base = (prevClose != null && Number.isFinite(prevClose)) ? prevClose : (legend.open != null ? legend.open : null);
   const chAbs = (legend.close != null && _base != null) ? (legend.close - _base) : null;
   const ch = chAbs != null && _base ? (chAbs / _base) * 100 : null;
-  const col = ch == null ? TH.text : ch >= 0 ? TH.up : TH.down;
+  const col = ch == null ? TH.text : ch >= 0 ? (TH.upText || TH.up) : (TH.downText || TH.down);
   // رنگِ O/H/L/C = جهتِ خودِ کندل (close vs open)؛ رنگِ «تغییر» = جهتِ close-to-close — دقیقاً مثلِ TV و ChartLegend.
-  const ohlcCol = (legend.open != null && legend.close != null) ? (legend.close >= legend.open ? TH.up : TH.down) : TH.text;
+  const ohlcCol = (legend.open != null && legend.close != null) ? (legend.close >= legend.open ? (TH.upText || TH.up) : (TH.downText || TH.down)) : TH.text;
   const chStr = chAbs != null ? fmtDelta(chAbs, Math.max(decimalsOf(legend.close), decimalsOf(_base))) : null;
   const vol = volume != null ? volume : legend.volume;
   return (
-    <div className={`group absolute right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 overflow-hidden ${sl.slBackground === false ? '' : 'border'}`} dir="rtl"
+    <div className="group absolute right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 overflow-hidden" dir="rtl"
       /* reserveLeft: عرضِ چیپ‌های SELL/BUY (که top-2 left-2 هستند) را از سمتِ چپ کنار می‌گذارد
          تا لجند زیرشان نرود. باگِ موبایل: max-w کلِ عرض بود و متن پشتِ چیپ‌ها له می‌شد.
          slBackground===false ⇒ لجندِ شفاف (بدونِ پس‌زمینه/بلور/کادر). */
@@ -208,7 +208,7 @@ export function Legend({ legend, TH, symbol, tf, market, name, chartType, priceD
         maxWidth: 'calc(100vw - 1rem)',
         ...(sl.slBackground === false
           ? {}
-          : { background: TH.overlayMask, borderColor: TH.border, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', boxShadow: 'var(--pc-shadow-chip)' }),
+          : { background: tint(TH.bg, '59'), backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }),
       }}>
       {/* توگل‌های نمایشِ تبِ Status lineِ TV — این مسیرِ لجند (بدونِ اندیکاتور) قبلاً همیشه همه را نشان می‌داد؛ حالا مثلِ ChartLegend به sl.* احترام می‌گذارد. پیش‌فرضِ همه true ⇒ بدونِ رگرسیون. */}
       <SymbolHead TH={TH} symbol={symbol} tf={tf} market={market} name={name} chartType={chartType}
@@ -268,7 +268,7 @@ function LegendIconBtn({ TH, title, ariaLabel, onClick, danger, children, always
 
 function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, onRemove, onMore, moreOpen, onCloseMore, onDup, onAddAlert, onMovePane, onHelp, hasHelp, sl = {} }) {
   const visible = item.visible !== false;
-  const color = item.color || '#2962FF';
+  const color = item.color || TH.accent;
   // خطِ وضعیت (تبِ تنظیمات): نمایشِ عنوان، آرگومان‌ها (پارامترها) و مقدارِ زندهٔ اندیکاتور مستقلاً قابلِ خاموش‌کردن‌اند (مثلِ TV: Titles / Inputs / Values).
   const showTitle = sl.slIndTitles !== false;
   const showArgs = sl.slIndArgs !== false;
@@ -278,7 +278,7 @@ function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, on
   if (viewMode === 'compact') {
     return (
       <button type="button" onClick={() => onSettings(item)} title={item.label}
-        className="flex items-center gap-1 rounded px-1.5 h-6 text-[12px] shrink-0"
+        className="flex items-center gap-1 rounded px-1.5 h-6 text-[11px] shrink-0"
         style={{ background: TH.chipBg, color: TH.textStrong, opacity: visible ? 1 : 0.45 }}>
         <span className="rounded-full shrink-0" style={{ width: 9, height: 9, background: color, boxShadow: `0 0 0 1px ${TH.border}` }} />
         {showTitle && <span className="whitespace-nowrap">{ttl}</span>}
@@ -295,13 +295,13 @@ function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, on
         className="rounded-full shrink-0" style={{ width: 10, height: 10, background: color, boxShadow: `0 0 0 1px ${TH.border}` }} />
       {showTitle && (
         <button type="button" onClick={() => onSettings(item)}
-          className="text-[12px] font-semibold whitespace-nowrap text-right" style={{ color: TH.textStrong }}>{ttl}</button>
+          className="text-[11px] font-semibold whitespace-nowrap text-right" style={{ color: TH.textStrong }}>{ttl}</button>
       )}
       {showArgs && args && (
-        <span className="text-[12px] whitespace-nowrap tabular-nums" dir="ltr" style={{ color: TH.text, opacity: 0.6 }}>{args}</span>
+        <span className="text-[11px] whitespace-nowrap tabular-nums" dir="ltr" style={{ color: TH.text, opacity: 0.6 }}>{args}</span>
       )}
       {showValue && value != null && value !== '' && (
-        <span className="text-[12px] tabular-nums whitespace-nowrap font-medium" dir="ltr" style={{ color }}>{value}</span>
+        <span className="text-[11px] tabular-nums whitespace-nowrap font-medium" dir="ltr" style={{ color }}>{value}</span>
       )}
       <span className="flex-1" />
       <div className={`flex items-center gap-0.5 ${coarse ? '' : 'bn-leg-ctrls'}`}>
@@ -314,8 +314,8 @@ function LegendRow({ item, TH, value, coarse, viewMode, onToggle, onSettings, on
           {moreOpen && (
             <>
               <div className="fixed inset-0 z-[60]" onClick={(e) => { e.stopPropagation(); onCloseMore(); }} />
-              <div className="absolute left-0 top-7 z-[61] w-40 rounded-md py-1 text-[12px] shadow-xl" dir="rtl"
-                style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+              <div className="absolute left-0 top-7 z-[61] w-40 rounded-md py-1 text-[12px]" dir="rtl"
+                style={{ background: TH.popoverBg, border: `1px solid ${TH.border}`, boxShadow: 'var(--pc-shadow-pop)' }}>
                 {/* «تنظیمات» به‌عنوانِ نخستین آیتم (پاریتیِ منوی «...»ِ اندیکاتورِ TV که با Settings شروع می‌شود) */}
                 <button className="w-full text-right px-3 py-1.5 flex items-center gap-2" style={{ color: TH.textStrong }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
@@ -383,8 +383,8 @@ export function ChartLegend({
   const ch = (chAbs != null && _base) ? (chAbs / _base) * 100 : null;
   const chStr = chAbs != null ? fmtDelta(chAbs, Math.max(decimalsOf(legend.close), decimalsOf(_base))) : null;
   // رنگِ «تغییر» = جهتِ close-to-close؛ ولی رنگِ O/H/L/C = جهتِ خودِ کندل (close vs open) — دقیقاً مثلِ TV.
-  const col = ch == null ? TH.text : ch >= 0 ? TH.up : TH.down;
-  const ohlcCol = (legend && legend.open != null && legend.close != null) ? (legend.close >= legend.open ? TH.up : TH.down) : TH.text;
+  const col = ch == null ? TH.text : ch >= 0 ? (TH.upText || TH.up) : (TH.downText || TH.down);
+  const ohlcCol = (legend && legend.open != null && legend.close != null) ? (legend.close >= legend.open ? (TH.upText || TH.up) : (TH.downText || TH.down)) : TH.text;
   const hasInds = items.length > 0;
   const compact = viewMode === 'compact';
   const vol = volume != null ? volume : (legend && legend.volume);
@@ -403,7 +403,7 @@ export function ChartLegend({
         maxWidth: 'min(calc(100vw - 1rem), 520px)',
         ...(sl.slBackground === false
           ? { borderRadius: 6, padding: '3px 6px' }
-          : { background: TH.overlayMask, backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)', borderRadius: 6, padding: '3px 6px' }),
+          : { background: tint(TH.bg, '59'), backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)', borderRadius: 6, padding: '3px 6px' }),
       }}>
       <style>{`.bn-leg-ctrls{opacity:0;transition:opacity 120ms ease}.group\\/leg:hover .bn-leg-ctrls{opacity:1}.bn-leg-ctrl{opacity:0}.group\\/leg:hover .bn-leg-ctrl{opacity:1}`}</style>
       {/* ردیفِ نماد (OHLC) */}
@@ -493,7 +493,7 @@ export function SubPaneLegends({
       <style>{`.bn-leg-ctrls{opacity:0;transition:opacity 120ms ease}.group\\/leg:hover .bn-leg-ctrls{opacity:1}.bn-leg-ctrl{opacity:0}.group\\/leg:hover .bn-leg-ctrl{opacity:1}`}</style>
       {items.map((it) => (tops[it.id] == null ? null : (
         <div key={it.id} className="absolute pointer-events-auto"
-          style={{ top: tops[it.id], right: 8, maxWidth: 'min(70%,420px)', background: TH.overlayMask, backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)', borderRadius: 6, padding: '0 4px' }}>
+          style={{ top: tops[it.id], right: 8, maxWidth: 'min(70%,420px)', background: tint(TH.bg, '59'), backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)', borderRadius: 6, padding: '0 4px' }}>
           <LegendRow item={it} TH={TH} value={indVals[it.id]} coarse={coarse} viewMode="normal"
             onToggle={onToggleVisible} onSettings={onSettings} onRemove={onRemove}
             onMore={() => setMoreId((m) => (m === it.id ? null : it.id))} moreOpen={moreId === it.id} onCloseMore={() => setMoreId(null)}
@@ -664,27 +664,27 @@ export function CountdownChip({ countdown, countdownColor, TH, marketOpen, axisY
   // در حالتِ خارج‌ازمحور (بازار بسته) کمی بالاتر تا با دکمه‌های گوشهٔ محورِ قیمت (٪/log/A) تداخل نکند.
   const pos = onAxis ? { top: Math.round(axisY) + 16, right: 2 } : { bottom: 28, right: 12 };
   return (
-    <div className="absolute z-20 pointer-events-none rounded-md px-2 py-1 text-[11px] font-mono tabular-nums flex items-center gap-1.5 border shadow-sm" style={{ ...pos, borderColor: countdownColor || TH.border, background: TH.popoverBg, color: countdownColor || undefined }} dir="ltr">
+    <div className="absolute z-20 pointer-events-none rounded-md px-2 py-1 text-[11px] tabular-nums flex items-center gap-1.5 border" style={{ ...pos, borderColor: TH.border, background: TH.panel, color: TH.text }} dir="ltr">
       {/* نقطهٔ وضعیتِ بازار (سبز=باز/قرمز=بسته) — با توگلِ «وضعیتِ بازار»ِ تبِ Status lineِ TV کنترل می‌شود (slMarketStatus؛ قبلاً وصل نبود = توگلِ مرده). #300 */}
-      {showMarketDot && <span className={`w-1.5 h-1.5 rounded-full ${marketOpen ? 'bg-green-400' : 'bg-red-400'}`} />}
+      {showMarketDot && <span className="w-1.5 h-1.5 rounded-full" style={{ background: marketOpen ? TH.up : TH.down, opacity: 0.5 }} />}
       {/* آیکونِ ساعتِ اختصاصیِ SVG (به‌جای ایموجیِ ⏱ که در فونتِ سایت رِندر نمی‌شد و به‌صورتِ □ می‌افتاد) */}
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 shrink-0" aria-hidden="true">
         <circle cx="12" cy="12" r="9" /><path d="M12 7.5V12l3 2" />
-      </svg><b>{countdown}</b>
+      </svg><b className="font-semibold">{countdown}</b>
     </div>
   );
 }
 
 // واترمارکِ لوگوی بازارنما — رندرِ خالص. سبکِ دقیقِ TradingView: بسیار کم‌رنگ (شبح)
 //   تا فقط برندینگِ ظریف باشد و خواناییِ چارت را خدشه‌دار نکند. opacity/height اختیاری‌اند.
-export function Watermark({ src, theme, opacity = 0.13, height = 60 }) {
+export function Watermark({ src, theme, opacity = 0.06, height = 60 }) {
   // لوگوی سفیدِ شفاف؛ روی تمِ روشن invert می‌شود. بالاتر از محورِ تاریخ (bottom-8).
   return (
     <img
       src={src}
       alt="بازارنما"
       className="absolute bottom-8 left-3 z-20 pointer-events-none select-none"
-      style={{ height, opacity, filter: theme === 'light' ? 'invert(1)' : 'none' }}
+      style={{ height, opacity: Math.min(opacity, 0.06), filter: theme === 'light' ? 'invert(1)' : 'none' }}
     />
   );
 }
@@ -696,13 +696,13 @@ export function ReplayBar({ replay, TH, replayStepBack, replayToggle, replayStep
   const IconBtn = ({ onClick, title, disabled, children, accent }) => (
     <button onClick={onClick} title={title} disabled={disabled} aria-label={title}
       className="p-1 rounded-md transition-colors duration-[120ms] flex items-center justify-center disabled:opacity-30"
-      style={{ background: accent ? TH.accent : TH.chipBg, color: accent ? '#fff' : TH.text }}
+      style={{ background: accent ? 'var(--pc-accent-tint)' : TH.chipBg, color: accent ? TH.accent : TH.text }}
       onMouseEnter={(e) => { if (!disabled && !accent) e.currentTarget.style.background = TH.chipBgHover; }}
       onMouseLeave={(e) => { if (!accent) e.currentTarget.style.background = TH.chipBg; }}>{children}</button>
   );
   return (
-    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs" style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
-      <span className="font-bold shrink-0" style={{ color: TH.accent }}>بازپخش</span>
+    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px]" style={{ background: TH.panel, border: `1px solid ${TH.border}` }}>
+      <span className="font-semibold shrink-0" style={{ color: TH.text }}>بازپخش</span>
       {/* تاریخِ کندلِ فعلی + راهنمای «کلیک روی هر کندل» */}
       {replayDate ? <span className="opacity-70 tabular-nums shrink-0" dir="ltr" title="تاریخِ کندلِ فعلی — روی هر کندلِ چارت بزن تا مکان‌نما همان‌جا برود">{replayDate}</span> : null}
       <span className="w-px h-4 mx-0.5" style={{ background: TH.border }} />
@@ -711,7 +711,7 @@ export function ReplayBar({ replay, TH, replayStepBack, replayToggle, replayStep
       {/* پرشِ ۱۰تایی عقب */}
       <IconBtn onClick={() => replayJump && replayJump(-10)} title="۱۰ کندل عقب"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 6v12l-8-6z" /><path d="M20 6v12l-8-6z" /></svg></IconBtn>
       <IconBtn onClick={replayStepBack} title="گامِ عقب (Shift+←)"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="6" width="2.2" height="12" rx="1" /><path d="M19 6v12l-9-6z" /></svg></IconBtn>
-      <IconBtn onClick={replayToggle} title="پخش/مکث (Space)" accent>
+      <IconBtn onClick={replayToggle} title="پخش/مکث (Space)" accent={!!replay.playing}>
         {replay.playing
           ? <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="5" width="4" height="14" rx="1" /><rect x="13" y="5" width="4" height="14" rx="1" /></svg>
           : <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>}
@@ -725,13 +725,15 @@ export function ReplayBar({ replay, TH, replayStepBack, replayToggle, replayStep
       <input type="range" min={0} max={Math.max(0, replay.length - 1)} value={replay.idx} onChange={(e) => replaySeek(Number(e.target.value))} title="پرش به کندل" className="w-28 h-1 cursor-pointer transition-colors duration-[120ms]" style={{ accentColor: TH.accent }} />
       <span className="opacity-60 tabular-nums shrink-0" dir="ltr">{replay.length ? `${replay.idx + 1}/${replay.length}` : ''}</span>
       <span className="opacity-60 shrink-0">سرعت</span>
-      {SPEED_LADDER.map((sp) => (<button key={sp} onClick={() => replaySetSpeed(sp)} className={`px-1.5 rounded-md tabular-nums transition-colors duration-[120ms] ${replay.speed === sp ? 'text-white' : 'opacity-60 hover:opacity-100'}`} style={replay.speed === sp ? { background: TH.accent } : {}}>{sp}×</button>))}
+      {SPEED_LADDER.map((sp) => (<button key={sp} onClick={() => replaySetSpeed(sp)} className={`px-1.5 rounded-md tabular-nums transition-colors duration-[120ms] ${replay.speed === sp ? '' : 'opacity-60 hover:opacity-100'}`} style={replay.speed === sp ? { background: 'var(--pc-accent-tint)', color: TH.accent } : {}}>{sp}×</button>))}
       {onToggleIntrabar && (
         <IconBtn onClick={onToggleIntrabar} title={intrabarOn ? 'ذره‌بینِ بار: روشن (ریزکندل داخلِ هر بار)' : 'ذره‌بینِ بار: خاموش'} accent={!!intrabarOn}>
           <svg width="13" height="13" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="m17 17 6 6" strokeLinecap="butt"/><path d="M9 12h6M12 9v6" strokeLinecap="butt"/></svg>
         </IconBtn>
       )}
-      <button onClick={exitReplay} className="p-1 rounded-md bg-red-500/20 text-red-400 transition-colors duration-[120ms] shrink-0">✕ خروج</button>
+      <button onClick={exitReplay} className="p-1 rounded-md transition-colors duration-[120ms] shrink-0" style={{ color: TH.text }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; e.currentTarget.style.color = TH.down; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = TH.text; }}>✕ خروج</button>
     </div>
   );
 }

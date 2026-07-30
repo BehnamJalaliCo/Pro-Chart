@@ -44,17 +44,19 @@ export default function BottomNav() {
               aria-label={t(key)}
               className="relative z-[1] flex-1 flex items-center justify-center"
             >
+              {/* امضای برند (LUXE §۲.۳): تینتِ بنفشِ تخت + آیکونِ accentAi — گرادیانت/گلو ممنوع */}
               <span
                 className="flex items-center justify-center transition-transform duration-300 active:scale-90"
                 style={{
-                  width: 48, height: 48, marginTop: -16, borderRadius: 16,
-                  background: `linear-gradient(120deg, ${ACCENT}, #8b5cf6)`,
-                  boxShadow: on ? '0 12px 26px -6px rgba(41,98,255,.65)' : '0 10px 22px -8px rgba(41,98,255,.5)',
+                  width: 44, height: 44, marginTop: -12, borderRadius: 14,
+                  background: 'rgba(139,92,246,.12)',
+                  border: '1px solid var(--pc-border)',
+                  boxShadow: 'var(--pc-shadow-chip)',
                   transform: on ? 'translateY(-2px) scale(1.04)' : 'none',
                   transitionTimingFunction: 'cubic-bezier(.34,1.56,.64,1)',
                 }}
               >
-                <Icon size={22} color="#fff" />
+                <Icon size={20} color="#8b5cf6" />
               </span>
             </button>
           );
@@ -67,27 +69,16 @@ export default function BottomNav() {
             className="relative z-[1] flex-1 flex flex-col items-center justify-center gap-1"
             style={{ color: on ? ACCENT : 'var(--text-secondary)' }}
           >
-            {/* پیلِ فعال — با فنر ظاهر می‌شود */}
-            <span
-              aria-hidden
-              className="absolute"
-              style={{
-                top: 8, width: 58, height: 34, borderRadius: 12,
-                background: `color-mix(in srgb, ${ACCENT} 12%, transparent)`,
-                opacity: on ? 1 : 0,
-                transform: on ? 'scale(1)' : 'scale(.6)',
-                transition: 'opacity .3s ease, transform .4s cubic-bezier(.34,1.56,.64,1)',
-              }}
-            />
+            {/* تبِ فعال = فقط متن/آیکونِ accent (LUXE §۲) — بدونِ پیلِ پرشده */}
             <Icon
-              size={21}
+              size={20}
               className="relative"
               style={{
                 transition: 'transform .35s cubic-bezier(.34,1.56,.64,1)',
                 transform: on ? 'translateY(-1px) scale(1.08)' : 'none',
               }}
             />
-            <span className="relative font-bold" style={{ fontSize: 10 }}>{t(key)}</span>
+            <span className="relative" style={{ fontSize: 11, fontWeight: on ? 600 : 500 }}>{t(key)}</span>
           </button>
         );
       })}

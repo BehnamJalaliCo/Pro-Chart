@@ -203,8 +203,8 @@ export default function RightPanel({
         const accTxt = k === 'ai' ? TH.accentAi : (TH.accentText || TH.accent); // متنِ فعال: نسخهٔ AA
         return (
           <button key={k} title={l} onClick={() => openTab(k)}
-            className="relative w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-            style={{ color: active ? '#fff' : TH.text, background: active ? acc : 'transparent' }}
+            className="relative w-7 h-7 rounded flex items-center justify-center transition-colors"
+            style={{ color: active ? accTxt : TH.text, background: active ? 'var(--pc-accent-tint)' : 'transparent' }}
             onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
             onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
             <Icon size={15} />
@@ -227,14 +227,14 @@ export default function RightPanel({
   const panel = (
     <div dir="rtl" className="w-64 border-l overflow-hidden shrink-0 flex flex-col max-md:absolute max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-40 max-md:shadow-2xl" style={{ borderColor: TH.border, background: TH.bg }}>
       {/* نوارِ تب — آیکن‌دار، با اندیکاتورِ پایینِ نرم و حالتِ AI متمایز */}
-      <div className="flex border-b overflow-x-auto bn-thin-scroll shrink-0" style={{ borderColor: TH.border, background: TH.bg }}>
+      <div className="flex h-9 items-center border-b overflow-x-auto bn-thin-scroll shrink-0" style={{ borderColor: TH.border, background: TH.bg }}>
         {TABS.map(([k, l, Icon]) => {
           const active = rightTab === k;
           const acc = k === 'ai' ? TH.accentAi : TH.accent;
           const accTxt = k === 'ai' ? TH.accentAi : (TH.accentText || TH.accent); // متنِ فعال: نسخهٔ AA
           return (
             <button key={k} onClick={() => setRightTab(k)} title={l}
-              className="group/tab relative shrink-0 whitespace-nowrap flex items-center gap-1 px-2.5 py-2 text-[11px] transition-colors duration-[120ms]"
+              className="group/tab relative shrink-0 whitespace-nowrap flex items-center gap-1 px-2.5 h-9 text-[11px] transition-colors duration-[120ms]"
               style={active ? { color: accTxt } : { color: TH.text }}>
               <Icon size={13} className="shrink-0" />
               <span>{l}</span>
@@ -494,8 +494,8 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
   })();
 
   const isTable = meta.view === 'table';
-  // اندازهٔ لوگو هم‌ترازِ آیکونِ ~۲۰pxِ ردیفِ واچ‌لیستِ TV — قبلاً ۳۰px بود و ستونِ نماد را له می‌کرد.
-  const logoSz = isTable ? 18 : (meta.logoSize === 'lg' ? 24 : 20);
+  // اندازهٔ لوگو/پرچمِ ردیف = ۱۸px (LUXE §۴ — بدونِ استثنا)؛ ترجیحِ meta.logoSize در متادیتا ذخیره می‌مانَد.
+  const logoSz = 18;
 
   // افزودنِ نماد با جستجو — فقط نمادهای دارای لوگوی واقعی پیشنهاد می‌شوند (واچ‌لیست تمیز می‌ماند).
   const addCandidates = (symbols || []).filter((s) => !(watch || []).includes(s) && isCleanSymbol(s)).filter((s) => {
@@ -559,9 +559,9 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
 
     if (isTable) {
       return (
-        <div key={r.sym} data-watch-row={r.sym} onClick={selectRow} onContextMenu={(e) => openCtx(r.sym, e)} className="group/row relative flex items-center gap-2 w-full px-3 h-9 transition-colors duration-[120ms]"
-          style={{ background: active ? TH.accent + '1f' : 'transparent', borderRight: `2px solid ${active ? TH.accent : 'transparent'}` }}
-          onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
+        <div key={r.sym} data-watch-row={r.sym} onClick={selectRow} onContextMenu={(e) => openCtx(r.sym, e)} className="group/row pc-hairline-b relative flex items-center gap-2 w-full px-3 h-9 transition-colors duration-[120ms]"
+          style={{ background: active ? 'var(--pc-accent-tint)' : 'transparent', borderInlineStart: `2px solid ${active ? TH.accent : 'transparent'}` }}
+          onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = 'var(--pc-hover)'; }}
           onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
           {r.flag && <span className="absolute right-0 top-1 bottom-1 w-[2px] rounded-full" style={{ background: FLAG_HEX[r.flag] }} />}
           <button type="button" data-watch-select aria-label={`انتخاب ${prettySym(r.sym)}`} aria-current={active ? 'true' : undefined}
@@ -573,8 +573,8 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
               <span className="min-w-0 text-[12px] font-semibold truncate" style={{ color: active ? (TH.accentText || TH.accent) : TH.textStrong }}>{prettySym(r.sym)}</span>
               {r.note && <span title={r.note} className="shrink-0" style={{ color: TH.accent, opacity: 0.7 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z" /></svg></span>}
             </span>
-            <FlashNum value={r.lp?.mid} className="tnum text-[11px] w-16 text-left shrink-0 rounded" dir="ltr" style={{ color: priceCol }}>{r.lp ? sepThousands(fmtPrice(r.sym, r.lp.mid)) : '—'}</FlashNum>
-            {cols.map((key) => { const c = numCell(key); return <span key={key} className="tnum text-[10px] w-12 text-left shrink-0 rounded px-0.5" dir="ltr" style={{ color: c.col, background: key === 'change' ? chgBg(r.chg) : 'transparent' }}>{c.txt}</span>; })}
+            <FlashNum value={r.lp?.mid} className="pc-num-ltr text-[11px] w-16 text-left shrink-0 rounded" dir="ltr" style={{ color: priceCol }}>{r.lp ? sepThousands(fmtPrice(r.sym, r.lp.mid)) : '—'}</FlashNum>
+            {cols.map((key) => { const c = numCell(key); return <span key={key} className="pc-num-ltr text-[10px] w-12 text-left shrink-0 rounded px-0.5" dir="ltr" style={{ color: c.col, background: key === 'change' ? chgBg(r.chg) : 'transparent' }}>{c.txt}</span>; })}
           </button>
           <RowActions r={r} TH={TH} flagFor={flagFor} setFlagFor={setFlagFor} setFlag={setFlag} toggleWatch={toggleWatch} compact />
         </div>
@@ -584,9 +584,9 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     // ستون‌های عددیِ اختیاریِ اضافه (سقف/کف/دامنه) — Chg/Chg٪ حالا ستونِ همیشگی‌اند (سبکِ TV).
     const extraCols = cols.filter((k) => k !== 'change' && k !== 'chgAbs');
     return (
-      <div key={r.sym} data-watch-row={r.sym} onClick={selectRow} onContextMenu={(e) => openCtx(r.sym, e)} className="group/row relative flex items-center gap-1 w-full px-2 h-9 transition-colors duration-[120ms]"
-        style={{ background: active ? TH.accent + '1f' : 'transparent', borderRight: `2px solid ${active ? TH.accent : 'transparent'}` }}
-        onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
+      <div key={r.sym} data-watch-row={r.sym} onClick={selectRow} onContextMenu={(e) => openCtx(r.sym, e)} className="group/row pc-hairline-b relative flex items-center gap-1 w-full px-2 h-9 transition-colors duration-[120ms]"
+        style={{ background: active ? 'var(--pc-accent-tint)' : 'transparent', borderInlineStart: `2px solid ${active ? TH.accent : 'transparent'}` }}
+        onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = 'var(--pc-hover)'; }}
         onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
         {r.flag && <span className="absolute right-0 top-1.5 bottom-1.5 w-[2px] rounded-full" style={{ background: FLAG_HEX[r.flag] }} />}
         <button type="button" data-watch-select aria-label={`انتخاب ${prettySym(r.sym)}`} aria-current={active ? 'true' : undefined}
@@ -597,17 +597,17 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
           <span className="flex-1 min-w-[52px] text-left" dir="ltr">
             <span className="flex items-center gap-1 min-w-0">
               {dot}
-              <span className="text-[11px] font-bold leading-tight truncate" style={{ color: active ? (TH.accentText || TH.accent) : TH.textStrong }}>{prettySym(r.sym)}</span>
+              <span className="text-[12px] font-semibold leading-tight truncate" style={{ color: active ? (TH.accentText || TH.accent) : TH.textStrong }}>{prettySym(r.sym)}</span>
             </span>
             {meta.showDesc && <span className="block text-[10px] leading-tight opacity-50 truncate" style={{ color: TH.text }}>{r.nameEn || r.name || KIND_LABEL[r.kind]}</span>}
           </span>
           {/* ردیفِ TV: آخرین | Chg | Chg٪ — ستونیِ هم‌تراز و رنگیِ جهت‌دار (Last رنگِ تیکِ زنده، Chg/Chg٪ رنگِ جهتِ تغییر) */}
-          <FlashNum value={r.lp?.mid} className="tnum text-[11px] font-semibold text-right shrink-0 w-[44px] leading-none rounded" dir="ltr" style={{ color: priceCol }}>
+          <FlashNum value={r.lp?.mid} className="pc-num-ltr text-[11px] font-semibold text-right shrink-0 w-[44px] leading-none rounded" dir="ltr" style={{ color: priceCol }}>
             {r.lp ? sepThousands(fmtPrice(r.sym, r.lp.mid)) : '—'}
           </FlashNum>
-          <span className="tnum text-[10px] text-right shrink-0 w-[40px] leading-none whitespace-nowrap" dir="ltr" style={{ color: chgCol }}>{chgAbsTxt || '—'}</span>
-          <span className="tnum text-[10px] text-right shrink-0 w-[36px] leading-none whitespace-nowrap rounded px-0.5" dir="ltr" style={{ color: chgCol, background: chgBg(r.chg) }}>{chgTxt || '—'}</span>
-          {extraCols.map((key) => { const c = numCell(key); return <span key={key} className="tnum text-[10px] w-11 text-right shrink-0" dir="ltr" style={{ color: c.col }}>{c.txt}</span>; })}
+          <span className="pc-num-ltr text-[10px] text-right shrink-0 w-[40px] leading-none" dir="ltr" style={{ color: chgCol }}>{chgAbsTxt || '—'}</span>
+          <span className="pc-num-ltr text-[10px] text-right shrink-0 w-[36px] leading-none rounded px-0.5" dir="ltr" style={{ color: chgCol, background: chgBg(r.chg) }}>{chgTxt || '—'}</span>
+          {extraCols.map((key) => { const c = numCell(key); return <span key={key} className="pc-num-ltr text-[10px] w-11 text-right shrink-0" dir="ltr" style={{ color: c.col }}>{c.txt}</span>; })}
         </button>
         {/* اکشن‌ها روی hover overlay می‌شوند (سبکِ TV) تا عرضِ ستون‌ها مصرف نشود */}
         <RowActions r={r} TH={TH} flagFor={flagFor} setFlagFor={setFlagFor} setFlag={setFlag} toggleWatch={toggleWatch} overlay />
@@ -619,7 +619,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
     <div className="overflow-auto flex flex-col" onClick={(e) => { if (e.target === e.currentTarget) closeMenus(); }}>
       {/* هدر: تیتر + سویچرِ لیست + منوی شخصی‌سازی */}
       <div className="px-3 pt-2 pb-1 flex items-center justify-between select-none relative">
-        <button onClick={() => { setListMenuOpen((v) => !v); setMenuOpen(false); }} className="flex items-center gap-1 text-[11px] font-semibold tracking-wide" style={{ color: TH.textStrong }}>
+        <button onClick={() => { setListMenuOpen((v) => !v); setMenuOpen(false); }} className="flex items-center gap-1 text-[12px] font-semibold" style={{ color: TH.textStrong }}>
           <span className="truncate max-w-[110px]">{list.name}</span>
           <ChevronDown size={12} className={`transition-transform duration-[120ms] ${listMenuOpen ? 'rotate-180' : ''}`} style={{ color: TH.text }} />
         </button>
@@ -681,7 +681,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
                     const on = (meta.columns || []).includes(key);
                     return (
                       <button key={key} onClick={() => toggleCol(key)} title={`ستونِ ${label}`} className="px-1.5 h-6 rounded text-[11px] transition-colors duration-[120ms]"
-                        style={on ? { background: TH.accent, color: '#fff' } : { background: TH.subtle, color: TH.text }}
+                        style={on ? { background: 'var(--pc-accent-tint)', color: TH.accentText || TH.accent } : { background: TH.subtle, color: TH.text }}
                         onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
                         onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = TH.subtle; }}>
                         {label}
@@ -689,6 +689,17 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
                     );
                   })}
                 </div>
+              </div>
+            </div>
+            {/* فیلترِ رنگِ پرچم (LUXE §۸.۱) — از ردیفِ دائمیِ هدر به این منو منتقل شد؛ نمایشِ on-demand با همان handlerها */}
+            <div className="border-t pt-2 flex items-center justify-between gap-2" style={{ borderColor: TH.border }}>
+              <span className="shrink-0">فیلترِ رنگ</span>
+              <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                {FLAG_ORDER.map((c) => {
+                  const on = meta.flagFilter === c;
+                  return <button key={c} title={`فیلترِ رنگِ ${c}`} onClick={() => patch({ flagFilter: on ? null : c })} className="w-3.5 h-3.5 rounded-full transition-transform duration-[120ms]" style={{ background: FLAG_HEX[c], outline: on ? `2px solid ${TH.accent}` : 'none', outlineOffset: 1, transform: on ? 'scale(1.15)' : 'scale(1)', opacity: meta.flagFilter && !on ? 0.4 : 1 }} />;
+                })}
+                {meta.flagFilter && <button onClick={() => patch({ flagFilter: null })} className="text-[11px] opacity-60 hover:opacity-100" style={{ color: TH.text }}>پاک</button>}
               </div>
             </div>
             {meta.groupBy === 'section' && (
@@ -715,15 +726,6 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
         )}
       </div>
 
-      {/* فیلترِ رنگ (chipهای ۷ رنگ) */}
-      <div className="px-3 pb-1 flex items-center gap-1.5 flex-wrap">
-        {FLAG_ORDER.map((c) => {
-          const on = meta.flagFilter === c;
-          return <button key={c} title={`فیلترِ رنگِ ${c}`} onClick={() => patch({ flagFilter: on ? null : c })} className="w-3.5 h-3.5 rounded-full transition-transform duration-[120ms]" style={{ background: FLAG_HEX[c], outline: on ? `2px solid ${TH.accent}` : 'none', outlineOffset: 1, transform: on ? 'scale(1.15)' : 'scale(1)', opacity: meta.flagFilter && !on ? 0.4 : 1 }} />;
-        })}
-        {meta.flagFilter && <button onClick={() => patch({ flagFilter: null })} className="text-[11px] opacity-60 hover:opacity-100" style={{ color: TH.text }}>پاک</button>}
-      </div>
-
       {/* افزودنِ نماد — جستجوی واقعی، بالای لیست (سبکِ TV؛ با دکمهٔ + بالای پنل باز/بسته می‌شود) */}
       {adding && (
         <div className="px-2 pb-2 flex flex-col gap-1 border-b" style={{ borderColor: TH.border }}>
@@ -738,12 +740,12 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
             {addCandidates.map((s) => (
               <button key={s} onClick={() => toggleWatch(s)} className="flex items-center gap-2.5 px-2 h-9 rounded-md transition-colors"
                 onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
-                <SymbolLogo symbol={s} size={24} />
+                <SymbolLogo symbol={s} size={18} />
                 <span className="flex-1 min-w-0 text-left" dir="ltr">
                   <span className="block text-[12px] font-semibold truncate" style={{ color: TH.textStrong }}>{prettySym(s)}</span>
-                  <span className="block text-[9px] leading-tight opacity-50 truncate" style={{ color: TH.text }}>{classifySym(s).nameEn}</span>
+                  <span className="block text-[10px] leading-tight opacity-50 truncate" style={{ color: TH.text }}>{classifySym(s).nameEn}</span>
                 </span>
-                <span className="text-[9px] px-1.5 py-0.5 rounded-full shrink-0" style={{ background: TH.chipBg, color: TH.text }}>{KIND_LABEL[symbolKind(s)]}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded shrink-0" style={{ border: `1px solid ${TH.border}`, color: 'var(--pc-text-muted)' }}>{KIND_LABEL[symbolKind(s)]}</span>
                 <Plus size={13} className="opacity-60 shrink-0" style={{ color: TH.accent }} />
               </button>
             ))}
@@ -756,7 +758,7 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
       {/* هدرِ ستون‌ها (سبکِ TV) — هم‌ترازِ سلول‌های سطرها، متناسب با نمای لیست/جدول */}
       {rows.length > 0 && (
         isTable ? (
-          <div className="flex items-center gap-2 w-full px-3 h-6 text-[9px] font-semibold tracking-wide select-none border-b" style={{ color: TH.text, borderColor: TH.border }}>
+          <div className="flex items-center gap-2 w-full px-3 h-6 text-[11px] font-semibold tracking-wide select-none border-b" style={{ color: TH.text, borderColor: TH.border }}>
             {meta.showLogo && <span className="shrink-0" style={{ width: logoSz }} />}
             <button type="button" onClick={() => toggleSort('name')} title="مرتب‌سازی بر اساسِ نماد" className="flex-1 min-w-0 text-left cursor-pointer rounded hover:bg-black/10 transition-colors duration-[120ms]" dir="ltr" style={{ color: meta.sortBy === 'name' ? TH.accent : 'inherit', opacity: meta.sortBy === 'name' ? 1 : undefined }}>نماد{sortArrow('name')}</button>
             <button type="button" onClick={() => toggleSort('price')} title="مرتب‌سازی بر اساسِ آخرین قیمت" className="w-16 text-left shrink-0 cursor-pointer rounded hover:bg-black/10 transition-colors duration-[120ms]" dir="ltr" style={{ color: meta.sortBy === 'price' ? TH.accent : 'inherit', opacity: meta.sortBy === 'price' ? 1 : undefined }}>آخرین{sortArrow('price')}</button>
@@ -781,11 +783,11 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
       {groups.map((g) => (
         <div key={g.key}>
           {g.name != null && (meta.groupBy === 'section' || meta.groupBy === 'type') && (
-            <div className="flex items-center justify-between w-full px-3 h-7 text-[10px] font-semibold tracking-wider select-none sticky top-0 z-[5] border-b" style={{ background: TH.bg, borderColor: TH.border }}>
+            <div className="pc-section-head w-full select-none sticky top-0 z-[5]" style={{ background: TH.bg }}>
               <button onClick={() => { if (g.sectionId) toggleSection(g.sectionId); else if (g.typeKey) toggleTypeCollapse(g.typeKey); }} className="flex items-center gap-1.5 min-w-0" style={{ color: TH.text, cursor: (g.sectionId || g.typeKey) ? 'pointer' : 'default' }}>
                 {(g.sectionId != null || g.typeKey != null) && <ChevronDown size={11} className={`transition-transform duration-[120ms] ${g.collapsed ? '-rotate-90' : ''}`} />}
-                <span className="truncate uppercase" style={{ letterSpacing: '.05em' }}>{g.name}</span>
-                {g.en && <span className="text-[8px] uppercase tracking-widest shrink-0" dir="ltr">{g.en}</span>}
+                <span className="truncate normal-case text-[12px] font-semibold" style={{ letterSpacing: 0 }}>{g.name}</span>
+                {g.en && <span className="text-[10px] uppercase shrink-0" dir="ltr" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>{g.en}</span>}
               </button>
               <span className="flex items-center gap-1">
                 <span className="tabular-nums opacity-50">{g.rows.length}</span>
@@ -804,11 +806,11 @@ function Watchlist({ TH, symbol, setSymbol, symbols, live, watch, toggleWatch, f
 
       {/* پنلِ جزئیاتِ نمادِ فعال (سبکِ TV) — زیرِ لیست mount می‌شود تا مشخصاتِ نمادِ فعال دیده شود */}
       <div className="mt-2 border-t" style={{ borderColor: TH.border }}>
-        <button onClick={() => patch({ showDetails: meta.showDetails === false })} className="flex items-center justify-between w-full px-3 py-2 select-none" style={{ color: TH.text }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
-          <span className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wide">
+        <button onClick={() => patch({ showDetails: meta.showDetails === false })} className="flex items-center justify-between w-full px-2 h-7 select-none" style={{ color: TH.text }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--pc-hover)')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold">
             <Info size={12} /> جزئیاتِ نماد
-            <span className="text-[8px] uppercase tracking-wider" dir="ltr">DETAILS</span>
+            <span className="text-[10px] uppercase" dir="ltr" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>DETAILS</span>
           </span>
           <ChevronDown size={13} className={`transition-transform duration-[120ms] ${meta.showDetails === false ? '-rotate-90' : ''}`} />
         </button>
@@ -944,7 +946,7 @@ function Seg({ TH, label, value, onChange, options }) {
           const on = value === v;
           return (
             <button key={v} onClick={() => onChange(v)} className="px-1.5 h-6 rounded text-[11px] flex items-center gap-1 transition-colors duration-[120ms]"
-              style={on ? { background: TH.accent, color: '#fff' } : { color: TH.text }}
+              style={on ? { background: 'var(--pc-accent-tint)', color: TH.accentText || TH.accent } : { color: TH.text }}
               onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
               onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
               {Icon && <Icon size={11} />} {l}

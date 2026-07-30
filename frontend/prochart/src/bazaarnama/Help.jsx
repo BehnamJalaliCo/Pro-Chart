@@ -446,9 +446,9 @@ function HelpModalInner({ entry, onClose, TH }) {
   const sections = Array.isArray(entry.sections) ? entry.sections : [];
   return (
     <div dir="rtl" className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: TH.overlayMask || 'rgba(0,0,0,.5)', backdropFilter: 'blur(2px)' }} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="w-full max-w-lg max-h-[88vh] overflow-auto rounded-xl pc-pop" style={{ background: TH.panel, border: `1px solid ${TH.border}`, color: TH.text }}>
-        <div className="flex items-center justify-between px-4 py-3 border-b sticky top-0" style={{ borderColor: TH.border, background: TH.panel }}>
-          <div className="flex items-center gap-2"><HelpCircle size={17} style={{ color: TH.accent }} /><b style={{ color: TH.textStrong }}>{title}</b></div>
+      <div className="w-full max-w-lg max-h-[88vh] overflow-auto rounded-lg" style={{ background: TH.panel, border: `1px solid ${TH.border}`, boxShadow: 'var(--pc-shadow-modal)', color: TH.text }}>
+        <div className="flex items-center justify-between px-4 h-10 border-b sticky top-0" style={{ borderColor: TH.border, background: TH.panel }}>
+          <div className="flex items-center gap-2"><HelpCircle size={17} style={{ color: TH.text }} /><b className="text-[14px]" style={{ color: TH.textStrong, fontWeight: 600 }}>{title}</b></div>
           <button onClick={onClose} title="بستنِ راهنما" aria-label="بستنِ راهنما" className="pc-iconbtn w-7 h-7"><X size={16} /></button>
         </div>
         <div className="px-4 py-3 space-y-3 text-[13px] leading-7">
@@ -456,34 +456,34 @@ function HelpModalInner({ entry, onClose, TH }) {
           {entry.diagram && <Diagram diagram={entry.diagram} TH={TH} />}
           {sections.length > 0 && sections.map((s, i) => (
             <div key={i}>
-              {str(s.h) && <div className="font-bold mb-1" style={{ color: TH.textStrong }}>{str(s.h)}</div>}
+              {str(s.h) && <div className="font-semibold mb-1" style={{ color: TH.textStrong }}>{str(s.h)}</div>}
               {Array.isArray(s.body)
-                ? <ul className="space-y-1">{s.body.map((b, j) => <li key={j} className="flex gap-1.5"><span style={{ color: TH.accent }}>•</span><span>{str(b)}</span></li>)}</ul>
+                ? <ul className="space-y-1">{s.body.map((b, j) => <li key={j} className="flex gap-1.5"><span style={{ color: 'var(--pc-text-muted)' }}>•</span><span>{str(b)}</span></li>)}</ul>
                 : <p style={{ color: TH.text, whiteSpace: 'pre-wrap' }}>{str(s.body)}</p>}
               {s.img && (
                 <figure className="mt-2 mb-1">
                   <img src={str(s.img)} alt={str(s.h) || ''} loading="lazy" className="w-full rounded-lg" style={{ border: `1px solid ${TH.border}`, background: '#fff' }} />
-                  {str(s.cap) && <figcaption className="mt-1 text-[11.5px] text-center opacity-60" style={{ color: TH.text }}>{str(s.cap)}</figcaption>}
+                  {str(s.cap) && <figcaption className="mt-1 text-[11px] text-center" style={{ color: 'var(--pc-text-muted)' }}>{str(s.cap)}</figcaption>}
                 </figure>
               )}
             </div>
           ))}
           {how.length > 0 && (
             <div>
-              <div className="font-bold mb-1" style={{ color: TH.textStrong }}>گام‌به‌گامِ استفاده</div>
+              <div className="font-semibold mb-1" style={{ color: TH.textStrong }}>گام‌به‌گامِ استفاده</div>
               <ol className="list-decimal pr-5 space-y-1">{how.map((s, i) => <li key={i}>{s}</li>)}</ol>
             </div>
           )}
           {tips.length > 0 && (
             <div>
-              <div className="font-bold mb-1" style={{ color: TH.textStrong }}>نکته‌های حرفه‌ای</div>
-              <ul className="space-y-1">{tips.map((s, i) => <li key={i} className="flex gap-1.5"><span style={{ color: TH.accent }}>•</span><span>{s}</span></li>)}</ul>
+              <div className="font-semibold mb-1" style={{ color: TH.textStrong }}>نکته‌های حرفه‌ای</div>
+              <ul className="space-y-1">{tips.map((s, i) => <li key={i} className="flex gap-1.5"><span style={{ color: 'var(--pc-text-muted)' }}>•</span><span>{s}</span></li>)}</ul>
             </div>
           )}
           {example && (
             <div className="rounded-lg p-2.5" style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
-              <div className="font-bold mb-1 text-[12px]" style={{ color: TH.up }}>مثالِ واقعی</div>
-              <p className="text-[12.5px]" style={{ color: TH.text }}>{example}</p>
+              <div className="font-semibold mb-1 text-[12px]" style={{ color: TH.textStrong }}>مثالِ واقعی</div>
+              <p className="text-[12px]" style={{ color: TH.text }}>{example}</p>
             </div>
           )}
         </div>
@@ -503,11 +503,11 @@ class HelpErrorBoundary extends React.Component {
     if (this.state.err) {
       return (
         <div dir="rtl" className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: TH.overlayMask || 'rgba(0,0,0,.5)' }} onMouseDown={(e) => { if (e.target === e.currentTarget) this.props.onClose && this.props.onClose(); }}>
-          <div className="w-full max-w-sm rounded-xl p-5 text-center" style={{ background: TH.panel || '#161923', border: `1px solid ${TH.border || '#2a2e39'}`, color: TH.text || '#ddd' }}>
+          <div className="w-full max-w-sm rounded-lg p-5 text-center" style={{ background: TH.panel || '#161923', border: `1px solid ${TH.border || '#2a2e39'}`, boxShadow: 'var(--pc-shadow-modal)', color: TH.text || '#ddd' }}>
             <div className="text-2xl mb-2">📘</div>
-            <div className="font-bold mb-1" style={{ color: TH.textStrong || '#fff' }}>راهنمای این مورد در دسترس نیست</div>
+            <div className="font-semibold mb-1" style={{ color: TH.textStrong || '#fff' }}>راهنمای این مورد در دسترس نیست</div>
             <div className="text-[12px] opacity-60 leading-6 mb-4">در نمایشِ این راهنما مشکلی پیش آمد. صفحه سالم است؛ می‌توانی ببندی و ادامه بدهی.</div>
-            <button onClick={() => { this.setState({ err: null }); this.props.onClose && this.props.onClose(); }} className="px-5 py-2 rounded-lg font-bold" style={{ background: TH.accent || '#2962FF', color: '#fff' }}>باشه</button>
+            <button onClick={() => { this.setState({ err: null }); this.props.onClose && this.props.onClose(); }} className="px-5 py-2 rounded font-semibold hover:opacity-90" style={{ background: TH.accent || '#2962FF', color: '#fff' }}>باشه</button>
           </div>
         </div>
       );
@@ -544,7 +544,7 @@ export function HotkeyCheatSheet({ TH = {}, groups = SHORTCUT_GROUPS }) {
     <div dir="rtl" className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
       {groups.map((g) => (
         <div key={g.group}>
-          <div className="text-[11px] font-bold mb-1.5 pb-1 border-b" style={{ color: TH.accent, borderColor: TH.border }}>{g.group}</div>
+          <div className="text-[11px] font-semibold mb-1.5 pb-1 border-b" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.3px', borderColor: TH.border }}>{g.group}</div>
           <div className="space-y-1">
             {g.items.map((s) => (
               <div key={s.id} className="flex items-center justify-between gap-2 text-xs">
@@ -570,9 +570,9 @@ export function HotkeyCheatSheetModal({ open, onClose, TH = {} }) {
   if (!open) return null;
   return (
     <div dir="rtl" className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: TH.overlayMask || 'rgba(0,0,0,.5)', backdropFilter: 'blur(2px)' }} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose && onClose(); }}>
-      <div className="rounded-xl border shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col pc-pop" style={{ background: TH.popoverBg || TH.panel, borderColor: TH.border, color: TH.text }}>
-        <div className="flex items-center justify-between px-4 py-2.5 border-b sticky top-0" style={{ borderColor: TH.border, background: TH.popoverBg || TH.panel }}>
-          <h3 className="font-bold text-sm flex items-center gap-2" style={{ color: TH.textStrong }}><Keyboard size={16} style={{ color: TH.accent }} /> چیت‌شیتِ کیبورد</h3>
+      <div className="rounded-lg border w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col" style={{ background: TH.popoverBg || TH.panel, borderColor: TH.border, boxShadow: 'var(--pc-shadow-modal)', color: TH.text }}>
+        <div className="flex items-center justify-between px-4 h-10 border-b sticky top-0" style={{ borderColor: TH.border, background: TH.popoverBg || TH.panel }}>
+          <h3 className="font-semibold text-[14px] flex items-center gap-2" style={{ color: TH.textStrong }}><Keyboard size={16} style={{ color: TH.text }} /> چیت‌شیتِ کیبورد</h3>
           <button onClick={onClose} aria-label="بستن" className="pc-iconbtn w-7 h-7"><X size={16} /></button>
         </div>
         <div className="overflow-auto p-4 bn-thin-scroll">

@@ -75,7 +75,7 @@ function mark(text, positions, T) {
   const set = new Set(positions);
   const out = [];
   let buf = '', on = false;
-  const flush = (k) => { if (!buf) return; out.push(on ? <span key={k} style={{ color: T.accent, fontWeight: 800 }}>{buf}</span> : buf); buf = ''; };
+  const flush = (k) => { if (!buf) return; out.push(on ? <span key={k} style={{ color: T.accent, fontWeight: 600 }}>{buf}</span> : buf); buf = ''; };
   for (let i = 0; i < s.length; i++) {
     const m = set.has(i);
     if (m !== on) { flush('m' + i); on = m; }
@@ -139,15 +139,15 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
   const ROW = coarse ? 56 : 48;
   return (
     <div className="fixed inset-0 z-[120] flex items-start justify-center pt-[8vh] px-3" dir="rtl"
-      style={{ background: 'rgba(0,0,0,.55)', backdropFilter: 'blur(3px)' }} onClick={onClose}>
-      <div className="w-[min(680px,96vw)] rounded-2xl overflow-hidden shadow-2xl flex flex-col"
-        style={{ background: T.panel, border: `1px solid ${T.border}`, maxHeight: '84vh' }}
+      style={{ background: T.overlayMask || 'rgba(0,0,0,.55)', backdropFilter: 'blur(3px)' }} onClick={onClose}>
+      <div className="w-[min(680px,96vw)] rounded-lg overflow-hidden flex flex-col"
+        style={{ background: T.panel, border: `1px solid ${T.border}`, boxShadow: 'var(--pc-shadow-modal)', maxHeight: '84vh' }}
         onClick={(e) => e.stopPropagation()} onKeyDown={onKey}>
 
         {/* سرتیترِ دیالوگ (عنوان + بستن) — هم‌ترازِ «Symbol search»ِ TV */}
-        <div className="flex items-center justify-between px-4 pt-3 pb-1 shrink-0">
-          <span className="font-bold text-[15px]" style={{ color: T.textStrong }}>{compareMode ? 'مقایسهٔ نماد' : 'جستجوی نماد'}</span>
-          <button onClick={onClose} aria-label="بستن" className="opacity-60 hover:opacity-100 p-1 -mr-1 rounded" style={{ color: T.text }}><X size={18} /></button>
+        <div className="flex items-center justify-between px-4 h-10 shrink-0" style={{ borderBottom: `1px solid ${T.border}` }}>
+          <span className="font-semibold text-[14px]" style={{ color: T.textStrong }}>{compareMode ? 'مقایسهٔ نماد' : 'جستجوی نماد'}</span>
+          <button onClick={onClose} aria-label="بستن" className="pc-iconbtn w-7 h-7 -me-1" style={{ color: T.text }}><X size={18} /></button>
         </div>
 
         {/* نوارِ جستجو */}
@@ -159,7 +159,7 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
             style={{ color: T.textStrong }} />
           {q && (
             <button onClick={() => { setQ(''); inputRef.current && inputRef.current.focus(); }} aria-label="پاک‌کردن"
-              className="opacity-55 hover:opacity-100 shrink-0 p-0.5 rounded-full" style={{ color: T.text }}><X size={15} /></button>
+              className="opacity-55 hover:opacity-100 shrink-0 p-0.5 rounded" style={{ color: T.text }}><X size={15} /></button>
           )}
           <kbd className="text-[11px] opacity-50 px-1.5 py-0.5 rounded border" style={{ borderColor: T.border, color: T.text }}>Esc</kbd>
         </div>
@@ -170,8 +170,8 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
             const on = cat === c.id;
             return (
               <button key={c.id} onClick={() => setCat(c.id)}
-                className="px-3 rounded-full text-[13px] whitespace-nowrap transition-colors duration-[120ms]"
-                style={{ height: 30, background: on ? T.accent : 'transparent', color: on ? '#fff' : T.text, opacity: on ? 1 : 0.75 }}
+                className="px-3 rounded text-[12px] whitespace-nowrap transition-colors duration-[120ms]"
+                style={{ height: 28, background: on ? 'var(--pc-accent-tint)' : 'transparent', color: on ? T.accent : T.text, fontWeight: on ? 600 : 400, opacity: on ? 1 : 0.75 }}
                 onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = T.chipBgHover; }}
                 onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
                 {c.label}
@@ -184,17 +184,17 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
         {!dq && (recent.length > 0 || cleanWatch.length > 0) && (
           <div className="px-3 pt-2 pb-1.5 flex flex-wrap gap-1.5 text-[12px] shrink-0" style={{ borderBottom: `1px solid ${T.border}` }}>
             {recent.map((s) => (
-              <button key={'r' + s} onClick={() => pick(s)} className="flex items-center gap-1 px-2 rounded-lg" dir="ltr"
-                style={{ height: 30, background: T.chipBg, color: T.textStrong }}
+              <button key={'r' + s} onClick={() => pick(s)} className="flex items-center gap-1 px-2 rounded" dir="ltr"
+                style={{ height: 28, background: T.chipBg, color: T.textStrong }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = T.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = T.chipBg)}>
                 <Clock size={11} className="opacity-45 shrink-0" /> <SymbolLogo symbol={s} size={16} /> {s}
               </button>
             ))}
             {cleanWatch.filter((s) => !recent.includes(s)).slice(0, 6).map((s) => (
-              <button key={'w' + s} onClick={() => pick(s)} className="flex items-center gap-1 px-2 rounded-lg" dir="ltr"
-                style={{ height: 30, background: T.chipBg, color: T.textStrong }}
+              <button key={'w' + s} onClick={() => pick(s)} className="flex items-center gap-1 px-2 rounded" dir="ltr"
+                style={{ height: 28, background: T.chipBg, color: T.textStrong }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = T.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = T.chipBg)}>
-                <Star size={11} className="text-amber-400" /> {s}
+                <Star size={11} style={{ color: T.accent, fill: T.accent }} /> {s}
               </button>
             ))}
           </div>
@@ -216,9 +216,9 @@ export default function SymbolSearchModal({ open, onClose, metaList = [], watch 
                   style={{ background: isActive ? T.chipBgHover : 'transparent', boxShadow: isCur ? `inset 0 0 0 1px ${T.accent}` : 'none', color: T.textStrong }}>
                   <SymbolLogo symbol={m.symbol} size={coarse ? 30 : 26} />
                   {/* ردیفِ تک‌خطیِ TradingView: نمادِ درشتِ ltr + توضیحِ کم‌رنگِ کنارِ آن (هم‌خط، truncate) */}
-                  <span className="text-[14px] font-bold leading-tight shrink-0" dir="ltr">{mark(m.symbol, highlightPositions(m.symbol, qSym), T)}</span>
-                  <span className="flex-1 min-w-0 text-[12.5px] opacity-55 leading-tight truncate">{mark(m.desc, highlightPositions(m.desc, qDesc), T)}</span>
-                  {watchSet.has(m.symbol) && <Star size={13} className="text-amber-400 shrink-0" />}
+                  <span className="text-[14px] font-semibold leading-tight shrink-0" dir="ltr">{mark(m.symbol, highlightPositions(m.symbol, qSym), T)}</span>
+                  <span className="flex-1 min-w-0 text-[12px] opacity-55 leading-tight truncate">{mark(m.desc, highlightPositions(m.desc, qDesc), T)}</span>
+                  {watchSet.has(m.symbol) && <Star size={13} className="shrink-0" style={{ color: T.accent, fill: T.accent }} />}
                   {/* trailing meta سبکِ TradingView: برچسبِ نوع = متنِ کوچکِ خاکستریِ ساده (نه پیلِ رنگی) + پرچم — دقیقاً مثلِ تگِ نوعِ ردیف‌های جستجوی TV (دکلوتر). */}
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="text-[11px] whitespace-nowrap opacity-50" style={{ color: T.text }}>

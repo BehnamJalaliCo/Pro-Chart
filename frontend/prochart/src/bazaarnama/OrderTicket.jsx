@@ -147,17 +147,18 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
 
   const baseUnit = isCrypto ? (symbol || '').replace(/USDT|USDC|USD$/,'') || symbol : symbol;
 
-  const seg = { flex: 1, border: 0, cursor: 'pointer', fontWeight: 800, fontSize: 14, height: 40, borderRadius: 10, background: 'transparent', color: TH.text, fontFamily: 'inherit', transition: '.2s' };
-  const fieldBox = { display: 'flex', alignItems: 'center', background: TH.chipBg, border: `1px solid ${TH.border}`, borderRadius: 12, height: 44, padding: '0 12px' };
-  const inputCss = { flex: 1, border: 0, background: 'transparent', fontFamily: 'inherit', fontSize: 14, fontWeight: 700, color: TH.textStrong, outline: 'none', width: '100%' };
-  const cell = { flex: 1, background: TH.chipBg, border: `1px solid ${TH.border}`, borderRadius: 12, padding: '8px 10px' };
-  const chip = (on) => ({ border: 0, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, fontSize: 11.5, padding: '5px 10px', borderRadius: 8, whiteSpace: 'nowrap', color: on ? TH.textStrong : TH.text, background: on ? TH.chipBgHover : 'transparent', transition: '.15s' });
+  // دیسیپلینِ LUXE: اینپوت ۳۲px · شعاعِ کنترل ۴–۶px · وزنِ ۶۰۰ سقف · چیپِ فعال = پرِ خنثی (--pc-pressed)
+  const seg = { flex: 1, border: 0, cursor: 'pointer', fontWeight: 600, fontSize: 13, height: 32, borderRadius: 4, background: 'transparent', color: TH.text, fontFamily: 'inherit', transition: 'background-color var(--pc-transition-micro), color var(--pc-transition-micro)' };
+  const fieldBox = { display: 'flex', alignItems: 'center', background: TH.chipBg, border: `1px solid ${TH.border}`, borderRadius: 6, height: 32, padding: '0 10px' };
+  const inputCss = { flex: 1, border: 0, background: 'transparent', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, color: TH.textStrong, outline: 'none', width: '100%' };
+  const cell = { flex: 1, background: TH.chipBg, border: `1px solid ${TH.border}`, borderRadius: 6, padding: '6px 10px' };
+  const chip = (on) => ({ border: 0, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: 11, padding: '5px 10px', borderRadius: 4, whiteSpace: 'nowrap', color: on ? TH.textStrong : TH.text, background: on ? 'var(--pc-pressed)' : 'transparent', transition: 'background-color var(--pc-transition-micro), color var(--pc-transition-micro)' });
 
   return (
     <div className="p-2.5 space-y-3" style={{ color: TH.text }}>
       {/* خرید/فروش */}
-      <div className="flex gap-1 p-1 rounded-xl" style={{ background: TH.subtle }}>
-        <button onClick={() => pickSide('buy')} style={{ ...seg, ...(side === 'buy' ? { background: TH.up, color: '#fff', boxShadow: 'var(--pc-shadow-pop)' } : {}) }}>{t('trade.buy')}</button>
+      <div className="flex gap-1 p-1 rounded-md" style={{ background: TH.subtle }}>
+        <button onClick={() => pickSide('buy')} style={{ ...seg, ...(side === 'buy' ? { background: TH.up, color: '#fff' } : {}) }}>{t('trade.buy')}</button>
         <button onClick={() => pickSide('sell')} style={{ ...seg, ...(side === 'sell' ? { background: TH.down, color: '#fff' } : {}) }}>{t('trade.sell')}</button>
       </div>
 
@@ -223,28 +224,28 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
           <span>{t('trade.amount')}</span><span dir="ltr">≈ {fmt(cost)} USDT</span>
         </div>
         <div style={fieldBox}>
-          <button onClick={() => stepAmount(-1)} aria-label="کاهشِ مقدار" className="shrink-0 flex items-center justify-center rounded-md" style={{ width: 26, height: 26, border: 0, cursor: 'pointer', color: TH.text, background: TH.chipBgHover, fontWeight: 800, fontSize: 16, lineHeight: 1 }}>−</button>
+          <button onClick={() => stepAmount(-1)} aria-label="کاهشِ مقدار" className="shrink-0 flex items-center justify-center rounded" style={{ width: 24, height: 24, border: 0, cursor: 'pointer', color: TH.text, background: TH.chipBgHover, fontWeight: 600, fontSize: 15, lineHeight: 1 }}>−</button>
           <input value={amount} onChange={(e) => { setAmount(e.target.value); setPct(0); }} placeholder="0.00" inputMode="decimal" dir="ltr" className="tabular-nums" style={{ ...inputCss, textAlign: 'center' }} />
           <span className="text-[11px] font-bold shrink-0" style={{ color: TH.text }}>{baseUnit}</span>
-          <button onClick={() => stepAmount(1)} aria-label="افزایشِ مقدار" className="shrink-0 flex items-center justify-center rounded-md mr-1" style={{ width: 26, height: 26, border: 0, cursor: 'pointer', color: TH.text, background: TH.chipBgHover, fontWeight: 800, fontSize: 16, lineHeight: 1 }}>+</button>
+          <button onClick={() => stepAmount(1)} aria-label="افزایشِ مقدار" className="shrink-0 flex items-center justify-center rounded mr-1" style={{ width: 24, height: 24, border: 0, cursor: 'pointer', color: TH.text, background: TH.chipBgHover, fontWeight: 600, fontSize: 15, lineHeight: 1 }}>+</button>
         </div>
         {/* درصدِ موجودی */}
         <div className="flex gap-1.5 mt-2">
           {PCTS.map((p) => (
-            <button key={p} onClick={() => applyPct(p)} className="flex-1 rounded-lg" style={{ border: 0, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, fontSize: 11, padding: '5px 0', color: pct === p ? '#fff' : TH.text, background: pct === p ? TH.accent : TH.chipBg }}>{p}%</button>
+            <button key={p} onClick={() => applyPct(p)} className="flex-1 rounded" style={{ border: `1px solid ${TH.border}`, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: 11, padding: '4px 0', color: pct === p ? TH.textStrong : TH.text, background: pct === p ? 'var(--pc-pressed)' : 'transparent' }}>{p}%</button>
           ))}
         </div>
       </div>
 
       {/* اهرم */}
-      <div className="flex items-center gap-2.5 rounded-xl px-3 py-2.5" style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
-        <span className="text-[12px] font-bold" style={{ color: TH.text }}>{t('trade.leverage')}</span>
+      <div className="flex items-center gap-2.5 rounded-md px-3 py-2" style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
+        <span className="text-[12px] font-semibold" style={{ color: TH.text }}>{t('trade.leverage')}</span>
         <input type="range" min="1" max="125" value={leverage} onChange={(e) => setLeverage(+e.target.value)} className="flex-1" style={{ accentColor: TH.accent }} />
-        <span className="font-extrabold tabular-nums" dir="ltr" style={{ color: TH.accent, minWidth: 34, textAlign: 'left' }}>{leverage}×</span>
+        <span className="font-semibold tabular-nums" dir="ltr" style={{ color: TH.textStrong, minWidth: 34, textAlign: 'left' }}>{leverage}×</span>
       </div>
       <div className="flex gap-1">
         {LEV_PRESETS.map((L) => (
-          <button key={L} onClick={() => setLeverage(L)} className="flex-1 rounded-md tabular-nums" dir="ltr" style={{ border: 0, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, fontSize: 10.5, padding: '3px 0', color: leverage === L ? TH.accent : TH.text, background: leverage === L ? TH.chipBgHover : 'transparent' }}>{L}×</button>
+          <button key={L} onClick={() => setLeverage(L)} className="flex-1 rounded tabular-nums" dir="ltr" style={{ border: 0, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: 11, padding: '3px 0', color: leverage === L ? TH.textStrong : TH.text, background: leverage === L ? 'var(--pc-pressed)' : 'transparent' }}>{L}×</button>
         ))}
       </div>
 
@@ -258,20 +259,20 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
       {order && bracket && (
         <div className="flex gap-2">
           <div style={cell}>
-            <div className="text-[10.5px] font-bold mb-1" style={{ color: TH.up }}>🎯 {t('trade.tp')}</div>
+            <div className="text-[11px] font-semibold mb-1" style={{ color: TH.upText || TH.up }}>🎯 {t('trade.tp')}</div>
             <input value={order.tp ?? ''} onChange={(e) => setField('tp', e.target.value)} inputMode="decimal" dir="ltr" className="tabular-nums" style={{ ...inputCss, fontSize: 13 }} />
-            {distHint(tp) && <div className="text-[9px] mt-0.5 tabular-nums" dir="ltr" style={{ color: TH.up, opacity: 0.7 }}>{distHint(tp)}</div>}
+            {distHint(tp) && <div className="text-[10px] mt-0.5 tabular-nums" dir="ltr" style={{ color: TH.upText || TH.up, opacity: 0.7 }}>{distHint(tp)}</div>}
           </div>
           <div style={cell}>
-            <div className="text-[10.5px] font-bold mb-1" style={{ color: TH.down }}>🛑 {t('trade.sl')}</div>
+            <div className="text-[11px] font-semibold mb-1" style={{ color: TH.downText || TH.down }}>🛑 {t('trade.sl')}</div>
             <input value={order.sl ?? ''} onChange={(e) => setField('sl', e.target.value)} inputMode="decimal" dir="ltr" className="tabular-nums" style={{ ...inputCss, fontSize: 13 }} />
-            {distHint(sl) && <div className="text-[9px] mt-0.5 tabular-nums" dir="ltr" style={{ color: TH.down, opacity: 0.7 }}>{distHint(sl)}</div>}
+            {distHint(sl) && <div className="text-[10px] mt-0.5 tabular-nums" dir="ltr" style={{ color: TH.downText || TH.down, opacity: 0.7 }}>{distHint(sl)}</div>}
           </div>
         </div>
       )}
 
       {/* خلاصهٔ سفارش */}
-      <div className="rounded-xl px-3 py-2.5 text-[12px] space-y-1" style={{ background: TH.subtle }}>
+      <div className="pc-card-flat px-3 py-2.5 text-[12px] space-y-1">
         <Row TH={TH} k={tx('قیمتِ ورود', 'Entry')} v={px ? `${fmtPx(symbol, px)} USDT` : '—'} />
         {isStopish && <Row TH={TH} k={tx('ماشه', 'Trigger')} v={stopPx ? fmt(stopPx) : '—'} />}
         <Row TH={TH} k={t('trade.cost')} v={`${fmt(cost)} USDT`} />
@@ -288,7 +289,7 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
 
       {/* اعتبارسنجی — خطاهای مسدودکننده و هشدارها */}
       {order && (errs.length > 0 || warns.length > 0) && (
-        <div className="rounded-xl px-3 py-2 text-[11px] space-y-1" style={{ background: TH.subtle, border: `1px solid ${errs.length ? TH.down : '#e8a33d'}` }}>
+        <div className="rounded-md px-3 py-2 text-[11px] space-y-1" style={{ background: TH.subtle, border: `1px solid ${errs.length ? TH.down : '#e8a33d'}` }}>
           {errs.map((m, i) => (
             <div key={`e${i}`} className="flex items-center gap-1.5" style={{ color: TH.down }}>
               <AlertTriangle size={12} /> <span>{m}</span>
@@ -304,14 +305,14 @@ export default function OrderTicket({ TH, symbol, order, setOrder, startTrade, s
 
       {/* دکمهٔ اقدام — اگر حساب متصل باشد سفارشِ واقعی (با تأیید)، وگرنه پیش‌نمایش */}
       <button onClick={onAction} disabled={connected && blocking}
-        className="w-full flex items-center justify-center gap-2 rounded-xl active:scale-[.98] transition-transform"
-        style={{ height: 50, border: 0, cursor: (connected && blocking) ? 'not-allowed' : 'pointer', opacity: (connected && blocking) ? .55 : 1, fontFamily: 'inherit', fontWeight: 800, fontSize: 15, color: '#fff', background: side === 'buy' ? TH.up : TH.down, boxShadow: 'var(--pc-shadow-pop)' }}>
-        <ShoppingCart size={17} className="shrink-0" />
+        className="w-full flex items-center justify-center gap-2 rounded-md active:scale-[.98] transition-transform"
+        style={{ height: 40, border: 0, cursor: (connected && blocking) ? 'not-allowed' : 'pointer', opacity: (connected && blocking) ? .55 : 1, fontFamily: 'inherit', fontWeight: 600, fontSize: 14, color: '#fff', background: side === 'buy' ? TH.up : TH.down }}>
+        <ShoppingCart size={16} className="shrink-0" />
         {/* برچسبِ پویا سبکِ TV: «خرید 0.5 EURUSD @ بازار» / «… @ 1.14000 حدی» — نمایشِ سمت+مقدار+نماد+نوع/قیمت پیش از کلیک */}
         <span className="truncate">{side === 'buy' ? t('trade.buy') : t('trade.sell')}{Number(amount) > 0 ? ` ${amount}` : ''} {baseUnit} @ {orderType === 'market' ? typeLabel('market') : ((isLimitish ? limitPx : stopPx) > 0 ? `${fmtPx(symbol, isLimitish ? limitPx : stopPx)} ${typeLabel(orderType)}` : typeLabel(orderType))}</span>
       </button>
       {!connected && (
-        <div className="text-center" style={{ fontSize: 10.5, color: TH.text, opacity: .7, marginTop: -4 }}>
+        <div className="text-center" style={{ fontSize: 11, color: TH.text, opacity: .7, marginTop: -4 }}>
           {isCrypto
             ? t('trade.connect')
             : tx('OneRoyal فقط مسیر معرفی است؛ این سفارش پیش‌نمایش محلی است.', 'OneRoyal is referral-only; this order is a local preview.')}

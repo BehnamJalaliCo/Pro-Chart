@@ -321,15 +321,15 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
   const Row = ({ k, v, c, last }) => (
     <div className="flex items-center justify-between gap-3 py-[5px]" style={{ borderBottom: last ? 'none' : `1px solid ${TH.border}` }}>
       <span className="text-[11px] shrink-0" style={{ color: TH.text }}>{k}</span>
-      <span className="text-[11.5px] font-semibold tabular-nums truncate text-left" dir="ltr" style={{ color: c || TH.textStrong }}>{v}</span>
+      <span className="text-[12px] font-semibold pc-num-ltr truncate text-left" dir="ltr" style={{ color: c || TH.textStrong }}>{v}</span>
     </div>
   );
 
   // سرتیترِ بخش هم‌ترازِ TV: عنوانِ فارسی + برچسبِ انگلیسیِ کم‌رنگ
   const Label = ({ fa, en }) => (
     <div className="flex items-baseline gap-1.5 mb-1.5 mt-3.5">
-      <span className="text-[11px] font-extrabold" style={{ color: TH.textStrong }}>{fa}</span>
-      <span className="text-[9px] uppercase tracking-[0.08em] opacity-40" dir="ltr">{en}</span>
+      <span className="text-[12px] font-semibold" style={{ color: TH.textStrong }}>{fa}</span>
+      <span className="text-[10px] uppercase" dir="ltr" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>{en}</span>
     </div>
   );
 
@@ -337,9 +337,9 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
   // با مقادیرِ کف/سقف در دو سرِ نوار. p در بازهٔ 0..1 (کف=چپ، سقف=راست) یا null.
   const RangeBar = ({ title, loVal, hiVal, p }) => (
     <div className="mb-2.5">
-      <div className="text-[10.5px] mb-1.5" style={{ color: TH.text }}>{title}</div>
+      <div className="text-[11px] mb-1.5" style={{ color: TH.text }}>{title}</div>
       <div className="flex items-center gap-2" dir="ltr">
-        <span className="text-[10px] tabular-nums shrink-0 w-[70px] whitespace-nowrap text-right" style={{ color: TH.textStrong, opacity: 0.85 }}>{loVal}</span>
+        <span className="text-[11px] tabular-nums shrink-0 w-[70px] whitespace-nowrap text-right" style={{ color: TH.textStrong, opacity: 0.85 }}>{loVal}</span>
         <div className="relative flex-1 h-1.5 rounded-full"
           style={{ background: p == null ? TH.chipBg : `linear-gradient(90deg, ${TH.down}, ${TH.up})` }}>
           {p != null && (
@@ -352,7 +352,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
               }} />
           )}
         </div>
-        <span className="text-[10px] tabular-nums shrink-0 w-[70px] whitespace-nowrap text-left" style={{ color: TH.textStrong, opacity: 0.85 }}>{hiVal}</span>
+        <span className="text-[11px] tabular-nums shrink-0 w-[70px] whitespace-nowrap text-left" style={{ color: TH.textStrong, opacity: 0.85 }}>{hiVal}</span>
       </div>
     </div>
   );
@@ -377,10 +377,10 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <button type="button" onClick={() => { try { window.dispatchEvent(new CustomEvent('bn:openSearch')); } catch (e) {} }}
-                title="تغییرِ نماد (جستجو)" className="font-extrabold text-[15px] leading-none tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
+                title="تغییرِ نماد (جستجو)" className="font-bold text-[15px] leading-none tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
                 style={{ color: TH.textStrong, background: 'transparent', border: 0, padding: 0 }} dir="ltr">{symbol}</button>
-              <span className="text-[8.5px] font-bold uppercase tracking-[0.06em] shrink-0 px-1.5 py-0.5 rounded"
-                style={{ color: TH.text, background: TH.chipBg }} dir="ltr">{meta.type}</span>
+              <span className="text-[10px] font-semibold uppercase shrink-0 px-1.5 py-0.5 rounded"
+                style={{ color: 'var(--pc-text-muted)', border: `1px solid ${TH.border}`, letterSpacing: '.4px' }} dir="ltr">{meta.type}</span>
             </div>
             {/* نامِ کامل • بازار (سبکِ «Apple Inc • NASDAQ»ِ TV) */}
             <div className="flex items-center gap-1.5 mt-1 min-w-0">
@@ -416,7 +416,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
         {/* قیمتِ بزرگ (رنگِ خنثی + فلَشِ گذرا) + ارزِ مظنه + تغییرِ روزِ رنگیِ ساده (سبکِ سرتیترِ TV) */}
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mt-2.5" dir="ltr">
           <Flash value={mid} dir={dir}
-            className="text-[28px] font-extrabold tabular-nums leading-none tracking-tight rounded px-0.5 -mx-0.5 inline-block"
+            className="text-[28px] font-bold tabular-nums leading-none tracking-tight rounded px-0.5 -mx-0.5 inline-block"
             style={{ color: TH.textStrong }}>
             {ref != null ? fmt(ref) : '—'}
           </Flash>
@@ -424,14 +424,14 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
             <span className="text-[11px] font-semibold" style={{ color: TH.text }}>{quoteCcy}</span>
           )}
           {chgPct != null && (
-            <span className="text-[12.5px] font-bold tabular-nums" style={{ color: chgCol }}>
+            <span className="text-[12px] font-semibold tabular-nums" style={{ color: chgCol }}>
               {chgAbs >= 0 ? '+' : ''}{fmt(chgAbs)}&nbsp;&nbsp;{chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%
             </span>
           )}
         </div>
         {/* وضعیتِ بازار + زمانِ آخرین به‌روزرسانی (سبکِ «● Market open · Last update … GMT»ِ سرتیترِ TV).
             heuristic هم‌راستا با ردیف‌های واچ‌لیست: وجودِ midِ زندهٔ معتبر ⇒ بازار باز (نقطهٔ سبز)، نبودش ⇒ بسته (خاکستری). */}
-        <div className="flex items-center gap-1.5 text-[10px] mt-1.5" dir="ltr">
+        <div className="flex items-center gap-1.5 text-[11px] mt-1.5" dir="ltr">
           <span className="inline-flex items-center gap-1 font-semibold" style={{ color: mid != null ? (TH.upText || TH.up) : TH.text }}>
             <span className="inline-block rounded-full shrink-0" style={{ width: 6, height: 6, background: mid != null ? TH.up : TH.text, opacity: mid != null ? 1 : 0.45 }} />
             {mid != null ? 'بازار باز' : 'بازار بسته'}
@@ -479,17 +479,17 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
         );
       })()}
 
-      {/* کارتِ «حقایقِ کلیدی» (توصیفیِ سبکِ TV، تینتِ اکسنتِ بنفش) */}
-      <div className="rounded-lg p-2.5 mb-1" style={{ background: tint(TH.accentAi, 0.10), border: `1px solid ${tint(TH.accentAi, 0.22)}` }}>
+      {/* کارتِ «حقایقِ کلیدی» — pc-card-flat (LUXE §۸.۵)؛ فقط آیکونِ کوچک رنگِ accentAi می‌مانَد */}
+      <div className="pc-card-flat p-2.5 mb-1">
         <div className="flex items-center gap-1.5 mb-1">
           <svg width="13" height="13" viewBox="0 0 20 20" style={{ color: TH.accentAi }}>
             <path d="M10 2l1.6 4.6L16 8.2l-4.4 1.6L10 14l-1.6-4.2L4 8.2l4.4-1.6zM15.5 12l.7 2 .8-2 1.5-.6-1.5-.7-.8-1.9-.7 1.9-1.5.7z" fill="currentColor" />
           </svg>
-          <span className="text-[11px] font-extrabold" style={{ color: TH.textStrong }}>حقایقِ کلیدی</span>
-          <span className="text-[9px] uppercase tracking-[0.08em]" dir="ltr">Key facts</span>
+          <span className="text-[12px] font-semibold" style={{ color: TH.textStrong }}>حقایقِ کلیدی</span>
+          <span className="text-[10px] uppercase" dir="ltr" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>Key facts</span>
         </div>
         <div className="text-[11px] leading-[1.7]" style={{ color: TH.text }}>{facts}</div>
-        <div className="text-[11px] font-semibold mt-1.5 cursor-default" style={{ color: TH.accentText || TH.accent }}>بیشتر بخوانید ›</div>
+        <div className="text-[11px] font-semibold mt-1.5 cursor-default" style={{ color: TH.text }}>بیشتر بخوانید ›</div>
       </div>
 
       {/* کارتِ «اخبار» (News سبکِ Symbol Infoِ TV) — آخرین خبرِ مرتبط؛ کلیک ⇒ منبع در تبِ جدید. فقط اگر خبری بود. */}
@@ -502,11 +502,11 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
           style={{ background: TH.chipBg, border: `1px solid ${TH.border}`, cursor: news.url ? 'pointer' : 'default', color: 'inherit' }}
           title={news.title}>
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[11px] font-extrabold" style={{ color: TH.textStrong }}>اخبار</span>
-            <span className="text-[9px] uppercase tracking-[0.08em]" dir="ltr">News</span>
+            <span className="text-[12px] font-semibold" style={{ color: TH.textStrong }}>اخبار</span>
+            <span className="text-[10px] uppercase" dir="ltr" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>News</span>
             {news.ts != null && <span className="text-[9.5px] mr-auto">{newsRelTime(news.ts)}</span>}
           </div>
-          <div className="text-[11.5px] leading-[1.6] font-medium" style={{ color: TH.text, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{news.title}</div>
+          <div className="text-[12px] leading-[1.6] font-medium" style={{ color: TH.text, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{news.title}</div>
           {news.source && (
             <div className="text-[9.5px] font-semibold uppercase tracking-wide truncate mt-1" dir="ltr" style={{ color: TH.text }}>{news.source}</div>
           )}
@@ -524,17 +524,18 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
         return (
           <div className="rounded-lg p-2.5 mb-1" style={{ border: `1px solid ${TH.border}` }}>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] font-extrabold" style={{ color: TH.textStrong }}>امتیازِ تکنیکال</span>
-              <span className="text-[9px] uppercase tracking-[0.08em]" dir="ltr">Technical Rating</span>
+              <span className="text-[12px] font-semibold" style={{ color: TH.textStrong }}>امتیازِ تکنیکال</span>
+              <span className="text-[10px] uppercase" dir="ltr" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>Technical Rating</span>
             </div>
             {/* انتخابگرِ تایم‌فریمِ امتیاز (Technical Rating TF selectorِ TV) — «چارت» = تایم‌فریمِ فعلیِ نمودار */}
-            <div className="flex items-center gap-0.5 mb-1.5 flex-wrap" dir="ltr">
-              {[[null, 'چارت'], ['M5', '5m'], ['M15', '15m'], ['H1', '1H'], ['H4', '4H'], ['D1', '1D']].map(([tf, lbl]) => {
+            {/* تب‌های متنیِ segmented (LUXE §۸.۶): فعال = تینت + متنِ accent؛ غیرفعال = muted؛ جداکنندهٔ مویی */}
+            <div className="flex items-center mb-1.5 flex-wrap" dir="ltr">
+              {[[null, 'چارت'], ['M5', '5m'], ['M15', '15m'], ['H1', '1H'], ['H4', '4H'], ['D1', '1D']].map(([tf, lbl], i) => {
                 const on = (ratingTf || null) === tf;
                 return (
                   <button key={lbl} onClick={() => setRatingTf(tf)} title={tf ? `امتیاز روی ${lbl}` : 'امتیاز روی تایم‌فریمِ چارت'}
-                    className="px-1.5 h-5 rounded text-[9.5px] font-semibold tabular-nums transition-colors duration-[120ms]"
-                    style={on ? { background: TH.accent, color: '#fff' } : { background: TH.chipBg, color: TH.text }}>{lbl}</button>
+                    className="px-1.5 h-6 rounded-none text-[11px] font-semibold tabular-nums transition-colors duration-[120ms]"
+                    style={{ background: on ? 'var(--pc-accent-tint)' : 'transparent', color: on ? (TH.accentText || TH.accent) : 'var(--pc-text-muted)', borderInlineStart: i ? `1px solid ${TH.border}` : 'none' }}>{lbl}</button>
                 );
               })}
             </div>
@@ -570,7 +571,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
               <span className="text-[11px] font-bold" style={{ color: RATING_FA.buy.color, opacity: 0.65 }}>خرید</span>
             </div>
             {/* برچسبِ ریتینگ زیرِ گِیج (RTLِ HTML — نه textِ SVG که فارسی را بدچین می‌کند) */}
-            <div className="text-center -mt-0.5 mb-1"><span className="text-[15px] font-extrabold" style={{ color: rf.color }}>{rf.label}</span></div>
+            <div className="text-center -mt-0.5 mb-1"><span className="text-[15px] font-bold" style={{ color: rf.color }}>{rf.label}</span></div>
             {/* شمارشِ کلِ سیگنال‌ها (فروش · خنثی · خرید) — هم‌ترازِ ردیفِ خلاصهٔ زیرِ برچسبِ گِیجِ Technical Ratingِ TV؛ جمعِ میانگین‌ها+نوسان‌گرها. */}
             {(() => {
               const ts = (eff.maSell || 0) + (eff.oscSell || 0), tn = (eff.maNeutral || 0) + (eff.oscNeutral || 0), tb = (eff.maBuy || 0) + (eff.oscBuy || 0);
@@ -578,7 +579,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
                 <div className="flex items-stretch justify-center gap-1.5 mb-1.5" dir="rtl">
                   {[['فروش', ts, RATING_FA.sell.color], ['خنثی', tn, RATING_FA.neutral.color], ['خرید', tb, RATING_FA.buy.color]].map(([lbl, cnt, col]) => (
                     <div key={lbl} className="flex-1 rounded-md py-0.5 text-center" style={{ background: TH.chipBg }}>
-                      <div className="text-[13px] font-extrabold tnum leading-none" style={{ color: col }}>{cnt}</div>
+                      <div className="text-[13px] font-semibold tnum leading-none" style={{ color: col }}>{cnt}</div>
                       <div className="text-[8px] opacity-55 mt-0.5">{lbl}</div>
                     </div>
                   ))}
@@ -592,7 +593,7 @@ export default function Details({ symbol, TH, prices = {}, techRating = null }) 
                 { key: 'osc', title: 'نوسان‌گرها', vf: of, s: eff.oscSell || 0, n: eff.oscNeutral || 0, bq: eff.oscBuy || 0 },
               ].map((c) => (
                 <div key={c.key} className="rounded-md px-1.5 py-1 text-center" style={{ background: TH.chipBg }}>
-                  <div className="text-[10px] font-extrabold leading-tight" style={{ color: c.vf.color }}>{c.vf.label}</div>
+                  <div className="text-[11px] font-semibold leading-tight" style={{ color: c.vf.color }}>{c.vf.label}</div>
                   <div className="text-[8.5px] opacity-55 mb-0.5">{c.title}</div>
                   <div className="flex items-center justify-center gap-1 text-[11px] tnum" title="فروش · خنثی · خرید">
                     <b style={{ color: RATING_FA.sell.color }}>{c.s}</b>

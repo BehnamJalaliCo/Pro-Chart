@@ -208,16 +208,12 @@ function tint(hex, a) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
-// سبکِ پایهٔ سلولِ ریل (سبکِ TV): سلولِ ۴۰px با آیکونِ ۲۰px، اما هایلایتِ اکتیو/هاور
-// به‌صورتِ مربعِ گِردِ «اینست» رندر می‌شود (نه پُرکردنِ تمامِ سلول) — با بوردرِ شفافِ ۴px
-// و backgroundClip:padding-box، پس پس‌زمینه فقط داخلِ ۳۲px با شعاعِ ۸px دیده می‌شود.
-// آیکون همچنان دقیقاً در مرکزِ سلولِ ۴۰px می‌ماند (بوردر متقارن است).
+// سبکِ پایهٔ سلولِ ریل (LUXE §۳/۴ — رفتارِ .pc-iconbtn): دکمهٔ ۲۸px با آیکونِ ۲۰px،
+// شعاعِ کنترل ۴px؛ سکون شفاف، هاور var(--pc-hover)، فعال tint (نه پُرکردنِ آبیِ سخت).
 const CELL = {
-  width: 40,
-  height: 40,
-  border: '4px solid transparent',
-  backgroundClip: 'padding-box',
-  borderRadius: 8,
+  width: 28,
+  height: 28,
+  borderRadius: 4,
 };
 
 export default function ToolRail({
@@ -290,7 +286,8 @@ export default function ToolRail({
   const showRemove = typeof onRemoveAll === 'function';
   const showBottom = showMagnet || showStay || showLock || showHide || showRemove;
 
-  const accentTint = tint(TH.accent, 0.14);
+  // حالتِ فعال/انتخاب‌شده (LUXE §۲): پس‌زمینهٔ توکنِ tint — نه آبیِ توپر، نه rgbaی دستی.
+  const accentTint = 'var(--pc-accent-tint)';
 
   // گروهی که ابزارِ فعالِ فعلی در آن است.
   const activeGroup = TOOL_GROUP[tool] || null;
@@ -407,9 +404,9 @@ export default function ToolRail({
     hoverTimer.current = setTimeout(() => setOpenKey(null), 180);
   }, []);
 
-  // جداکنندهٔ گروه‌ها (سبکِ TV): خطِ نازکِ تمام‌عرض با فاصلهٔ عمودیِ اندک.
+  // جداکنندهٔ گروه‌ها (LUXE §۳): خطِ موییِ توکن‌محور با فاصلهٔ عمودیِ اندک.
   const Divider = () => (
-    <div className="shrink-0 my-1" style={{ width: 26, height: 1, background: TH.border, opacity: 0.7 }} />
+    <div className="shrink-0 my-1" style={{ width: 20, height: 1, background: 'var(--pc-border)' }} />
   );
 
   return (
@@ -444,13 +441,13 @@ export default function ToolRail({
                 }}
                 onMouseEnter={(e) => showTip(e, `★ ${label}`, HOTKEY[id])}
                 onMouseLeave={hideTip}
-                onMouseOver={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
+                onMouseOver={(e) => { if (!active) e.currentTarget.style.background = 'var(--pc-hover)'; }}
                 onMouseOut={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}
               >
                 <FavIcon size={20} />
-                {/* نشانهٔ ریزِ منتخب: ستارهٔ کوچک در گوشهٔ بالا-چپ */}
-                <Star size={8} className="absolute top-1 left-1 pointer-events-none" fill="currentColor"
-                  style={{ color: TH.accent, opacity: active ? 0.9 : 0.55 }} />
+                {/* نشانهٔ ریزِ منتخب: ستارهٔ کوچک در گوشهٔ بالا-چپ — طلاییِ معناییِ منتخب (توکنِ --warn) */}
+                <Star size={8} className="absolute top-0.5 left-0.5 pointer-events-none" fill="currentColor"
+                  style={{ color: 'var(--warn)', opacity: active ? 0.95 : 0.7 }} />
               </button>
             );
           })}
@@ -482,14 +479,14 @@ export default function ToolRail({
               style={{
                 ...CELL,
                 // اکتیوِ tinted (accent با شفافیت) به‌جای پُرکردنِ سختِ آبی — پریتیِ TV.
-                background: isActiveGroup ? accentTint : (isOpen ? TH.chipBgHover : 'transparent'),
+                background: isActiveGroup ? accentTint : (isOpen ? 'var(--pc-hover)' : 'transparent'),
                 color: isActiveGroup ? TH.accent : (TH.railIcon || TH.text),
                 opacity: 1, // آیکون‌های ریل همیشه پررنگ/مشکیِ کامل (بدونِ کم‌رنگیِ inactive)
                 transition: 'background-color 120ms ease, opacity 120ms ease, color 120ms ease',
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.opacity = '1';
-                if (!isActiveGroup && !isOpen) e.currentTarget.style.background = TH.chipBgHover;
+                if (!isActiveGroup && !isOpen) e.currentTarget.style.background = 'var(--pc-hover)';
               }}
               onMouseOut={(e) => {
                 if (!isActiveGroup && !isOpen) e.currentTarget.style.background = 'transparent';
@@ -526,8 +523,8 @@ export default function ToolRail({
                 <style>{`@keyframes brn-flyout-in{from{opacity:0;transform:translateX(-4px) scale(.98)}to{opacity:1;transform:none}}`}</style>
                 {/* سرتیترِ کم‌رنگِ گروه (TH.text با ۵۰٪ شفافیت). */}
                 <div
-                  className="px-3 pt-1 pb-1.5 text-[10px] font-semibold tracking-wider select-none"
-                  style={{ color: TH.text, opacity: 0.5 }}
+                  className="px-3 pt-1 pb-1.5 mb-1 pc-hairline-b text-[10px] font-semibold tracking-wider select-none"
+                  style={{ color: 'var(--pc-text-muted)' }}
                 >
                   {g.label}
                 </div>
@@ -549,7 +546,7 @@ export default function ToolRail({
                         color: active ? TH.accent : TH.textStrong,
                         transition: 'background-color 120ms ease, color 120ms ease',
                       }}
-                      onMouseOver={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
+                      onMouseOver={(e) => { if (!active) e.currentTarget.style.background = 'var(--pc-hover)'; }}
                       onMouseOut={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}
                     >
                       <RowIcon size={16} className="shrink-0" style={{ opacity: active ? 1 : 0.8 }} />
@@ -564,7 +561,7 @@ export default function ToolRail({
                         title={isPinned ? 'برداشتن از منتخب‌ها' : 'افزودن به منتخب‌ها'}
                         onClick={(e) => { e.stopPropagation(); togglePin(t.id); }}
                         className="shrink-0"
-                        style={{ cursor: 'pointer', color: isPinned ? TH.accent : 'currentColor', opacity: isPinned ? 0.95 : 0.4 }}
+                        style={{ cursor: 'pointer', color: isPinned ? 'var(--warn)' : 'var(--pc-text-muted)', opacity: isPinned ? 1 : 0.8 }}
                       >
                         <Star size={12} fill={isPinned ? 'currentColor' : 'none'} />
                       </span>
@@ -598,13 +595,13 @@ export default function ToolRail({
           className="relative flex items-center justify-center rounded"
           style={{
             ...CELL,
-            background: magnetOn ? accentTint : (magMenu ? TH.chipBgHover : 'transparent'),
+            background: magnetOn ? accentTint : (magMenu ? 'var(--pc-hover)' : 'transparent'),
             color: magnetOn ? TH.accent : TH.text,
             transition: 'background-color 120ms ease, color 120ms ease',
           }}
           onMouseEnter={(e) => showTip(e, `آهنربا — چسبیدن به OHLC (${magMode === 'strong' ? 'قوی' : 'ضعیف'})`, HOTKEY_MAGNET)}
           onMouseLeave={hideTip}
-          onMouseOver={(e) => { if (!magnetOn && !magMenu) e.currentTarget.style.background = TH.chipBgHover; }}
+          onMouseOver={(e) => { if (!magnetOn && !magMenu) e.currentTarget.style.background = 'var(--pc-hover)'; }}
           onMouseOut={(e) => { if (!magnetOn && !magMenu) e.currentTarget.style.background = 'transparent'; }}
         >
           <Magnet size={20} />
@@ -635,7 +632,7 @@ export default function ToolRail({
               animation: 'brn-flyout-in 120ms ease-out both',
             }}
           >
-            <div className="px-3 pt-1 pb-1.5 text-[10px] font-semibold tracking-wider select-none" style={{ color: TH.text, opacity: 0.5 }}>
+            <div className="px-3 pt-1 pb-1.5 mb-1 pc-hairline-b text-[10px] font-semibold tracking-wider select-none" style={{ color: 'var(--pc-text-muted)' }}>
               شدتِ آهنربا
             </div>
             {[
@@ -650,12 +647,12 @@ export default function ToolRail({
                   onClick={() => setMode(m)}
                   className="w-full flex items-center gap-2.5 px-3 text-[12px] text-right"
                   style={{
-                    height: 30,
+                    height: 28,
                     background: on ? accentTint : 'transparent',
                     color: on ? TH.accent : TH.textStrong,
                     transition: 'background-color 120ms ease, color 120ms ease',
                   }}
-                  onMouseOver={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
+                  onMouseOver={(e) => { if (!on) e.currentTarget.style.background = 'var(--pc-hover)'; }}
                   onMouseOut={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}
                 >
                   <Magnet size={14} className="shrink-0" style={{ opacity: m === 'strong' ? 1 : 0.7 }} />
@@ -688,7 +685,7 @@ export default function ToolRail({
         }}
         onMouseEnter={(e) => showTip(e, 'ماندن در حالتِ ترسیم')}
         onMouseLeave={hideTip}
-        onMouseOver={(e) => { if (!stayOn) e.currentTarget.style.background = TH.chipBgHover; }}
+        onMouseOver={(e) => { if (!stayOn) e.currentTarget.style.background = 'var(--pc-hover)'; }}
         onMouseOut={(e) => { if (!stayOn) e.currentTarget.style.background = 'transparent'; }}
       >
         <PenLine size={20} />
@@ -713,7 +710,7 @@ export default function ToolRail({
         }}
         onMouseEnter={(e) => showTip(e, lockOn ? 'بازکردنِ قفلِ همه' : 'قفلِ همهٔ ترسیم‌ها')}
         onMouseLeave={hideTip}
-        onMouseOver={(e) => { if (!lockOn) e.currentTarget.style.background = TH.chipBgHover; }}
+        onMouseOver={(e) => { if (!lockOn) e.currentTarget.style.background = 'var(--pc-hover)'; }}
         onMouseOut={(e) => { if (!lockOn) e.currentTarget.style.background = 'transparent'; }}
       >
         {lockOn ? <Lock size={20} /> : <LockOpen size={20} />}
@@ -736,7 +733,7 @@ export default function ToolRail({
         }}
         onMouseEnter={(e) => showTip(e, hideOn ? 'نمایشِ همهٔ ترسیم‌ها' : 'مخفیِ همهٔ ترسیم‌ها')}
         onMouseLeave={hideTip}
-        onMouseOver={(e) => { if (!hideOn) e.currentTarget.style.background = TH.chipBgHover; }}
+        onMouseOver={(e) => { if (!hideOn) e.currentTarget.style.background = 'var(--pc-hover)'; }}
         onMouseOut={(e) => { if (!hideOn) e.currentTarget.style.background = 'transparent'; }}
       >
         {hideOn ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -753,13 +750,13 @@ export default function ToolRail({
           className="relative flex items-center justify-center rounded"
           style={{
             ...CELL,
-            background: remMenu ? TH.chipBgHover : 'transparent',
+            background: remMenu ? 'var(--pc-hover)' : 'transparent',
             color: TH.text,
             transition: 'background-color 120ms ease, color 120ms ease',
           }}
           onMouseEnter={(e) => showTip(e, 'حذفِ همهٔ ترسیم‌ها')}
           onMouseLeave={hideTip}
-          onMouseOver={(e) => { if (!remMenu) { e.currentTarget.style.background = TH.chipBgHover; e.currentTarget.style.color = '#f6465d'; } }}
+          onMouseOver={(e) => { if (!remMenu) { e.currentTarget.style.background = 'var(--pc-hover)'; e.currentTarget.style.color = 'var(--danger)'; } }}
           onMouseOut={(e) => { if (!remMenu) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = TH.text; } }}
         >
           <Trash2 size={20} />
@@ -781,7 +778,7 @@ export default function ToolRail({
             className="absolute bottom-0 left-full ml-1.5 z-50 rounded-md overflow-hidden py-1 origin-left"
             style={{ background: TH.popoverBg, border: `1px solid ${TH.border}`, boxShadow: 'var(--pc-shadow-pop)', minWidth: 200, animation: 'brn-flyout-in 120ms ease-out both' }}
           >
-            <div className="px-3 pt-1 pb-1.5 text-[11px] font-semibold tracking-wider select-none" style={{ color: TH.text, opacity: 0.5 }}>حذف</div>
+            <div className="px-3 pt-1 pb-1.5 mb-1 pc-hairline-b text-[10px] font-semibold tracking-wider select-none" style={{ color: 'var(--pc-text-muted)' }}>حذف</div>
             {[
               { k: 'draw', label: 'حذفِ ترسیم‌ها', run: () => { onRemoveAll && onRemoveAll(); } },
               { k: 'ind', label: 'حذفِ اندیکاتورها', run: () => { onRemoveIndicators && onRemoveIndicators(); } },
@@ -792,8 +789,8 @@ export default function ToolRail({
                 type="button"
                 onClick={() => { run(); setRemMenu(false); }}
                 className="w-full flex items-center gap-2.5 px-3 text-[12px] text-right"
-                style={{ height: 30, background: 'transparent', color: TH.textStrong, transition: 'background-color 120ms ease, color 120ms ease' }}
-                onMouseOver={(e) => { e.currentTarget.style.background = TH.chipBgHover; e.currentTarget.style.color = '#f6465d'; }}
+                style={{ height: 28, background: 'transparent', color: TH.textStrong, transition: 'background-color 120ms ease, color 120ms ease' }}
+                onMouseOver={(e) => { e.currentTarget.style.background = 'var(--pc-hover)'; e.currentTarget.style.color = 'var(--danger)'; }}
                 onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = TH.textStrong; }}
               >
                 <Trash2 size={14} style={{ opacity: 0.8 }} /> {label}

@@ -73,7 +73,7 @@ function ActualCell({ value, color, arrow, TH }) {
   }, [value]);
   const show = value != null && value !== '';
   return (
-    <span ref={ref} className="w-11 text-left text-[10px] shrink-0 font-semibold tnum rounded-sm inline-flex items-center justify-end gap-0.5" dir="ltr"
+    <span ref={ref} className="w-11 text-left text-[11px] shrink-0 font-semibold tnum rounded-sm inline-flex items-center justify-end gap-0.5" dir="ltr"
       style={{ color: show ? color : TH.text, opacity: show ? 1 : 0.35 }}>
       {show && arrow ? <span className="text-[7px] leading-none">{arrow === 'up' ? '▲' : '▼'}</span> : null}
       {show ? value : '—'}
@@ -145,8 +145,8 @@ export default function Calendar({ symbol, TH }) {
   }, [items, tick]);
 
   const Toggle = ({ on, set, children }) => (
-    <button onClick={() => set((v) => !v)} className="px-2 h-[26px] rounded-md text-[10px] transition-colors"
-      style={{ background: on ? TH.accent : TH.chipBg, color: on ? '#fff' : TH.text }}
+    <button onClick={() => set((v) => !v)} className="px-2 h-[26px] rounded text-[11px] transition-colors"
+      style={{ background: on ? 'var(--pc-accent-tint)' : TH.chipBg, color: on ? (TH.accentText || TH.accent) : TH.text }}
       onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
       onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }}>{children}</button>
   );
@@ -156,7 +156,7 @@ export default function Calendar({ symbol, TH }) {
     const on = imp[id]; const m = IMPACT[id];
     return (
       <button onClick={() => setImp((s) => ({ ...s, [id]: !s[id] }))} title={`اهمیتِ ${m.label}`}
-        className="inline-flex items-center gap-1 px-1.5 h-[26px] rounded-md text-[10px] transition-colors"
+        className="inline-flex items-center gap-1 px-1.5 h-[26px] rounded text-[11px] transition-colors"
         style={{ background: on ? TH.chipBgHover : 'transparent', color: on ? TH.textStrong : TH.text, opacity: on ? 1 : 0.5, border: `1px solid ${on ? m.color + '66' : TH.border}` }}>
         <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: m.color }} />{m.label}
       </button>
@@ -166,12 +166,12 @@ export default function Calendar({ symbol, TH }) {
   // دراپ‌داونِ سبکِ همان فایل (کشور/منطقهٔ زمانی)
   const Dropdown = ({ id, label, value, options, onPick }) => (
     <div className="relative">
-      <button onClick={() => setMenu((v) => (v === id ? null : id))} className="px-2 h-[26px] rounded-md text-[10px] transition-colors"
-        style={{ background: menu === id ? TH.chipBgHover : TH.chipBg, color: TH.text }}
+      <button onClick={() => setMenu((v) => (v === id ? null : id))} className="px-2 h-[26px] rounded text-[11px] transition-colors"
+        style={{ background: menu === id ? 'var(--pc-pressed)' : TH.chipBg, color: TH.text }}
         onMouseEnter={(e) => { if (menu !== id) e.currentTarget.style.background = TH.chipBgHover; }}
         onMouseLeave={(e) => { if (menu !== id) e.currentTarget.style.background = TH.chipBg; }}>{label}{value ? `: ${value}` : ''} ▾</button>
       {menu === id && (
-        <div className="absolute z-40 mt-1 rounded-md py-1 max-h-64 overflow-auto min-w-[92px]" style={{ background: TH.panel, border: `1px solid ${TH.border}`, insetInlineEnd: 0 }}>
+        <div className="absolute z-40 mt-1 rounded-md py-1 max-h-64 overflow-auto min-w-[92px]" style={{ background: TH.panel, border: `1px solid ${TH.border}`, insetInlineEnd: 0, boxShadow: 'var(--pc-shadow-pop)' }}>
           {options.map((o) => (
             <button key={o.id} onClick={() => { onPick(o.id); setMenu(null); }} className="block w-full text-right px-2.5 py-1 text-[11px] transition-colors"
               style={{ color: o.id === o.active ? TH.accent : TH.text, background: 'transparent' }}
@@ -192,11 +192,11 @@ export default function Calendar({ symbol, TH }) {
   return (
     <div ref={rootRef} className="flex flex-col text-xs" style={{ color: TH.text, fontVariantNumeric: 'tabular-nums' }}>
       <div className="flex items-center gap-1.5 px-3 py-1.5 border-b shrink-0 flex-wrap" style={{ borderColor: TH.border }}>
-        <span className="opacity-50 text-[11px]">تقویمِ اقتصادی</span>
+        <span className="text-[12px] font-semibold" style={{ color: TH.textStrong }}>تقویمِ اقتصادی</span>
         {/* دکمهٔ «امروز» (مثلِ TV) — پرشِ سریع به رویدادهای امروز؛ فقط وقتی امروز در هفتهٔ جاری رویداد دارد */}
         {groups.some(([day]) => day === todayKey) && (
           <button onClick={() => { const el = dayRefs.current[todayKey]; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
-            title="پرش به امروز" className="text-[10px] px-2 py-0.5 rounded-md font-medium transition-colors shrink-0"
+            title="پرش به امروز" className="text-[11px] px-2 py-0.5 rounded font-medium transition-colors shrink-0"
             style={{ background: TH.chipBg, border: `1px solid ${TH.border}`, color: TH.textStrong }}
             onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
             امروز
@@ -238,13 +238,13 @@ export default function Calendar({ symbol, TH }) {
             return (
               <button key={day} onClick={() => { const el = dayRefs.current[day]; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
                 title={`${evs.length} رویداد`}
-                className="flex flex-col items-center justify-center px-2 py-1 rounded-md shrink-0 min-w-[52px] transition-colors"
-                style={{ background: isToday ? `${TH.accent}1f` : TH.chipBg, border: `1px solid ${isToday ? TH.accent + '66' : TH.border}` }}
-                onMouseEnter={(e) => { if (!isToday) e.currentTarget.style.background = TH.chipBgHover; }}
-                onMouseLeave={(e) => { if (!isToday) e.currentTarget.style.background = TH.chipBg; }}>
-                <span className="text-[10px] font-semibold leading-tight" style={{ color: isToday ? TH.accent : TH.textStrong }}>{wd}</span>
-                <span className="text-[9px] leading-tight opacity-60" dir="ltr">{dm}</span>
-                <span className="text-[9px] leading-[13px] mt-0.5 px-1 rounded-full tnum" style={{ background: `${TH.accent}1f`, color: TH.accent }}>{evs.length}</span>
+                className="flex flex-col items-center justify-center px-2 py-1 rounded shrink-0 min-w-[52px] transition-colors"
+                style={{ background: isToday ? 'var(--pc-accent-tint)' : 'transparent', border: `1px solid ${isToday ? TH.accent + '66' : TH.border}` }}
+                onMouseEnter={(e) => { if (!isToday) e.currentTarget.style.background = 'var(--pc-hover)'; }}
+                onMouseLeave={(e) => { if (!isToday) e.currentTarget.style.background = 'transparent'; }}>
+                <span className="text-[11px] font-semibold leading-tight" style={{ color: isToday ? (TH.accentText || TH.accent) : TH.textStrong }}>{wd}</span>
+                <span className="text-[10px] leading-tight opacity-60" dir="ltr">{dm}</span>
+                <span className="text-[10px] leading-[13px] mt-0.5 px-1 tnum" style={{ color: 'var(--pc-text-muted)' }}>{evs.length}</span>
               </button>
             );
           })}
@@ -252,7 +252,7 @@ export default function Calendar({ symbol, TH }) {
       )}
 
       {/* سرستونِ actual/forecast/previous — همیشه انتهای ردیف (RTL) */}
-      <div className="flex items-center gap-1.5 px-2 py-1 border-b shrink-0 text-[9px] opacity-45" style={{ borderColor: TH.border }}>
+      <div className="flex items-center gap-1.5 px-2 py-1 border-b shrink-0 text-[10px] opacity-45" style={{ borderColor: TH.border }}>
         <span className="flex-1 min-w-0">رویداد</span>
         {hasActual && <span className="w-11 text-left shrink-0" dir="ltr">واقعی</span>}
         <span className="w-9 text-left shrink-0" dir="ltr">پیش‌بینی</span>
@@ -266,7 +266,7 @@ export default function Calendar({ symbol, TH }) {
         )}
         {groups.map(([day, evs]) => (
           <div key={day} ref={(el) => { if (el) dayRefs.current[day] = el; }}>
-            <div className="sticky top-0 z-10 flex items-center gap-1.5 px-3 py-1 text-[10px] font-semibold border-b" style={{ background: TH.panel, color: TH.textStrong, borderColor: TH.border }}>
+            <div className="sticky top-0 z-10 flex items-center gap-1.5 px-3 h-7 text-[12px] font-semibold border-b" style={{ background: TH.panel, color: TH.textStrong, borderColor: TH.border }}>
               <span>{day}</span>
               {day === todayKey && <span className="px-1 rounded-sm text-[11px] leading-[14px] font-medium" style={{ background: `${TH.accent}1f`, color: TH.accent }}>امروز</span>}
             </div>
@@ -281,23 +281,23 @@ export default function Calendar({ symbol, TH }) {
               const isNext = e.date === nextIso;
               const rowBg = isNext ? `${TH.accent}14` : 'transparent';
               return (
-                <div key={i} className="flex items-center gap-1.5 px-2 py-1.5 border-b transition-colors" style={{ borderColor: TH.border, background: rowBg, boxShadow: isNext ? `inset 2px 0 0 ${TH.accent}` : 'none' }}
-                  onMouseEnter={(ev) => (ev.currentTarget.style.background = TH.chipBgHover)}
+                <div key={i} className="flex items-center gap-1.5 px-2 h-7 border-b transition-colors" style={{ borderColor: TH.border, background: rowBg, boxShadow: isNext ? `inset 2px 0 0 ${TH.accent}` : 'none' }}
+                  onMouseEnter={(ev) => (ev.currentTarget.style.background = 'var(--pc-hover)')}
                   onMouseLeave={(ev) => (ev.currentTarget.style.background = rowBg)}>
-                  <span className="text-[10px] w-9 shrink-0 inline-flex items-center gap-1 tnum" dir="ltr" style={{ color: isNext ? TH.accent : TH.text, opacity: isNext ? 1 : 0.6 }}>
+                  <span className="text-[11px] w-9 shrink-0 inline-flex items-center gap-1 tnum" dir="ltr" style={{ color: isNext ? TH.accent : TH.text, opacity: isNext ? 1 : 0.6 }}>
                     {isNext && <span className="w-1.5 h-1.5 rounded-full shrink-0" title="رویدادِ بعدی" style={{ background: TH.accent, animation: 'pcGlow 2.4s ease-in-out infinite' }} />}
                     {fmtTime(e.date, tz)}
                   </span>
                   {/* پرچمِ کشورِ ارز + کد — مثلِ ستونِ پرچم‌دارِ ردیف‌های تقویمِ TV */}
                   <span className="shrink-0 inline-flex items-center gap-1" dir="ltr">
                     <CountryFlag code={CCY_COUNTRY[e.country] || e.country} size={13} />
-                    <span className="text-[10px] font-semibold w-7" style={{ color: TH.textStrong }}>{e.country}</span>
+                    <span className="text-[11px] font-semibold w-7" style={{ color: TH.textStrong }}>{e.country}</span>
                   </span>
                   <ImpactBars imp={e.impact} />
-                  <span className="text-[11px] leading-4 flex-1 min-w-0 truncate" title={e.title}>{e.title}</span>
+                  <span className="text-[12px] leading-4 flex-1 min-w-0 truncate" title={e.title}>{e.title}</span>
                   {hasActual && <ActualCell value={actual} color={actColor} arrow={diff ? (actUp ? 'up' : 'down') : null} TH={TH} />}
-                  <span className="w-9 text-left text-[10px] shrink-0 opacity-60 tnum" dir="ltr">{forecast != null && forecast !== '' ? forecast : '—'}</span>
-                  <span className="w-9 text-left text-[10px] shrink-0 opacity-40 tnum" dir="ltr">{previous != null && previous !== '' ? previous : '—'}</span>
+                  <span className="w-9 text-left text-[11px] shrink-0 opacity-60 tnum" dir="ltr">{forecast != null && forecast !== '' ? forecast : '—'}</span>
+                  <span className="w-9 text-left text-[11px] shrink-0 opacity-40 tnum" dir="ltr">{previous != null && previous !== '' ? previous : '—'}</span>
                 </div>
               );
             })}

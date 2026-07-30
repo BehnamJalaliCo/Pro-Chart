@@ -43,27 +43,27 @@ const PARTNERS = [
 function PartnerCard({ partner, theme }) {
   const { Icon } = partner;
   return (
-    <div className="relative rounded-2xl overflow-hidden flex flex-col" style={{ background: theme.panel, border: `1px solid ${theme.border}` }}>
-      <div className="h-1.5 w-full" style={{ background: `linear-gradient(90deg, ${partner.accent}, ${partner.accent2})` }} />
+    <div className="relative rounded-lg overflow-hidden flex flex-col pc-card-flat" style={{ background: theme.panel, border: `1px solid ${theme.border}` }}>
+      <div className="h-px w-full" style={{ background: 'var(--pc-border)' }} />
       <div className="relative p-5 flex flex-col gap-4 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full"
-            style={{ background: `${partner.accent}22`, color: partner.accent, border: `1px solid ${partner.accent}33` }}>
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase"
+            style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>
             <Icon size={11} /> {partner.badge}
           </span>
-          <span className="text-[11px] font-semibold" style={{ color: theme.text, opacity: 0.75 }}>{partner.kind}</span>
+          <span className="text-[11px] font-medium" style={{ color: 'var(--pc-text-muted)' }}>{partner.kind}</span>
         </div>
 
-        <div className="rounded-xl px-4 py-4 flex items-center justify-center" style={{ background: '#fff', border: `1px solid ${theme.border}` }}>
+        <div className="rounded-lg px-4 py-4 flex items-center justify-center" style={{ background: '#fff', border: `1px solid ${theme.border}` }}>
           <img src={partner.logo} alt={partner.name} className="h-9 w-auto max-w-[160px] object-contain" loading="lazy" />
         </div>
 
         <p className="text-[13px] leading-6 font-medium" style={{ color: theme.textStrong }}>{partner.tagline}</p>
-        <ul className="flex flex-col gap-2.5 rounded-xl p-3" style={{ background: theme.bg, border: `1px solid ${theme.border}` }}>
+        <ul className="flex flex-col gap-2.5 rounded-lg p-3" style={{ background: 'transparent', border: `1px solid ${theme.border}` }}>
           {partner.points.map((point) => (
-            <li key={point} className="flex items-start gap-2 text-[12.5px] leading-5" style={{ color: theme.text }}>
+            <li key={point} className="flex items-start gap-2 text-[12px] leading-5" style={{ color: theme.text }}>
               <span className="mt-px shrink-0 w-[18px] h-[18px] rounded-full flex items-center justify-center"
-                style={{ background: `${partner.accent}22`, color: partner.accent }}><Check size={11} strokeWidth={3} /></span>
+                style={{ background: 'var(--pc-hover)', color: 'var(--pc-text-2)' }}><Check size={11} strokeWidth={3} /></span>
               <span>{point}</span>
             </li>
           ))}
@@ -73,8 +73,8 @@ function PartnerCard({ partner, theme }) {
           <ReferralDeparture
             provider={partner.name}
             buttonLabel={`لینک معرفی — ورود به وب‌سایت ${partner.name}`}
-            buttonClassName="w-full py-3 rounded-xl text-center text-white font-extrabold text-[14px]"
-            buttonStyle={{ background: `linear-gradient(90deg, ${partner.accent}, ${partner.accent2})`, boxShadow: `0 10px 24px -8px ${partner.accent}` }}
+            buttonClassName="btn-primary w-full text-center text-[13px]"
+            buttonStyle={{}}
           />
         </div>
       </div>
@@ -87,15 +87,15 @@ export default function Partners({ open, onClose, TH }) {
   const theme = TH || { panel: '#131722', bg: '#0b0e14', border: '#2a2e39', text: '#b2b5be', textStrong: '#d1d4dc', accent: '#2962FF' };
   return (
     <div className="fixed inset-0 z-[130] flex items-start justify-center pt-[6vh] px-3 overflow-auto" dir="rtl"
-      style={{ background: 'rgba(0,0,0,.6)', backdropFilter: 'blur(3px)' }} onClick={onClose}>
-      <div className="w-[min(760px,96vw)] rounded-2xl overflow-hidden shadow-2xl" style={{ background: theme.bg, border: `1px solid ${theme.border}` }} onClick={(event) => event.stopPropagation()}>
-        <div className="relative px-5 py-5 flex items-start justify-between gap-3" style={{ background: `linear-gradient(120deg, ${theme.panel}, ${theme.bg})`, borderBottom: `1px solid ${theme.border}` }}>
+      style={{ background: theme.overlayMask || 'rgba(0,0,0,.6)', backdropFilter: 'blur(3px)' }} onClick={onClose}>
+      <div className="w-[min(760px,96vw)] rounded-lg overflow-hidden" style={{ background: theme.panel, border: `1px solid ${theme.border}`, boxShadow: 'var(--pc-shadow-modal)' }} onClick={(event) => event.stopPropagation()}>
+        <div className="relative px-5 py-4 flex items-start justify-between gap-3" style={{ background: theme.panel, borderBottom: `1px solid ${theme.border}` }}>
           <div>
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full"
-              style={{ background: `${theme.accent || '#2962FF'}22`, color: theme.accent, border: `1px solid ${theme.accent || '#2962FF'}33` }}>
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase"
+              style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>
               <ShieldCheck size={12} /> مسیرهای معرفی Pro Chart
             </span>
-            <h2 className="mt-2.5 text-lg font-black tracking-tight" style={{ color: theme.textStrong }}>معرفی LBank و OneRoyal</h2>
+            <h2 className="mt-2 text-[14px] font-semibold" style={{ color: theme.textStrong }}>معرفی LBank و OneRoyal</h2>
             <p className="text-[12px] leading-5 mt-1" style={{ color: theme.text }}>پیش از خروج، شرایط ارائه‌دهنده و محدودیت‌های محل اقامت خود را بررسی کنید.</p>
           </div>
           <button type="button" onClick={onClose} aria-label="بستن" className="pc-iconbtn w-8 h-8 shrink-0" style={{ color: theme.text }}><X size={18} /></button>
@@ -106,7 +106,7 @@ export default function Partners({ open, onClose, TH }) {
         </div>
 
         <div className="px-5 pb-5">
-          <p className="text-[10.5px] leading-5 text-center rounded-xl px-4 py-2.5" style={{ color: theme.text, opacity: 0.75, background: theme.panel, border: `1px solid ${theme.border}` }}>
+          <p className="text-[11px] leading-5 text-center rounded-lg px-4 py-2.5" style={{ color: 'var(--pc-text-muted)', background: theme.panel, border: `1px solid ${theme.border}` }}>
             ⚠️ معامله در بازارهای مالی ریسک دارد و ممکن است به از دست رفتن سرمایه منجر شود. لینک‌های بالا لینک معرفی هستند؛ انتخاب و مسئولیت استفاده از خدمات با خود شماست.
           </p>
         </div>

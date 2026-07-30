@@ -81,11 +81,11 @@ export function TouchButton({ TH, active, onClick, icon, label, dirNum = false, 
       onClick={onClick}
       aria-label={ariaLabel || label}
       aria-pressed={active ? 'true' : 'false'}
-      className="flex items-center gap-2.5 w-full rounded-lg px-3 transition-colors text-sm"
+      className="flex items-center gap-2.5 w-full px-3 transition-colors text-[12px] pc-hairline-b"
       style={{
-        minHeight: TOUCH,
-        color: active ? '#fff' : TH.textStrong,
-        background: active ? TH.accent : TH.chipBg,
+        minHeight: 28,
+        color: active ? TH.accent : TH.textStrong,
+        background: active ? 'var(--pc-accent-tint)' : TH.chipBg,
       }}
       onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
       onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = TH.chipBg; }}
@@ -158,8 +158,9 @@ export function MobileToolSheet({ TH, open, onClose, title, children, maxVh = 70
       />
       {/* بدنهٔ شیت */}
       <div
-        className="relative rounded-t-2xl border-t shadow-2xl flex flex-col"
+        className="relative rounded-t-lg border-t flex flex-col"
         style={{
+          boxShadow: 'var(--pc-shadow-modal)',
           background: TH.panel,
           borderColor: TH.border,
           maxHeight: `${maxVh}vh`,
@@ -180,12 +181,12 @@ export function MobileToolSheet({ TH, open, onClose, title, children, maxVh = 70
         >
           <div className="mx-auto mb-2 rounded-full" style={{ width: 40, height: 4, background: TH.border }} />
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium" style={{ color: TH.textStrong }}>{title || 'ابزارها'}</span>
+            <span className="text-sm font-semibold" style={{ color: TH.textStrong }}>{title || 'ابزارها'}</span>
             <button
               type="button"
               onClick={onClose}
               aria-label="بستن"
-              className="rounded-lg flex items-center justify-center transition-colors"
+              className="rounded flex items-center justify-center transition-colors"
               style={{ width: TOUCH, height: TOUCH, color: TH.text, background: TH.chipBg }}
               onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = TH.chipBg; }}
@@ -210,38 +211,38 @@ export function MobileToolSheet({ TH, open, onClose, title, children, maxVh = 70
 // همهٔ کنشِ‌ها از props؛ هیچ منطقِ داخلی. هدف‌های لمسی ≥36px (با padding ~44px).
 // ─────────────────────────────────────────────────────────────────────────────
 export function CompactTopBar({ TH, symbol, livePrice, priceDir, fmtPrice, marketOpen, tf, chartType, chartLabel, onSearch, onPickTf, onPickType, onMore, SymbolLogo, MenuIcon }) {
-  const btn = (extra) => ({ minWidth: 36, minHeight: 36, background: TH.chipBg, color: TH.textStrong, ...extra });
+  const btn = (extra) => ({ minWidth: 28, minHeight: 28, background: TH.chipBg, color: TH.textStrong, ...extra });
   // فاز۲: رنگ و فلَشِ قیمتِ زنده بر اساسِ جهتِ حرکت (سبز/قرمز). key=livePrice انیمیشن را روی هر تیک بازپخش می‌کند.
   const priceColor = priceDir === 'down'
     ? (TH.downText || TH.down)
     : (TH.upText || TH.up);
   const flashClass = priceDir === 'down' ? 'pc-flash-down' : priceDir === 'up' ? 'pc-flash-up' : '';
   return (
-    <div dir="rtl" className="flex items-center gap-1.5 px-2 py-1.5 border-b" style={{ borderColor: TH.border }}>
+    <div dir="rtl" className="flex items-center gap-1.5 px-2 h-10 border-b" style={{ borderColor: TH.border }}>
       {/* نماد + جستجو */}
-      <button onClick={onSearch} className="flex items-center gap-1.5 rounded-lg px-2 h-9 shrink-0" style={{ background: TH.chipBg }} aria-label="جستجوی نماد">
-        {SymbolLogo ? <SymbolLogo symbol={symbol} size={20} /> : null}
-        <span className="font-bold text-sm" dir="ltr" style={{ color: TH.textStrong }}>{symbol}</span>
+      <button onClick={onSearch} className="flex items-center gap-1.5 rounded px-2 h-7 shrink-0" style={{ background: TH.chipBg }} aria-label="جستجوی نماد">
+        {SymbolLogo ? <SymbolLogo symbol={symbol} size={18} /> : null}
+        <span className="font-semibold text-sm" dir="ltr" style={{ color: TH.textStrong }}>{symbol}</span>
       </button>
       {/* قیمتِ زنده */}
       <div className="flex-1 min-w-0 flex items-center justify-center">
         {marketOpen ? (
           <span className="flex items-center gap-1 text-[12px]" style={{ color: priceColor }}>
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: priceColor }} />
-            {livePrice != null ? <b key={livePrice} dir="ltr" className={`tabular-nums ${flashClass}`}>{fmtPrice ? fmtPrice(symbol, livePrice) : livePrice}</b> : 'زنده'}
+            {livePrice != null ? <b key={livePrice} dir="ltr" className={`tabular-nums font-semibold ${flashClass}`}>{fmtPrice ? fmtPrice(symbol, livePrice) : livePrice}</b> : 'زنده'}
           </span>
-        ) : (<span className="text-[11px]" style={{ color: '#f59e0b' }}>● بازار بسته</span>)}
+        ) : (<span className="text-[11px]" style={{ color: TH.text }}>● بازار بسته</span>)}
       </div>
       {/* تایم‌فریم */}
-      <button onClick={onPickTf} className="flex items-center gap-0.5 rounded-md px-2 h-9 text-[13px] font-semibold tabular-nums shrink-0" dir="ltr" style={btn()} aria-label="تایم‌فریم">
+      <button onClick={onPickTf} className="flex items-center gap-0.5 rounded px-2 h-7 text-[12px] font-semibold tabular-nums shrink-0" dir="ltr" style={btn()} aria-label="تایم‌فریم">
         {tf}<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
       </button>
       {/* نوعِ چارت */}
-      <button onClick={onPickType} className="flex items-center justify-center rounded-md h-9 shrink-0" style={btn({ width: 36 })} aria-label="نوعِ چارت" title={chartLabel}>
+      <button onClick={onPickType} className="flex items-center justify-center rounded h-7 shrink-0" style={btn({ width: 28 })} aria-label="نوعِ چارت" title={chartLabel}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="6" y="4" width="3" height="9" /><line x1="7.5" y1="2" x2="7.5" y2="4" /><line x1="7.5" y1="13" x2="7.5" y2="15" /><rect x="15" y="8" width="3" height="9" /><line x1="16.5" y1="6" x2="16.5" y2="8" /><line x1="16.5" y1="17" x2="16.5" y2="19" /></svg>
       </button>
       {/* بیشتر */}
-      <button onClick={onMore} className="flex items-center justify-center rounded-md h-9 shrink-0" style={btn({ width: 36 })} aria-label="بیشتر">
+      <button onClick={onMore} className="flex items-center justify-center rounded h-7 shrink-0" style={btn({ width: 28 })} aria-label="بیشتر">
         {MenuIcon ? <MenuIcon size={18} /> : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}
       </button>
     </div>
@@ -258,8 +259,8 @@ export function MobileBottomNav({ TH, items = [], active, onPick }) {
       style={{ background: TH.panel, borderColor: TH.border, paddingBottom: 'env(safe-area-inset-bottom)' }}>
       {items.map((it) => (
         <button key={it.key} type="button" onClick={() => onPick && onPick(it.key)}
-          className="flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px]"
-          style={{ minHeight: 56, color: active === it.key ? TH.accent : TH.text }} aria-label={it.label}>
+          className="flex-1 flex flex-col items-center justify-center gap-0.5 text-[11px]"
+          style={{ minHeight: 36, color: active === it.key ? TH.accent : TH.text }} aria-label={it.label}>
           {it.icon}<span>{it.label}</span>
         </button>
       ))}

@@ -45,10 +45,18 @@ const fmtHeadPrice = (sym, v) => {
 // دلیل) — وعدهٔ نشدنی از سکوتِ صادقانه بدتر است.
 const SOURCES = [
   { id: 'price', label: 'قیمتِ نماد' },
-  { id: 'indicator', label: 'اندیکاتور', disabled: true, why: 'موتورِ سرور هنوز اندیکاتور را ارزیابی نمی‌کند — به‌زودی' },
+  // فاز ۳.۲: موتورِ سرور (tasks.py + alert_indicators.py) حالا RSI/SMA/EMA/MACD را
+  // روی کندلِ بستهٔ همان تایم‌فریم ارزیابی می‌کند — گزینه فعال شد.
+  { id: 'indicator', label: 'اندیکاتور (RSI/MA/EMA/MACD)' },
   { id: 'drawing', label: 'خطِ ترسیم‌شده' },
   { id: 'watchlist', label: 'کلِ واچ‌لیست', disabled: true, why: 'موتورِ سرور فعلاً تک‌نماد است — به‌زودی' },
 ];
+
+// کلیدهای اندیکاتوری که موتورِ سمتِ‌سرور می‌فهمد (src/bazaarnama/alert_indicators.py).
+// «ma»ی رجیستریِ فرانت همان SMAِ سرور است.
+const SERVER_IND_KEYS = { rsi: 'rsi', ma: 'sma', ema: 'ema', macd: 'macd' };
+// نگاشتِ خروجیِ انتخابیِ MACD به کلیدِ سرور
+const MACD_FIELD_KEY = { macd: 'macd', line: 'macd', signal: 'macd_signal', hist: 'macd_hist' };
 const SOURCE_ENABLED = (id) => !SOURCES.find((x) => x.id === id)?.disabled;
 
 // فراوانیِ تریگر — همتراز با TradingView (Only Once / Once Per Bar / Once Per Bar Close / Per Minute).
@@ -301,7 +309,18 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
     if (form.source === 'price' || form.source === 'watchlist') { cond.price_field = form.price_field; }
     else if (form.source === 'indicator') {
       const it = indicators.find((i) => i.id === form.indId);
-      if (it) cond.indicator = { id: it.key, params: it.inputs || {}, field: form.indField };
+      if (it) {
+        cond.indicator = { id: it.key, params: it.inputs || {}, field: form.indField }; // پس‌رو/نمایشی
+        // قراردادِ موتورِ سرور (فاز ۳.۲): type='indicator' + ind={key,period,fast,slow,signal,source}
+        const sk = SERVER_IND_KEYS[it.key];
+        if (sk) {
+          const inp = it.inputs || {};
+          cond.type = 'indicator';
+          cond.ind = sk === 'macd'
+            ? { key: MACD_FIELD_KEY[form.indField] || 'macd', fast: Number(inp.fast) || 12, slow: Number(inp.slow) || 26, signal: Number(inp.sig) || 9, source: inp.source || 'close' }
+            : { key: sk, period: Number(inp.period) || (sk === 'rsi' ? 14 : 20), source: inp.source || 'close' };
+        }
+      }
     }
     // نکته: cond.line بالاتر از form.line (لنگرهای t1/p1/t2/p2) پر شده. پیش‌تر این‌جا
     // با `{ note: '…' }` **بازنویسی می‌شد** و هندسه را نابود می‌کرد — پس سرور چیزی برای
@@ -404,22 +423,23 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
       .sort((a, b) => new Date(b.last_triggered_at) - new Date(a.last_triggered_at))
   ), [list]);
 
-  // اندیکاتورهای فعالِ قابل‌انتخاب.
-  const liveInds = useMemo(() => indicators.filter((i) => REGISTRY[i.key]), [indicators]);
+  // اندیکاتورهای فعالِ قابل‌انتخاب — فقط آن‌هایی که موتورِ سرور واقعاً ارزیابی می‌کند
+  // (وعدهٔ نشدنی ندهیم؛ بقیه بعداً با گسترشِ alert_indicators.py اضافه می‌شوند).
+  const liveInds = useMemo(() => indicators.filter((i) => REGISTRY[i.key] && SERVER_IND_KEYS[i.key]), [indicators]);
   const selInd = useMemo(() => liveInds.find((i) => i.id === form.indId), [liveInds, form.indId]);
 
   // ── استایل‌های مشترک (همتراز با تبِ آلارمِ موجود) ───────────────────────────
-  const inputCls = 'rounded-md px-2 h-[26px] outline-none transition-colors min-w-0';
+  const inputCls = 'rounded px-2 h-[28px] outline-none transition-colors min-w-0';
   const inputStyle = { background: TH.chipBg, color: TH.textStrong, border: `1px solid ${TH.border}` };
   const selStyle = { background: TH.chipBg, color: TH.textStrong, border: `1px solid ${TH.border}` };
 
   return (
     <div className="p-2 text-xs" dir="rtl" style={{ fontVariantNumeric: 'tabular-nums' }}>
       {/* ───────────────── سازندهٔ آلارم ───────────────── */}
-      <div className="rounded-md border p-2 mb-2 space-y-1.5" style={{ borderColor: TH.border, background: TH.subtle }}>
+      <div className="pc-card-flat p-2 mb-2 space-y-1.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-[10px] opacity-50 truncate">
+            <span className="text-[11px] opacity-50 truncate">
               {form.id ? 'ویرایشِ آلارم' : 'سازندهٔ آلارم'} — <span dir="ltr">{symbol} · {DEFAULT_TF}</span>
             </span>
             {price != null && Number.isFinite(Number(price)) && (
@@ -456,18 +476,18 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
                 {indicatorFields(selInd.key).map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
               </select>
             )}
-            {liveInds.length === 0 && <span className="text-[11px] opacity-50 self-center">ابتدا یک اندیکاتور به چارت بیفزایید</span>}
+            {liveInds.length === 0 && <span className="text-[11px] opacity-50 self-center">یکی از RSI / MA / EMA / MACD را به چارت بیفزایید</span>}
           </div>
         )}
 
         {form.source === 'drawing' && (
-          <div className="text-[9px] opacity-50 rounded px-2 py-1" style={{ background: TH.subtle }}>
+          <div className="text-[11px] opacity-50 rounded px-2 py-1" style={{ background: TH.subtle }}>
             از منوی راست‌کلیکِ یک خطِ ترسیم‌شده «آلارم روی این خط» را انتخاب کنید؛ آستانه متحرک می‌شود.
           </div>
         )}
 
         {form.source === 'watchlist' && (
-          <div className="flex items-center gap-1 text-[9px] opacity-50 rounded px-2 py-1" style={{ background: TH.subtle }}>
+          <div className="flex items-center gap-1 text-[11px] opacity-50 rounded px-2 py-1" style={{ background: TH.subtle }}>
             <ListChecks size={11} className="shrink-0" />
             همین شرط روی همهٔ نمادهای واچ‌لیست اعمال می‌شود؛ برای هر نماد جداگانه اعلان می‌گیرید.
           </div>
@@ -507,7 +527,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
 
         {/* پیش‌نمایشِ فاصله */}
         {distancePreview && (
-          <div className="text-[9px] opacity-60 px-1 tabular-nums flex items-center gap-1" dir="ltr">
+          <div className="text-[11px] opacity-60 px-1 tabular-nums flex items-center gap-1" dir="ltr">
             <span>{symbol} → {distancePreview.target} · اکنون</span>
             <FlashNum value={distancePreview.now} TH={TH}>{distancePreview.now}</FlashNum>
             <span>({distancePreview.sign}{distancePreview.isFxPair ? `${distancePreview.pips.toFixed(1)} pips` : `${distancePreview.pct.toFixed(2)}٪`})</span>
@@ -520,7 +540,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
             {FREQS.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
           </select>
           {form.freq === 'cooldown' && (
-            <div className="flex items-center gap-1 rounded-md px-2 h-[26px]" style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
+            <div className="flex items-center gap-1 rounded px-2 h-[28px]" style={{ background: TH.chipBg, border: `1px solid ${TH.border}` }}>
               <Repeat size={11} className="opacity-50" />
               <input value={form.cooldownMin} onChange={(e) => set({ cooldownMin: e.target.value })} title="کول‌داون (دقیقه)" dir="ltr" className="w-10 bg-transparent outline-none tabular-nums" />
               <span className="opacity-50 text-[11px]">دقیقه</span>
@@ -551,9 +571,9 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
             {/* پالتِ متغیرها — همتراز با placeholderهای TV، منهای {{exchange}}: Pro-Chart عمداً مفهومِ صرافی ندارد (قانونِ بدونِ‌بروکر) و نمادها پیشوندِ صرافی ندارند، پس این متغیر به هیچ resolve می‌شد. */}
             <div className="flex gap-1 flex-wrap">
               {['{{ticker}}', '{{close}}', '{{open}}', '{{high}}', '{{low}}', '{{volume}}', '{{interval}}', '{{time}}', '{{timenow}}', '{{plot_0}}'].map((ph) => (
-                <button key={ph} onClick={() => set({ message: (form.message || '') + ph })} className="text-[9px] rounded-md px-1.5 py-0.5 transition-colors" style={{ background: TH.chipBg, color: TH.text }} dir="ltr"
-                  onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>{ph}</button>
+                <button key={ph} onClick={() => set({ message: (form.message || '') + ph })} className="text-[10px] rounded px-1.5 py-0.5 transition-colors" style={{ background: 'transparent', border: `1px solid ${TH.border}`, color: TH.text }} dir="ltr"
+                  onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--pc-hover)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>{ph}</button>
               ))}
             </div>
             {/* کانال‌های تحویل — popup/push/email/sms/sound/telegram/webhook */}
@@ -589,7 +609,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
           <button
             onClick={save}
             disabled={!valid || busy}
-            className="px-3 h-[26px] rounded-md text-white flex items-center gap-1 transition-opacity disabled:opacity-40"
+            className="px-3 h-[28px] rounded text-white flex items-center gap-1 transition-opacity disabled:opacity-40"
             style={{ background: TH.accent }}
           >
             {form.id ? <Check size={12} /> : <Plus size={12} />}
@@ -600,12 +620,12 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
 
       {/* ───────────────── تب‌های فهرست/لاگ ───────────────── */}
       <div className="flex items-center gap-1 mb-1.5">
-        <button onClick={() => setTab('alerts')} className="flex items-center gap-1 text-[10px] rounded-md px-2 h-[24px] transition-colors"
-          style={{ background: tab === 'alerts' ? TH.chipBg : 'transparent', color: tab === 'alerts' ? TH.textStrong : TH.text, opacity: tab === 'alerts' ? 1 : 0.6 }}>
+        <button onClick={() => setTab('alerts')} className="flex items-center gap-1 text-[11px] rounded px-2 h-[24px] transition-colors"
+          style={{ background: tab === 'alerts' ? 'var(--pc-accent-tint)' : 'transparent', color: tab === 'alerts' ? (TH.accentText || TH.accent) : TH.text, opacity: tab === 'alerts' ? 1 : 0.7 }}>
           <ListChecks size={11} /> آلارم‌ها {list.length > 0 && <span className="opacity-60">({list.length})</span>}
         </button>
-        <button onClick={() => setTab('log')} className="flex items-center gap-1 text-[10px] rounded-md px-2 h-[24px] transition-colors"
-          style={{ background: tab === 'log' ? TH.chipBg : 'transparent', color: tab === 'log' ? TH.textStrong : TH.text, opacity: tab === 'log' ? 1 : 0.6 }}>
+        <button onClick={() => setTab('log')} className="flex items-center gap-1 text-[11px] rounded px-2 h-[24px] transition-colors"
+          style={{ background: tab === 'log' ? 'var(--pc-accent-tint)' : 'transparent', color: tab === 'log' ? (TH.accentText || TH.accent) : TH.text, opacity: tab === 'log' ? 1 : 0.7 }}>
           <History size={11} /> لاگ {logEntries.length > 0 && <span className="opacity-60">({logEntries.length})</span>}
         </button>
       </div>
@@ -624,14 +644,14 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
                     <Bell size={12} style={{ color: TH.up }} className="shrink-0" />
                     <div className="min-w-0">
                       <div className="truncate" title={a.name}>{a.name}</div>
-                      <div className="flex items-center gap-1 text-[9px] opacity-50" dir="ltr">
+                      <div className="flex items-center gap-1 text-[11px] opacity-50" dir="ltr">
                         <span>{a.symbol || symbol}</span>
                         <span>·</span>
                         <span>{OP_SHORT[c.op] || c.op}</span>
                       </div>
                     </div>
                   </div>
-                  <span className="text-[9px] opacity-50 shrink-0 tabular-nums">{timeAgo(a.last_triggered_at)}</span>
+                  <span className="text-[11px] opacity-50 shrink-0 tabular-nums">{timeAgo(a.last_triggered_at)}</span>
                 </div>
               );
             })}
@@ -665,7 +685,7 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
                   </button>
                   <div className="min-w-0">
                     <div className="truncate" title={a.name}>{a.name}</div>
-                    <div className="flex items-center gap-1 text-[9px] opacity-50" dir="ltr">
+                    <div className="flex items-center gap-1 text-[11px] opacity-50" dir="ltr">
                       <span>{a.symbol || symbol}</span>
                       <span>·</span>
                       <span>{OP_SHORT[c.op] || c.op}</span>
@@ -674,8 +694,8 @@ export default function AlertsPanel({ symbol, price, TH, indicators = [] }) {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
-                  {fired && <span className="text-[11px] rounded px-1" style={{ color: TH.up, background: `${TH.up}1a` }}>رخ داد</span>}
-                  {expired && <span className="text-[11px] rounded px-1 opacity-60" style={{ background: TH.subtle }}>منقضی</span>}
+                  {fired && <span className="text-[11px] px-1 font-semibold" style={{ color: TH.upText || TH.up }}>رخ داد</span>}
+                  {expired && <span className="text-[11px] px-1" style={{ color: 'var(--pc-text-muted)' }}>منقضی</span>}
                   <Pencil size={11} className="opacity-0 group-hover:opacity-50 hover:!opacity-90 cursor-pointer transition-opacity" onClick={() => edit(a)} title="ویرایش" />
                   <X size={12} className="opacity-40 hover:opacity-90 cursor-pointer transition-opacity" style={{ color: TH.down }} onClick={() => remove(a.id)} title="حذف" />
                 </div>

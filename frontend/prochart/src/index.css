@@ -271,7 +271,8 @@ button, [role="button"], a, summary, .pc-btn {
 :root {
   --pc-bg: #131722; --pc-surface: #1e222d; --pc-hover: #2a2e39; --pc-pressed: #363a45;
   --pc-border: #2a2e39; --pc-border-strong: #363a45;
-  --pc-text: #d1d4dc; --pc-text-2: #b2b5be; --pc-text-muted: #787b86;
+  /* muted به توکنِ AA-پاسِ تم وصل شد (LUXE_SPEC §۸.۱۰) — #787b86 روی سطوحِ تیره ۴.۲۲ بود و رد */
+  --pc-text: #d1d4dc; --pc-text-2: #b2b5be; --pc-text-muted: var(--text-muted);
   --pc-accent: #2962ff; --pc-accent-hover: #1e53e5; --pc-accent-tint: rgba(41,98,255,.14);
   /* جفت‌رنگِ کندل/UI — تم‌آگاه مثلِ --up/--down: در دارک تونِ پرجانِ #26a69a/#ef5350
      برای متنِ تغییر روی پس‌زمینهٔ تیره (نه تونِ روشنِ #089981 که مرده دیده می‌شود). */
@@ -288,9 +289,10 @@ button, [role="button"], a, summary, .pc-btn {
 
 /* توکن‌های رنگِ TV (روشن) — override روی .light */
 .light {
-  --pc-bg: #ffffff; --pc-surface: #f8f9fd; --pc-hover: #f0f3fa; --pc-pressed: #e0e3eb;
+  /* پنلِ روشن سفیدِ خالص است (LUXE_SPEC §۱) — جداسازی با مویی، نه پلهٔ ۱.۰۵ خاکستری */
+  --pc-bg: #ffffff; --pc-surface: #ffffff; --pc-hover: #f0f3fa; --pc-pressed: #e0e3eb;
   --pc-border: #e0e3eb; --pc-border-strong: #d1d4dc;
-  --pc-text: #131722; --pc-text-2: #5d606b; --pc-text-muted: #787b86;
+  --pc-text: #131722; --pc-text-2: #5d606b; --pc-text-muted: var(--text-muted);
   --pc-accent: #2962ff; --pc-accent-hover: #1e53e5; --pc-accent-tint: rgba(41,98,255,.08);
   --pc-up: #26a69a; --pc-up-ui: #089981; --pc-down: #ef5350; --pc-down-ui: #f23645;
 }

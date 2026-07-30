@@ -54,9 +54,8 @@ export default function RightIconRail({ active, onSelect, TH, badges = {} }) {
   // تولتیپِ فعال: { key, top } — top مرکزِ عمودیِ دکمهٔ اشاره‌شده برای هم‌ترازی.
   const [tip, setTip] = useState(null);
 
-  // اکتیوِ TV = پس‌زمینهٔ گِردِ tinted (نه پُر). alpha کمی محسوس تا مثلِ مربعِ فعالِ TV
-  // به‌وضوح خوانده شود، ولی همچنان شفاف/برندِ accent (نه fillِ سخت).
-  const accentTint = tint(TH.accent, 0.16);
+  // اکتیوِ TV = پس‌زمینهٔ tinted (نه پُر) — توکنِ واحدِ LUXE §۲ به‌جای rgbaی دستی.
+  const accentTint = 'var(--pc-accent-tint)';
 
   const showTip = useCallback((e, key) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -74,8 +73,8 @@ export default function RightIconRail({ active, onSelect, TH, badges = {} }) {
       dir="rtl"
       role="tablist"
       aria-orientation="vertical"
-      className="relative shrink-0 flex flex-col items-center gap-0.5 py-1.5 border-l select-none h-full"
-      style={{ width: 40, borderColor: TH.border, background: TH.bg }}
+      className="relative shrink-0 flex flex-col items-center gap-1.5 py-1.5 pc-hairline-e select-none h-full"
+      style={{ width: 40, background: TH.bg }}
     >
       {/* کیفریمِ محلیِ تولتیپ — نامِ یکتا تا با brn-tip-in در ToolRail تداخل نکند. */}
       <style>{`@keyframes brn-rtip-in{from{opacity:0;transform:translate(-4px,-50%)}to{opacity:1;transform:translate(0,-50%)}}`}</style>
@@ -95,14 +94,14 @@ export default function RightIconRail({ active, onSelect, TH, badges = {} }) {
                 aria-label={label}
                 title={label}
                 onClick={() => onSelect && onSelect(key)}
-                onMouseEnter={(e) => { showTip(e, key); if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
+                onMouseEnter={(e) => { showTip(e, key); if (!on) e.currentTarget.style.background = 'var(--pc-hover)'; }}
                 onMouseLeave={(e) => { hideTip(); if (!on) e.currentTarget.style.background = 'transparent'; }}
                 onFocus={(e) => showTip(e, key)}
                 onBlur={hideTip}
-                className="relative flex items-center justify-center rounded-lg outline-none focus-visible:ring-1"
+                className="relative flex items-center justify-center rounded outline-none focus-visible:ring-1"
                 style={{
-                  width: 32,
-                  height: 32,
+                  width: 28,
+                  height: 28,
                   background: on ? accentTint : 'transparent',
                   color: on ? TH.accent : TH.text,
                   transition: 'background-color 120ms ease, color 120ms ease',
@@ -111,9 +110,9 @@ export default function RightIconRail({ active, onSelect, TH, badges = {} }) {
                 {/* ریلِ پنل‌سوییچرِ راستِ TV اکتیو را فقط با مربعِ گِردِ tinted نشان می‌دهد
                     (برخلافِ ریلِ ابزارِ چپ، هیچ پیلِ لبه‌ای ندارد) — پس فقط بک‌گراند + رنگ. */}
                 <Icon size={20} strokeWidth={on ? 2.1 : 1.8} />
-                {/* بَجِ شمارش (مثلِ شمارندهٔ آلارمِ ریلِ راستِ TV) — فقط وقتی count>0 */}
+                {/* بَجِ شمارش (LUXE §۲: تک‌رنگ — متنِ ریزِ muted، نه قرصِ رنگی) — فقط وقتی count>0 */}
                 {badges[key] > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] px-[3px] rounded-full text-[9px] font-bold leading-none flex items-center justify-center tabular-nums" style={{ background: TH.down, color: '#fff' }}>{badges[key] > 9 ? '9+' : badges[key]}</span>
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] px-[3px] rounded text-[10px] font-medium leading-none flex items-center justify-center tabular-nums" style={{ background: TH.bg, color: 'var(--pc-text-muted)' }}>{badges[key] > 9 ? '9+' : badges[key]}</span>
                 )}
               </button>
             );

@@ -139,7 +139,7 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
       onMouseDown={(e) => { if (e.target === e.currentTarget) handleCancel(); }}
     >
       <div
-        className="w-full max-w-[720px] rounded-lg overflow-hidden flex flex-col pc-pop"
+        className="w-full max-w-[720px] rounded-lg overflow-hidden flex flex-col"
         style={{
           height: 'min(600px, 90vh)',
           background: TH.panel,
@@ -150,13 +150,13 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
         onMouseDown={(e) => e.stopPropagation()}
       >
         {/* ───────── هدر ───────── */}
-        <div className="flex items-center gap-2.5 px-4 h-[52px] shrink-0 border-b" style={{ borderColor: TH.border }}>
-          <Settings size={18} style={{ color: TH.accent }} />
-          <span className="font-bold text-[14px]">تنظیماتِ چارت</span>
+        <div className="flex items-center gap-2.5 px-4 h-10 shrink-0 border-b" style={{ borderColor: TH.border }}>
+          <Settings size={18} style={{ color: TH.text }} />
+          <span className="font-semibold text-[14px]">تنظیماتِ چارت</span>
           <button onClick={handleCancel} title="بستن (Esc)"
-            className="mr-auto p-1.5 rounded-md transition-colors duration-[120ms]"
+            className="pc-iconbtn w-7 h-7 ms-auto"
             style={{ color: TH.text }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
+            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
             onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
             <X size={18} />
           </button>
@@ -165,25 +165,25 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
         {/* ───────── بدنه: ریلِ تب + محتوا ───────── */}
         <div className="flex-1 flex min-h-0">
           {/* ریلِ تبِ عمودی (سمتِ شروع/راستِ RTL — همان «چپِ» TV) */}
-          <div className="w-[168px] shrink-0 border-l overflow-y-auto bn-thin-scroll py-2"
-            style={{ borderColor: TH.border, background: TH.subtle }}>
+          <div className="w-[168px] shrink-0 pc-hairline-e overflow-y-auto bn-thin-scroll py-2"
+            style={{ background: TH.subtle }}>
             {TABS.map((t) => {
               const on = tab === t.id;
               const Icon = t.icon;
               return (
                 <button key={t.id} onClick={() => setTab(t.id)}
-                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[13px] text-right transition-colors duration-[120ms]"
+                  className="w-full flex items-center gap-2.5 px-4 h-7 text-[12px] text-start transition-colors duration-[120ms]"
                   style={{
                     color: on ? TH.textStrong : TH.text,
-                    background: on ? TH.chipBg : 'transparent',
-                    fontWeight: on ? 700 : 500,
-                    borderRight: on ? `2px solid ${TH.accent}` : '2px solid transparent',
+                    background: on ? 'var(--pc-accent-tint)' : 'transparent',
+                    fontWeight: on ? 600 : 500,
+                    borderInlineStart: on ? `2px solid ${TH.accent}` : '2px solid transparent',
                   }}
-                  onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }}
+                  onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
                   onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
                   <Icon size={16} style={{ color: on ? TH.accent : TH.text }} />
                   <span className="flex-1">{t.label}</span>
-                  <span className="text-[10px] opacity-40" dir="ltr">{t.en}</span>
+                  <span className="text-[10px] uppercase" dir="ltr" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>{t.en}</span>
                 </button>
               );
             })}
@@ -206,19 +206,19 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
           {/* منوی تمپلیت */}
           <div className="relative">
             <button onClick={() => setTplMenu((v) => !v)}
-              className="flex items-center gap-1.5 h-8 px-3 rounded-md text-[12px] font-semibold transition-colors duration-[120ms]"
+              className="flex items-center gap-1.5 h-8 px-3 rounded text-[12px] font-semibold transition-colors duration-[120ms]"
               style={{ background: TH.chipBg, color: TH.textStrong }}
               onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
               onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
               <Save size={14} /> تمپلیت <ChevronDown size={13} />
             </button>
             {tplMenu && (
-              <div className="absolute bottom-full mb-1 right-0 w-60 rounded-lg p-1 pc-pop z-10"
+              <div className="absolute bottom-full mb-1 end-0 w-60 rounded-md p-1 pc-pop z-10"
                 style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
                 <button onClick={doSaveTpl}
-                  className="flex items-center gap-2 w-full text-right px-2.5 py-2 text-[12.5px] rounded-md transition-colors duration-[120ms]"
+                  className="flex items-center gap-2 w-full text-start px-2.5 py-2 text-[12px] rounded transition-colors duration-[120ms]"
                   style={{ color: TH.accent }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
                   onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                   <Save size={14} /> ذخیرهٔ تنظیماتِ فعلی…
                 </button>
@@ -228,11 +228,11 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
                 ) : (
                   Object.keys(tpls).map((name) => (
                     <div key={name}
-                      className="group flex items-center gap-1 px-1.5 py-1 rounded-md transition-colors duration-[120ms]"
-                      onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
+                      className="group flex items-center gap-1 px-1.5 py-1 rounded transition-colors duration-[120ms]"
+                      onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
                       onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                       <button onClick={() => doLoadTpl(name)}
-                        className="flex-1 text-right px-1 py-1 text-[12.5px] truncate" style={{ color: TH.textStrong }}>
+                        className="flex-1 text-start px-1 py-1 text-[12px] truncate" style={{ color: TH.textStrong }}>
                         {name}
                       </button>
                       <button onClick={() => doDelTpl(name)} title="حذفِ تمپلیت"
@@ -248,23 +248,23 @@ export default function ChartSettingsDialog({ open, onClose, TH, settings, onCha
           </div>
 
           <button onClick={handleDefaults}
-            className="flex items-center gap-1.5 h-8 px-3 rounded-md text-[12px] font-semibold transition-colors duration-[120ms]"
+            className="flex items-center gap-1.5 h-8 px-3 rounded text-[12px] font-semibold transition-colors duration-[120ms]"
             style={{ background: 'transparent', color: TH.text }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBg)}
+            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
             onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
             <RotateCcw size={14} /> بازنشانی به پیش‌فرض
           </button>
 
-          <div className="mr-auto flex items-center gap-2">
+          <div className="ms-auto flex items-center gap-2">
             <button onClick={handleCancel}
-              className="h-8 px-4 rounded-md text-[12.5px] font-semibold transition-colors duration-[120ms]"
-              style={{ background: TH.chipBg, color: TH.textStrong }}
+              className="h-8 px-4 rounded text-[12px] font-semibold transition-colors duration-[120ms]"
+              style={{ background: 'transparent', color: TH.textStrong }}
               onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
-              onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
               انصراف
             </button>
             <button onClick={handleOk}
-              className="h-8 px-5 rounded-md text-[12.5px] font-bold text-white transition-opacity duration-[120ms] hover:opacity-90"
+              className="h-8 px-5 rounded text-[12px] font-semibold text-white transition-opacity duration-[120ms] hover:opacity-90"
               style={{ background: TH.accent }}>
               تأیید
             </button>
@@ -506,8 +506,8 @@ function TradingTab({ TH, s, set }) {
       <SectionTitle TH={TH} title="عمومی" en="General" />
       <ToggleRow TH={TH} label="دکمه‌های خرید/فروش" hint="نمایشِ دکمه‌های SELL/BUY مستقیماً روی چارت"
         on={s.tradeButtons} onToggle={() => set('tradeButtons', !s.tradeButtons)} />
-      <div className="mt-3 flex items-start gap-2 p-3 rounded-lg text-[11.5px] leading-relaxed"
-        style={{ background: TH.subtle, color: TH.text }}>
+      <div className="mt-3 flex items-start gap-2 p-3 rounded-lg text-[11px] leading-relaxed"
+        style={{ background: TH.subtle, border: `1px solid ${TH.border}`, color: TH.text }}>
         <Info size={14} className="shrink-0 mt-0.5 opacity-70" />
         <span>دکمه‌های SELL/BUY تیکتِ سفارش را باز می‌کنند (Bid/Ask). گزینه‌های بیشترِ معامله در نسخه‌های بعدی افزوده می‌شوند.</span>
       </div>
@@ -545,8 +545,8 @@ function EventsTab({ TH, s, set }) {
       <ToggleRow TH={TH} label="گزارشِ درآمد (Earnings)" hint="نشانگرِ E روی محورِ زمان"
         on={s.evEarnings} onToggle={() => set('evEarnings', !s.evEarnings)}
         soon="نیازمندِ تقویمِ درآمد — فید هنوز آن را نمی‌دهد" />
-      <div className="mt-3 flex items-start gap-2 p-3 rounded-lg text-[11.5px] leading-relaxed"
-        style={{ background: TH.subtle, color: TH.text }}>
+      <div className="mt-3 flex items-start gap-2 p-3 rounded-lg text-[11px] leading-relaxed"
+        style={{ background: TH.subtle, border: `1px solid ${TH.border}`, color: TH.text }}>
         <Info size={14} className="shrink-0 mt-0.5 opacity-70" />
         <span>رویدادهای شرکتی مخصوصِ سهام‌اند؛ برای نمادهای فارکس/فلزات/کریپتو داده‌ای نمایش داده نمی‌شود.</span>
       </div>
@@ -558,9 +558,9 @@ function EventsTab({ TH, s, set }) {
 
 function SectionTitle({ TH, title, en, toggle }) {
   return (
-    <div className="flex items-center gap-2 pt-3.5 pb-1.5 first:pt-0.5">
-      <span className="text-[11px] font-bold tracking-wide" style={{ color: TH.textStrong }}>{title}</span>
-      <span className="text-[10px] opacity-40" dir="ltr" style={{ color: TH.text }}>{en}</span>
+    <div className="flex items-center gap-2 pt-3.5 pb-1.5 min-h-[28px] first:pt-0.5">
+      <span className="text-[12px] font-semibold" style={{ color: TH.textStrong }}>{title}</span>
+      <span className="text-[10px] uppercase" dir="ltr" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px' }}>{en}</span>
       <div className="flex-1 h-px" style={{ background: TH.border }} />
       {toggle && <Switch TH={TH} on={toggle.on} onToggle={toggle.onToggle} />}
     </div>
@@ -569,13 +569,13 @@ function SectionTitle({ TH, title, en, toggle }) {
 
 function Row({ TH, label, hint, icon: Icon, children }) {
   return (
-    <div className="flex items-center gap-3 py-2 min-h-[38px]">
+    <div className="flex items-center gap-3 py-1 min-h-[28px]">
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 text-[13px]" style={{ color: TH.textStrong }}>
+        <div className="flex items-center gap-1.5 text-[12px]" style={{ color: TH.text }}>
           {Icon && <Icon size={14} style={{ color: TH.text }} />}
           <span className="truncate">{label}</span>
         </div>
-        {hint && <div className="text-[11px] opacity-55 mt-0.5" style={{ color: TH.text }}>{hint}</div>}
+        {hint && <div className="text-[11px] mt-0.5" style={{ color: 'var(--pc-text-muted)' }}>{hint}</div>}
       </div>
       <div className="shrink-0">{children}</div>
     </div>
@@ -620,7 +620,7 @@ function ColorSwatch({ TH, color, onChange, disabled }) {
   const safe = normalizeHex(color) || '#000000';
   return (
     <label
-      className="relative flex items-center gap-1.5 h-7 pl-1.5 pr-1 rounded-md cursor-pointer transition-opacity duration-[120ms]"
+      className="relative flex items-center gap-1.5 h-7 pe-1.5 ps-1 rounded cursor-pointer transition-opacity duration-[120ms]"
       style={{ background: TH.chipBg, border: `1px solid ${TH.border}`, opacity: disabled ? 0.4 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
       <span className="w-5 h-5 rounded shrink-0" style={{ background: color, border: `1px solid ${TH.border}` }} />
       <span className="text-[11px] tabular-nums tnum uppercase" dir="ltr" style={{ color: TH.text }}>{safe}</span>
@@ -644,13 +644,13 @@ function Switch({ TH, on, onToggle, disabled }) {
 
 function Segmented({ TH, value, options, onChange }) {
   return (
-    <div className="inline-flex items-center rounded-md p-0.5 gap-0.5" style={{ background: TH.subtle }}>
+    <div className="inline-flex items-center rounded p-0.5 gap-0.5" style={{ border: `1px solid ${TH.border}` }}>
       {options.map((o) => {
         const on = value === o.v;
         return (
           <button key={String(o.v)} onClick={() => onChange(o.v)}
             className="px-3 h-7 rounded text-[12px] font-semibold transition-colors duration-[120ms]"
-            style={on ? { background: TH.accent, color: '#fff' } : { background: 'transparent', color: TH.text }}
+            style={on ? { background: 'var(--pc-accent-tint)', color: TH.accent } : { background: 'transparent', color: TH.text }}
             onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
             onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
             {o.label}
@@ -665,11 +665,11 @@ function SelectBox({ TH, value, options, onChange }) {
   return (
     <div className="relative inline-flex items-center">
       <select value={value} onChange={(e) => onChange(e.target.value)}
-        className="appearance-none h-7 pr-3 pl-7 rounded-md text-[12px] font-semibold outline-none cursor-pointer"
+        className="appearance-none h-8 ps-3 pe-7 rounded text-[12px] font-medium outline-none cursor-pointer"
         style={{ background: TH.chipBg, color: TH.textStrong, border: `1px solid ${TH.border}` }}>
         {options.map((o) => <option key={String(o.v)} value={o.v}>{o.label}</option>)}
       </select>
-      <ChevronDown size={13} className="absolute left-1.5 pointer-events-none" style={{ color: TH.text }} />
+      <ChevronDown size={13} className="absolute end-1.5 pointer-events-none" style={{ color: TH.text }} />
     </div>
   );
 }

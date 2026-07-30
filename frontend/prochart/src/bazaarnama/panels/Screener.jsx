@@ -310,19 +310,19 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
       <div className="flex items-center gap-1.5 px-2 h-8 border-b shrink-0" style={{ borderColor: TH.border }}>
         <input
           value={q} onChange={(e) => setQ(e.target.value)} placeholder="جستجوی نماد…"
-          dir="ltr" className="flex-1 min-w-0 rounded-md px-2 py-1 outline-none text-[11px] transition-colors"
+          dir="ltr" className="flex-1 min-w-0 rounded px-2 h-[26px] outline-none text-[11px] transition-colors"
           style={{ background: TH.chipBg, color: TH.textStrong, border: `1px solid ${TH.border}` }}
         />
         <button
           onClick={() => setOnlyMovers((v) => !v)} title="فقط نمادهای در حالِ حرکت"
-          className="px-2 h-[26px] rounded-md text-[10px] whitespace-nowrap transition-colors"
-          style={{ background: onlyMovers ? TH.accent : TH.chipBg, color: onlyMovers ? '#fff' : TH.text }}
+          className="px-2 h-[26px] rounded text-[11px] whitespace-nowrap transition-colors"
+          style={{ background: onlyMovers ? 'var(--pc-accent-tint)' : TH.chipBg, color: onlyMovers ? (TH.accentText || TH.accent) : TH.text }}
           onMouseEnter={(e) => { if (!onlyMovers) e.currentTarget.style.background = TH.chipBgHover; }}
           onMouseLeave={(e) => { if (!onlyMovers) e.currentTarget.style.background = TH.chipBg; }}
         >فعال</button>
         <div className="relative">
           <button onClick={() => { setColMenu((v) => !v); setFiltMenu(false); }} title="ستون‌ها"
-            className="p-1 rounded-md transition-colors" style={{ background: colMenu ? TH.accent : TH.chipBg, color: colMenu ? '#fff' : TH.text }}>
+            className="p-1 rounded transition-colors" style={{ background: colMenu ? 'var(--pc-pressed)' : TH.chipBg, color: colMenu ? TH.textStrong : TH.text }}>
             <Columns3 size={14} />
           </button>
           {colMenu && (
@@ -343,7 +343,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
         </div>
         <div className="relative">
           <button onClick={() => { setFiltMenu((v) => !v); setColMenu(false); }} title="فیلترهای پیشرفته"
-            className="p-1 rounded-md transition-colors" style={{ background: filtMenu ? TH.accent : TH.chipBg, color: filtMenu ? '#fff' : TH.text }}>
+            className="p-1 rounded transition-colors" style={{ background: filtMenu ? 'var(--pc-pressed)' : TH.chipBg, color: filtMenu ? TH.textStrong : TH.text }}>
             <SlidersHorizontal size={14} />
           </button>
           {filtMenu && (
@@ -355,7 +355,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
                     const on = changeDir === v;
                     return (
                       <button key={v} onClick={() => setChangeDir(v)} className="flex-1 px-1.5 h-6 rounded text-[11px] transition-colors"
-                        style={on ? { background: TH.accent, color: '#fff' } : { color: TH.text }}
+                        style={on ? { background: 'var(--pc-accent-tint)', color: TH.accentText || TH.accent } : { color: TH.text }}
                         onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
                         onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>{l}</button>
                     );
@@ -383,29 +383,29 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
           const on = preset === id;
           return (
             <button key={id} onClick={() => setPreset(id)}
-              className="px-2 h-[24px] rounded-full text-[10px] whitespace-nowrap shrink-0 transition-colors"
-              style={{ background: on ? TH.accent : TH.chipBg, color: on ? '#fff' : TH.text }}
-              onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
-              onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }}>{label}</button>
+              className="px-2 h-[24px] rounded text-[11px] whitespace-nowrap shrink-0 transition-colors"
+              style={{ background: on ? 'var(--pc-accent-tint)' : 'transparent', color: on ? (TH.accentText || TH.accent) : TH.text }}
+              onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = 'var(--pc-hover)'; }}
+              onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>{label}</button>
           );
         })}
         <div className="flex-1" />
         {toggleWatch && missingCount > 0 && (
           <button onClick={addVisible} title="افزودنِ نمادهای نمایان به واچ‌لیست"
-            className="flex items-center gap-1 px-2 h-[24px] rounded-full text-[10px] whitespace-nowrap shrink-0 transition-colors"
-            style={{ background: TH.chipBg, color: TH.accent }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
-            onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
+            className="flex items-center gap-1 px-2 h-[24px] rounded text-[11px] whitespace-nowrap shrink-0 transition-colors"
+            style={{ background: 'transparent', color: TH.accentText || TH.accent }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--pc-hover)')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
             <Star size={11} /> +واچ
           </button>
         )}
         {/* خروجیِ CSV از نتایجِ اسکنر (هم‌ترازِ Exportِ اسکنرِ TV) */}
         {(rows || []).length > 0 && (
           <button onClick={exportCsv} title="خروجیِ نتایجِ اسکنر به CSV"
-            className="flex items-center gap-1 px-2 h-[24px] rounded-full text-[10px] whitespace-nowrap shrink-0 transition-colors"
-            style={{ background: TH.chipBg, color: TH.text }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = TH.chipBgHover)}
-            onMouseLeave={(e) => (e.currentTarget.style.background = TH.chipBg)}>
+            className="flex items-center gap-1 px-2 h-[24px] rounded text-[11px] whitespace-nowrap shrink-0 transition-colors"
+            style={{ background: 'transparent', color: TH.text }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--pc-hover)')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="M7 10l5 5 5-5M12 15V3" /></svg>
             CSV
           </button>
@@ -416,7 +416,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
       <div className="overflow-auto">
         <div style={{ minWidth: '100%' }}>
           {/* سرستونِ قابلِ‌مرتب‌سازی */}
-          <div className="grid items-center gap-2 px-3 h-7 border-b text-[10px] shrink-0 sticky top-0 z-[5]"
+          <div className="grid items-center gap-2 px-3 h-7 border-b text-[11px] shrink-0 sticky top-0 z-[5]"
             style={{ borderColor: TH.border, gridTemplateColumns: gridCols, background: TH.bg }}>
             <span className="w-5" />
             <HCell col="symbol">نماد</HCell>
@@ -441,15 +441,15 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
                 key={s}
                 onClick={() => setSymbol && setSymbol(s)}
                 role="button" tabIndex={0}
-                className="grid items-center gap-2 w-full px-3 h-8 transition-colors cursor-pointer"
-                style={{ gridTemplateColumns: gridCols, background: active ? TH.subtle : 'transparent' }}
-                onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = TH.chipBgHover; }}
+                className="grid items-center gap-2 w-full px-3 h-7 pc-hairline-b transition-colors cursor-pointer"
+                style={{ gridTemplateColumns: gridCols, background: active ? 'var(--pc-accent-tint)' : 'transparent' }}
+                onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = 'var(--pc-hover)'; }}
                 onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}
                 dir="ltr"
               >
-                <SymbolLogo symbol={s} size={20} />
+                <SymbolLogo symbol={s} size={18} />
                 <span className="text-left truncate" style={{ color: active ? TH.accent : TH.textStrong, fontWeight: active ? 600 : 400 }}>{prettySym(s)}</span>
-                <FlashNum value={m.last} dir={dir} className="tnum text-right rounded px-0.5 -mx-0.5" style={{ color: col }}>
+                <FlashNum value={m.last} dir={dir} className="pc-num-ltr text-right rounded px-0.5 -mx-0.5" style={{ color: col }}>
                   {m.last != null ? fmtP(s, m.last) : '—'}
                 </FlashNum>
                 {optActive.map(([key]) => {
@@ -460,7 +460,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
                   else if (key === 'low') { txt = m.lo != null ? fmtP(s, m.lo) : '—'; c = TH.down; }
                   else if (key === 'range') { txt = m.range != null ? `${m.range.toFixed(2)}٪` : '—'; }
                   else if (key === 'spread') { txt = m.spread != null ? String(m.spread) : '—'; }
-                  return <span key={key} className="tnum text-right text-[10px] truncate rounded px-1 py-0.5" style={{ color: c, background: bg }}>{txt}</span>;
+                  return <span key={key} className="pc-num-ltr text-right text-[11px] truncate rounded px-1 py-0.5" style={{ color: c, background: bg }}>{txt}</span>;
                 })}
                 <span className="text-right" style={{ color: col }}>{dir !== 0 ? (dir > 0 ? '▲' : '▼') : ''}</span>
                 {toggleWatch && (
@@ -476,7 +476,7 @@ export default function Screener({ symbol, TH, symbols = [], prices = {}, setSym
         </div>
       </div>
       {/* فوترِ شمارشِ نتایج — هم‌ترازِ «N matches»ِ فوترِ اسکرینرِ TV */}
-      <div className="flex items-center justify-between px-3 h-6 border-t text-[10px] shrink-0 select-none" style={{ borderColor: TH.border, color: TH.text, opacity: 0.6 }}>
+      <div className="flex items-center justify-between px-3 h-6 border-t text-[11px] shrink-0 select-none" style={{ borderColor: TH.border, color: TH.text, opacity: 0.6 }}>
         <span className="tabular-nums">{rows.length} نماد</span>
         {(onlyMovers || changeDir !== 'all' || (minChg && minChg !== '0') || q.trim() || preset !== 'all') && <span className="opacity-80">فیلترشده</span>}
       </div>

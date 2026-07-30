@@ -180,8 +180,9 @@ export default function NewsTab({ symbol, TH }) {
 
   const impactColor = (n) => (n >= 8 ? TH.down : n >= 5 ? '#f59e0b' : TH.text);
 
+  // تبِ متنیِ segmented (LUXE §۸.۶): فعال = تینت + متنِ accent؛ غیرفعال = متنِ خنثی
   const segBtn = (on) => ({
-    background: on ? TH.accent : TH.chipBg, color: on ? '#fff' : TH.text,
+    background: on ? 'var(--pc-accent-tint)' : 'transparent', color: on ? (TH.accentText || TH.accent) : TH.text,
   });
 
   return (
@@ -193,19 +194,19 @@ export default function NewsTab({ symbol, TH }) {
             <span className="absolute inline-flex w-full h-full rounded-full animate-ping" style={{ background: TH.up, opacity: 0.55 }} />
             <span className="relative inline-flex w-1.5 h-1.5 rounded-full" style={{ background: TH.up }} />
           </span>
-          <span className="opacity-50 text-[11px]">مهم‌ترین اخبارِ بازار</span>
+          <span className="text-[12px] font-semibold" style={{ color: TH.textStrong }}>مهم‌ترین اخبارِ بازار</span>
         </span>
         <div className="flex items-center rounded-md overflow-hidden shrink-0" style={{ border: `1px solid ${TH.border}` }} dir="rtl">
           <button onClick={() => setOnlyRelevant(false)}
-            className="px-2 h-[22px] text-[10px] transition-colors" style={segBtn(!onlyRelevant)}
-            onMouseEnter={(e) => { if (onlyRelevant) e.currentTarget.style.background = TH.chipBgHover; }}
-            onMouseLeave={(e) => { if (onlyRelevant) e.currentTarget.style.background = TH.chipBg; }}>
+            className="px-2 h-[22px] text-[11px] transition-colors" style={segBtn(!onlyRelevant)}
+            onMouseEnter={(e) => { if (onlyRelevant) e.currentTarget.style.background = 'var(--pc-hover)'; }}
+            onMouseLeave={(e) => { if (onlyRelevant) e.currentTarget.style.background = 'transparent'; }}>
             همهٔ نمادها
           </button>
           <button onClick={() => setOnlyRelevant(true)}
-            className="px-2 h-[22px] text-[10px] transition-colors flex items-center gap-1" style={segBtn(onlyRelevant)}
-            onMouseEnter={(e) => { if (!onlyRelevant) e.currentTarget.style.background = TH.chipBgHover; }}
-            onMouseLeave={(e) => { if (!onlyRelevant) e.currentTarget.style.background = TH.chipBg; }}>
+            className="px-2 h-[22px] text-[11px] transition-colors flex items-center gap-1 pc-hairline-s" style={segBtn(onlyRelevant)}
+            onMouseEnter={(e) => { if (!onlyRelevant) e.currentTarget.style.background = 'var(--pc-hover)'; }}
+            onMouseLeave={(e) => { if (!onlyRelevant) e.currentTarget.style.background = 'transparent'; }}>
             <span dir="ltr" className="tnum">{symbol}</span>
           </button>
         </div>
@@ -219,10 +220,10 @@ export default function NewsTab({ symbol, TH }) {
           if (id !== 'all' && n === 0) return null;
           return (
             <button key={id} onClick={() => setCat(id)}
-              className="px-2 h-[24px] rounded-full text-[10px] whitespace-nowrap shrink-0 transition-colors flex items-center gap-1"
-              style={{ background: on ? TH.accent : TH.chipBg, color: on ? '#fff' : TH.text }}
-              onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = TH.chipBgHover; }}
-              onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = TH.chipBg; }}>
+              className="px-2 h-[24px] rounded text-[11px] whitespace-nowrap shrink-0 transition-colors flex items-center gap-1"
+              style={{ background: on ? 'var(--pc-accent-tint)' : 'transparent', color: on ? (TH.accentText || TH.accent) : TH.text }}
+              onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = 'var(--pc-hover)'; }}
+              onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
               {label}
               {n > 0 && <span className="tnum opacity-60" dir="ltr">{n}</span>}
             </button>
@@ -260,17 +261,18 @@ export default function NewsTab({ symbol, TH }) {
               {/* ردیفِ متا: منبع · زمان + برچسب‌ها */}
               <div className="flex items-center gap-1.5 mb-1" dir="ltr">
                 <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot }} />
-                <span className="text-[9.5px] font-semibold uppercase tracking-wide truncate" style={{ color: TH.text, opacity: 0.8, maxWidth: 130 }} title={a.source || ''}>{a.source}</span>
-                <span className="text-[9px] opacity-40">·</span>
-                <span className="text-[9.5px] whitespace-nowrap opacity-55" style={{ color: TH.text }} dir="rtl" title={absTime(a.ts)}>{relTime(a.ts)}</span>
+                <span className="text-[10px] font-semibold uppercase truncate" style={{ color: 'var(--pc-text-muted)', letterSpacing: '.4px', maxWidth: 130 }} title={a.source || ''}>{a.source}</span>
+                <span className="text-[10px] opacity-40">·</span>
+                <span className="text-[11px] whitespace-nowrap" style={{ color: 'var(--pc-text-muted)' }} dir="rtl" title={absTime(a.ts)}>{relTime(a.ts)}</span>
                 <span className="flex-1" />
+                {/* بج‌های معنایی به‌صورتِ متنِ رنگی، نه قرصِ پر (LUXE §۲/§۸) */}
                 {isFresh && (
-                  <span className="shrink-0 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold whitespace-nowrap"
-                    style={{ background: TH.accent, color: '#fff' }}>جدید</span>
+                  <span className="shrink-0 text-[10px] font-semibold whitespace-nowrap"
+                    style={{ color: TH.accentText || TH.accent }}>جدید</span>
                 )}
                 {hot && (
-                  <span className="shrink-0 px-1.5 h-[15px] rounded text-[8px] leading-[15px] font-bold whitespace-nowrap"
-                    style={{ background: TH.down, color: '#fff' }}>مهم</span>
+                  <span className="shrink-0 text-[10px] font-semibold whitespace-nowrap"
+                    style={{ color: TH.downText || TH.down }}>مهم</span>
                 )}
                 {/* نشانگرِ «بازشدن در منبع» — فقط وقتی لینک دارد و روی hover (سبکِ آیتم‌های خبریِ TV) */}
                 {a.url && (
@@ -281,7 +283,7 @@ export default function NewsTab({ symbol, TH }) {
               </div>
               {/* تیتر */}
               <div className="text-[12px] leading-[18px]" style={{ color: TH.textStrong }}>{a.title}</div>
-              {a.summary && <div className="text-[10px] leading-[17px] mt-1 opacity-60 line-clamp-2">{a.summary}</div>}
+              {a.summary && <div className="text-[11px] leading-[17px] mt-1 opacity-60 line-clamp-2">{a.summary}</div>}
               {/* برچسبِ نمادهای مرتبط */}
               {tickers.length > 0 && (
                 <div className="flex items-center flex-wrap gap-1 mt-1.5" dir="ltr">
@@ -294,14 +296,14 @@ export default function NewsTab({ symbol, TH }) {
                         onClick={(e) => { e.stopPropagation(); try { window.dispatchEvent(new CustomEvent('bn:setSymbol', { detail: sym })); } catch (err) {} }}
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); e.preventDefault(); try { window.dispatchEvent(new CustomEvent('bn:setSymbol', { detail: sym })); } catch (err) {} } }}
                         title={`نمایشِ ${sym} روی چارت`}
-                        className="tnum px-1.5 h-[16px] rounded leading-[16px] text-[9px] font-semibold cursor-pointer transition-colors duration-[120ms]"
-                        style={{ background: TH.chipBg, color: TH.accent }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = TH.chipBgHover; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = TH.chipBg; }}>{t}</span>
+                        className="tnum px-1.5 h-[16px] rounded leading-[14px] text-[10px] font-semibold cursor-pointer transition-colors duration-[120ms]"
+                        style={{ background: 'transparent', border: `1px solid ${TH.border}`, color: TH.accentText || TH.accent }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--pc-hover)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>{t}</span>
                     );
                     return (
-                      <span key={t} className="tnum px-1.5 h-[16px] rounded leading-[16px] text-[9px] font-semibold"
-                        style={{ background: TH.chipBg, color: TH.text }}>{t}</span>
+                      <span key={t} className="tnum px-1.5 h-[16px] rounded leading-[14px] text-[10px] font-semibold"
+                        style={{ background: 'transparent', border: `1px solid ${TH.border}`, color: 'var(--pc-text-muted)' }}>{t}</span>
                     );
                   })}
                 </div>
@@ -316,8 +318,8 @@ export default function NewsTab({ symbol, TH }) {
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4" dir="rtl"
           style={{ background: 'rgba(0,0,0,.45)' }}
           onMouseDown={(e) => { if (e.target === e.currentTarget) setActive(null); }}>
-          <div className="w-full max-w-[440px] max-h-[80vh] flex flex-col rounded-xl shadow-2xl overflow-hidden"
-            style={{ background: TH.popoverBg, border: `1px solid ${TH.border}` }}>
+          <div className="w-full max-w-[440px] max-h-[80vh] flex flex-col rounded-lg overflow-hidden"
+            style={{ background: TH.popoverBg, border: `1px solid ${TH.border}`, boxShadow: 'var(--pc-shadow-modal)' }}>
             {/* هدر: منبع · زمانِ مطلق + بستن */}
             <div className="flex items-center gap-2 px-3 h-10 border-b shrink-0" style={{ borderColor: TH.border }}>
               <span className="w-2 h-2 rounded-full shrink-0" style={{ background: impactColor(active.impact || 0) }} />
@@ -351,7 +353,7 @@ export default function NewsTab({ symbol, TH }) {
             {active.url && (
               <div className="px-4 py-2.5 border-t shrink-0" style={{ borderColor: TH.border }}>
                 <button onClick={() => window.open(active.url, '_blank', 'noopener,noreferrer')}
-                  className="w-full flex items-center justify-center gap-1.5 h-9 rounded-lg text-[12.5px] font-semibold text-white transition-opacity hover:opacity-90"
+                  className="w-full flex items-center justify-center gap-1.5 h-8 rounded-md text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
                   style={{ background: TH.accent }}>
                   <span>خواندنِ کاملِ خبر در منبع</span>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>
