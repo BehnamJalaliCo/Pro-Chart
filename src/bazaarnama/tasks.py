@@ -4,6 +4,8 @@
 تسکِ Celery که هر دقیقه آلارم‌های فعال را روی قیمتِ زندهٔ Redis (همان تیک‌های
 data-feed) ارزیابی می‌کند — مستقل از باز بودنِ مرورگر. هنگامِ برخورد،
 `last_triggered_at` ست می‌شود (با کول‌داونِ ۱ ساعته) تا فرانت نشانِ «رخ داد» بدهد.
+آلارم‌های cond.type == "indicator" (RSI/SMA/EMA/MACD) روی آخرین کندلِ «بسته»ی
+همان فیدِ چارت ارزیابی می‌شوند (توابعِ خالص در alert_indicators.py).
 """
 
 from __future__ import annotations
@@ -79,6 +81,78 @@ def _line_level(cond: dict, now_dt: datetime):
     return p1 + (p2 - p1) * (now_dt.timestamp() - t1) / (t2 - t1)
 
 
+async def _db_candles(symbol: str, tf: str, limit: int) -> list[dict]:
+    """کندل‌های فارکس/فلز از جدولِ candles با سشنِ تازه — بازتولیدِ کوچکِ academy._chart_rows.
+
+    چرا import نمی‌کنیم: academy.py ماژولِ سنگینِ routeِ FastAPI است و ورکرِ Celery نباید
+    به آن گره بخورد. حدِ پایینِ زمانیِ «درون‌خطی» عمداً همان ترفندِ _chart_rows است: بدونِ
+    آن TimescaleDB در زمانِ پلن chunkها را هرس نمی‌کند و روی ۷۰۰+ chunk قفل می‌گیرد
+    («out of shared memory / max_locks_per_transaction»). ضریبِ ۴ برای آخرهفته/شکافِ داده.
+    """
+    from sqlalchemy import text
+
+    from src.bazaarnama.alert_indicators import tf_seconds
+
+    n = max(1, int(limit))
+    bs = tf_seconds(tf, 0)
+    conds = "symbol=:s AND timeframe=:t "
+    if bs:
+        upper = int(datetime.now(timezone.utc).timestamp())
+        conds += f"AND time >= to_timestamp({upper - n * bs * 4}) "
+    q = ("SELECT time,open,high,low,close,COALESCE(volume,0) FROM candles WHERE "
+         + conds + "ORDER BY time DESC LIMIT :n")
+    async with async_session_factory() as db:
+        rows = (await db.execute(text(q), {"s": symbol, "t": tf, "n": n})).fetchall()
+    out = []
+    for r in reversed(rows):
+        try:
+            ts = int(r[0].timestamp())
+        except Exception:  # noqa: BLE001
+            ts = 0
+        out.append({"t": ts, "o": float(r[1]), "h": float(r[2]), "l": float(r[3]),
+                    "c": float(r[4]), "v": float(r[5] or 0)})
+    return out
+
+
+async def _alert_candles(symbol: str, tf: str, limit: int) -> list[dict]:
+    """کندل‌های اخیرِ یک نماد با همان مسیریابیِ REST چارت (academy.chart_data).
+
+    _crypto_feed/_stock_feed توابعِ سادهٔ async بدونِ وابستگیِ FastAPI اند، پس importشان
+    در ورکر بی‌خطر است؛ ensure_pairs لازم نیست چون مسیریابیِ کریپتو به *USDT ختم می‌شود.
+    """
+    from src.api.routes._crypto_feed import crypto_klines, is_crypto
+    from src.api.routes._stock_feed import is_stock, stock_klines
+
+    if is_crypto(symbol):
+        return await crypto_klines(symbol, tf, limit=limit)
+    if is_stock(symbol):
+        return await stock_klines(symbol, tf, limit=limit)
+    return await _db_candles(symbol, tf, limit)
+
+
+async def _alert_indicator_value(a, ind: dict, now_dt: datetime, kcache: dict):
+    """(مقدارِ اندیکاتورِ آلارم روی آخرین کندلِ بسته، برچسبی مثلِ «RSI(14)»).
+
+    kcache در طولِ یک تیک نتیجهٔ fetch را بینِ آلارم‌های هم‌نماد/هم‌تایم‌فریم به‌اشتراک
+    می‌گذارد تا N آلارم روی BTCUSDT/H1 فقط یک درخواستِ کندل بزند؛ مقدار (تعدادِ
+    درخواستی، کندل‌ها) است تا آلارمی با پنجرهٔ بلندتر کشِ کوتاه را دوباره بگیرد.
+    """
+    from src.bazaarnama.alert_indicators import bars_needed, drop_forming, indicator_last
+
+    tf = (a.tf or "H1").upper()
+    need = bars_needed(ind)
+    key = (a.symbol, tf)
+    got = kcache.get(key)
+    if got is None or got[0] < need:
+        candles = await _alert_candles(a.symbol, tf, need)
+        kcache[key] = (need, candles)
+    else:
+        candles = got[1]
+    # فقط کندل‌های بسته — مقدارِ اندیکاتور روی کندلِ باز با هر تیک عوض می‌شود و cross را خراب می‌کند.
+    closed = drop_forming(candles, tf, now_dt.timestamp())
+    return indicator_last(closed, ind)
+
+
 async def _check() -> dict:
     from src.core.redis_client import redis_client
 
@@ -94,6 +168,7 @@ async def _check() -> dict:
 
     now = datetime.now(timezone.utc)
     prices: dict[str, float | None] = {}
+    kcache: dict = {}  # کشِ کندلِ یک تیک برای آلارم‌های اندیکاتور: (symbol, tf) → (need, candles)
     triggered = 0
 
     async with async_session_factory() as s:
@@ -143,42 +218,79 @@ async def _check() -> dict:
             except Exception:  # noqa: BLE001
                 pass
 
-            def _one(o, v):
+            # ── آلارمِ اندیکاتور (cond.type == "indicator") — مقدارِ اندیکاتور جای قیمت می‌نشیند ──
+            # افزایشی: هر cond بدونِ این type دقیقاً مثلِ قبل رفتار می‌کند.
+            ind_cfg = cond.get("ind") if cond.get("type") == "indicator" else None
+            ind_now = ind_prev = None
+            ind_label = ""
+            if cond.get("type") == "indicator" and not isinstance(ind_cfg, dict):
+                continue  # type=indicator ولی ind غایب/خراب — نباید به‌غلط مثلِ آلارمِ قیمتی ارزیابی شود
+            if isinstance(ind_cfg, dict):
+                # هر خطای فید/محاسبه فقط همین آلارم را در این تیک رد می‌کند، نه کلِ حلقه را.
+                try:
+                    ind_now, ind_label = await _alert_indicator_value(a, ind_cfg, now, kcache)
+                except Exception as exc:  # noqa: BLE001
+                    logger.warning("bn_alert_ind_error", alert_id=a.id, symbol=sym, error=str(exc))
+                    continue
+                if ind_now is None:
+                    continue  # دادهٔ کندل/دورهٔ کافی نیست — تیکِ بعد دوباره
+                # مقدارِ ارزیابیِ قبلی برای شرط‌های لبه‌ای (cross روی خودِ اندیکاتور)
+                try:
+                    pv = await redis_client.get(f"bn:alertprevind:{a.id}")
+                    ind_prev = float(pv) if pv is not None else None
+                except Exception:  # noqa: BLE001
+                    ind_prev = None
+                try:
+                    # ۳ روز (نه ۱ روزِ قیمت): بینِ دو کندلِ بستهٔ H4/D1 ساعت‌ها فاصله است و
+                    # پریدنِ prev یعنی cross بی‌صدا گم می‌شود.
+                    await redis_client.set(f"bn:alertprevind:{a.id}", str(ind_now), ex=86400 * 3)
+                except Exception:  # noqa: BLE001
+                    pass
+
+            def _one(o, v, cur=mid, pre=prev):
+                # cur/pre پیش‌فرض قیمت‌اند؛ آلارمِ اندیکاتور همین سمانتیک را با ind_now/ind_prev صدا می‌زند.
                 if o == "above":
-                    return mid >= v
+                    return cur >= v
                 if o == "below":
-                    return mid <= v
+                    return cur <= v
                 if o == "cross_up":
-                    return prev is not None and prev < v <= mid
+                    return pre is not None and pre < v <= cur
                 if o == "cross_down":
-                    return prev is not None and prev > v >= mid
+                    return pre is not None and pre > v >= cur
                 if o == "cross":
-                    return prev is not None and ((prev < v <= mid) or (prev > v >= mid))
-                if o in ("pct_up", "pct_down") and prev:
-                    chg = (mid - prev) / prev * 100.0
+                    return pre is not None and ((pre < v <= cur) or (pre > v >= cur))
+                if o in ("pct_up", "pct_down") and pre:
+                    chg = (cur - pre) / pre * 100.0
                     return (o == "pct_up" and chg >= v) or (o == "pct_down" and chg <= -v)
                 # حرکتِ مطلق (Moving Up/Down by value مثلِ TradingView): قیمت از تیکِ قبل به‌اندازهٔ v حرکت کند.
                 if o == "move_up_value":
-                    return prev is not None and (mid - prev) >= v
+                    return pre is not None and (cur - pre) >= v
                 if o == "move_down_value":
-                    return prev is not None and (prev - mid) >= v
+                    return pre is not None and (pre - cur) >= v
                 # کانال (Entering/Exiting Channel مثلِ TV): مرزها lo/hi از خودِ cond؛ لبه‌ای (ورود/خروج نسبت به تیکِ قبل).
                 if o in ("enter_channel", "exit_channel"):
-                    if prev is None:
+                    if pre is None:
                         return False
                     lo = float(cond.get("lo") or 0.0)
                     hi = float(cond.get("hi") or 0.0)
                     if lo > hi:
                         lo, hi = hi, lo
-                    inside_now = lo <= mid <= hi
-                    inside_prev = lo <= prev <= hi
+                    inside_now = lo <= cur <= hi
+                    inside_prev = lo <= pre <= hi
                     if o == "enter_channel":
                         return inside_now and not inside_prev
                     return (not inside_now) and inside_prev
                 return False
             # آلارمِ چندشرطی (AND): اگر conditions آرایه باشد، همهٔ شرط‌ها باید با هم برقرار شوند
             conds = cond.get("conditions")
-            if isinstance(conds, list) and conds:
+            if ind_cfg is not None:
+                ikey = str(ind_cfg.get("key") or "").lower()
+                if op in ("price_cross_up", "price_cross_down") and ikey in ("sma", "ema"):
+                    # عبورِ «قیمت» از خطِ MA: مقایسهٔ mid/prev با سطحِ MA — نه مقدارِ اندیکاتور با value.
+                    hit = _one("cross_up" if op == "price_cross_up" else "cross_down", ind_now)
+                else:
+                    hit = _one(op, val, cur=ind_now, pre=ind_prev)
+            elif isinstance(conds, list) and conds:
                 try:
                     hit = all(_one(c.get("op"), float(c.get("value") or 0)) for c in conds)
                 except (TypeError, ValueError):
@@ -204,10 +316,14 @@ async def _check() -> dict:
             if trigger == "once":
                 a.active = False
 
-            # پیامِ سفارشی با متغیرها
-            tmpl = cond.get("message") or "آلارمِ {symbol}: شرط برقرار شد (قیمت {price})"
+            # پیامِ سفارشی با متغیرها؛ {ind} → مثلاً «RSI(14)=71.3» (فقط برای آلارمِ اندیکاتور مقدار دارد)
+            ind_txt = f"{ind_label}={ind_now:.6g}" if ind_now is not None else ""
+            _default = ("آلارمِ {symbol}: شرط برقرار شد ({ind} — قیمت {price})" if ind_txt
+                        else "آلارمِ {symbol}: شرط برقرار شد (قیمت {price})")
+            tmpl = cond.get("message") or _default
             msg = (str(tmpl).replace("{symbol}", sym).replace("{price}", f"{mid:.5f}")
-                   .replace("{value}", f"{val:g}").replace("{tf}", a.tf or ""))
+                   .replace("{value}", f"{val:g}").replace("{tf}", a.tf or "")
+                   .replace("{ind}", ind_txt))
             logger.info("bn_alert_triggered", alert_id=a.id, symbol=sym, op=op, value=val, price=mid)
             if cond.get("telegram"):
                 await _send_telegram(f"🔔 {msg}")
