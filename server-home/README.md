@@ -12,7 +12,6 @@
 | `Pro-Chart/build.log` | `/home/bazaarnama/Pro-Chart/build.log` |
 | `Pro-Chart/backup-logs/` | `/home/bazaarnama/Pro-Chart/backup-logs/` |
 | `Pro-Chart/.claude/` | `/home/bazaarnama/Pro-Chart/.claude/` |
-| `Pro-Chart/.codex-backups/` | `/home/bazaarnama/Pro-Chart/.codex-backups/` (۲۱۸ مگابایت) |
 | `home/docker-cache-cleanup.sh` + `.log` | `/home/bazaarnama/` |
 | `home/codex-install2.log` | `/home/bazaarnama/codex-install2.log` |
 | `home/.gitconfig` `.bashrc` `.bashrc.backup` `.profile` `.npmrc` `.boto` | `/home/bazaarnama/` |
@@ -20,6 +19,9 @@
 | `docker-ps.txt` / `docker-volumes.txt` | عکسِ لحظه‌ایِ وضعیتِ داکر |
 
 ## آنچه عمداً اینجا نیست
+
+- `Pro-Chart/.codex-backups/` — بکاپِ یک‌بارهٔ ۱۴ ژوئیهٔ کدکس (۲۱۸ مگابایت، ۳۰۱۶ فایل).
+  به خواستِ مالک از گیت حذف شد؛ نسخهٔ اصلی روی سرور و گوگل‌درایو هست.
 
 - `~/.ssh/` — کلیدهای ورود به خودِ سرور. گذاشتنِ آن‌ها در ریپو یعنی هر کسی که
   به این ریپو دسترسی پیدا کند به سرور هم دسترسی دارد. جدا و آفلاین نگه‌داری شود.
