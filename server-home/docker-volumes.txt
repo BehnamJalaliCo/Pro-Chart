@@ -1,0 +1,5 @@
+DRIVER    VOLUME NAME
+local     central-auth_central_pg
+local     prochart_llm_creds
+local     prochart_redis_data
+local     prochart_tsdb_data

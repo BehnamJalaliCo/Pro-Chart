@@ -1,0 +1,4 @@
+[safe]
+	directory = /home/bazaarnama/Pro-Chart/app
+[credential]
+	helper = store

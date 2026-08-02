@@ -1,0 +1,16 @@
+prochart-frontend-prochart-1	prochart-frontend-prochart	Up 3 days (healthy)	0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp
+prochart-api-1	prochart-api	Up 3 days (healthy)	127.0.0.1:8000->8000/tcp
+prochart-bn-alerts-worker-1	prochart-bn-alerts-worker	Up 3 days	8000/tcp
+central-auth-central-auth-1	central-auth-central-auth	Up 11 days	10.10.1.1:8100->8100/tcp, 127.0.0.1:8100->8100/tcp
+central-auth-central-postgres-1	postgres:17	Up 11 days (healthy)	127.0.0.1:5442->5432/tcp
+pro-chart-webview	pro-chart-webview:latest	Up 11 days	0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
+prochart-stock-ws-1	prochart-stock-ws	Up 2 weeks	8000/tcp
+prochart-admin-frontend	prochart-admin:latest	Up 2 weeks (healthy)	80/tcp
+prochart-finnhub-ws-1	prochart-finnhub-ws	Up 2 weeks	8000/tcp
+prochart-crypto-ws-1	prochart-crypto-ws	Up 2 weeks	8000/tcp
+prochart-user-frontend	prochart-user:deploy-referral-a11y-20260715T084924Z	Up 2 weeks (healthy)	80/tcp
+prochart-news-worker-1	prochart-news-worker	Up 2 weeks	8000/tcp
+prochart-data-feed-1	prochart-data-feed	Up 26 hours	8000/tcp
+prochart-claude-llm-1	prochart-claude-llm	Up 5 weeks (healthy)	8085/tcp
+prochart-timescaledb-1	timescale/timescaledb:latest-pg17	Up 2 weeks (healthy)	127.0.0.1:5432->5432/tcp
+prochart-redis-1	valkey/valkey:8-alpine	Up 5 weeks (healthy)	127.0.0.1:6379->6379/tcp

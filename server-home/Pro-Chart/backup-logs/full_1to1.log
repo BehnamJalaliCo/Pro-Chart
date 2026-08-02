@@ -1,0 +1,4 @@
+[2026-06-27_131534] BazaarNama gdrive backup start
+2026/06/27 13:15:38 NOTICE: app/ml_models/scalers/NAS100/xgboost_scaler.joblib: Duplicate object found in destination - ignoring
+2026/06/27 13:15:38 NOTICE: app/ml_models/scalers/NZDUSD/lgbm_scaler.joblib: Duplicate object found in destination - ignoring
+[2026-06-27_131534] BazaarNama gdrive backup done

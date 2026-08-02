@@ -1,0 +1,2 @@
+# Weekly Docker build-cache cleanup (safe: only build cache >7d, never images/containers/volumes)
+0 4 * * 0 /usr/bin/flock -n /tmp/docker-cache-cleanup.lock /home/bazaarnama/docker-cache-cleanup.sh
