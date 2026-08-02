@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.db import Base, engine, get_db
 from app.models import AuditLog, Device, Identity, RefreshToken
-from app.schemas import LoginIn, MeOut, RefreshIn, SetTierIn, TokenOut
+from app.schemas import IssueIn, LoginIn, MeOut, RefreshIn, SetTierIn, TokenOut
 from app.security import (
     create_access_token,
     create_refresh_token,
@@ -184,3 +184,18 @@ async def set_tier(
     await _audit(db, idn.id, "set_tier", f"{body.identity_id}->{body.tier}")
     await db.commit()
     return {"status": "ok", "identity_id": body.identity_id, "tier": body.tier}
+
+
+@app.post("/auth/issue")
+async def issue(body: IssueIn, x_internal_token: str | None = Header(default=None)) -> dict:
+    """پلِ داخلی — اپِ اصلی (prochart-api) برای کاربرِ legacy توکنِ RS256 می‌گیرد.
+    احراز با X-Internal-Token (= BN_BRIDGE_TOKEN). بدونِ ردیفِ DB (کاربر در اپِ اصلی است)."""
+    if not settings.BRIDGE_TOKEN or x_internal_token != settings.BRIDGE_TOKEN:
+        raise HTTPException(401, "bad internal token")
+    sid = int(body.legacy_student_id)
+    claims = {"sub": f"student:{sid}", "sid": sid, "scope": "academy",
+              "tier": body.tier or "free", "legacy_student_id": sid}
+    access = create_access_token(claims)
+    refresh = create_refresh_token({"sub": f"student:{sid}", "sid": sid, "scope": "academy"})
+    return {"access_token": access, "refresh_token": refresh, "token_type": "bearer",
+            "expires_in": settings.JWT_ACCESS_TTL_MIN * 60}

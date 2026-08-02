@@ -1,0 +1,2 @@
+avatar_work/Wav2Lip/checkpoints/wav2lip_gan.pth filter=lfs diff=lfs merge=lfs -text
+samples/blogvid_demo916.mp4 filter=lfs diff=lfs merge=lfs -text

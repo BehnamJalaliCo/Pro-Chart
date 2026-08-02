@@ -1,0 +1,31 @@
+logLevel: info
+# API داخلی برای مدیریت/پایش
+api: yes
+apiAddress: :9997
+
+# ── WebRTC (پخش کم‌تأخیر به مرورگر + ingest با WHIP) ──
+webrtc: yes
+webrtcAddress: :8889
+webrtcLocalUDPAddress: :8189
+webrtcAdditionalHosts: [91.107.160.235]
+webrtcICEServers2:
+  - url: turn:91.107.160.235:3478
+    username: coinepro
+    password: 73f444932f1bc87233819d522592ac77
+
+# ── RTMP (ingest جایگزین، مثلاً از ffmpeg/OBS) ──
+rtmp: yes
+rtmpAddress: :1935
+
+# HLS هم به‌عنوان fallback روشن (تأخیر بیشتر ولی سازگاری بالا)
+hls: yes
+hlsAddress: :8888
+
+pathDefaults:
+  # برای انتشار (publish) رمز لازم است؛ تماشا (read) آزاد (در سطحِ سایت گیت می‌کنیم)
+  publishUser: broadcaster
+  publishPass: 7e000ddd450cc0e272f0c6fc
+
+paths:
+  mt5:      # تصویرِ متاتریدر
+  cam:      # وبکمِ مالک

@@ -30,6 +30,9 @@ class Settings(BaseSettings):
 
     MAX_DEVICES: int = 2
 
+    # توکنِ داخلی برای مسیرِ bridge (/auth/issue) — باید با BN_BRIDGE_TOKENِ اپ یکی باشد
+    BRIDGE_TOKEN: str = ""
+
     @property
     def database_url(self) -> str:
         return (

@@ -1,0 +1,4 @@
+# Cloudflare cache-purge — pro-chart.com
+# ساخته‌شده ۲۰۲۶-۰۷-۱۷. gitignore شده؛ هرگز commit نشود.
+CF_API_TOKEN=cfut_SpCr3SOEZ5goEJ8egwfyCaAnma7FRuHmSrTPqhne6b6cdd99
+CF_ZONE_ID=5b725123989dbca9a89419d52f0bbac7

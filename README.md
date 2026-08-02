@@ -643,7 +643,7 @@ Rounding, hidden retries, outlier removal, and averaging mobile with desktop to 
 > Use **`deploy.sh`**, not `make`. The `Makefile` targets the legacy `docker-compose.yml` — its `logs-bot` / `logs-engine` reference services that exist only in the old stack, and `db-shell` uses a different database name.
 
 ```bash
-git clone https://github.com/behnamjalali88/pro-chart.git
+git clone https://github.com/BehnamJalali-Co/Pro-Chart.git
 cd pro-chart
 
 cp .env.example .env      # 53 keys — see below

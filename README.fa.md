@@ -635,7 +635,7 @@ flowchart LR
 > از **`deploy.sh`** استفاده کنید، نه `make`. فایلِ `Makefile` استکِ قدیمیِ `docker-compose.yml` را هدف می‌گیرد — `logs-bot` / `logs-engine`ش به سرویس‌هایی ارجاع می‌دهند که فقط در استکِ قدیم وجود دارند، و `db-shell` نامِ دیتابیسِ دیگری به‌کار می‌برد.
 
 ```bash
-git clone https://github.com/behnamjalali88/pro-chart.git
+git clone https://github.com/BehnamJalali-Co/Pro-Chart.git
 cd pro-chart
 
 cp .env.example .env      # ۵۳ کلید — پایین را ببینید

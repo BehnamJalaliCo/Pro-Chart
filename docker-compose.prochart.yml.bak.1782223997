@@ -1,0 +1,176 @@
+# Pro-Chart — استکِ مستقلِ بازارنما (سرور جدا). فقط زیرمجموعهٔ لازم برای بازارنما.
+# ابزارهای به‌روز: Valkey 8 (جانشینِ متن‌بازِ Redis، drop-in) + TimescaleDB pg17.
+# سرویسِ کش با نامِ «redis» تا کد و .env بدونِ تغییر کار کنند (Valkey پروتکلِ Redis را می‌زند).
+name: prochart
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg17
+    restart: always
+    volumes:
+      - tsdb_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_NAME:-forex_signal}
+      POSTGRES_USER: ${DB_USER:-coinepro}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
+    ports:
+      - "127.0.0.1:5432:5432"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-coinepro} -d ${DB_NAME:-forex_signal}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: valkey/valkey:8-alpine
+    restart: always
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}
+    command: >
+      valkey-server
+      --maxmemory 1gb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" valkey-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  data-feed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python run_data_feed.py
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.5'
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --workers 2
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      BN_STANDALONE_AUTH: "1"
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./logs:/app/logs
+      - ./ml_models:/app/ml_models
+      - ./scripts:/app/scripts
+      - ./alembic:/app/alembic
+      - ./secrets:/app/secrets:ro
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2'
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  frontend-prochart:
+    build:
+      context: ./frontend/prochart
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+          cpus: '0.3'
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/health || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+
+  # Claude داخلِ سرور (سایدکارِ LLM) — مستقل روی Pro-Chart برای ترجمهٔ اخبار و سیگنالِ AI.
+  claude-llm:
+    build:
+      context: ./llm_service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      HOME: /creds
+      LLM_MODEL: sonnet
+      LLM_MAX_CONCURRENCY: "3"
+      CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN:-}
+    volumes:
+      - llm_creds:/creds
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8085/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # خبرخوان — RSSِ بین‌المللی → خلاصهٔ فارسی با claude-llm → Redis (bn:news). بدونِ عکس.
+  news-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python run_news_worker.py
+    depends_on:
+      redis:
+        condition: service_healthy
+      claude-llm:
+        condition: service_started
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+volumes:
+  tsdb_data:
+  redis_data:
+  llm_creds:

@@ -47,3 +47,9 @@ class MeOut(BaseModel):
     email: str | None
     tier: str
     status: str
+
+
+class IssueIn(BaseModel):
+    legacy_student_id: int
+    email: str | None = None
+    tier: str = "free"

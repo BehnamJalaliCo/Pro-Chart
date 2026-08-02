@@ -1,0 +1,706 @@
+services:
+  # -- TimescaleDB Database ----------------------------------------
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    restart: always
+    volumes:
+      - tsdb_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_NAME:-forex_signal}
+      POSTGRES_USER: ${DB_USER:-coinepro}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
+    ports:
+      - "127.0.0.1:5432:5432"
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+          cpus: '1.5'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-coinepro} -d ${DB_NAME:-forex_signal}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -- Redis Cache -------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    restart: always
+    # REDIS_PASSWORD داخل کانتینر تا healthcheck بتواند با REDISCLI_AUTH
+    # احراز هویت کند (بدون leak رمز در آرگومان‌های فرایند / docker inspect).
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}
+    command: >
+      redis-server
+      --maxmemory 1gb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # -- Data Feed Service -------------------------------------------
+  data-feed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python run_data_feed.py
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+          cpus: '1'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import os; exit(0)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # -- Signal Engine -----------------------------------------------
+  signal-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python run_signal_engine.py
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      data-feed:
+        condition: service_started
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+      - ./ml_models:/app/ml_models
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+          cpus: '1.5'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import os; exit(0)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # -- ML Inference Service ----------------------------------------
+  ml-inference:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python -m src.ml.ensemble
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file: .env
+    volumes:
+      - ./ml_models:/app/ml_models
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import os; exit(0)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # -- Signal Tracker ----------------------------------------------
+  signal-tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python run_tracker.py
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.25'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import os; exit(0)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # -- Bot Worker --------------------------------------------------
+  bot-worker-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python run_bot.py
+    depends_on:
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      WORKER_ID: "1"
+    volumes:
+      - ./logs:/app/logs
+      - ./edu_assets:/app/edu_assets
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import os; exit(0)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # -- Celery Worker -----------------------------------------------
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: celery -A src.core.celery_app worker --loglevel=info --concurrency=2
+    depends_on:
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000   # لاگِ مدل‌ها هنگامِ آموزش
+    volumes:
+      - ./logs:/app/logs
+      - ./ml_models:/app/ml_models
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A src.core.celery_app inspect ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # -- Celery ML Worker (آموزشِ سنگینِ هفتگی) -----------------------
+  # فقط صفِ ml_training را مصرف می‌کند (retrain هفتگی). بیشترِ هفته idle و
+  # کم‌مصرف است؛ سقفِ CPU/RAM بالاتر فقط هنگامِ آموزشِ یکشنبه بامداد استفاده می‌شود.
+  celery-ml-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: celery -A src.core.celery_app worker -Q ml_training --concurrency=1 --loglevel=info --max-tasks-per-child=1
+    depends_on:
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      OMP_NUM_THREADS: "4"        # torch/CPU از چند هسته استفاده کند
+    volumes:
+      - ./logs:/app/logs
+      - ./ml_models:/app/ml_models
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+          cpus: '4'
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A src.core.celery_app inspect ping"]
+      interval: 60s
+      timeout: 15s
+      retries: 3
+
+  # -- Celery Beat -------------------------------------------------
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: celery -A src.core.celery_app beat --loglevel=info
+    depends_on:
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # -- FastAPI Backend ---------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --workers 2
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./logs:/app/logs
+      - ./ml_models:/app/ml_models
+      - ./scripts:/app/scripts
+      - ./alembic:/app/alembic
+      # تصاویرِ آموزش (دیاگرام‌های آکادمی) برای سرو در وب‌سایت
+      - ./edu_assets:/app/edu_assets:ro
+      # سوکت داکر فقط-خواندنی برای مانیتورینگ واقعیِ کانتینرها در پنل ادمین
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # -- Claude LLM sidecar (Claude Code headless, اشتراک Max) --------
+  claude-llm:
+    build:
+      context: ./llm_service
+      dockerfile: Dockerfile
+    restart: always
+    # احراز هویتِ اختصاصی و دائمی: از توکن بلندمدت CLAUDE_CODE_OAUTH_TOKEN
+    # (ساخته‌شده با `claude setup-token`) استفاده می‌کند که مستقل از session
+    # تعاملیِ هاست است و با /login هاست stale نمی‌شود.
+    user: "1000:1000"
+    environment:
+      HOME: /creds
+      LLM_MODEL: sonnet
+      LLM_MAX_CONCURRENCY: "3"
+      CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN:-}
+    volumes:
+      - /home/forex/.claude_llm_home:/creds
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8085/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # -- Chart renderer (TradingView lightweight-charts → PNG با خطوط TP/SL) --
+  chart-renderer:
+    build:
+      context: ./chart_service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      CHART_PORT: "8086"
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+          cpus: '0.7'
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8086/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # -- Frontend Website --------------------------------------------
+  frontend-website:
+    build:
+      context: ./frontend/website
+      dockerfile: Dockerfile
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.1'
+
+  # -- Admin Panel -------------------------------------------------
+  frontend-admin:
+    build:
+      context: ./frontend/admin
+      dockerfile: Dockerfile
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.1'
+
+  # -- Nginx Reverse Proxy ----------------------------------------
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/www:/var/www/certbot:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+    depends_on:
+      - api
+      - frontend-website
+      - frontend-admin
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # -- Nginx Reloader (auto-reload بعد از recreate شدنِ api/frontend) ----
+  # رفعِ ریشه‌ایِ «۵۰۲ بعد از rebuild»: به رویدادهای startِ داکر گوش می‌دهد و با
+  # سیگنالِ HUP، nginx را بدونِ قطعی reload می‌کند تا IPِ جدید را بگیرد.
+  nginx-reloader:
+    image: docker:cli
+    restart: always
+    depends_on:
+      - nginx
+    command: ["sh", "/reloader.sh"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts/nginx_reloader.sh:/reloader.sh:ro
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: '0.1'
+
+  # -- Live Trading: WebRTC media server (MediaMTX) ----------------
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    restart: always
+    volumes:
+      - ./media/mediamtx/mediamtx.yml:/mediamtx.yml:ro
+    ports:
+      - "127.0.0.1:8889:8889"  # WebRTC HTTP (از طریق nginx پراکسی می‌شود)
+      - "8189:8189/udp"        # WebRTC ICE (UDP) — باید روی فایروالِ ابری باز باشد
+      - "127.0.0.1:1935:1935"  # RTMP ingest (داخلی؛ mt5 از شبکهٔ داکر منتشر می‌کند)
+      - "127.0.0.1:8888:8888"  # HLS fallback (داخلی)
+      - "127.0.0.1:9997:9997"  # API (فقط لوکال)
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.5'
+
+  # -- Live Trading: TURN/STUN (coturn) ----------------------------
+  coturn:
+    image: coturn/coturn:latest
+    restart: always
+    network_mode: host         # TURN برای relay-portها به host-networking نیاز دارد
+    volumes:
+      - ./media/coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+    command: ["-c", "/etc/coturn/turnserver.conf"]
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+
+  # -- Live Trading: MetaTrader 5 روی سرور (Wine + noVNC + capture) --
+  mt5:
+    build: ./media/mt5
+    restart: unless-stopped
+    environment:
+      MEDIAMTX_HOST: mediamtx
+      # ── capture → MediaMTX (بیننده‌های /live) ──
+      PUBLISH_USER: ${LIVE_PUBLISH_USER:-broadcaster}
+      PUBLISH_PASS: ${LIVE_PUBLISH_PASSWORD}
+      # ── Selkies-GStreamer (WebRTC) — coturnِ خودمان ──
+      START_XFCE4: "false"
+      SELKIES_ENCODER: x264enc
+      SELKIES_ENABLE_RESIZE: "false"
+      SELKIES_ENABLE_BASIC_AUTH: "false"
+      SELKIES_TURN_HOST: "91.107.160.235"
+      SELKIES_TURN_PORT: "3478"
+      SELKIES_TURN_USERNAME: coinepro
+      SELKIES_TURN_PASSWORD: ${LIVE_TURN_PASSWORD}
+      SELKIES_TURN_PROTOCOL: tcp
+      SELKIES_STUN_HOST: "91.107.160.235"
+      SELKIES_STUN_PORT: "3478"
+      NGINX_PORT: "8080"
+    volumes:
+      - mt5_wine:/root/.wine        # نصب/لاگینِ MT5 ماندگار می‌ماند
+    shm_size: "1g"
+    depends_on:
+      - mediamtx
+    deploy:
+      resources:
+        limits:
+          memory: 3072M
+          cpus: '5'
+
+  # -- Certbot SSL -------------------------------------------------
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  # -- Prometheus --------------------------------------------------
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.25'
+
+  # -- Grafana -----------------------------------------------------
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?GRAFANA_PASSWORD must be set in .env}
+      GF_SERVER_ROOT_URL: "http://localhost:3000"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.25'
+
+  # -- Loki (لاگِ متمرکز) ------------------------------------------
+  loki:
+    image: grafana/loki:2.9.8
+    restart: always
+    command: -config.file=/etc/loki/loki-config.yml
+    user: "0:0"
+    volumes:
+      - ./monitoring/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - loki_data:/loki
+    ports:
+      - "127.0.0.1:3100:3100"
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.5'
+
+  # -- Promtail (جمع‌آوریِ لاگِ کانتینرها → Loki) -------------------
+  promtail:
+    image: grafana/promtail:2.9.8
+    restart: always
+    command: -config.file=/etc/promtail/promtail-config.yml
+    volumes:
+      - ./monitoring/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - loki
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # -- cAdvisor (متریکِ منابعِ هر کانتینر) -------------------------
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    restart: always
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "127.0.0.1:8088:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # -- node-exporter (متریکِ منابعِ هاست) --------------------------
+  node-exporter:
+    image: prom/node-exporter:v1.8.1
+    restart: always
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    volumes:
+      - /:/host:ro,rslave
+    ports:
+      - "127.0.0.1:9100:9100"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.1'
+
+  # -- Flower (مانیتورینگِ Celery) ---------------------------------
+  flower:
+    image: mher/flower:2.0
+    restart: always
+    command: celery --broker=${REDIS_URL:-redis://redis:6379/0} flower --port=5555
+    environment:
+      FLOWER_UNAUTHENTICATED_API: "true"
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:5555:5555"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # -- Self-Healing Watchdog (خوداصلاح‌گرِ خودکار) -----------------
+  watchdog:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python run_watchdog.py
+    env_file: .env
+    environment:
+      ML_MODELS_DIR: /app/ml_models
+      WATCHDOG_INTERVAL_SECONDS: "60"
+      WATCHDOG_CANDLE_STALE_MIN: "20"
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+      - ./ml_models:/app/ml_models:ro
+      - /var/run/docker.sock:/var/run/docker.sock   # برای اقدامِ خوداصلاحی (restart)
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # -- MLflow (انباره و نسخه‌بندیِ مدل‌های ML) ----------------------
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.14.1
+    restart: always
+    user: "0:0"
+    command: >
+      mlflow server
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+      --host 0.0.0.0 --port 5000
+    volumes:
+      - mlflow_data:/mlflow
+    ports:
+      - "127.0.0.1:5000:5000"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.25'
+
+  # -- Flow-Runner (سرو کردنِ فلوِ retrain روی Prefect) ------------
+  flow-runner:
+    build:
+      context: .
+      dockerfile: flows/Dockerfile.flowrunner
+    restart: always
+    environment:
+      PREFECT_API_URL: http://prefect:4200/api
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      RETRAIN_CRON: "0 3 * * 0"
+    depends_on:
+      - prefect
+      - redis
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: '0.25'
+
+  # -- Prefect (ارکستریشنِ خط‌لولهٔ آموزشِ مدل) ---------------------
+  prefect:
+    image: prefecthq/prefect:2.19-python3.11
+    restart: always
+    command: prefect server start --host 0.0.0.0
+    environment:
+      PREFECT_HOME: /data
+      PREFECT_SERVER_API_HOST: 0.0.0.0
+    volumes:
+      - prefect_data:/data
+    ports:
+      - "127.0.0.1:4200:4200"
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.5'
+
+volumes:
+  tsdb_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  loki_data:
+  mlflow_data:
+  prefect_data:
+  mt5_wine:
+
+networks:
+  default:
+    name: coinepro-network

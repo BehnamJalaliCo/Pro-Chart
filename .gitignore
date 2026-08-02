@@ -1,53 +1,28 @@
-# ── رازها (امنیت — هرگز) ──
-.env
-.env.*
-.cf
-secrets/
-*.pem
-*.key
-*.crt
-.git-credentials
-**/rclone.conf
-certbot/
-# ── بازتولیدشونده ──
+# ─────────────────────────────────────────────────────────────────────
+# سیاستِ جدید — مهاجرت به BehnamJalali-Co/Pro-Chart (به خواستِ صریحِ مالک)
+# کلِ پروژه روی گیت می‌رود: سورس، مستندات، رازها، مدل‌ها، رسانه‌ها، بکاپ‌ها.
+# فقط چیزهایی بیرون می‌مانند که با یک دستور بازتولید می‌شوند.
+# ریپو private است.
+# ─────────────────────────────────────────────────────────────────────
+
+# ── بازتولیدشونده با یک دستور (npm ci / pip install / qa run) ──
 **/node_modules/
-frontend/prochart/dist/
-frontend/prochart/public/crypto-icons/
 __pycache__/
 *.pyc
 *.pyo
-logs/
-*.log
-backups/
-backup-logs/
-# خروجیِ خودکارِ qa/python/run-clean.sh — trace/گزارشِ Playwright، چند گیگابایت
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# خروجیِ خودکارِ qa/python/run-clean.sh — trace/ویدیو/گزارشِ Playwright، ~۳ گیگابایت
 artifacts/
 app/artifacts/
-SHA256SUMS
-# ── محتوا/باینریِ سنگین (روی سرور می‌مانند؛ گیت جای باینریِ بزرگ نیست) ──
-avatar_work/
-samples/
-ig_data/
-ig_media/
-ig-worker/
-media/
-edu_assets/
-ml_models/
-video_studio/public/
-chart_service/node_modules/
-*.mp4
-*.pth
-*.PNG
-*.JPG
-*.JPEG
-*.bak.*
-*.bak
-*.bak-*
 
-# ── بخش‌های coinepro fx ──
-# پیش‌تر کنار گذاشته می‌شدند چون در دیپلویِ pro-chart استفاده نمی‌شوند؛ اکنون به
-# خواستِ مالک کلِ سورس روی گیت‌هاب می‌رود. فقط node_modules/dist (بازتولیدشونده،
-# بالا ignore شده‌اند) بیرون می‌مانند — سورسِ خودشان روی‌هم ~۵ مگابایت است.
-video_studio/public/
-# CLAUDE.md دیگر ignore نیست — راهنمای Claude Code روی سرورِ مرکزی است (به docs/SERVER-HANDOFF.md اشاره می‌کند)
-Anjoman Max SemiPro.zip
+# ── فایلِ اعتبارنامهٔ زندهٔ گیت (توکنِ فعال؛ هرگز داخلِ ریپو نه) ──
+.git-credentials
+
+# ── زبالهٔ سیستمی ──
+.DS_Store
+Thumbs.db
