@@ -1,0 +1,174 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/chart-quote-commit.spec.mjs",
+      "--project=chromium-desktop"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003028Z-prototype4/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003028Z-prototype4/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003028Z-prototype4/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003028Z-prototype4/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "chart-quote-commit.spec.mjs",
+      "file": "chart-quote-commit.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "QUOTE-COMMIT: deterministic changing quotes to chart canvas",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 17104,
+                  "error": {
+                    "message": "Error: all target-specific browser User Timing marks must be retained\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                    "stack": "Error: all target-specific browser User Timing marks must be retained\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /work/qa/tests/chart-quote-commit.spec.mjs:591:146",
+                    "location": {
+                      "file": "/work/qa/tests/chart-quote-commit.spec.mjs",
+                      "column": 146,
+                      "line": 591
+                    },
+                    "snippet": "  589 |       `pc.quote.next-raf.${item.sequence}`,\n  590 |     ])];\n> 591 |     expect(expectedUserTimingNames.every((name) => userTimingNames.has(name)), 'all target-specific browser User Timing marks must be retained').toBe(true);\n      |                                                                                                                                                  ^\n  592 |     expect(traceEvidence.sanityMarkPresent, 'post-start marker must be present in the Chromium trace').toBe(true);\n  593 |     expect(traceEvidence.correlations.every((item) => item.inputMarkPresent && item.canvasMarkPresent && item.nextRafMarkPresent), 'all browser probe marks must be present in the Chromium trace').toBe(true);\n  594 |     expect(state.unstubbed).toEqual([]);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/chart-quote-commit.spec.mjs",
+                        "column": 146,
+                        "line": 591
+                      },
+                      "message": "Error: all target-specific browser User Timing marks must be retained\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  589 |       `pc.quote.next-raf.${item.sequence}`,\n  590 |     ])];\n> 591 |     expect(expectedUserTimingNames.every((name) => userTimingNames.has(name)), 'all target-specific browser User Timing marks must be retained').toBe(true);\n      |                                                                                                                                                  ^\n  592 |     expect(traceEvidence.sanityMarkPresent, 'post-start marker must be present in the Chromium trace').toBe(true);\n  593 |     expect(traceEvidence.correlations.every((item) => item.inputMarkPresent && item.canvasMarkPresent && item.nextRafMarkPresent), 'all browser probe marks must be present in the Chromium trace').toBe(true);\n  594 |     expect(state.unstubbed).toEqual([]);\n    at /work/qa/tests/chart-quote-commit.spec.mjs:591:146"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:30:30.386Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003028Z-prototype4/playwright/test-results/chart-quote-commit-QUOTE-C-10015-ging-quotes-to-chart-canvas-chromium-desktop/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/chart-quote-commit.spec.mjs",
+                    "column": 146,
+                    "line": 591
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c1bd30789fff4b4dd914-5a4d2cec05870ff5627c",
+          "file": "chart-quote-commit.spec.mjs",
+          "line": 435,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T00:30:29.933Z",
+    "duration": 17926.788,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

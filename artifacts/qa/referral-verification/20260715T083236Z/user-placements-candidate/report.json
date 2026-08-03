@@ -1,0 +1,1373 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/user-referral-placement-matrix.spec.mjs"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "user-referral-placement-matrix.spec.mjs",
+      "file": "user-referral-placement-matrix.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "USER-REFERRAL-PLACEMENT: / crypto",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 267,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:11.860Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-00f599b49fe696465878",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: / broker",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 291,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:12.762Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-42df1d19795e4be3658f",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /connect crypto",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 301,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:13.731Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-40625573df682d97b38a",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /connect broker",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 337,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:14.749Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-1de482ed4d3d5376b487",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /trade crypto",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 347,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:15.762Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-df9f4d45b867cbbb81ae",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /trade broker",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 320,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:16.788Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-588f5d6c46c488bb443b",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /subscription crypto",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 361,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:17.823Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-649d16796192e73d719f",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /subscription broker",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 407,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:18.890Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-c573f3242d4834b95d92",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: / crypto",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 307,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:20.022Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-35c6261bfaf3eff617ec",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: / broker",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 371,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:21.029Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-70ce1e3c73df99eb6086",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /connect crypto",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 10,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 407,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:22.152Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-c8ef5012ca332813eac6",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /connect broker",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 11,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 372,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:23.246Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-250163c8a16a268a7336",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /trade crypto",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 12,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 413,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:24.335Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-06a19de6f52e602975ea",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /trade broker",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 13,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 419,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/trade\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/trade\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:25.460Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-ae377d6dd14f253c8029",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /subscription crypto",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 14,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 424,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:26.629Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-d82201651d64b019ed01",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /subscription broker",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 15,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 399,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                      "column": 35,
+                      "line": 133
+                    },
+                    "snippet": "  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                        "column": 35,
+                        "line": 133
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/subscription\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/subscription\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  131 |       const target = new URL(routeCase.pathname, testInfo.project.use.baseURL);\n  132 |       const state = await installPlacementFixture(page, target.origin, account);\n> 133 |       const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                   ^\n  134 |\n  135 |       expect(response?.status()).toBe(200);\n  136 |       await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === routeCase.pathname);\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs:133:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:27.794Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements-candidate/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-placement-matrix.spec.mjs",
+                    "column": 35,
+                    "line": 133
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-559bc95b1b0032b30a8a",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T08:48:11.389Z",
+    "duration": 17084.586,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 16,
+    "flaky": 0
+  }
+}

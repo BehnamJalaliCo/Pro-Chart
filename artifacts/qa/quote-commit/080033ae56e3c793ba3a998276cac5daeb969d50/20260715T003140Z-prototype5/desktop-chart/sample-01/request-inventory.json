@@ -1,0 +1,25 @@
+[
+  {
+    "method": "GET",
+    "pathname": "/",
+    "queryKeys": [],
+    "resourceType": "document",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 344,
+      "responseBodySize": 555,
+      "responseHeadersSize": 155
+    },
+    "timing": {
+      "startTime": 1784075502807.487,
+      "domainLookupStart": 0.961,
+      "domainLookupEnd": 2.311,
+      "connectStart": 2.311,
+      "secureConnectionStart": -1,
+      "connectEnd": 2.695,
+      "requestStart": 2.976,
+      "responseStart": 3.881,
+      "responseEnd": 13.465
+    }
+  }
+]

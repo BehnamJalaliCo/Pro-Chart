@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "scope": "deterministic synthetic quote-to-observable-chart-draw characterization",
+  "evidenceStatus": "CURRENT_CANDIDATE",
+  "result": "MEASURED_UNGATED",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T013516Z",
+  "sourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "playwright": {
+    "version": "1.61.0",
+    "runnerDigest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "retries": 0,
+    "durationMs": 47430.913
+  },
+  "aggregateP95Ms": {
+    "quoteToCanvasText": 179.4,
+    "canvasTextToNextRaf": 26.5,
+    "quoteToNextRafAfterCanvas": 198.7
+  },
+  "longTaskCountAcrossSamples": 0,
+  "previewSourceFingerprintVerified": true,
+  "qualification": "MEASURED_UNGATED confirms deterministic target-specific correlation only; it is not a 60fps, threshold, visible-pixel, or field-performance pass.",
+  "sealedAtUtc": "2026-07-15T01:36:30Z"
+}

@@ -1,0 +1,465 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/user-referral-compliance.spec.mjs"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "user-referral-compliance.spec.mjs",
+      "file": "user-referral-compliance.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "USER-REFERRAL: real /connect keeps LBank referral departure gated",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2259,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:260:8)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:366:18",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                      "column": 8,
+                      "line": 260
+                    },
+                    "snippet": "  258 |     impact,\n  259 |     nodeCount: nodes.length,\n> 260 |   }))).toEqual([]);\n      |        ^\n  261 |\n  262 |   const departureRequests = [];\n  263 |   const context = page.context();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                        "column": 8,
+                        "line": 260
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  258 |     impact,\n  259 |     nodeCount: nodes.length,\n> 260 |   }))).toEqual([]);\n      |        ^\n  261 |\n  262 |   const departureRequests = [];\n  263 |   const context = page.context();\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:260:8)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:366:18"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:44.449Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/video-1.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/video-2.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                    "column": 8,
+                    "line": 260
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-2652b4af4a9d3968a41b",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 354,
+          "column": 3
+        },
+        {
+          "title": "USER-REFERRAL: real /connect keeps OneRoyal referral departure gated",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2133,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:260:8)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:366:18",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                      "column": 8,
+                      "line": 260
+                    },
+                    "snippet": "  258 |     impact,\n  259 |     nodeCount: nodes.length,\n> 260 |   }))).toEqual([]);\n      |        ^\n  261 |\n  262 |   const departureRequests = [];\n  263 |   const context = page.context();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                        "column": 8,
+                        "line": 260
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  258 |     impact,\n  259 |     nodeCount: nodes.length,\n> 260 |   }))).toEqual([]);\n      |        ^\n  261 |\n  262 |   const departureRequests = [];\n  263 |   const context = page.context();\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:260:8)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:366:18"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:48.107Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/video-2.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/video-1.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                    "column": 8,
+                    "line": 260
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-35bee14c15acfc49e7fa",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 354,
+          "column": 3
+        },
+        {
+          "title": "USER-REFERRAL: real /connect keeps LBank referral departure gated",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1981,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:260:8)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:366:18",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                      "column": 8,
+                      "line": 260
+                    },
+                    "snippet": "  258 |     impact,\n  259 |     nodeCount: nodes.length,\n> 260 |   }))).toEqual([]);\n      |        ^\n  261 |\n  262 |   const departureRequests = [];\n  263 |   const context = page.context();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                        "column": 8,
+                        "line": 260
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  258 |     impact,\n  259 |     nodeCount: nodes.length,\n> 260 |   }))).toEqual([]);\n      |        ^\n  261 |\n  262 |   const departureRequests = [];\n  263 |   const context = page.context();\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:260:8)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:366:18"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:51.686Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/video-2.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/video-1.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                    "column": 8,
+                    "line": 260
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-b8c1559248fcca745394",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 354,
+          "column": 3
+        },
+        {
+          "title": "USER-REFERRAL: real /connect keeps OneRoyal referral departure gated",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1829,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:260:8)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:366:18",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                      "column": 8,
+                      "line": 260
+                    },
+                    "snippet": "  258 |     impact,\n  259 |     nodeCount: nodes.length,\n> 260 |   }))).toEqual([]);\n      |        ^\n  261 |\n  262 |   const departureRequests = [];\n  263 |   const context = page.context();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                        "column": 8,
+                        "line": 260
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 7\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"id\": \"color-contrast\",\u001b[39m\n\u001b[31m+     \"impact\": \"serious\",\u001b[39m\n\u001b[31m+     \"nodeCount\": 1,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  258 |     impact,\n  259 |     nodeCount: nodes.length,\n> 260 |   }))).toEqual([]);\n      |        ^\n  261 |\n  262 |   const departureRequests = [];\n  263 |   const context = page.context();\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:260:8)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:366:18"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:54.962Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/video-2.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/video-1.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                    "column": 8,
+                    "line": 260
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-e34c331c3abd9db9c949",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 354,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T08:46:43.553Z",
+    "duration": 13947.567,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 4,
+    "flaky": 0
+  }
+}

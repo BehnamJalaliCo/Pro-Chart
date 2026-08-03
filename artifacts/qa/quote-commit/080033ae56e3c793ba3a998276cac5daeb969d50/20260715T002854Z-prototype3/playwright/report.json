@@ -1,0 +1,174 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/chart-quote-commit.spec.mjs",
+      "--project=chromium-desktop"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T002854Z-prototype3/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T002854Z-prototype3/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T002854Z-prototype3/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T002854Z-prototype3/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "chart-quote-commit.spec.mjs",
+      "file": "chart-quote-commit.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "QUOTE-COMMIT: deterministic changing quotes to chart canvas",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 15321,
+                  "error": {
+                    "message": "Error: target text must not be a pre-existing/recent chart label\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                    "stack": "Error: target text must not be a pre-existing/recent chart label\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /work/qa/tests/chart-quote-commit.spec.mjs:564:142",
+                    "location": {
+                      "file": "/work/qa/tests/chart-quote-commit.spec.mjs",
+                      "column": 142,
+                      "line": 564
+                    },
+                    "snippet": "  562 |     expect(probe.pendingSequences).toEqual([]);\n  563 |     expect(probe.errors).toEqual([]);\n> 564 |     expect(probe.inputs.every((item) => item.preexistingWithin250Ms === false), 'target text must not be a pre-existing/recent chart label').toBe(true);\n      |                                                                                                                                              ^\n  565 |     expect(probe.canvasCommits.every((item) => item.canvas.mainChartCandidate)).toBe(true);\n  566 |     expect(probe.canvasCommits.map((item) => item.renderedText)).toEqual(plan.map((item) => item.expectedText));\n  567 |     expect(traceEvidence.sanityMarkPresent, 'post-start User Timing sanity mark must be present in the Chromium trace').toBe(true);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/chart-quote-commit.spec.mjs",
+                        "column": 142,
+                        "line": 564
+                      },
+                      "message": "Error: target text must not be a pre-existing/recent chart label\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  562 |     expect(probe.pendingSequences).toEqual([]);\n  563 |     expect(probe.errors).toEqual([]);\n> 564 |     expect(probe.inputs.every((item) => item.preexistingWithin250Ms === false), 'target text must not be a pre-existing/recent chart label').toBe(true);\n      |                                                                                                                                              ^\n  565 |     expect(probe.canvasCommits.every((item) => item.canvas.mainChartCandidate)).toBe(true);\n  566 |     expect(probe.canvasCommits.map((item) => item.renderedText)).toEqual(plan.map((item) => item.expectedText));\n  567 |     expect(traceEvidence.sanityMarkPresent, 'post-start User Timing sanity mark must be present in the Chromium trace').toBe(true);\n    at /work/qa/tests/chart-quote-commit.spec.mjs:564:142"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:28:55.548Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T002854Z-prototype3/playwright/test-results/chart-quote-commit-QUOTE-C-10015-ging-quotes-to-chart-canvas-chromium-desktop/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/chart-quote-commit.spec.mjs",
+                    "column": 142,
+                    "line": 564
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c1bd30789fff4b4dd914-5a4d2cec05870ff5627c",
+          "file": "chart-quote-commit.spec.mjs",
+          "line": 420,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T00:28:55.089Z",
+    "duration": 16125.099999999999,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

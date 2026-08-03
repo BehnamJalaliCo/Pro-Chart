@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "runId": "20260715T083236Z",
+  "recordedAtUtc": "2026-07-15T08:53:08Z",
+  "sourceCommit": "6e3fad2909977570ff95c7756e62ee16887d7fc2",
+  "requirements": ["PC-119", "PC-121", "PC-122"],
+  "result": "PASS",
+  "runtime": {
+    "apiImage": "sha256:91bc1949da5b86f0eb173832a654379fa08088e6ebe5cdf92c803056b758f1af",
+    "userImageBefore": "sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216",
+    "userImageAfter": "sha256:3ebdde7b42374c1d44d8a88e767575ec5f82d9069aae4d92eb208dcd1bd0aa8d",
+    "userBundleTreeSha256Candidate": "56a17a5c0fc0a55a330d2db8e894e64d7abdfd6f872c04b9ca1eb5c4ef6faae1",
+    "userBundleTreeSha256Live": "56a17a5c0fc0a55a330d2db8e894e64d7abdfd6f872c04b9ca1eb5c4ef6faae1",
+    "mainImage": "sha256:4e6130e6caecfeacc3260a134b1a0c20e32e81f3ab2d9aaf570d3e3269f30350",
+    "panelImage": "sha256:f3b22c07faea8cfcb4e8730949fdea2ecda8ab55a12dba553cd3808169db39bd"
+  },
+  "builds": {
+    "api": { "result": "PASS", "candidateImage": "sha256:05ed9003b62177de00dbaab125db3d7efd1cffb5d145bf632ce5e1c26870cbe8" },
+    "main": { "result": "PASS", "candidateImage": "sha256:43a857dd9f79f4912326c8898034f5844fdeb585e9bbb4aae6effafe1bfe4fa4" },
+    "panel": { "result": "PASS", "candidateImage": "sha256:8dbab550a46bad43a685b71d4b9a95ebb05287e7d706c85dbc3a0766de54b42b" },
+    "user": { "result": "PASS", "candidateImage": "sha256:3ebdde7b42374c1d44d8a88e767575ec5f82d9069aae4d92eb208dcd1bd0aa8d", "modules": 1699, "javascriptBytes": 411830 }
+  },
+  "tests": {
+    "backendReferral": { "result": "PASS", "passed": 12, "failed": 0, "network": "none", "durationSeconds": 5.41 },
+    "sourceContracts": { "result": "PASS", "passed": 10, "failed": 0 },
+    "providerScanner": { "result": "PASS", "passed": 5, "failed": 0 },
+    "mainCanonicalMobile": { "result": "PASS", "passed": 2, "failed": 0, "skipped": 0, "reportSha256": "176c1bc4522b559c184525a09794dd3d9d27ec9b59b03133928da850726c66bc" },
+    "mainLegacySupplement": { "result": "PASS", "passed": 4, "failed": 0, "skipped": 0, "reportSha256": "1eb8555ef13b392f10b804866dd4b1e5f642d46dbeea6ef550cb6d04eb2f48ba" },
+    "userConnectCandidate": { "result": "PASS", "passed": 4, "failed": 0, "skipped": 0, "reportSha256": "ca05e32a21f127f32d65c4825bfdd21606a59338bdcf8315172a1a8719b7b8d0" },
+    "userPlacementsCandidate": { "result": "PASS", "passed": 16, "failed": 0, "skipped": 0, "reportSha256": "311fee9b0230621f97463bfcf50d36e4b7f78ed93b3b08a383a66b0445f98ae9" },
+    "userConnectProduction": { "result": "PASS", "passed": 4, "failed": 0, "skipped": 0, "reportSha256": "d297f6fe4baba014caa674424bbada5dae8a0d29851d092990d3a9db9373c62b" },
+    "userPlacementsProduction": { "result": "PASS", "passed": 16, "failed": 0, "skipped": 0, "reportSha256": "1a383a038a1ef58caf2e2d8a3c7f0f3884e98a3bbfbaf635281faba452d6151e" },
+    "motionVisualCapture": { "result": "PASS", "passed": 6, "failed": 0, "skipped": 4, "skipReason": "device-inapplicable cases" }
+  },
+  "accessibilityContract": {
+    "wcagTags": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22a", "wcag22aa"],
+    "states": ["before-acknowledgement", "after-acknowledgement"],
+    "axeViolations": 0,
+    "assertions": ["exact copy and order", "accessible name", "accessible description", "resolved aria-describedby", "native disabled", "keyboard acknowledgement", "same-origin GET departure interception"]
+  },
+  "sourceSha256": {
+    "src/api/routes/referrals.py": "de84e3d71652684dabb569a7610d6b3d79edf17edeaca2da9065a00c8594467b",
+    "frontend/prochart/src/components/ReferralDeparture.jsx": "849728f8c19df9326364f200d4b12fb0119080e090a3f77398b7a941b88d7c90",
+    "frontend/prochart/src/referrals.js": "0c328f2e10bc5fbc8e42dcc46f1a16c252ede56a7e477c2cd000a2e6a02d46ea",
+    "frontend/user/src/components/ReferralDeparture.jsx": "4d9e9842eaaafdbfbaceecd6af1ba4a35d51cb18538c8ed237579c793f2d9dad",
+    "frontend/user/src/index.css": "029969314c184ac07d5a8dee2bc714097dfbd2ed89996ff3f65976748a389e5e",
+    "frontend/user/src/referrals.js": "29b79ecc34f61bfa070e954fe2e0eef61e2314d3fd6e6b071a5ec533a5dda84f"
+  },
+  "supersededAttempts": [
+    { "scope": "main desktop vhost", "result": "HARNESS_FAIL", "reason": "production User vhost served the standalone portal while the legacy Main test expected UserPanel; corrected with explicit canonical Main mobile plus legacy supplement" },
+    { "scope": "visual", "result": "EXPECTED_GATE_FAIL", "reason": "approved Golden is intentionally absent; capture-only rerun passed 6 with 4 device-inapplicable skips" },
+    { "scope": "departure interception", "result": "HARNESS_FAIL", "reason": "waiting for popup did not work with rel=noopener; context request interception replaced it" },
+    { "scope": "candidate container", "result": "HARNESS_FAIL", "reason": "standalone nginx could not resolve upstream api; rerun on prochart_default network passed" },
+    { "scope": "User enabled referral button", "result": "PRODUCT_FAIL", "reason": "Axe color-contrast serious finding; remediated with #1565c0/#0d47a1 and deployed" }
+  ],
+  "deployment": {
+    "event": "20260715T084924Z-referral-a11y",
+    "result": "PASS",
+    "rollbackPrepared": true,
+    "servicesRunning": 11,
+    "unhealthyServices": 0,
+    "userRestartCount": 0,
+    "userHttpsStatus": 200
+  },
+  "limitations": [
+    "Main desktop has no canonical reachable referral surface; legacy UserPanel is supplemental evidence only.",
+    "Manual screen-reader, reflow, and full accessibility audits remain under PC-146 through PC-150.",
+    "Full clean-checkout reproducibility remains a separate repository-wide gate."
+  ]
+}

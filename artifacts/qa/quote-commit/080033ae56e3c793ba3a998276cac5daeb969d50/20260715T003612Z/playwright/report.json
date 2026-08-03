@@ -1,0 +1,213 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/chart-quote-commit.spec.mjs",
+      "--project=chromium-desktop",
+      "--repeat-each=3"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003612Z/playwright/test-results",
+        "repeatEach": 3,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003612Z/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003612Z/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/quote-commit/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003612Z/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "chart-quote-commit.spec.mjs",
+      "file": "chart-quote-commit.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "QUOTE-COMMIT: deterministic changing quotes to chart canvas",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15634,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:36:13.644Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c1bd30789fff4b4dd914-5a4d2cec05870ff5627c",
+          "file": "chart-quote-commit.spec.mjs",
+          "line": 443,
+          "column": 1
+        },
+        {
+          "title": "QUOTE-COMMIT: deterministic changing quotes to chart canvas",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15594,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:36:29.950Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c1bd30789fff4b4dd914-d276f960684cd4449b14",
+          "file": "chart-quote-commit.spec.mjs",
+          "line": 443,
+          "column": 1
+        },
+        {
+          "title": "QUOTE-COMMIT: deterministic changing quotes to chart canvas",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14714,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:36:46.148Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c1bd30789fff4b4dd914-21ccb7bd35b3e45e315e",
+          "file": "chart-quote-commit.spec.mjs",
+          "line": 443,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T00:36:13.113Z",
+    "duration": 47972.055,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

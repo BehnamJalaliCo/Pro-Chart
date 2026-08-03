@@ -1,0 +1,722 @@
+{
+  "schemaVersion": 1,
+  "measurementStartMs": 6092,
+  "measurementEndMs": 12991.699999809265,
+  "inputs": [
+    {
+      "sequence": 1,
+      "symbol": "EURUSD",
+      "expectedText": "1.14213",
+      "mid": 1.14213,
+      "atMs": 6367.199999809265,
+      "mark": "pc.quote.input.1",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 2,
+      "symbol": "EURUSD",
+      "expectedText": "1.14214",
+      "mid": 1.14214,
+      "atMs": 7081.099999904633,
+      "mark": "pc.quote.input.2",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 3,
+      "symbol": "EURUSD",
+      "expectedText": "1.14216",
+      "mid": 1.14216,
+      "atMs": 7802.599999904633,
+      "mark": "pc.quote.input.3",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 4,
+      "symbol": "EURUSD",
+      "expectedText": "1.14218",
+      "mid": 1.14218,
+      "atMs": 8502.299999952316,
+      "mark": "pc.quote.input.4",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 5,
+      "symbol": "EURUSD",
+      "expectedText": "1.14219",
+      "mid": 1.14219,
+      "atMs": 9174.399999856949,
+      "mark": "pc.quote.input.5",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 6,
+      "symbol": "EURUSD",
+      "expectedText": "1.14221",
+      "mid": 1.14221,
+      "atMs": 9856.099999904633,
+      "mark": "pc.quote.input.6",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 7,
+      "symbol": "EURUSD",
+      "expectedText": "1.14223",
+      "mid": 1.14223,
+      "atMs": 10570.399999856949,
+      "mark": "pc.quote.input.7",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 8,
+      "symbol": "EURUSD",
+      "expectedText": "1.14224",
+      "mid": 1.14224,
+      "atMs": 11266.699999809265,
+      "mark": "pc.quote.input.8",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 9,
+      "symbol": "EURUSD",
+      "expectedText": "1.14226",
+      "mid": 1.14226,
+      "atMs": 11956.5,
+      "mark": "pc.quote.input.9",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 10,
+      "symbol": "EURUSD",
+      "expectedText": "1.14228",
+      "mid": 1.14228,
+      "atMs": 12676.299999952316,
+      "mark": "pc.quote.input.10",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    }
+  ],
+  "domObservations": [
+    {
+      "sequence": 3,
+      "atMs": 7802.799999952316,
+      "mark": "pc.quote.dom.3"
+    },
+    {
+      "sequence": 4,
+      "atMs": 8502.399999856949,
+      "mark": "pc.quote.dom.4"
+    },
+    {
+      "sequence": 6,
+      "atMs": 9856.199999809265,
+      "mark": "pc.quote.dom.6"
+    },
+    {
+      "sequence": 7,
+      "atMs": 10570.799999952316,
+      "mark": "pc.quote.dom.7"
+    },
+    {
+      "sequence": 9,
+      "atMs": 11956.799999952316,
+      "mark": "pc.quote.dom.9"
+    },
+    {
+      "sequence": 10,
+      "atMs": 12676.5,
+      "mark": "pc.quote.dom.10"
+    }
+  ],
+  "canvasCommits": [
+    {
+      "sequence": 1,
+      "atMs": 6473.899999856949,
+      "mark": "pc.quote.canvas-text.1",
+      "renderedText": "1.14213",
+      "quoteToCanvasTextMs": 106.70000004768372,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 398.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 2,
+      "atMs": 7163.899999856949,
+      "mark": "pc.quote.canvas-text.2",
+      "renderedText": "1.14214",
+      "quoteToCanvasTextMs": 82.79999995231628,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 393.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 3,
+      "atMs": 7909.699999809265,
+      "mark": "pc.quote.canvas-text.3",
+      "renderedText": "1.14216",
+      "quoteToCanvasTextMs": 107.09999990463257,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 384.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 4,
+      "atMs": 8628,
+      "mark": "pc.quote.canvas-text.4",
+      "renderedText": "1.14218",
+      "quoteToCanvasTextMs": 125.70000004768372,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 375.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 5,
+      "atMs": 9268.399999856949,
+      "mark": "pc.quote.canvas-text.5",
+      "renderedText": "1.14219",
+      "quoteToCanvasTextMs": 94,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 371.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 6,
+      "atMs": 9977.199999809265,
+      "mark": "pc.quote.canvas-text.6",
+      "renderedText": "1.14221",
+      "quoteToCanvasTextMs": 121.09999990463257,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 362.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 7,
+      "atMs": 10735.199999809265,
+      "mark": "pc.quote.canvas-text.7",
+      "renderedText": "1.14223",
+      "quoteToCanvasTextMs": 164.79999995231628,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 353.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 8,
+      "atMs": 11348.699999809265,
+      "mark": "pc.quote.canvas-text.8",
+      "renderedText": "1.14224",
+      "quoteToCanvasTextMs": 82,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 349.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 9,
+      "atMs": 12076.199999809265,
+      "mark": "pc.quote.canvas-text.9",
+      "renderedText": "1.14226",
+      "quoteToCanvasTextMs": 119.69999980926514,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 340.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 10,
+      "atMs": 12801.699999809265,
+      "mark": "pc.quote.canvas-text.10",
+      "renderedText": "1.14228",
+      "quoteToCanvasTextMs": 125.39999985694885,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 331.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    }
+  ],
+  "nextAnimationFrames": [
+    {
+      "sequence": 1,
+      "atMs": 6499.299999952316,
+      "callbackTimestampMs": 6474.6,
+      "mark": "pc.quote.next-raf.1",
+      "canvasTextToNextRafMs": 25.40000009536743,
+      "quoteToNextRafAfterCanvasMs": 132.10000014305115
+    },
+    {
+      "sequence": 2,
+      "atMs": 7181.799999952316,
+      "callbackTimestampMs": 7174.5,
+      "mark": "pc.quote.next-raf.2",
+      "canvasTextToNextRafMs": 17.90000009536743,
+      "quoteToNextRafAfterCanvasMs": 100.70000004768372
+    },
+    {
+      "sequence": 3,
+      "atMs": 7927.199999809265,
+      "callbackTimestampMs": 7924.5,
+      "mark": "pc.quote.next-raf.3",
+      "canvasTextToNextRafMs": 17.5,
+      "quoteToNextRafAfterCanvasMs": 124.59999990463257
+    },
+    {
+      "sequence": 4,
+      "atMs": 8644.799999952316,
+      "callbackTimestampMs": 8641.2,
+      "mark": "pc.quote.next-raf.4",
+      "canvasTextToNextRafMs": 16.799999952316284,
+      "quoteToNextRafAfterCanvasMs": 142.5
+    },
+    {
+      "sequence": 5,
+      "atMs": 9276.699999809265,
+      "callbackTimestampMs": 9274.5,
+      "mark": "pc.quote.next-raf.5",
+      "canvasTextToNextRafMs": 8.299999952316284,
+      "quoteToNextRafAfterCanvasMs": 102.29999995231628
+    },
+    {
+      "sequence": 6,
+      "atMs": 9996.599999904633,
+      "callbackTimestampMs": 9991.1,
+      "mark": "pc.quote.next-raf.6",
+      "canvasTextToNextRafMs": 19.40000009536743,
+      "quoteToNextRafAfterCanvasMs": 140.5
+    },
+    {
+      "sequence": 7,
+      "atMs": 10763.299999952316,
+      "callbackTimestampMs": 10741.1,
+      "mark": "pc.quote.next-raf.7",
+      "canvasTextToNextRafMs": 28.100000143051147,
+      "quoteToNextRafAfterCanvasMs": 192.90000009536743
+    },
+    {
+      "sequence": 8,
+      "atMs": 11367.399999856949,
+      "callbackTimestampMs": 11357.8,
+      "mark": "pc.quote.next-raf.8",
+      "canvasTextToNextRafMs": 18.700000047683716,
+      "quoteToNextRafAfterCanvasMs": 100.70000004768372
+    },
+    {
+      "sequence": 9,
+      "atMs": 12094.299999952316,
+      "callbackTimestampMs": 12091.1,
+      "mark": "pc.quote.next-raf.9",
+      "canvasTextToNextRafMs": 18.100000143051147,
+      "quoteToNextRafAfterCanvasMs": 137.79999995231628
+    },
+    {
+      "sequence": 10,
+      "atMs": 12809.899999856949,
+      "callbackTimestampMs": 12807.7,
+      "mark": "pc.quote.next-raf.10",
+      "canvasTextToNextRafMs": 8.200000047683716,
+      "quoteToNextRafAfterCanvasMs": 133.59999990463257
+    }
+  ],
+  "pendingSequences": [],
+  "longTasks": [],
+  "errors": [],
+  "candidateCanvases": [
+    {
+      "width": 66,
+      "height": 792,
+      "cssWidth": 66,
+      "cssHeight": 792,
+      "className": "",
+      "mainChartCandidate": true
+    }
+  ],
+  "userTimingMarks": [
+    {
+      "name": "pc.quote.measurement-start",
+      "entryType": "mark",
+      "startTime": 6092,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.trace-sanity",
+      "entryType": "mark",
+      "startTime": 6105.299999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.1",
+      "entryType": "mark",
+      "startTime": 6367.199999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.1",
+      "entryType": "mark",
+      "startTime": 6473.899999856949,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.1",
+      "entryType": "mark",
+      "startTime": 6499.299999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.2",
+      "entryType": "mark",
+      "startTime": 7081.099999904633,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.2",
+      "entryType": "mark",
+      "startTime": 7163.899999856949,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.2",
+      "entryType": "mark",
+      "startTime": 7181.799999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.3",
+      "entryType": "mark",
+      "startTime": 7802.599999904633,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.dom.3",
+      "entryType": "mark",
+      "startTime": 7802.799999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.3",
+      "entryType": "mark",
+      "startTime": 7909.699999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.3",
+      "entryType": "mark",
+      "startTime": 7927.199999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.4",
+      "entryType": "mark",
+      "startTime": 8502.299999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.dom.4",
+      "entryType": "mark",
+      "startTime": 8502.399999856949,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.4",
+      "entryType": "mark",
+      "startTime": 8628,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.4",
+      "entryType": "mark",
+      "startTime": 8644.799999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.5",
+      "entryType": "mark",
+      "startTime": 9174.399999856949,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.5",
+      "entryType": "mark",
+      "startTime": 9268.399999856949,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.5",
+      "entryType": "mark",
+      "startTime": 9276.699999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.6",
+      "entryType": "mark",
+      "startTime": 9856.099999904633,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.dom.6",
+      "entryType": "mark",
+      "startTime": 9856.199999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.6",
+      "entryType": "mark",
+      "startTime": 9977.199999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.6",
+      "entryType": "mark",
+      "startTime": 9996.599999904633,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.7",
+      "entryType": "mark",
+      "startTime": 10570.399999856949,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.dom.7",
+      "entryType": "mark",
+      "startTime": 10570.799999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.7",
+      "entryType": "mark",
+      "startTime": 10735.199999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.7",
+      "entryType": "mark",
+      "startTime": 10763.399999856949,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.8",
+      "entryType": "mark",
+      "startTime": 11266.699999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.8",
+      "entryType": "mark",
+      "startTime": 11348.699999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.8",
+      "entryType": "mark",
+      "startTime": 11367.399999856949,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.9",
+      "entryType": "mark",
+      "startTime": 11956.5,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.dom.9",
+      "entryType": "mark",
+      "startTime": 11956.799999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.9",
+      "entryType": "mark",
+      "startTime": 12076.199999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.9",
+      "entryType": "mark",
+      "startTime": 12094.299999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.input.10",
+      "entryType": "mark",
+      "startTime": 12676.299999952316,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.dom.10",
+      "entryType": "mark",
+      "startTime": 12676.5,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.canvas-text.10",
+      "entryType": "mark",
+      "startTime": 12801.699999809265,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.next-raf.10",
+      "entryType": "mark",
+      "startTime": 12809.899999856949,
+      "duration": 0
+    },
+    {
+      "name": "pc.quote.measurement-end",
+      "entryType": "mark",
+      "startTime": 12991.799999952316,
+      "duration": 0
+    }
+  ]
+}

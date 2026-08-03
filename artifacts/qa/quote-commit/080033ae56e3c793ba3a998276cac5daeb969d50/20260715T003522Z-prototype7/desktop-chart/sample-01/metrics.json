@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "classification": "deterministic synthetic quote-to-observable-chart-draw characterization",
+  "fieldEquivalent": false,
+  "baseline": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "94cc980670bc7c6595f6a4ea8ec6f2c48beea1f01ad8f261ff6e11d535569c40",
+  "runId": "20260715T003522Z-prototype7",
+  "scenario": "desktop-chart",
+  "sampleId": "sample-01",
+  "measurementStatus": "MEASURED_UNGATED",
+  "failure": null,
+  "fixture": {
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "fixedAt": "2026-07-14T12:34:56.000Z",
+    "quotePlan": [
+      {
+        "sequence": 1,
+        "symbol": "EURUSD",
+        "mid": 1.14213,
+        "bid": 1.14211,
+        "ask": 1.14215,
+        "expectedText": "1.14213"
+      },
+      {
+        "sequence": 2,
+        "symbol": "EURUSD",
+        "mid": 1.14214,
+        "bid": 1.14212,
+        "ask": 1.14216,
+        "expectedText": "1.14214"
+      },
+      {
+        "sequence": 3,
+        "symbol": "EURUSD",
+        "mid": 1.14216,
+        "bid": 1.14214,
+        "ask": 1.14218,
+        "expectedText": "1.14216"
+      },
+      {
+        "sequence": 4,
+        "symbol": "EURUSD",
+        "mid": 1.14218,
+        "bid": 1.14216,
+        "ask": 1.1422,
+        "expectedText": "1.14218"
+      },
+      {
+        "sequence": 5,
+        "symbol": "EURUSD",
+        "mid": 1.14219,
+        "bid": 1.14217,
+        "ask": 1.14221,
+        "expectedText": "1.14219"
+      },
+      {
+        "sequence": 6,
+        "symbol": "EURUSD",
+        "mid": 1.14221,
+        "bid": 1.14219,
+        "ask": 1.14223,
+        "expectedText": "1.14221"
+      },
+      {
+        "sequence": 7,
+        "symbol": "EURUSD",
+        "mid": 1.14223,
+        "bid": 1.14221,
+        "ask": 1.14225,
+        "expectedText": "1.14223"
+      },
+      {
+        "sequence": 8,
+        "symbol": "EURUSD",
+        "mid": 1.14224,
+        "bid": 1.14222,
+        "ask": 1.14226,
+        "expectedText": "1.14224"
+      },
+      {
+        "sequence": 9,
+        "symbol": "EURUSD",
+        "mid": 1.14226,
+        "bid": 1.14224,
+        "ask": 1.14228,
+        "expectedText": "1.14226"
+      },
+      {
+        "sequence": 10,
+        "symbol": "EURUSD",
+        "mid": 1.14228,
+        "bid": 1.14226,
+        "ask": 1.1423,
+        "expectedText": "1.14228"
+      }
+    ],
+    "clockMode": "native monotonic/browser wall clock; synthetic API payload timestamps remain fixed by the fixture"
+  },
+  "profile": {
+    "workers": 1,
+    "browserContext": "new isolated context per Playwright repeat",
+    "network": "local disposable preview; every API response synthetic; external origins fail closed",
+    "cpuThrottling": "none",
+    "traceOverhead": "Chromium tracing is enabled during the measurement window; results characterize this pinned trace-on lab profile.",
+    "referenceDeviceAdr": null
+  },
+  "metricSemantics": {
+    "quoteToCanvasTextMs": "From the XHR load event for a synthetic prices response, before Axios resolves it to the app, to completion of the first fillText call on a main lightweight-charts canvas whose exact formatted text equals that quote. The harness rejects a target observed on that canvas in the preceding 250 ms. This is a target-specific observable canvas draw command, not compositor presentation.",
+    "canvasTextToNextRafMs": "From that fillText completion to the next requestAnimationFrame callback. This is only a presentation-opportunity proxy, not proof of committed pixels.",
+    "quoteToNextRafAfterCanvasMs": "XHR input-to-next-rAF after the target-specific canvas draw. It includes application work and scheduler cadence and is not a direct CPU metric.",
+    "traceMarker": "Each browser Performance Timeline mark is paired with a same-name Chromium TimeStamp. Trace correlation prefers blink.user_timing and falls back to the TimeStamp when Chromium omits that category.",
+    "tracePaintCorrelation": "Nearest same-renderer Paint after each target-specific trace marker, within 100 ms. It corroborates ordering only and is not assumed target-specific."
+  },
+  "thresholdProvenance": {
+    "quoteToCanvasTextMs": {
+      "threshold": null,
+      "result": "NOT_GATED",
+      "reason": "No repository budget defines this newly isolated metric."
+    },
+    "canvasTextToNextRafMs": {
+      "threshold": null,
+      "result": "NOT_GATED",
+      "reason": "The existing activeChartFrameP95Ms <20 ms budget measures free-running rAF intervals and is not transferred to this different semantic."
+    },
+    "quoteToNextRafAfterCanvasMs": {
+      "threshold": null,
+      "result": "NOT_GATED",
+      "reason": "No approved quote-to-present threshold or reference-device ADR exists."
+    },
+    "validityProtocol": {
+      "expectedQuotes": 10,
+      "exactSequenceRequired": true,
+      "targetTextMatchRequired": true,
+      "preexistingTargetWithin250MsForbidden": true,
+      "provenance": "Harness measurement-completeness rule; not a product performance budget."
+    }
+  },
+  "metrics": {
+    "quoteToCanvasText": {
+      "count": 10,
+      "minMs": 69.7,
+      "meanMs": 116.81,
+      "medianMs": 119.6,
+      "p95Ms": 151.2,
+      "maxMs": 151.2,
+      "rawMs": [
+        69.7,
+        75,
+        119.6,
+        145.9,
+        114.1,
+        121,
+        151.2,
+        102,
+        143.4,
+        126.2
+      ]
+    },
+    "canvasTextToNextRaf": {
+      "count": 10,
+      "minMs": 7.4,
+      "meanMs": 17.77,
+      "medianMs": 17.8,
+      "p95Ms": 25.4,
+      "maxMs": 25.4,
+      "rawMs": [
+        25.4,
+        17.9,
+        16.1,
+        17.8,
+        7.4,
+        17.6,
+        17.3,
+        19,
+        20,
+        19.2
+      ]
+    },
+    "quoteToNextRafAfterCanvas": {
+      "count": 10,
+      "minMs": 92.9,
+      "meanMs": 134.58,
+      "medianMs": 135.7,
+      "p95Ms": 168.5,
+      "maxMs": 168.5,
+      "rawMs": [
+        95.1,
+        92.9,
+        135.7,
+        163.7,
+        121.5,
+        138.6,
+        168.5,
+        121,
+        163.4,
+        145.4
+      ]
+    },
+    "longTasks": {
+      "count": 0,
+      "totalDurationMs": 0,
+      "maxDurationMs": 0,
+      "entries": [],
+      "threshold": null,
+      "result": "NOT_GATED"
+    }
+  },
+  "trace": {
+    "file": "chromium-trace.json",
+    "sha256": "c328cbf5f18c2107571179bfe020ce269e3666db0dd78fe13e45a4d107c152ca",
+    "summary": {
+      "traceEventCount": 75757,
+      "userTimingEventCount": 59,
+      "timeStampEventCount": 39,
+      "sanityMarkPresent": true,
+      "paintEventCount": 1432,
+      "drawFrameEventCount": 415,
+      "categories": [
+        "blink.user_timing",
+        "devtools.timeline",
+        "disabled-by-default-devtools.timeline",
+        "disabled-by-default-devtools.timeline.frame",
+        "toplevel"
+      ],
+      "correlations": [
+        {
+          "sequence": 1,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 2.289,
+          "nearestDrawFrameAfterCanvasMs": 15.776,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        },
+        {
+          "sequence": 2,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 1.427,
+          "nearestDrawFrameAfterCanvasMs": 13.283,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        },
+        {
+          "sequence": 3,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 2.461,
+          "nearestDrawFrameAfterCanvasMs": 14.541,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        },
+        {
+          "sequence": 4,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 1.454,
+          "nearestDrawFrameAfterCanvasMs": 6.363,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        },
+        {
+          "sequence": 5,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 1.434,
+          "nearestDrawFrameAfterCanvasMs": 6.538,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        },
+        {
+          "sequence": 6,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 1.509,
+          "nearestDrawFrameAfterCanvasMs": 15.782,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        },
+        {
+          "sequence": 7,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 1.375,
+          "nearestDrawFrameAfterCanvasMs": 6.341,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        },
+        {
+          "sequence": 8,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 1.442,
+          "nearestDrawFrameAfterCanvasMs": 6.894,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        },
+        {
+          "sequence": 9,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 1.884,
+          "nearestDrawFrameAfterCanvasMs": 7.403,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        },
+        {
+          "sequence": 10,
+          "inputMarkPresent": true,
+          "canvasMarkPresent": true,
+          "nextRafMarkPresent": true,
+          "inputTraceMarkerKind": "UserTiming",
+          "canvasTraceMarkerKind": "UserTiming",
+          "nextRafTraceMarkerKind": "UserTiming",
+          "nearestRendererPaintAfterCanvasMs": 1.405,
+          "nearestDrawFrameAfterCanvasMs": 11.766,
+          "rendererPaintCorrelationSemantics": "Nearest renderer Paint after the target-specific canvas-text mark, same pid, within 100 ms; ordering corroboration only, not proof that this Paint contains the target label."
+        }
+      ]
+    }
+  },
+  "probe": {
+    "file": "probe-events.json",
+    "inputCount": 10,
+    "canvasCommitCount": 10,
+    "nextAnimationFrameCount": 10,
+    "pendingSequences": [],
+    "errors": [],
+    "candidateCanvases": [
+      {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      }
+    ]
+  },
+  "requests": {
+    "file": "request-inventory.json",
+    "summary": {
+      "requestCount": 54,
+      "requestBodySize": 0,
+      "requestHeadersSize": 16705,
+      "responseBodySize": 4793193,
+      "responseHeadersSize": 7909,
+      "totalWireBytes": 4817807
+    },
+    "observedCount": 54,
+    "sizeErrors": [],
+    "unexpectedExternal": [],
+    "unstubbed": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "badResponses": []
+  },
+  "runtime": {
+    "image": {
+      "reference": "mcr.microsoft.com/playwright:v1.61.0-noble",
+      "digest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a"
+    },
+    "node": "v24.16.0",
+    "playwright": "1.61.0",
+    "browser": "chromium",
+    "browserVersion": "149.0.7827.55",
+    "platform": "linux",
+    "architecture": "x64",
+    "cpuCountVisibleToNode": 8,
+    "loadAverageAtCollection": [
+      1.24,
+      1.05,
+      1.45
+    ],
+    "osRelease": {
+      "PRETTY_NAME": "Ubuntu 24.04.4 LTS",
+      "NAME": "Ubuntu",
+      "VERSION_ID": "24.04",
+      "VERSION": "24.04.4 LTS (Noble Numbat)",
+      "VERSION_CODENAME": "noble",
+      "ID": "ubuntu",
+      "ID_LIKE": "debian",
+      "HOME_URL": "https://www.ubuntu.com/",
+      "SUPPORT_URL": "https://help.ubuntu.com/",
+      "BUG_REPORT_URL": "https://bugs.launchpad.net/ubuntu/",
+      "PRIVACY_POLICY_URL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
+      "UBUNTU_CODENAME": "noble",
+      "LOGO": "ubuntu-logo"
+    },
+    "project": {
+      "name": "chromium-desktop",
+      "locale": "fa-IR",
+      "timezoneId": "UTC",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "deviceScaleFactor": 1
+    },
+    "browserEnvironment": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "hardwareConcurrency": 8,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "language": "fa-IR"
+    }
+  },
+  "interpretation": "MEASURED_UNGATED means the harness isolated a reproducible target-specific chart draw. It does not mean 60fps, budget compliance, field performance, or remediation."
+}

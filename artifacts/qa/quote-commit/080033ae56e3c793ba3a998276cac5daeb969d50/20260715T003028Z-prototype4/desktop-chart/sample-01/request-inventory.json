@@ -1,0 +1,1380 @@
+[
+  {
+    "method": "GET",
+    "pathname": "/",
+    "queryKeys": [],
+    "resourceType": "document",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 344,
+      "responseBodySize": 5590,
+      "responseHeadersSize": 292
+    },
+    "timing": {
+      "startTime": 1784075430735.626,
+      "domainLookupStart": 0.601,
+      "domainLookupEnd": 1.362,
+      "connectStart": 1.362,
+      "secureConnectionStart": -1,
+      "connectEnd": 1.685,
+      "requestStart": 1.927,
+      "responseStart": 2.597,
+      "responseEnd": 8.213
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/iranyekanx.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 255,
+      "responseBodySize": 714,
+      "responseHeadersSize": 237
+    },
+    "timing": {
+      "startTime": 1784075430757.762,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.538,
+      "responseStart": 1.19,
+      "responseEnd": 16.908
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/ravagh.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 251,
+      "responseBodySize": 1915,
+      "responseHeadersSize": 238
+    },
+    "timing": {
+      "startTime": 1784075430757.8918,
+      "domainLookupStart": 0.652,
+      "domainLookupEnd": 0.681,
+      "connectStart": 0.681,
+      "secureConnectionStart": -1,
+      "connectEnd": 1.057,
+      "requestStart": 1.138,
+      "responseStart": 2.586,
+      "responseEnd": 17.947
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/anjoman.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 252,
+      "responseBodySize": 1670,
+      "responseHeadersSize": 238
+    },
+    "timing": {
+      "startTime": 1784075430764.206,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.543,
+      "responseStart": 1.311,
+      "responseEnd": 23.106
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/vazirmatn.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 254,
+      "responseBodySize": 1561,
+      "responseHeadersSize": 238
+    },
+    "timing": {
+      "startTime": 1784075430764.3252,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.002,
+      "responseStart": 2.515,
+      "responseEnd": 25.071
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/assets/index-vLK2w0G_.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 296,
+      "responseBodySize": 79786,
+      "responseHeadersSize": 241
+    },
+    "timing": {
+      "startTime": 1784075430764.6047,
+      "domainLookupStart": 0.29,
+      "domainLookupEnd": 0.306,
+      "connectStart": 0.306,
+      "secureConnectionStart": -1,
+      "connectEnd": 0.85,
+      "requestStart": 0.95,
+      "responseStart": 2.267,
+      "responseEnd": 25.996
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/assets/index-CvAkTbis.js",
+    "queryKeys": [],
+    "resourceType": "script",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 280,
+      "responseBodySize": 3705345,
+      "responseHeadersSize": 258
+    },
+    "timing": {
+      "startTime": 1784075430764.4128,
+      "domainLookupStart": 0.741,
+      "domainLookupEnd": 0.757,
+      "connectStart": 0.757,
+      "secureConnectionStart": -1,
+      "connectEnd": 1.058,
+      "requestStart": 1.246,
+      "responseStart": 2.5,
+      "responseEnd": 68.439
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/logo.png",
+    "queryKeys": [],
+    "resourceType": "image",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 289,
+      "responseBodySize": 416122,
+      "responseHeadersSize": 243
+    },
+    "timing": {
+      "startTime": 1784075434623.325,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.27,
+      "responseStart": 1.99,
+      "responseEnd": 25.573
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/iranyekanx/IRANYekanX-Bold.woff2",
+    "queryKeys": [],
+    "resourceType": "font",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 314,
+      "responseBodySize": 28820,
+      "responseHeadersSize": 242
+    },
+    "timing": {
+      "startTime": 1784075434646.225,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.565,
+      "responseStart": 2.661,
+      "responseEnd": 38.404
+    }
+  },
+  {
+    "method": "POST",
+    "pathname": "/api/academy/auth/bn-guest",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 312,
+      "responseBodySize": 27,
+      "responseHeadersSize": 86
+    },
+    "timing": {
+      "startTime": 1784075434663.543,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 4.07,
+      "responseEnd": 5.315
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/ravagh/Ravagh-ExtraBold.woff2",
+    "queryKeys": [],
+    "resourceType": "font",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 307,
+      "responseBodySize": 68356,
+      "responseHeadersSize": 243
+    },
+    "timing": {
+      "startTime": 1784075434695.441,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.324,
+      "responseStart": 0.796,
+      "responseEnd": 6.672
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/assets/bn-logo-Cylz0xjn.png",
+    "queryKeys": [],
+    "resourceType": "image",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 308,
+      "responseBodySize": 77960,
+      "responseHeadersSize": 242
+    },
+    "timing": {
+      "startTime": 1784075434759.1318,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.362,
+      "responseStart": 1.05,
+      "responseEnd": 5.551
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/ravagh/Ravagh-SemiBold.woff2",
+    "queryKeys": [],
+    "resourceType": "font",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 306,
+      "responseBodySize": 67328,
+      "responseHeadersSize": 243
+    },
+    "timing": {
+      "startTime": 1784075434799.925,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.872,
+      "responseStart": 1.859,
+      "responseEnd": 29.972
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/iranyekanx/IRANYekanX-Regular.woff2",
+    "queryKeys": [],
+    "resourceType": "font",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 317,
+      "responseBodySize": 26292,
+      "responseHeadersSize": 242
+    },
+    "timing": {
+      "startTime": 1784075434799.7588,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.797,
+      "responseStart": 3.901,
+      "responseEnd": 42.632
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/anjoman/AnjomanMax-SemiBold.woff2",
+    "queryKeys": [],
+    "resourceType": "font",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 312,
+      "responseBodySize": 37116,
+      "responseHeadersSize": 242
+    },
+    "timing": {
+      "startTime": 1784075434822.533,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.398,
+      "responseStart": 1.13,
+      "responseEnd": 9.13
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/ravagh/Ravagh-Regular.woff2",
+    "queryKeys": [],
+    "resourceType": "font",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 305,
+      "responseBodySize": 66152,
+      "responseHeadersSize": 243
+    },
+    "timing": {
+      "startTime": 1784075434856.519,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.406,
+      "responseStart": 1.166,
+      "responseEnd": 38.246
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/anjoman/AnjomanMax-Regular.woff2",
+    "queryKeys": [],
+    "resourceType": "font",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 311,
+      "responseBodySize": 36992,
+      "responseHeadersSize": 242
+    },
+    "timing": {
+      "startTime": 1784075434895.101,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.111,
+      "responseStart": 2.659,
+      "responseEnd": 22.481
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/EURUSD",
+    "queryKeys": [
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 184,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075434850.771,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 25.58,
+      "responseEnd": 26.138
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/news",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 313,
+      "responseBodySize": 685,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075434850.8499,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 26.145,
+      "responseEnd": 26.529
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/EURUSD",
+    "queryKeys": [
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 26867,
+      "responseHeadersSize": 89
+    },
+    "timing": {
+      "startTime": 1784075434851.0107,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 26.741,
+      "responseEnd": 27.119
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/me",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 308,
+      "responseBodySize": 83,
+      "responseHeadersSize": 86
+    },
+    "timing": {
+      "startTime": 1784075434851.133,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 27.088,
+      "responseEnd": 27.417
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/EURUSD",
+    "queryKeys": [
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 17689,
+      "responseHeadersSize": 89
+    },
+    "timing": {
+      "startTime": 1784075434851.382,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 28.327,
+      "responseEnd": 28.74
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/EURUSD",
+    "queryKeys": [
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 184,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075434851.5042,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 32.088,
+      "responseEnd": 32.459
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/ai-signal/quota",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 324,
+      "responseBodySize": 31,
+      "responseHeadersSize": 86
+    },
+    "timing": {
+      "startTime": 1784075434851.6172,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 32.604,
+      "responseEnd": 32.974
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/ai-signal/active",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 325,
+      "responseBodySize": 116,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075434852.5571,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 32.656,
+      "responseEnd": 33.794
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 365,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075434853.1519,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 32.536,
+      "responseEnd": 34.123
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/symbols",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 319,
+      "responseBodySize": 53,
+      "responseHeadersSize": 86
+    },
+    "timing": {
+      "startTime": 1784075434853.2441,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 33.957,
+      "responseEnd": 35.546
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/watchlist",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 53,
+      "responseHeadersSize": 86
+    },
+    "timing": {
+      "startTime": 1784075434853.344,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 34.378,
+      "responseEnd": 35.942
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/scripts",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 316,
+      "responseBodySize": 22,
+      "responseHeadersSize": 86
+    },
+    "timing": {
+      "startTime": 1784075434853.441,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 34.685,
+      "responseEnd": 36.223
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/layouts",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 316,
+      "responseBodySize": -3,
+      "responseHeadersSize": 85
+    },
+    "timing": {
+      "startTime": 1784075434853.562,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 36.843,
+      "responseEnd": 38.332
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/alerts",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": -3,
+      "responseHeadersSize": 85
+    },
+    "timing": {
+      "startTime": 1784075434853.955,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 37.199,
+      "responseEnd": 38.965
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/Vazirmatn-Regular.woff2",
+    "queryKeys": [],
+    "resourceType": "font",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 304,
+      "responseBodySize": 50684,
+      "responseHeadersSize": 242
+    },
+    "timing": {
+      "startTime": 1784075434976.666,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.402,
+      "responseStart": 0.965,
+      "responseEnd": 17.898
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/ravagh/Ravagh-Medium.woff2",
+    "queryKeys": [],
+    "resourceType": "font",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 304,
+      "responseBodySize": 67068,
+      "responseHeadersSize": 243
+    },
+    "timing": {
+      "startTime": 1784075435014.024,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.411,
+      "responseStart": 1.111,
+      "responseEnd": 24.428
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/ai-signal/active",
+    "queryKeys": [],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 325,
+      "responseBodySize": 116,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075434955.3928,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 4.071,
+      "responseEnd": 4.5
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/EURUSD",
+    "queryKeys": [
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 184,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075435042.0798,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 5.887,
+      "responseEnd": 6.478
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/GBPUSD",
+    "queryKeys": [
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 184,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075435042.1638,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 24.228,
+      "responseEnd": 24.716
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/USDJPY",
+    "queryKeys": [
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 184,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075435042.215,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 24.606,
+      "responseEnd": 25.001
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/USDCHF",
+    "queryKeys": [
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 183,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075435042.385,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 24.66,
+      "responseEnd": 25.056
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/XAUUSD",
+    "queryKeys": [
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 184,
+      "responseHeadersSize": 87
+    },
+    "timing": {
+      "startTime": 1784075435042.52,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 24.726,
+      "responseEnd": 25.085
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 365,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075435042.803,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 24.639,
+      "responseEnd": 25.147
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/chart/EURUSD",
+    "queryKeys": [
+      "before",
+      "limit",
+      "tf"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 318,
+      "responseBodySize": 37,
+      "responseHeadersSize": 86
+    },
+    "timing": {
+      "startTime": 1784075436035.456,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 21.872,
+      "responseEnd": 22.77
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 365,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075437144.417,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 3.391,
+      "responseEnd": 4.266
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 365,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075437360.92,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 3.258,
+      "responseEnd": 3.951
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 365,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075438100.151,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 2.828,
+      "responseEnd": 3.614
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 365,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075438143.524,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 2.536,
+      "responseEnd": 3.116
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 484,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075438534.071,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 8.354,
+      "responseEnd": 9.194
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 484,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075439661.9658,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 6.583,
+      "responseEnd": 7.466
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 484,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075439934.692,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 3.325,
+      "responseEnd": 4.074
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 482,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075440637.914,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 5.764,
+      "responseEnd": 6.715
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 484,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075441651.804,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 5.17,
+      "responseEnd": 5.799
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 484,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075442034.3179,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 5.603,
+      "responseEnd": 6.438
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 484,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075442736.038,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 6.311,
+      "responseEnd": 7.183
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 484,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075443667.1648,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 17.148,
+      "responseEnd": 18.068
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 484,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075444134.5698,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 11.492,
+      "responseEnd": 12.619
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 483,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075444833.541,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 11.733,
+      "responseEnd": 12.617
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 365,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075445659.174,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 7.225,
+      "responseEnd": 8.087
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/api/academy/bn/prices",
+    "queryKeys": [
+      "symbols"
+    ],
+    "resourceType": "xhr",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 315,
+      "responseBodySize": 365,
+      "responseHeadersSize": 112
+    },
+    "timing": {
+      "startTime": 1784075446384.834,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": -1,
+      "responseStart": 5.184,
+      "responseEnd": 5.837
+    }
+  }
+]

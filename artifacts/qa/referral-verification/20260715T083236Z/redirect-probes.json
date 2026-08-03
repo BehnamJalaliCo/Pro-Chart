@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "runId": "20260715T083236Z",
+  "observedWindowUtc": "2026-07-15T08:31:48Z/2026-07-15T08:50:30Z",
+  "followRedirects": false,
+  "hostileQuery": "next=https://attacker.invalid&destination=https://attacker.invalid",
+  "expected": {
+    "lbank": "https://www.lbank.com/ref/PROCHART",
+    "oneroyal": "https://vc.cabinet.oneroyal.com/fa/links/go/12412",
+    "status": 302,
+    "cacheControl": "no-store",
+    "pragma": "no-cache"
+  },
+  "results": [
+    { "scope": "origin", "host": "localhost", "provider": "lbank", "curlExitCode": 0, "status": 302, "location": "https://www.lbank.com/ref/PROCHART", "cacheControl": "no-store", "pragma": "no-cache", "pass": true },
+    { "scope": "origin", "host": "localhost", "provider": "oneroyal", "curlExitCode": 0, "status": 302, "location": "https://vc.cabinet.oneroyal.com/fa/links/go/12412", "cacheControl": "no-store", "pragma": "no-cache", "pass": true },
+    { "scope": "public", "host": "pro-chart.com", "provider": "lbank", "curlExitCode": 0, "status": 302, "location": "https://www.lbank.com/ref/PROCHART", "cacheControl": "no-store", "pragma": "no-cache", "pass": true },
+    { "scope": "public", "host": "pro-chart.com", "provider": "oneroyal", "curlExitCode": 0, "status": 302, "location": "https://vc.cabinet.oneroyal.com/fa/links/go/12412", "cacheControl": "no-store", "pragma": "no-cache", "pass": true },
+    { "scope": "public", "host": "www.pro-chart.com", "provider": "lbank", "curlExitCode": 0, "status": 302, "location": "https://www.lbank.com/ref/PROCHART", "cacheControl": "no-store", "pragma": "no-cache", "pass": true },
+    { "scope": "public", "host": "www.pro-chart.com", "provider": "oneroyal", "curlExitCode": 0, "status": 302, "location": "https://vc.cabinet.oneroyal.com/fa/links/go/12412", "cacheControl": "no-store", "pragma": "no-cache", "pass": true },
+    { "scope": "public", "host": "pro-chart.ir", "provider": "lbank", "curlExitCode": 0, "status": 302, "location": "https://www.lbank.com/ref/PROCHART", "cacheControl": "no-store", "pragma": "no-cache", "pass": true },
+    { "scope": "public", "host": "pro-chart.ir", "provider": "oneroyal", "curlExitCode": 0, "status": 302, "location": "https://vc.cabinet.oneroyal.com/fa/links/go/12412", "cacheControl": "no-store", "pragma": "no-cache", "pass": true },
+    { "scope": "public", "host": "user.pro-chart.com", "provider": "lbank", "curlExitCode": 0, "status": 302, "location": "https://www.lbank.com/ref/PROCHART", "cacheControl": "no-store", "pragma": "no-cache", "pass": true },
+    { "scope": "public", "host": "user.pro-chart.com", "provider": "oneroyal", "curlExitCode": 0, "status": 302, "location": "https://vc.cabinet.oneroyal.com/fa/links/go/12412", "cacheControl": "no-store", "pragma": "no-cache", "pass": true }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "queryOverrideChangedDestination": false
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "classification": "deterministic synthetic quote-to-observable-chart-draw characterization",
+  "baseline": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "94cc980670bc7c6595f6a4ea8ec6f2c48beea1f01ad8f261ff6e11d535569c40",
+  "runId": "20260715T003612Z",
+  "scenario": "desktop-chart",
+  "result": "MEASURED_UNGATED",
+  "interpretation": "MEASURED_UNGATED confirms target-specific input-to-canvas correlation only. It is not a 60fps, threshold-pass, field-performance, or remediation claim.",
+  "expectedSamples": 3,
+  "samples": [
+    {
+      "sampleId": "sample-01",
+      "relativePath": "desktop-chart/sample-01/metrics.json",
+      "metricsSha256": "d8564db652bb5fb4d0e388679e1d5627097c324c258caabd1318f04522acdabe",
+      "measurementStatus": "MEASURED_UNGATED",
+      "quoteToCanvasTextP95Ms": 137.3,
+      "canvasTextToNextRafP95Ms": 45.7,
+      "quoteToNextRafAfterCanvasP95Ms": 180.9,
+      "longTaskCount": 0,
+      "traceSha256": "8205a4718d20c2f0248bae7ff8cc4b0e5792f1f6fdf653ae6d2749f5c48800ce"
+    },
+    {
+      "sampleId": "sample-02",
+      "relativePath": "desktop-chart/sample-02/metrics.json",
+      "metricsSha256": "a1ccadef3836ebd9666a15ddf06b3386a938640f81845042d9a2b00fe0bb4207",
+      "measurementStatus": "MEASURED_UNGATED",
+      "quoteToCanvasTextP95Ms": 164.5,
+      "canvasTextToNextRafP95Ms": 26.9,
+      "quoteToNextRafAfterCanvasP95Ms": 190.4,
+      "longTaskCount": 0,
+      "traceSha256": "ad99c5d9d8a77eb5b4d3373ba6856a780063de2df87c7c012a5c84a1348dc8cd"
+    },
+    {
+      "sampleId": "sample-03",
+      "relativePath": "desktop-chart/sample-03/metrics.json",
+      "metricsSha256": "4b4e1d3254ba203d0c386c6c1173f7a047dc6f22df99b37bce581b39f7a40231",
+      "measurementStatus": "MEASURED_UNGATED",
+      "quoteToCanvasTextP95Ms": 164.8,
+      "canvasTextToNextRafP95Ms": 28.1,
+      "quoteToNextRafAfterCanvasP95Ms": 192.9,
+      "longTaskCount": 0,
+      "traceSha256": "1a07d77c796b4e78d5859639b08dc398f781d69931b8c342ef4add60af4634b7"
+    }
+  ],
+  "aggregates": {
+    "quoteToCanvasText": {
+      "sampleCount": 3,
+      "minMs": 137.3,
+      "medianMs": 164.5,
+      "p95Ms": 164.8,
+      "maxMs": 164.8,
+      "sampleP95ValuesMs": [
+        137.3,
+        164.5,
+        164.8
+      ]
+    },
+    "canvasTextToNextRaf": {
+      "sampleCount": 3,
+      "minMs": 26.9,
+      "medianMs": 28.1,
+      "p95Ms": 45.7,
+      "maxMs": 45.7,
+      "sampleP95ValuesMs": [
+        45.7,
+        26.9,
+        28.1
+      ]
+    },
+    "quoteToNextRafAfterCanvas": {
+      "sampleCount": 3,
+      "minMs": 180.9,
+      "medianMs": 190.4,
+      "p95Ms": 192.9,
+      "maxMs": 192.9,
+      "sampleP95ValuesMs": [
+        180.9,
+        190.4,
+        192.9
+      ]
+    }
+  },
+  "metricSemantics": {
+    "quoteToCanvasTextMs": "From the XHR load event for a synthetic prices response, before Axios resolves it to the app, to completion of the first fillText call on a main lightweight-charts canvas whose exact formatted text equals that quote. The harness rejects a target observed on that canvas in the preceding 250 ms. This is a target-specific observable canvas draw command, not compositor presentation.",
+    "canvasTextToNextRafMs": "From that fillText completion to the next requestAnimationFrame callback. This is only a presentation-opportunity proxy, not proof of committed pixels.",
+    "quoteToNextRafAfterCanvasMs": "XHR input-to-next-rAF after the target-specific canvas draw. It includes application work and scheduler cadence and is not a direct CPU metric.",
+    "traceMarker": "Each browser Performance Timeline mark is paired with a same-name Chromium TimeStamp. Trace correlation prefers blink.user_timing and falls back to the TimeStamp when Chromium omits that category.",
+    "tracePaintCorrelation": "Nearest same-renderer Paint after each target-specific trace marker, within 100 ms. It corroborates ordering only and is not assumed target-specific."
+  },
+  "thresholdProvenance": {
+    "quoteToCanvasTextMs": {
+      "threshold": null,
+      "result": "NOT_GATED",
+      "reason": "No repository budget defines this newly isolated metric."
+    },
+    "canvasTextToNextRafMs": {
+      "threshold": null,
+      "result": "NOT_GATED",
+      "reason": "The existing activeChartFrameP95Ms <20 ms budget measures free-running rAF intervals and is not transferred to this different semantic."
+    },
+    "quoteToNextRafAfterCanvasMs": {
+      "threshold": null,
+      "result": "NOT_GATED",
+      "reason": "No approved quote-to-present threshold or reference-device ADR exists."
+    },
+    "validityProtocol": {
+      "expectedQuotes": 10,
+      "exactSequenceRequired": true,
+      "targetTextMatchRequired": true,
+      "preexistingTargetWithin250MsForbidden": true,
+      "userTimingAndTraceMarkersRequired": true,
+      "sameRendererPaintWithin100MsRequired": true,
+      "provenance": "Harness measurement-completeness rule; not a product performance budget."
+    }
+  },
+  "securityScan": {
+    "tool": "gitleaks",
+    "report": "gitleaks.json",
+    "findingCount": 0,
+    "result": "PASS"
+  },
+  "previewProvenance": {
+    "file": "preview-provenance.json",
+    "sourceFingerprintVerified": true,
+    "buildEntrypointCount": 3
+  },
+  "integrityManifest": "SHA256SUMS"
+}

@@ -1,0 +1,425 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/user-referral-compliance.spec.mjs"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "user-referral-compliance.spec.mjs",
+      "file": "user-referral-compliance.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "USER-REFERRAL: real /connect keeps LBank referral departure gated",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 315,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:358:33",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                      "column": 33,
+                      "line": 358
+                    },
+                    "snippet": "  356 |     const target = connectUrl(testInfo.project.use.baseURL);\n  357 |     const state = await installUserPortalFixture(page, target.origin, provider);\n> 358 |     const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                 ^\n  359 |\n  360 |     expect(response?.status(), 'User Portal BrowserRouter document status').toBe(200);\n  361 |     await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === '/connect');"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                        "column": 33,
+                        "line": 358
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  356 |     const target = connectUrl(testInfo.project.use.baseURL);\n  357 |     const state = await installUserPortalFixture(page, target.origin, provider);\n> 358 |     const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                 ^\n  359 |\n  360 |     expect(response?.status(), 'User Portal BrowserRouter document status').toBe(200);\n  361 |     await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === '/connect');\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:358:33"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:12.042Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                    "column": 33,
+                    "line": 358
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-2652b4af4a9d3968a41b",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 354,
+          "column": 3
+        },
+        {
+          "title": "USER-REFERRAL: real /connect keeps OneRoyal referral departure gated",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 335,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:358:33",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                      "column": 33,
+                      "line": 358
+                    },
+                    "snippet": "  356 |     const target = connectUrl(testInfo.project.use.baseURL);\n  357 |     const state = await installUserPortalFixture(page, target.origin, provider);\n> 358 |     const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                 ^\n  359 |\n  360 |     expect(response?.status(), 'User Portal BrowserRouter document status').toBe(200);\n  361 |     await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === '/connect');"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                        "column": 33,
+                        "line": 358
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  356 |     const target = connectUrl(testInfo.project.use.baseURL);\n  357 |     const state = await installUserPortalFixture(page, target.origin, provider);\n> 358 |     const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                 ^\n  359 |\n  360 |     expect(response?.status(), 'User Portal BrowserRouter document status').toBe(200);\n  361 |     await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === '/connect');\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:358:33"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:13.092Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                    "column": 33,
+                    "line": 358
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-35bee14c15acfc49e7fa",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 354,
+          "column": 3
+        },
+        {
+          "title": "USER-REFERRAL: real /connect keeps LBank referral departure gated",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 388,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:358:33",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                      "column": 33,
+                      "line": 358
+                    },
+                    "snippet": "  356 |     const target = connectUrl(testInfo.project.use.baseURL);\n  357 |     const state = await installUserPortalFixture(page, target.origin, provider);\n> 358 |     const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                 ^\n  359 |\n  360 |     expect(response?.status(), 'User Portal BrowserRouter document status').toBe(200);\n  361 |     await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === '/connect');"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                        "column": 33,
+                        "line": 358
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  356 |     const target = connectUrl(testInfo.project.use.baseURL);\n  357 |     const state = await installUserPortalFixture(page, target.origin, provider);\n> 358 |     const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                 ^\n  359 |\n  360 |     expect(response?.status(), 'User Portal BrowserRouter document status').toBe(200);\n  361 |     await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === '/connect');\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:358:33"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:14.207Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                    "column": 33,
+                    "line": 358
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-b8c1559248fcca745394",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 354,
+          "column": 3
+        },
+        {
+          "title": "USER-REFERRAL: real /connect keeps OneRoyal referral departure gated",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 311,
+                  "error": {
+                    "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:358:33",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                      "column": 33,
+                      "line": 358
+                    },
+                    "snippet": "  356 |     const target = connectUrl(testInfo.project.use.baseURL);\n  357 |     const state = await installUserPortalFixture(page, target.origin, provider);\n> 358 |     const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                 ^\n  359 |\n  360 |     expect(response?.status(), 'User Portal BrowserRouter document status').toBe(200);\n  361 |     await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === '/connect');"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                        "column": 33,
+                        "line": 358
+                      },
+                      "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://user.pro-chart.com:18081/connect\nCall log:\n\u001b[2m  - navigating to \"http://user.pro-chart.com:18081/connect\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n  356 |     const target = connectUrl(testInfo.project.use.baseURL);\n  357 |     const state = await installUserPortalFixture(page, target.origin, provider);\n> 358 |     const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });\n      |                                 ^\n  359 |\n  360 |     expect(response?.status(), 'User Portal BrowserRouter document status').toBe(200);\n  361 |     await expect(page).toHaveURL((url) => url.origin === target.origin && url.pathname === '/connect');\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs:358:33"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:48:15.333Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-connect-candidate/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/user-referral-compliance.spec.mjs",
+                    "column": 33,
+                    "line": 358
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-e34c331c3abd9db9c949",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 354,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T08:48:11.351Z",
+    "duration": 4519.105,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 4,
+    "flaky": 0
+  }
+}

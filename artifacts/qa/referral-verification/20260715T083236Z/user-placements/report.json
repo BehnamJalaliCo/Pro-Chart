@@ -1,0 +1,909 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/user-referral-placement-matrix.spec.mjs"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "user-referral-placement-matrix.spec.mjs",
+      "file": "user-referral-placement-matrix.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "USER-REFERRAL-PLACEMENT: / crypto",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 602,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:44.101Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiLyIsCiAgInByb2plY3QiOiAiY2hyb21pdW0tZGVza3RvcCIsCiAgImFjY291bnRUeXBlIjogImNyeXB0byIsCiAgImV4cGVjdGVkR2F0ZSI6IGZhbHNlLAogICJwcm92aWRlciI6ICJMQmFuayIsCiAgImFwcHJvdmVkUGF0aCI6ICIvZ28vbGJhbmsiLAogICJhcGlSZXF1ZXN0cyI6IFsKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL2FpLXNpZ25hbC9xdW90YSIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9uZXdzIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL292ZXJ2aWV3IiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL3dhdGNobGlzdCIKICBdCn0K"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-00f599b49fe696465878",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: / broker",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 627,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:44.869Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiLyIsCiAgInByb2plY3QiOiAiY2hyb21pdW0tZGVza3RvcCIsCiAgImFjY291bnRUeXBlIjogImJyb2tlciIsCiAgImV4cGVjdGVkR2F0ZSI6IHRydWUsCiAgInByb3ZpZGVyIjogIk9uZVJveWFsIiwKICAiYXBwcm92ZWRQYXRoIjogIi9nby9vbmVyb3lhbCIsCiAgImFwaVJlcXVlc3RzIjogWwogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vYWktc2lnbmFsL3F1b3RhIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL25ld3MiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vd2F0Y2hsaXN0IgogIF0KfQo="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-42df1d19795e4be3658f",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /connect crypto",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 501,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:45.540Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL2Nvbm5lY3QiLAogICJwcm9qZWN0IjogImNocm9taXVtLWRlc2t0b3AiLAogICJhY2NvdW50VHlwZSI6ICJjcnlwdG8iLAogICJleHBlY3RlZEdhdGUiOiB0cnVlLAogICJwcm92aWRlciI6ICJMQmFuayIsCiAgImFwcHJvdmVkUGF0aCI6ICIvZ28vbGJhbmsiLAogICJhcGlSZXF1ZXN0cyI6IFsKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL2Nvbm5lY3Qvc3RhdHVzIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL292ZXJ2aWV3IiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL3JlZmVycmFsLWxpbmsiCiAgXQp9Cg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-40625573df682d97b38a",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /connect broker",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 459,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:46.092Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL2Nvbm5lY3QiLAogICJwcm9qZWN0IjogImNocm9taXVtLWRlc2t0b3AiLAogICJhY2NvdW50VHlwZSI6ICJicm9rZXIiLAogICJleHBlY3RlZEdhdGUiOiB0cnVlLAogICJwcm92aWRlciI6ICJPbmVSb3lhbCIsCiAgImFwcHJvdmVkUGF0aCI6ICIvZ28vb25lcm95YWwiLAogICJhcGlSZXF1ZXN0cyI6IFsKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL2Nvbm5lY3Qvc3RhdHVzIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL292ZXJ2aWV3IiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL3JlZmVycmFsLWxpbmsiCiAgXQp9Cg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-1de482ed4d3d5376b487",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /trade crypto",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 437,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:46.590Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL3RyYWRlIiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1kZXNrdG9wIiwKICAiYWNjb3VudFR5cGUiOiAiY3J5cHRvIiwKICAiZXhwZWN0ZWRHYXRlIjogZmFsc2UsCiAgInByb3ZpZGVyIjogIkxCYW5rIiwKICAiYXBwcm92ZWRQYXRoIjogIi9nby9sYmFuayIsCiAgImFwaVJlcXVlc3RzIjogWwogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vY29ubmVjdC9zdGF0dXMiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vbXktb3JkZXJzIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL292ZXJ2aWV3IgogIF0KfQo="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-df9f4d45b867cbbb81ae",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /trade broker",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 443,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:47.078Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL3RyYWRlIiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1kZXNrdG9wIiwKICAiYWNjb3VudFR5cGUiOiAiYnJva2VyIiwKICAiZXhwZWN0ZWRHYXRlIjogdHJ1ZSwKICAicHJvdmlkZXIiOiAiT25lUm95YWwiLAogICJhcHByb3ZlZFBhdGgiOiAiL2dvL29uZXJveWFsIiwKICAiYXBpUmVxdWVzdHMiOiBbCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9jb25uZWN0L3N0YXR1cyIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9teS1vcmRlcnMiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciCiAgXQp9Cg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-588f5d6c46c488bb443b",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /subscription crypto",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 580,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:47.554Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL3N1YnNjcmlwdGlvbiIsCiAgInByb2plY3QiOiAiY2hyb21pdW0tZGVza3RvcCIsCiAgImFjY291bnRUeXBlIjogImNyeXB0byIsCiAgImV4cGVjdGVkR2F0ZSI6IHRydWUsCiAgInByb3ZpZGVyIjogIkxCYW5rIiwKICAiYXBwcm92ZWRQYXRoIjogIi9nby9sYmFuayIsCiAgImFwaVJlcXVlc3RzIjogWwogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vcmVmZXJyYWwtbGluayIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9wcmljaW5nIgogIF0KfQo="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-649d16796192e73d719f",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /subscription broker",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 576,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:48.190Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL3N1YnNjcmlwdGlvbiIsCiAgInByb2plY3QiOiAiY2hyb21pdW0tZGVza3RvcCIsCiAgImFjY291bnRUeXBlIjogImJyb2tlciIsCiAgImV4cGVjdGVkR2F0ZSI6IHRydWUsCiAgInByb3ZpZGVyIjogIk9uZVJveWFsIiwKICAiYXBwcm92ZWRQYXRoIjogIi9nby9vbmVyb3lhbCIsCiAgImFwaVJlcXVlc3RzIjogWwogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vcmVmZXJyYWwtbGluayIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9wcmljaW5nIgogIF0KfQo="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-c573f3242d4834b95d92",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: / crypto",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 570,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:49.327Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiLyIsCiAgInByb2plY3QiOiAiY2hyb21pdW0tbW9iaWxlIiwKICAiYWNjb3VudFR5cGUiOiAiY3J5cHRvIiwKICAiZXhwZWN0ZWRHYXRlIjogZmFsc2UsCiAgInByb3ZpZGVyIjogIkxCYW5rIiwKICAiYXBwcm92ZWRQYXRoIjogIi9nby9sYmFuayIsCiAgImFwaVJlcXVlc3RzIjogWwogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vYWktc2lnbmFsL3F1b3RhIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL25ld3MiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vd2F0Y2hsaXN0IgogIF0KfQo="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-ecc35-R-REFERRAL-PLACEMENT-crypto-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-35c6261bfaf3eff617ec",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: / broker",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 544,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:50.051Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiLyIsCiAgInByb2plY3QiOiAiY2hyb21pdW0tbW9iaWxlIiwKICAiYWNjb3VudFR5cGUiOiAiYnJva2VyIiwKICAiZXhwZWN0ZWRHYXRlIjogdHJ1ZSwKICAicHJvdmlkZXIiOiAiT25lUm95YWwiLAogICJhcHByb3ZlZFBhdGgiOiAiL2dvL29uZXJveWFsIiwKICAiYXBpUmVxdWVzdHMiOiBbCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9haS1zaWduYWwvcXVvdGEiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vbmV3cyIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9vdmVydmlldyIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi93YXRjaGxpc3QiCiAgXQp9Cg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-59ca6-R-REFERRAL-PLACEMENT-broker-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-70ce1e3c73df99eb6086",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /connect crypto",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 509,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:50.662Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL2Nvbm5lY3QiLAogICJwcm9qZWN0IjogImNocm9taXVtLW1vYmlsZSIsCiAgImFjY291bnRUeXBlIjogImNyeXB0byIsCiAgImV4cGVjdGVkR2F0ZSI6IHRydWUsCiAgInByb3ZpZGVyIjogIkxCYW5rIiwKICAiYXBwcm92ZWRQYXRoIjogIi9nby9sYmFuayIsCiAgImFwaVJlcXVlc3RzIjogWwogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vY29ubmVjdC9zdGF0dXMiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vcmVmZXJyYWwtbGluayIKICBdCn0K"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-2fe2a-AL-PLACEMENT-connect-crypto-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-c8ef5012ca332813eac6",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /connect broker",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 533,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:51.213Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL2Nvbm5lY3QiLAogICJwcm9qZWN0IjogImNocm9taXVtLW1vYmlsZSIsCiAgImFjY291bnRUeXBlIjogImJyb2tlciIsCiAgImV4cGVjdGVkR2F0ZSI6IHRydWUsCiAgInByb3ZpZGVyIjogIk9uZVJveWFsIiwKICAiYXBwcm92ZWRQYXRoIjogIi9nby9vbmVyb3lhbCIsCiAgImFwaVJlcXVlc3RzIjogWwogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vY29ubmVjdC9zdGF0dXMiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vcmVmZXJyYWwtbGluayIKICBdCn0K"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-1371c-AL-PLACEMENT-connect-broker-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-250163c8a16a268a7336",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /trade crypto",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 407,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:51.837Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL3RyYWRlIiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1tb2JpbGUiLAogICJhY2NvdW50VHlwZSI6ICJjcnlwdG8iLAogICJleHBlY3RlZEdhdGUiOiBmYWxzZSwKICAicHJvdmlkZXIiOiAiTEJhbmsiLAogICJhcHByb3ZlZFBhdGgiOiAiL2dvL2xiYW5rIiwKICAiYXBpUmVxdWVzdHMiOiBbCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9jb25uZWN0L3N0YXR1cyIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9teS1vcmRlcnMiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciCiAgXQp9Cg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-8a972-RRAL-PLACEMENT-trade-crypto-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-06a19de6f52e602975ea",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /trade broker",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 569,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:52.305Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL3RyYWRlIiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1tb2JpbGUiLAogICJhY2NvdW50VHlwZSI6ICJicm9rZXIiLAogICJleHBlY3RlZEdhdGUiOiB0cnVlLAogICJwcm92aWRlciI6ICJPbmVSb3lhbCIsCiAgImFwcHJvdmVkUGF0aCI6ICIvZ28vb25lcm95YWwiLAogICJhcGlSZXF1ZXN0cyI6IFsKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL2Nvbm5lY3Qvc3RhdHVzIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL215LW9yZGVycyIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9vdmVydmlldyIKICBdCn0K"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-11759-RRAL-PLACEMENT-trade-broker-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-ae377d6dd14f253c8029",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /subscription crypto",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 591,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:52.906Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL3N1YnNjcmlwdGlvbiIsCiAgInByb2plY3QiOiAiY2hyb21pdW0tbW9iaWxlIiwKICAiYWNjb3VudFR5cGUiOiAiY3J5cHRvIiwKICAiZXhwZWN0ZWRHYXRlIjogdHJ1ZSwKICAicHJvdmlkZXIiOiAiTEJhbmsiLAogICJhcHByb3ZlZFBhdGgiOiAiL2dvL2xiYW5rIiwKICAiYXBpUmVxdWVzdHMiOiBbCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9vdmVydmlldyIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9yZWZlcnJhbC1saW5rIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L3ByaWNpbmciCiAgXQp9Cg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-78a54-ACEMENT-subscription-crypto-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-d82201651d64b019ed01",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        },
+        {
+          "title": "USER-REFERRAL-PLACEMENT: /subscription broker",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 487,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:46:53.543Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-placement.json",
+                      "contentType": "application/json; charset=utf-8",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicm91dGUiOiAiL3N1YnNjcmlwdGlvbiIsCiAgInByb2plY3QiOiAiY2hyb21pdW0tbW9iaWxlIiwKICAiYWNjb3VudFR5cGUiOiAiYnJva2VyIiwKICAiZXhwZWN0ZWRHYXRlIjogdHJ1ZSwKICAicHJvdmlkZXIiOiAiT25lUm95YWwiLAogICJhcHByb3ZlZFBhdGgiOiAiL2dvL29uZXJveWFsIiwKICAiYXBpUmVxdWVzdHMiOiBbCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9vdmVydmlldyIsCiAgICAiR0VUIC9hcGkvYWNhZGVteS9ibi9yZWZlcnJhbC1saW5rIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L3ByaWNpbmciCiAgXQp9Cg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-verification/20260715T083236Z/user-placements/test-results/user-referral-placement-ma-c67f4-ACEMENT-subscription-broker-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "107aaf464f42ce8768d2-559bc95b1b0032b30a8a",
+          "file": "user-referral-placement-matrix.spec.mjs",
+          "line": 125,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T08:46:43.621Z",
+    "duration": 10521.983,
+    "expected": 16,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

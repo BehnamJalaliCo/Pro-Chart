@@ -1,0 +1,371 @@
+{
+  "schemaVersion": 1,
+  "measurementStartMs": 7334,
+  "measurementEndMs": 13217,
+  "inputs": [
+    {
+      "sequence": 1,
+      "symbol": "EURUSD",
+      "expectedText": "1.14213",
+      "mid": 1.14213,
+      "atMs": 7398,
+      "mark": "pc.quote.input.1",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    },
+    {
+      "sequence": 2,
+      "symbol": "EURUSD",
+      "expectedText": "1.14214",
+      "mid": 1.14214,
+      "atMs": 7416,
+      "mark": "pc.quote.input.2",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    },
+    {
+      "sequence": 3,
+      "symbol": "EURUSD",
+      "expectedText": "1.14215",
+      "mid": 1.14215,
+      "atMs": 7818,
+      "mark": "pc.quote.input.3",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    },
+    {
+      "sequence": 4,
+      "symbol": "EURUSD",
+      "expectedText": "1.14216",
+      "mid": 1.14216,
+      "atMs": 9053,
+      "mark": "pc.quote.input.4",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    },
+    {
+      "sequence": 5,
+      "symbol": "EURUSD",
+      "expectedText": "1.14217",
+      "mid": 1.14217,
+      "atMs": 9216,
+      "mark": "pc.quote.input.5",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    },
+    {
+      "sequence": 6,
+      "symbol": "EURUSD",
+      "expectedText": "1.14218",
+      "mid": 1.14218,
+      "atMs": 9915,
+      "mark": "pc.quote.input.6",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    },
+    {
+      "sequence": 7,
+      "symbol": "EURUSD",
+      "expectedText": "1.14219",
+      "mid": 1.14219,
+      "atMs": 11079,
+      "mark": "pc.quote.input.7",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    },
+    {
+      "sequence": 8,
+      "symbol": "EURUSD",
+      "expectedText": "1.14220",
+      "mid": 1.1422,
+      "atMs": 11323,
+      "mark": "pc.quote.input.8",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    },
+    {
+      "sequence": 9,
+      "symbol": "EURUSD",
+      "expectedText": "1.14221",
+      "mid": 1.14221,
+      "atMs": 12016,
+      "mark": "pc.quote.input.9",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    },
+    {
+      "sequence": 10,
+      "symbol": "EURUSD",
+      "expectedText": "1.14222",
+      "mid": 1.14222,
+      "atMs": 13036,
+      "mark": "pc.quote.input.10",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD"
+    }
+  ],
+  "domObservations": [
+    {
+      "sequence": 1,
+      "atMs": 7399,
+      "mark": "pc.quote.dom.1"
+    }
+  ],
+  "canvasCommits": [
+    {
+      "sequence": 1,
+      "atMs": 7418,
+      "mark": "pc.quote.canvas-text.1",
+      "renderedText": "1.14213",
+      "quoteToCanvasTextMs": 20,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 396.6875
+    },
+    {
+      "sequence": 2,
+      "atMs": 7506,
+      "mark": "pc.quote.canvas-text.2",
+      "renderedText": "1.14214",
+      "quoteToCanvasTextMs": 90,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 393.6875
+    },
+    {
+      "sequence": 3,
+      "atMs": 7911,
+      "mark": "pc.quote.canvas-text.3",
+      "renderedText": "1.14215",
+      "quoteToCanvasTextMs": 93,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 388.6875
+    },
+    {
+      "sequence": 4,
+      "atMs": 9115,
+      "mark": "pc.quote.canvas-text.4",
+      "renderedText": "1.14216",
+      "quoteToCanvasTextMs": 62,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 384.6875
+    },
+    {
+      "sequence": 5,
+      "atMs": 9297,
+      "mark": "pc.quote.canvas-text.5",
+      "renderedText": "1.14217",
+      "quoteToCanvasTextMs": 81,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 380.6875
+    },
+    {
+      "sequence": 6,
+      "atMs": 9969,
+      "mark": "pc.quote.canvas-text.6",
+      "renderedText": "1.14218",
+      "quoteToCanvasTextMs": 54,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 375.6875
+    },
+    {
+      "sequence": 7,
+      "atMs": 11138,
+      "mark": "pc.quote.canvas-text.7",
+      "renderedText": "1.14219",
+      "quoteToCanvasTextMs": 59,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 371.6875
+    },
+    {
+      "sequence": 8,
+      "atMs": 11336,
+      "mark": "pc.quote.canvas-text.8",
+      "renderedText": "1.14220",
+      "quoteToCanvasTextMs": 13,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 364.5232746478622
+    },
+    {
+      "sequence": 9,
+      "atMs": 12065,
+      "mark": "pc.quote.canvas-text.9",
+      "renderedText": "1.14221",
+      "quoteToCanvasTextMs": 49,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 362.6875
+    },
+    {
+      "sequence": 10,
+      "atMs": 13090,
+      "mark": "pc.quote.canvas-text.10",
+      "renderedText": "1.14222",
+      "quoteToCanvasTextMs": 54,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 357.6875
+    }
+  ],
+  "nextAnimationFrames": [
+    {
+      "sequence": 1,
+      "atMs": 7474,
+      "callbackTimestampMs": 7474,
+      "mark": "pc.quote.next-raf.1",
+      "canvasTextToNextRafMs": 56,
+      "quoteToNextRafAfterCanvasMs": 76
+    },
+    {
+      "sequence": 2,
+      "atMs": 7525,
+      "callbackTimestampMs": 7525,
+      "mark": "pc.quote.next-raf.2",
+      "canvasTextToNextRafMs": 19,
+      "quoteToNextRafAfterCanvasMs": 109
+    },
+    {
+      "sequence": 3,
+      "atMs": 7933,
+      "callbackTimestampMs": 7933,
+      "mark": "pc.quote.next-raf.3",
+      "canvasTextToNextRafMs": 22,
+      "quoteToNextRafAfterCanvasMs": 115
+    },
+    {
+      "sequence": 4,
+      "atMs": 9129,
+      "callbackTimestampMs": 9129,
+      "mark": "pc.quote.next-raf.4",
+      "canvasTextToNextRafMs": 14,
+      "quoteToNextRafAfterCanvasMs": 76
+    },
+    {
+      "sequence": 5,
+      "atMs": 9316,
+      "callbackTimestampMs": 9316,
+      "mark": "pc.quote.next-raf.5",
+      "canvasTextToNextRafMs": 19,
+      "quoteToNextRafAfterCanvasMs": 100
+    },
+    {
+      "sequence": 6,
+      "atMs": 9993,
+      "callbackTimestampMs": 9993,
+      "mark": "pc.quote.next-raf.6",
+      "canvasTextToNextRafMs": 24,
+      "quoteToNextRafAfterCanvasMs": 78
+    },
+    {
+      "sequence": 7,
+      "atMs": 11156,
+      "callbackTimestampMs": 11156,
+      "mark": "pc.quote.next-raf.7",
+      "canvasTextToNextRafMs": 18,
+      "quoteToNextRafAfterCanvasMs": 77
+    },
+    {
+      "sequence": 8,
+      "atMs": 11351,
+      "callbackTimestampMs": 11351,
+      "mark": "pc.quote.next-raf.8",
+      "canvasTextToNextRafMs": 15,
+      "quoteToNextRafAfterCanvasMs": 28
+    },
+    {
+      "sequence": 9,
+      "atMs": 12084,
+      "callbackTimestampMs": 12084,
+      "mark": "pc.quote.next-raf.9",
+      "canvasTextToNextRafMs": 19,
+      "quoteToNextRafAfterCanvasMs": 68
+    },
+    {
+      "sequence": 10,
+      "atMs": 13108,
+      "callbackTimestampMs": 13108,
+      "mark": "pc.quote.next-raf.10",
+      "canvasTextToNextRafMs": 18,
+      "quoteToNextRafAfterCanvasMs": 72
+    }
+  ],
+  "pendingSequences": [],
+  "longTasks": [],
+  "errors": [],
+  "candidateCanvases": [
+    {
+      "width": 66,
+      "height": 792,
+      "cssWidth": 66,
+      "cssHeight": 792,
+      "className": "",
+      "mainChartCandidate": true
+    }
+  ]
+}

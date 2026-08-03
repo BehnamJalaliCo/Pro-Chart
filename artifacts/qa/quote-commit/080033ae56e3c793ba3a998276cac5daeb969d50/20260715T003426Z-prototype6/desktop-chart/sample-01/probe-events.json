@@ -1,0 +1,527 @@
+{
+  "schemaVersion": 1,
+  "measurementStartMs": 7863,
+  "measurementEndMs": 15173,
+  "inputs": [
+    {
+      "sequence": 1,
+      "symbol": "EURUSD",
+      "expectedText": "1.14213",
+      "mid": 1.14213,
+      "atMs": 7916,
+      "mark": "pc.quote.input.1",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 2,
+      "symbol": "EURUSD",
+      "expectedText": "1.14214",
+      "mid": 1.14214,
+      "atMs": 9033,
+      "mark": "pc.quote.input.2",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 3,
+      "symbol": "EURUSD",
+      "expectedText": "1.14216",
+      "mid": 1.14216,
+      "atMs": 9334,
+      "mark": "pc.quote.input.3",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 4,
+      "symbol": "EURUSD",
+      "expectedText": "1.14218",
+      "mid": 1.14218,
+      "atMs": 10014,
+      "mark": "pc.quote.input.4",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 5,
+      "symbol": "EURUSD",
+      "expectedText": "1.14219",
+      "mid": 1.14219,
+      "atMs": 11079,
+      "mark": "pc.quote.input.5",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 6,
+      "symbol": "EURUSD",
+      "expectedText": "1.14221",
+      "mid": 1.14221,
+      "atMs": 11414,
+      "mark": "pc.quote.input.6",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 7,
+      "symbol": "EURUSD",
+      "expectedText": "1.14223",
+      "mid": 1.14223,
+      "atMs": 12109,
+      "mark": "pc.quote.input.7",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 8,
+      "symbol": "EURUSD",
+      "expectedText": "1.14224",
+      "mid": 1.14224,
+      "atMs": 13041,
+      "mark": "pc.quote.input.8",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 9,
+      "symbol": "EURUSD",
+      "expectedText": "1.14226",
+      "mid": 1.14226,
+      "atMs": 13515,
+      "mark": "pc.quote.input.9",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    },
+    {
+      "sequence": 10,
+      "symbol": "EURUSD",
+      "expectedText": "1.14228",
+      "mid": 1.14228,
+      "atMs": 14207,
+      "mark": "pc.quote.input.10",
+      "xhrUrl": "/api/academy/bn/prices?symbols=EURUSD,GBPUSD,USDJPY,USDCHF,XAUUSD",
+      "previousCanvasTextAtMs": null,
+      "preexistingWithin250Ms": false
+    }
+  ],
+  "domObservations": [
+    {
+      "sequence": 3,
+      "atMs": 9334,
+      "mark": "pc.quote.dom.3"
+    },
+    {
+      "sequence": 4,
+      "atMs": 10014,
+      "mark": "pc.quote.dom.4"
+    },
+    {
+      "sequence": 6,
+      "atMs": 11414,
+      "mark": "pc.quote.dom.6"
+    },
+    {
+      "sequence": 7,
+      "atMs": 12109,
+      "mark": "pc.quote.dom.7"
+    },
+    {
+      "sequence": 9,
+      "atMs": 13515,
+      "mark": "pc.quote.dom.9"
+    },
+    {
+      "sequence": 10,
+      "atMs": 14207,
+      "mark": "pc.quote.dom.10"
+    }
+  ],
+  "canvasCommits": [
+    {
+      "sequence": 1,
+      "atMs": 7970,
+      "mark": "pc.quote.canvas-text.1",
+      "renderedText": "1.14213",
+      "quoteToCanvasTextMs": 54,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 398.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 2,
+      "atMs": 9106,
+      "mark": "pc.quote.canvas-text.2",
+      "renderedText": "1.14214",
+      "quoteToCanvasTextMs": 73,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 393.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 3,
+      "atMs": 9474,
+      "mark": "pc.quote.canvas-text.3",
+      "renderedText": "1.14216",
+      "quoteToCanvasTextMs": 140,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 384.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 4,
+      "atMs": 10130,
+      "mark": "pc.quote.canvas-text.4",
+      "renderedText": "1.14218",
+      "quoteToCanvasTextMs": 116,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 375.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 5,
+      "atMs": 11153,
+      "mark": "pc.quote.canvas-text.5",
+      "renderedText": "1.14219",
+      "quoteToCanvasTextMs": 74,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 371.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 6,
+      "atMs": 11537,
+      "mark": "pc.quote.canvas-text.6",
+      "renderedText": "1.14221",
+      "quoteToCanvasTextMs": 123,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 362.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 7,
+      "atMs": 12209,
+      "mark": "pc.quote.canvas-text.7",
+      "renderedText": "1.14223",
+      "quoteToCanvasTextMs": 100,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 353.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 8,
+      "atMs": 13111,
+      "mark": "pc.quote.canvas-text.8",
+      "renderedText": "1.14224",
+      "quoteToCanvasTextMs": 70,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 348.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 9,
+      "atMs": 13812,
+      "mark": "pc.quote.canvas-text.9",
+      "renderedText": "1.14226",
+      "quoteToCanvasTextMs": 297,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 340.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    },
+    {
+      "sequence": 10,
+      "atMs": 14305,
+      "mark": "pc.quote.canvas-text.10",
+      "renderedText": "1.14228",
+      "quoteToCanvasTextMs": 98,
+      "canvas": {
+        "width": 66,
+        "height": 792,
+        "cssWidth": 66,
+        "cssHeight": 792,
+        "className": "",
+        "mainChartCandidate": true
+      },
+      "x": 10,
+      "y": 331.6875,
+      "contextStyle": {
+        "fillStyle": "#ffffff",
+        "font": "12px IRANYekanX, Ravagh, AnjomanMax, Vazirmatn, sans-serif",
+        "textAlign": "left",
+        "textBaseline": "middle",
+        "globalAlpha": 1
+      }
+    }
+  ],
+  "nextAnimationFrames": [
+    {
+      "sequence": 1,
+      "atMs": 7989,
+      "callbackTimestampMs": 7989,
+      "mark": "pc.quote.next-raf.1",
+      "canvasTextToNextRafMs": 19,
+      "quoteToNextRafAfterCanvasMs": 73
+    },
+    {
+      "sequence": 2,
+      "atMs": 9125,
+      "callbackTimestampMs": 9125,
+      "mark": "pc.quote.next-raf.2",
+      "canvasTextToNextRafMs": 19,
+      "quoteToNextRafAfterCanvasMs": 92
+    },
+    {
+      "sequence": 3,
+      "atMs": 9492,
+      "callbackTimestampMs": 9492,
+      "mark": "pc.quote.next-raf.3",
+      "canvasTextToNextRafMs": 18,
+      "quoteToNextRafAfterCanvasMs": 158
+    },
+    {
+      "sequence": 4,
+      "atMs": 10152,
+      "callbackTimestampMs": 10152,
+      "mark": "pc.quote.next-raf.4",
+      "canvasTextToNextRafMs": 22,
+      "quoteToNextRafAfterCanvasMs": 138
+    },
+    {
+      "sequence": 5,
+      "atMs": 11173,
+      "callbackTimestampMs": 11173,
+      "mark": "pc.quote.next-raf.5",
+      "canvasTextToNextRafMs": 20,
+      "quoteToNextRafAfterCanvasMs": 94
+    },
+    {
+      "sequence": 6,
+      "atMs": 11556,
+      "callbackTimestampMs": 11556,
+      "mark": "pc.quote.next-raf.6",
+      "canvasTextToNextRafMs": 19,
+      "quoteToNextRafAfterCanvasMs": 142
+    },
+    {
+      "sequence": 7,
+      "atMs": 12229,
+      "callbackTimestampMs": 12229,
+      "mark": "pc.quote.next-raf.7",
+      "canvasTextToNextRafMs": 20,
+      "quoteToNextRafAfterCanvasMs": 120
+    },
+    {
+      "sequence": 8,
+      "atMs": 13137,
+      "callbackTimestampMs": 13129,
+      "mark": "pc.quote.next-raf.8",
+      "canvasTextToNextRafMs": 26,
+      "quoteToNextRafAfterCanvasMs": 96
+    },
+    {
+      "sequence": 9,
+      "atMs": 13833,
+      "callbackTimestampMs": 13833,
+      "mark": "pc.quote.next-raf.9",
+      "canvasTextToNextRafMs": 21,
+      "quoteToNextRafAfterCanvasMs": 318
+    },
+    {
+      "sequence": 10,
+      "atMs": 15040,
+      "callbackTimestampMs": 15036,
+      "mark": "pc.quote.next-raf.10",
+      "canvasTextToNextRafMs": 735,
+      "quoteToNextRafAfterCanvasMs": 833
+    }
+  ],
+  "pendingSequences": [],
+  "longTasks": [],
+  "errors": [
+    "mark:PerformanceMark not retained at creation: pc.quote.measurement-start",
+    "mark:PerformanceMark not retained at creation: pc.quote.trace-sanity",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.1",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.1",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.1",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.2",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.2",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.2",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.3",
+    "mark:PerformanceMark not retained at creation: pc.quote.dom.3",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.3",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.3",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.4",
+    "mark:PerformanceMark not retained at creation: pc.quote.dom.4",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.4",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.4",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.5",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.5",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.5",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.6",
+    "mark:PerformanceMark not retained at creation: pc.quote.dom.6",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.6",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.6",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.7",
+    "mark:PerformanceMark not retained at creation: pc.quote.dom.7",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.7",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.7",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.8",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.8",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.8",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.9",
+    "mark:PerformanceMark not retained at creation: pc.quote.dom.9",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.9",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.9",
+    "mark:PerformanceMark not retained at creation: pc.quote.input.10",
+    "mark:PerformanceMark not retained at creation: pc.quote.dom.10",
+    "mark:PerformanceMark not retained at creation: pc.quote.canvas-text.10",
+    "mark:PerformanceMark not retained at creation: pc.quote.next-raf.10",
+    "mark:PerformanceMark not retained at creation: pc.quote.measurement-end"
+  ],
+  "candidateCanvases": [
+    {
+      "width": 66,
+      "height": 792,
+      "cssWidth": 66,
+      "cssHeight": 792,
+      "className": "",
+      "mainChartCandidate": true
+    }
+  ],
+  "userTimingMarks": []
+}

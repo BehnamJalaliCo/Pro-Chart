@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "sourceRootLabel": "prochart-quote-commit-fp94cc.20260715T003300Z",
+  "sourceFingerprintAlgorithm": "sha256 of sorted GNU sha256sum lines for files excluding node_modules, dist, www, and android",
+  "sourceFingerprintExpected": "94cc980670bc7c6595f6a4ea8ec6f2c48beea1f01ad8f261ff6e11d535569c40",
+  "sourceFingerprintObserved": "94cc980670bc7c6595f6a4ea8ec6f2c48beea1f01ad8f261ff6e11d535569c40",
+  "sourceFileCount": 809,
+  "buildEntrypoints": [
+    {
+      "path": "dist/index.html",
+      "sha256": "3349abc28418687d7c4449d4b4eb917e99199802e8205fa984266a08165adfe0"
+    },
+    {
+      "path": "dist/assets/index-CvAkTbis.js",
+      "sha256": "b71525f892f4a5f3a5a789d3899030653558eedc2bf8482f2d6d90d8a717aa48"
+    },
+    {
+      "path": "dist/assets/index-vLK2w0G_.css",
+      "sha256": "48846613e9d166f6f40b2324740e9fadbd8e4252d76979a647e899fdd676ce2f"
+    }
+  ],
+  "verification": "PASS"
+}

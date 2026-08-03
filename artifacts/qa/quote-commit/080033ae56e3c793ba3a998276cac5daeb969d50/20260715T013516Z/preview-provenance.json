@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "sourceRootLabel": "source",
+  "sourceFingerprintAlgorithm": "sha256 of sorted GNU sha256sum lines for files excluding node_modules, dist, www, and android",
+  "sourceFingerprintExpected": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "sourceFingerprintObserved": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "sourceFileCount": 815,
+  "buildEntrypoints": [
+    {
+      "path": "dist/index.html",
+      "sha256": "4d20e1247c18d8cbf6ab973570054764a148835fc704624bef8031dec05894ca"
+    },
+    {
+      "path": "dist/assets/index-BDC3pT6H.css",
+      "sha256": "b2b331f330e02008d07f4a01d954dba672225c75866fa2300799118833435c3e"
+    },
+    {
+      "path": "dist/assets/index-BtfZq1tK.js",
+      "sha256": "cee49cabb1e68fef79090795abc7c591b5933cef36cc3c771cef5df5078d0549"
+    }
+  ],
+  "verification": "PASS"
+}
