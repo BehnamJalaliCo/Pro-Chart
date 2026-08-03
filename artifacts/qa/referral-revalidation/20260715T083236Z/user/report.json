@@ -1,0 +1,309 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/user-referral-compliance.spec.mjs"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "user-referral-compliance.spec.mjs",
+      "file": "user-referral-compliance.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "USER-REFERRAL: real /connect keeps LBank referral departure gated",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 784,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:33:22.485Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-compliance.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAic2NvcGUiOiAiZnJvbnRlbmQtdXNlci1icm93c2VyLXJvdXRlci1jb25uZWN0IiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1kZXNrdG9wIiwKICAicHJvdmlkZXIiOiAiTEJhbmsiLAogICJhY2NvdW50VHlwZSI6ICJjcnlwdG8iLAogICJhcHByb3ZlZFBhdGgiOiAiL2dvL2xiYW5rIiwKICAic3RvcmFnZUNvbnRyYWN0IjogewogICAgImxlZ2FjeUF1dGhBYnNlbnQiOiB0cnVlLAogICAgInBvcnRhbFRva2VuUHJlc2VudCI6IHRydWUKICB9LAogICJ1bmlxdWVBcGlSZXF1ZXN0cyI6IFsKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL2Nvbm5lY3Qvc3RhdHVzIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL292ZXJ2aWV3IiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL3JlZmVycmFsLWxpbmsiCiAgXSwKICAiZ2F0ZSI6IHsKICAgICJkaXNjbG9zdXJlT3JkZXIiOiB7CiAgICAgICJkaXNjbG9zdXJlQmVmb3JlRWxpZ2liaWxpdHkiOiB0cnVlLAogICAgICAiZGlzY2xvc3VyZUJlZm9yZUZvcm0iOiB0cnVlLAogICAgICAiZWxpZ2liaWxpdHlCZWZvcmVGb3JtIjogdHJ1ZQogICAgfSwKICAgICJmb3JtQ29udHJhY3QiOiB7CiAgICAgICJtZXRob2QiOiAiZ2V0IiwKICAgICAgInJhd0FjdGlvbiI6ICIvZ28vbGJhbmsiLAogICAgICAicmVsIjogWwogICAgICAgICJub29wZW5lciIsCiAgICAgICAgIm5vcmVmZXJyZXIiLAogICAgICAgICJzcG9uc29yZWQiCiAgICAgIF0sCiAgICAgICJyZXNvbHZlZEFjdGlvbiI6ICJodHRwczovL3VzZXIucHJvLWNoYXJ0LmNvbS9nby9sYmFuayIsCiAgICAgICJ0YXJnZXQiOiAiX2JsYW5rIgogICAgfSwKICAgICJyZW5kZXJlZFRhcmdldHMiOiBbCiAgICAgIHsKICAgICAgICAicmF3IjogIi9nby9sYmFuayIsCiAgICAgICAgInJlc29sdmVkIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tL2dvL2xiYW5rIiwKICAgICAgICAidGFnTmFtZSI6ICJGT1JNIgogICAgICB9CiAgICBdCiAgfSwKICAibmV0d29yayI6IHsKICAgICJiYWRSZXNwb25zZXMiOiBbXSwKICAgICJwYWdlRXJyb3JzIjogW10sCiAgICAicG9wdXBzIjogW10sCiAgICAicmVxdWVzdEZhaWx1cmVzIjogW10sCiAgICAidW5leHBlY3RlZEV4dGVybmFsIjogW10sCiAgICAidW5zdHViYmVkIjogW10KICB9Cn0K"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-2652b4af4a9d3968a41b",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 270,
+          "column": 3
+        },
+        {
+          "title": "USER-REFERRAL: real /connect keeps OneRoyal referral departure gated",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 716,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:33:23.449Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-compliance.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAic2NvcGUiOiAiZnJvbnRlbmQtdXNlci1icm93c2VyLXJvdXRlci1jb25uZWN0IiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1kZXNrdG9wIiwKICAicHJvdmlkZXIiOiAiT25lUm95YWwiLAogICJhY2NvdW50VHlwZSI6ICJicm9rZXIiLAogICJhcHByb3ZlZFBhdGgiOiAiL2dvL29uZXJveWFsIiwKICAic3RvcmFnZUNvbnRyYWN0IjogewogICAgImxlZ2FjeUF1dGhBYnNlbnQiOiB0cnVlLAogICAgInBvcnRhbFRva2VuUHJlc2VudCI6IHRydWUKICB9LAogICJ1bmlxdWVBcGlSZXF1ZXN0cyI6IFsKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL2Nvbm5lY3Qvc3RhdHVzIiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL292ZXJ2aWV3IiwKICAgICJHRVQgL2FwaS9hY2FkZW15L2JuL3JlZmVycmFsLWxpbmsiCiAgXSwKICAiZ2F0ZSI6IHsKICAgICJkaXNjbG9zdXJlT3JkZXIiOiB7CiAgICAgICJkaXNjbG9zdXJlQmVmb3JlRWxpZ2liaWxpdHkiOiB0cnVlLAogICAgICAiZGlzY2xvc3VyZUJlZm9yZUZvcm0iOiB0cnVlLAogICAgICAiZWxpZ2liaWxpdHlCZWZvcmVGb3JtIjogdHJ1ZQogICAgfSwKICAgICJmb3JtQ29udHJhY3QiOiB7CiAgICAgICJtZXRob2QiOiAiZ2V0IiwKICAgICAgInJhd0FjdGlvbiI6ICIvZ28vb25lcm95YWwiLAogICAgICAicmVsIjogWwogICAgICAgICJub29wZW5lciIsCiAgICAgICAgIm5vcmVmZXJyZXIiLAogICAgICAgICJzcG9uc29yZWQiCiAgICAgIF0sCiAgICAgICJyZXNvbHZlZEFjdGlvbiI6ICJodHRwczovL3VzZXIucHJvLWNoYXJ0LmNvbS9nby9vbmVyb3lhbCIsCiAgICAgICJ0YXJnZXQiOiAiX2JsYW5rIgogICAgfSwKICAgICJyZW5kZXJlZFRhcmdldHMiOiBbCiAgICAgIHsKICAgICAgICAicmF3IjogIi9nby9vbmVyb3lhbCIsCiAgICAgICAgInJlc29sdmVkIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tL2dvL29uZXJveWFsIiwKICAgICAgICAidGFnTmFtZSI6ICJGT1JNIgogICAgICB9CiAgICBdCiAgfSwKICAibmV0d29yayI6IHsKICAgICJiYWRSZXNwb25zZXMiOiBbXSwKICAgICJwYWdlRXJyb3JzIjogW10sCiAgICAicG9wdXBzIjogW10sCiAgICAicmVxdWVzdEZhaWx1cmVzIjogW10sCiAgICAidW5leHBlY3RlZEV4dGVybmFsIjogW10sCiAgICAidW5zdHViYmVkIjogW10KICB9Cn0K"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-35bee14c15acfc49e7fa",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 270,
+          "column": 3
+        },
+        {
+          "title": "USER-REFERRAL: real /connect keeps LBank referral departure gated",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 983,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:33:24.790Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-compliance.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAic2NvcGUiOiAiZnJvbnRlbmQtdXNlci1icm93c2VyLXJvdXRlci1jb25uZWN0IiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1tb2JpbGUiLAogICJwcm92aWRlciI6ICJMQmFuayIsCiAgImFjY291bnRUeXBlIjogImNyeXB0byIsCiAgImFwcHJvdmVkUGF0aCI6ICIvZ28vbGJhbmsiLAogICJzdG9yYWdlQ29udHJhY3QiOiB7CiAgICAibGVnYWN5QXV0aEFic2VudCI6IHRydWUsCiAgICAicG9ydGFsVG9rZW5QcmVzZW50IjogdHJ1ZQogIH0sCiAgInVuaXF1ZUFwaVJlcXVlc3RzIjogWwogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vY29ubmVjdC9zdGF0dXMiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vcmVmZXJyYWwtbGluayIKICBdLAogICJnYXRlIjogewogICAgImRpc2Nsb3N1cmVPcmRlciI6IHsKICAgICAgImRpc2Nsb3N1cmVCZWZvcmVFbGlnaWJpbGl0eSI6IHRydWUsCiAgICAgICJkaXNjbG9zdXJlQmVmb3JlRm9ybSI6IHRydWUsCiAgICAgICJlbGlnaWJpbGl0eUJlZm9yZUZvcm0iOiB0cnVlCiAgICB9LAogICAgImZvcm1Db250cmFjdCI6IHsKICAgICAgIm1ldGhvZCI6ICJnZXQiLAogICAgICAicmF3QWN0aW9uIjogIi9nby9sYmFuayIsCiAgICAgICJyZWwiOiBbCiAgICAgICAgIm5vb3BlbmVyIiwKICAgICAgICAibm9yZWZlcnJlciIsCiAgICAgICAgInNwb25zb3JlZCIKICAgICAgXSwKICAgICAgInJlc29sdmVkQWN0aW9uIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tL2dvL2xiYW5rIiwKICAgICAgInRhcmdldCI6ICJfYmxhbmsiCiAgICB9LAogICAgInJlbmRlcmVkVGFyZ2V0cyI6IFsKICAgICAgewogICAgICAgICJyYXciOiAiL2dvL2xiYW5rIiwKICAgICAgICAicmVzb2x2ZWQiOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20vZ28vbGJhbmsiLAogICAgICAgICJ0YWdOYW1lIjogIkZPUk0iCiAgICAgIH0KICAgIF0KICB9LAogICJuZXR3b3JrIjogewogICAgImJhZFJlc3BvbnNlcyI6IFtdLAogICAgInBhZ2VFcnJvcnMiOiBbXSwKICAgICJwb3B1cHMiOiBbXSwKICAgICJyZXF1ZXN0RmFpbHVyZXMiOiBbXSwKICAgICJ1bmV4cGVjdGVkRXh0ZXJuYWwiOiBbXSwKICAgICJ1bnN0dWJiZWQiOiBbXQogIH0KfQo="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results/user-referral-compliance-U-c8067-nk-referral-departure-gated-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-b8c1559248fcca745394",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 270,
+          "column": 3
+        },
+        {
+          "title": "USER-REFERRAL: real /connect keeps OneRoyal referral departure gated",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 824,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:33:26.031Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-referral-compliance.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAic2NvcGUiOiAiZnJvbnRlbmQtdXNlci1icm93c2VyLXJvdXRlci1jb25uZWN0IiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1tb2JpbGUiLAogICJwcm92aWRlciI6ICJPbmVSb3lhbCIsCiAgImFjY291bnRUeXBlIjogImJyb2tlciIsCiAgImFwcHJvdmVkUGF0aCI6ICIvZ28vb25lcm95YWwiLAogICJzdG9yYWdlQ29udHJhY3QiOiB7CiAgICAibGVnYWN5QXV0aEFic2VudCI6IHRydWUsCiAgICAicG9ydGFsVG9rZW5QcmVzZW50IjogdHJ1ZQogIH0sCiAgInVuaXF1ZUFwaVJlcXVlc3RzIjogWwogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vY29ubmVjdC9zdGF0dXMiLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vb3ZlcnZpZXciLAogICAgIkdFVCAvYXBpL2FjYWRlbXkvYm4vcmVmZXJyYWwtbGluayIKICBdLAogICJnYXRlIjogewogICAgImRpc2Nsb3N1cmVPcmRlciI6IHsKICAgICAgImRpc2Nsb3N1cmVCZWZvcmVFbGlnaWJpbGl0eSI6IHRydWUsCiAgICAgICJkaXNjbG9zdXJlQmVmb3JlRm9ybSI6IHRydWUsCiAgICAgICJlbGlnaWJpbGl0eUJlZm9yZUZvcm0iOiB0cnVlCiAgICB9LAogICAgImZvcm1Db250cmFjdCI6IHsKICAgICAgIm1ldGhvZCI6ICJnZXQiLAogICAgICAicmF3QWN0aW9uIjogIi9nby9vbmVyb3lhbCIsCiAgICAgICJyZWwiOiBbCiAgICAgICAgIm5vb3BlbmVyIiwKICAgICAgICAibm9yZWZlcnJlciIsCiAgICAgICAgInNwb25zb3JlZCIKICAgICAgXSwKICAgICAgInJlc29sdmVkQWN0aW9uIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tL2dvL29uZXJveWFsIiwKICAgICAgInRhcmdldCI6ICJfYmxhbmsiCiAgICB9LAogICAgInJlbmRlcmVkVGFyZ2V0cyI6IFsKICAgICAgewogICAgICAgICJyYXciOiAiL2dvL29uZXJveWFsIiwKICAgICAgICAicmVzb2x2ZWQiOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20vZ28vb25lcm95YWwiLAogICAgICAgICJ0YWdOYW1lIjogIkZPUk0iCiAgICAgIH0KICAgIF0KICB9LAogICJuZXR3b3JrIjogewogICAgImJhZFJlc3BvbnNlcyI6IFtdLAogICAgInBhZ2VFcnJvcnMiOiBbXSwKICAgICJwb3B1cHMiOiBbXSwKICAgICJyZXF1ZXN0RmFpbHVyZXMiOiBbXSwKICAgICJ1bmV4cGVjdGVkRXh0ZXJuYWwiOiBbXSwKICAgICJ1bnN0dWJiZWQiOiBbXQogIH0KfQo="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/user/test-results/user-referral-compliance-U-d514f-al-referral-departure-gated-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "557ae8a6a6c88050801d-e34c331c3abd9db9c949",
+          "file": "user-referral-compliance.spec.mjs",
+          "line": 270,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T08:33:22.030Z",
+    "duration": 5000.794,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

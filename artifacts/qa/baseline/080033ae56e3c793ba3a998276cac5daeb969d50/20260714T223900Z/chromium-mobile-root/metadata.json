@@ -1,0 +1,316 @@
+{
+  "requirementIds": [
+    "PC-002",
+    "PC-009",
+    "PC-146",
+    "PC-153",
+    "PC-159"
+  ],
+  "scenario": "chromium-mobile-root",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260714T223900Z",
+  "startedAt": "2026-07-14T22:41:08.496Z",
+  "finishedAt": "2026-07-14T22:41:12.966Z",
+  "url": "https://pro-chart.com/",
+  "httpStatus": 200,
+  "project": "chromium-mobile",
+  "root": {
+    "title": "▼ 1.14213 -0.11% EURUSD",
+    "lang": "fa",
+    "dir": "rtl",
+    "bodyClass": "",
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "dpr": 2
+    },
+    "scroll": {
+      "width": 390,
+      "height": 844
+    },
+    "localStorageKeys": [
+      "bn_workspace",
+      "cp_academy_token"
+    ],
+    "sessionStorageKeys": [],
+    "indexedDbNames": [],
+    "interactive": [
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "جستجوی نماد",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "تایم‌فریم",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "نوعِ چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "بیشتر",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "تنظیماتِ چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "فروش (Sell) — بازکردنِ تیکتِ سفارش",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "خرید (Buy) — بازکردنِ تیکتِ سفارش",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "برای جزئیات نگه‌دار · با دو انگشت زوم کن✕",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مقیاسِ درصدی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مقیاسِ لگاریتمی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مقیاسِ خودکار (Fit)",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 1D",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 5D",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 1M",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 3M",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 6M",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: YTD",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 1Y",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 5Y",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: All",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "پرش به تاریخ",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "تغییرِ منطقهٔ زمانیِ چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "واچ‌لیست",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "سیگنالِ AI",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "بازارها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "پروفایل",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "رد شدن",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "بعدی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      }
+    ]
+  },
+  "cookies": [],
+  "consoleEvents": [
+    {
+      "type": "warning",
+      "text": "Service Worker registration blocked by Playwright"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "badResponses": [],
+  "axeSummary": {
+    "violations": 3,
+    "critical": 1,
+    "serious": 1
+  }
+}

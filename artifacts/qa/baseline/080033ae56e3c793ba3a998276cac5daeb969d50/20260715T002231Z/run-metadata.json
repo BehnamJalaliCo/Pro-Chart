@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "scope": "final-current-source-shipping-obfuscated-root-baseline",
+  "evidenceStatus": "CURRENT_FINAL",
+  "result": "AUTOMATED_PASS_WITH_INCOMPLETE_REVIEW",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T002231Z",
+  "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+  "priorRequestedFingerprint": "0de4e70facc1e0d813235c0e2d0c64f059974fcdcdc06ff8df306552de3af5de",
+  "fingerprintHistory": [
+    {
+      "fingerprint": "0de4e70facc1e0d813235c0e2d0c64f059974fcdcdc06ff8df306552de3af5de",
+      "status": "superseded",
+      "differenceToNext": "An unsuccessful live-render performance experiment was reverted: its BazaarNama import/ref/live-render block and new liveRender helper/test files were removed; the mobile accessibility fixes remained."
+    },
+    {
+      "fingerprint": "94cc980670bc7c6595f6a4ea8ec6f2c48beea1f01ad8f261ff6e11d535569c40",
+      "status": "superseded",
+      "differenceToNext": "Shipping header work changed Dockerfile and nginx.conf and added security-headers.conf; application bundle inputs were unchanged."
+    },
+    {
+      "fingerprint": "2810858d3d827614db22cf1185be32a45ada7aae4687785d550116ebd39d022a",
+      "status": "superseded",
+      "differenceToNext": "The final security-headers.conf tightened CSP: media-src removed broad https:, and connect-src replaced broad wss: with wss://pro-chart.ir and wss://pro-chart.com."
+    },
+    {
+      "fingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+      "status": "current-final"
+    }
+  ],
+  "snapshot": {
+    "id": "20260715T002125Z",
+    "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+    "stageFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+    "byteMatched": true,
+    "frontendDeclaredFrozenBeforeSnapshot": true
+  },
+  "build": {
+    "mode": "fresh isolated shipping-obfuscated production build",
+    "obfuscationBypassSet": false,
+    "passed": true,
+    "transformedModules": 1782,
+    "javascript": {
+      "path": "dist/assets/index-CvAkTbis.js",
+      "sha256": "b71525f892f4a5f3a5a789d3899030653558eedc2bf8482f2d6d90d8a717aa48"
+    },
+    "css": {
+      "path": "dist/assets/index-vLK2w0G_.css",
+      "sha256": "48846613e9d166f6f40b2324740e9fadbd8e4252d76979a647e899fdd676ce2f"
+    }
+  },
+  "harness": {
+    "baselinePath": "qa/tests/baseline.spec.mjs",
+    "baselineSha256": "731639d95ce8dd4116ce91d8311af281ff37a3afc40219da7170a4b87c69b357",
+    "playwrightConfigSha256": "b83bced28fe168529a41846686873fe285522ec6e234c5305abae871cc9fbec8"
+  },
+  "playwright": {
+    "version": "1.61.0",
+    "retries": 0,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "durationMs": 23927.188
+  },
+  "axe": {
+    "version": "4.10.3",
+    "rules": "unfiltered full axe analysis",
+    "allViolationImpactsIncluded": true,
+    "desktop": {
+      "violations": 0,
+      "violationImpacts": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "unknown": 0
+      },
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 33
+        }
+      ]
+    },
+    "mobile": {
+      "violations": 0,
+      "violationImpacts": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "unknown": 0
+      },
+      "incomplete": []
+    }
+  },
+  "network": {
+    "expectedOrigin": "http://prochart.local:4179",
+    "originsObserved": [
+      "http://prochart.local:4179"
+    ],
+    "sourceOriginAsserted": true,
+    "unexpectedOrigins": 0,
+    "unexpectedMutations": 0,
+    "requestFailures": 0,
+    "httpErrorResponses": 0,
+    "pageErrors": 0
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "findings": 0,
+    "redactedReport": true,
+    "scanMode": "no-git exact frozen frontend snapshot plus in-scope QA harness files"
+  },
+  "preservedSupersededRuns": {
+    "baselines": [
+      "20260715T000817Z",
+      "20260715T001916Z"
+    ],
+    "visualDiagnostics": [
+      "20260715T000855Z",
+      "20260715T001018Z"
+    ],
+    "visualSuccessful": [
+      "20260715T001256Z",
+      "20260715T001344Z"
+    ]
+  },
+  "qualification": "This is an automated baseline result, not a claim of full accessibility compliance. The desktop raw axe report retains an incomplete color-contrast review where canvas/image overlap prevents automatic evaluation."
+}

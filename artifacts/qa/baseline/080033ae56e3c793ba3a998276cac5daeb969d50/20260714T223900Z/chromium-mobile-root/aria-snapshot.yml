@@ -1,0 +1,69 @@
+- button "جستجوی نماد": EURUSD
+- text: "1.14213"
+- button "تایم‌فریم":
+  - text: 1H
+  - img
+- button "نوعِ چارت":
+  - img
+- button "بیشتر":
+  - img
+- text: EURUSD 1H · فارکس
+- img
+- text: O 1.14260 H 1.14260 L 1.14211 C 1.14213 −0.00047 (−0.04%) Vol 0
+- button "تنظیماتِ چارت":
+  - img
+- table:
+  - row:
+    - cell
+    - cell
+    - cell
+  - row:
+    - cell
+    - cell
+    - cell
+- button "1.14213 SELL"
+- text: 0 اسپرد
+- button "1.14213 BUY"
+- text: "-0.00047 (-0.04%)"
+- button "برای جزئیات نگه‌دار · با دو انگشت زوم کن ✕"
+- text: 18:49
+- button "مقیاسِ درصدی": ٪
+- button "مقیاسِ لگاریتمی": log
+- button "مقیاسِ خودکار (Fit)": auto
+- img
+- text: حجم · Vol
+- img "بازارنما"
+- button "1D"
+- button "5D"
+- button "1M"
+- button "3M"
+- button "6M"
+- button "YTD"
+- button "1Y"
+- button "5Y"
+- button "All"
+- button "پرش به تاریخ"
+- button "02:11:11 (تهران)":
+  - img
+  - text: 02:11:11 (تهران)
+- navigation:
+  - button "چارت":
+    - img
+    - text: چارت
+  - button "واچ‌لیست":
+    - img
+    - text: واچ‌لیست
+  - button "سیگنالِ AI":
+    - img
+  - button "بازارها":
+    - img
+    - text: بازارها
+  - button "پروفایل":
+    - img
+    - text: پروفایل
+- img "Pro-Chart"
+- button "رد شدن"
+- img
+- heading "چارتِ حرفه‌ای" [level=2]
+- paragraph: چارتِ حرفه‌ای با ۸۰+ اندیکاتور، ۱۳ نوعِ چارت و مجموعهٔ کاملِ ابزارِ ترسیم.
+- button "بعدی"

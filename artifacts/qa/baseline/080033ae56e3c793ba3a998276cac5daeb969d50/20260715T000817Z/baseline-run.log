@@ -1,0 +1,11 @@
+
+Running 2 tests using 1 worker
+
+[1/2] [chromium-desktop] › tests/baseline.spec.mjs:30:1 › BASE-ROOT: public shell stateless-guest characterization
+[2/2] [chromium-mobile] › tests/baseline.spec.mjs:30:1 › BASE-ROOT: public shell stateless-guest characterization
+  2 passed (24.0s)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

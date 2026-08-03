@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "scope": "frozen-current-source root browser characterization",
+  "evidenceStatus": "CURRENT_CANDIDATE",
+  "result": "AUTOMATED_PASS_WITH_INCOMPLETE_REVIEW",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T011904Z",
+  "sourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "preview": {
+    "origin": "http://prochart.local:4173",
+    "readOnlyBuildMount": true,
+    "liveDeploymentTouched": false
+  },
+  "playwright": {
+    "version": "1.61.0",
+    "runnerDigest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "retries": 0,
+    "durationMs": 23894.773
+  },
+  "axe": {
+    "version": "4.10.3",
+    "desktopViolationRules": 0,
+    "mobileViolationRules": 0,
+    "desktopIncompleteColorContrastNodes": 33,
+    "mobileIncompleteNodes": 0
+  },
+  "network": {
+    "unexpectedMutations": 0,
+    "requestFailures": 0,
+    "httpErrors": 0,
+    "pageErrors": 0
+  },
+  "qualification": "Automated characterization is not a full accessibility or manual product-review claim.",
+  "sealedAtUtc": "2026-07-15T01:28:45Z"
+}

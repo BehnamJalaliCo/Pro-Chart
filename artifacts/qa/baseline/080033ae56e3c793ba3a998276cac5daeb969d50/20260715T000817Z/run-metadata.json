@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "scope": "current-source-shipping-obfuscated-root-baseline",
+  "evidenceStatus": "SUPERSEDED",
+  "result": "AUTOMATED_PASS_WITH_INCOMPLETE_REVIEW",
+  "supersededBy": "20260715T002231Z",
+  "supersessionReason": "Frontend shipping-header files changed after this run; the final root baseline was regenerated from frozen fingerprint bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e.",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T000817Z",
+  "sourceFingerprint": "94cc980670bc7c6595f6a4ea8ec6f2c48beea1f01ad8f261ff6e11d535569c40",
+  "priorFingerprint": "0de4e70facc1e0d813235c0e2d0c64f059974fcdcdc06ff8df306552de3af5de",
+  "fingerprintDifference": "The unsuccessful live-render performance experiment was reverted: its BazaarNama import/ref/live-render block and new liveRender helper/test files were removed. The mobile accessibility target and contrast fixes remain.",
+  "build": {
+    "mode": "fresh isolated shipping-obfuscated production build",
+    "passed": true,
+    "transformedModules": 1782,
+    "javascript": {
+      "path": "dist/assets/index-CvAkTbis.js",
+      "sha256": "b71525f892f4a5f3a5a789d3899030653558eedc2bf8482f2d6d90d8a717aa48"
+    },
+    "css": {
+      "path": "dist/assets/index-vLK2w0G_.css",
+      "sha256": "48846613e9d166f6f40b2324740e9fadbd8e4252d76979a647e899fdd676ce2f"
+    }
+  },
+  "playwright": {
+    "version": "1.61.0",
+    "retries": 0,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "durationMs": 24039.215
+  },
+  "axe": {
+    "version": "4.10.3",
+    "rules": "unfiltered full axe analysis",
+    "allViolationImpactsIncluded": true,
+    "desktop": {
+      "violations": 0,
+      "violationImpacts": { "critical": 0, "serious": 0, "moderate": 0, "minor": 0, "unknown": 0 },
+      "incomplete": [{ "id": "color-contrast", "impact": "serious", "nodes": 33 }]
+    },
+    "mobile": {
+      "violations": 0,
+      "violationImpacts": { "critical": 0, "serious": 0, "moderate": 0, "minor": 0, "unknown": 0 },
+      "incomplete": []
+    }
+  },
+  "network": {
+    "expectedOrigin": "http://prochart.local:4177",
+    "originsObserved": ["http://prochart.local:4177"],
+    "unexpectedOrigins": 0,
+    "unexpectedMutations": 0,
+    "requestFailures": 0,
+    "httpErrorResponses": 0,
+    "pageErrors": 0
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "findings": 0,
+    "redactedReport": true
+  },
+  "qualification": "This is an automated baseline result, not a claim of full accessibility compliance. The desktop raw axe report retains an incomplete color-contrast review where canvas/image overlap prevents automatic evaluation."
+}

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "scope": "superseded-current-source-shipping-obfuscated-root-baseline",
+  "evidenceStatus": "SUPERSEDED",
+  "result": "AUTOMATED_PASS_WITH_INCOMPLETE_REVIEW",
+  "supersededBy": "20260715T002231Z",
+  "supersessionReason": "The security policy was tightened after this run; security-headers.conf changed media-src and connect-src, so the full baseline was regenerated on the final frozen frontend source.",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T001916Z",
+  "sourceFingerprint": "2810858d3d827614db22cf1185be32a45ada7aae4687785d550116ebd39d022a",
+  "build": {
+    "mode": "fresh isolated shipping-obfuscated production build",
+    "passed": true,
+    "transformedModules": 1782,
+    "javascriptSha256": "b71525f892f4a5f3a5a789d3899030653558eedc2bf8482f2d6d90d8a717aa48",
+    "cssSha256": "48846613e9d166f6f40b2324740e9fadbd8e4252d76979a647e899fdd676ce2f"
+  },
+  "playwright": {
+    "version": "1.61.0",
+    "retries": 0,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "durationMs": 23738.221
+  },
+  "axe": {
+    "version": "4.10.3",
+    "rules": "unfiltered full axe analysis",
+    "allViolationImpactsIncluded": true,
+    "desktop": {
+      "violations": 0,
+      "violationImpacts": {"critical": 0, "serious": 0, "moderate": 0, "minor": 0, "unknown": 0},
+      "incomplete": [{"id": "color-contrast", "impact": "serious", "nodes": 32}]
+    },
+    "mobile": {
+      "violations": 0,
+      "violationImpacts": {"critical": 0, "serious": 0, "moderate": 0, "minor": 0, "unknown": 0},
+      "incomplete": []
+    }
+  },
+  "network": {
+    "expectedOrigin": "http://prochart.local:4178",
+    "originsObserved": ["http://prochart.local:4178"],
+    "sourceOriginAsserted": true,
+    "unexpectedOrigins": 0,
+    "unexpectedMutations": 0,
+    "requestFailures": 0,
+    "httpErrorResponses": 0,
+    "pageErrors": 0
+  },
+  "gitleaks": {
+    "status": "not-run-before-supersession"
+  },
+  "qualification": "Preserved superseded evidence only. This run is not the final current-source gate."
+}

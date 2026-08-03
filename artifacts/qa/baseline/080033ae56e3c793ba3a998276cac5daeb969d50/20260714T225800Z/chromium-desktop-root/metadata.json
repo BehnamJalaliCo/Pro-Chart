@@ -1,0 +1,1415 @@
+{
+  "requirementIds": [
+    "PC-002",
+    "PC-009",
+    "PC-146",
+    "PC-153",
+    "PC-159"
+  ],
+  "scenario": "chromium-desktop-root",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "754358097499c3d6146e5f41e3932916da6763a7f3b9bbd8ad02c5092a2a9428",
+  "runId": "20260714T225800Z",
+  "startedAt": "2026-07-14T22:57:24.104Z",
+  "finishedAt": "2026-07-14T22:57:29.256Z",
+  "url": "http://prochart.local:4173/",
+  "expectedOrigin": "http://prochart.local:4173",
+  "httpStatus": 200,
+  "project": "chromium-desktop",
+  "root": {
+    "title": "▼ 1.14196 -0.12% EURUSD",
+    "lang": "fa",
+    "dir": "rtl",
+    "bodyClass": "",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "dpr": 1
+    },
+    "scroll": {
+      "width": 1440,
+      "height": 900
+    },
+    "localStorageKeys": [
+      "bn_watch_meta",
+      "bn_workspace",
+      "brn.toolrail.favorites",
+      "cp_academy_token"
+    ],
+    "sessionStorageKeys": [],
+    "indexedDbNames": [],
+    "interactive": [
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "جستجوی نماد (Ctrl+K یا /)",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "مقایسهٔ نماد",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "۵ دقیقه",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "۱۵ دقیقه",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "۱ ساعته",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "۴ ساعته",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "روزانه",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "هفتگی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "همهٔ اینتروال‌ها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "نوعِ چارت: کندل",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "اندیکاتورها، سنجه‌ها و استراتژی‌ها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "ویژهٔ پرمیوم",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "افزودنِ هشدارِ قیمت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "بازپخشِ تاریخی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "سیگنالِ AI — ستاپِ کاملِ AI در همین نماد/تایم‌فریم (0/0)",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "واگرد (Ctrl+Z)",
+        "href": "",
+        "disabled": true,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "ازنو (Ctrl+Y)",
+        "href": "",
+        "disabled": true,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "چند-چارت — انتخابِ چیدمان",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "حالتِ مقیاسِ قیمت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "قفلِ مقیاس (خاموش‌کردنِ خودکار)",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "وارونه‌کردنِ محورِ قیمت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "بازنشانیِ مقیاس",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "حالتِ کراس‌هیر",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "سشن‌ها — نمایش/پنهان‌کردنِ باندهای سشنِ فارکس",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "انتخابِ سشن‌ها و منطقهٔ زمانی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "تمام‌صفحه",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "عکسِ چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "راهنمای میان‌بُرهای صفحه‌کلید",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "تنظیماتِ چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "چیدمان‌ها (ذخیره/بارگذاری نماد + تایم‌فریم + اندیکاتورها + ترسیم‌ها)",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "حساب / ورود / ثبت‌نام",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "نشانگرها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "خطوط",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "کانال‌ها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "فیبوناچی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "گان",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "الگوها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "پروجکشن و اندازه‌گیری",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "اشکال",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "یادداشت‌ها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "آهنربا (Magnet) — چسبیدن به OHLC",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "شدتِ آهنربا",
+        "href": "",
+        "disabled": false,
+        "tabIndex": -1
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "ماندن در حالتِ ترسیم",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "قفلِ همهٔ ترسیم‌ها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "نمایش/مخفیِ همهٔ ترسیم‌ها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "حذفِ همهٔ ترسیم‌ها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "گزینه‌های حذف",
+        "href": "",
+        "disabled": false,
+        "tabIndex": -1
+      },
+      {
+        "tag": "input",
+        "role": "",
+        "type": "color",
+        "name": "رنگِ ترسیم",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "تنظیماتِ چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "فروش (Sell) — بازکردنِ تیکتِ سفارش",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "خرید (Buy) — بازکردنِ تیکتِ سفارش",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مقیاسِ درصدی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مقیاسِ لگاریتمی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مقیاسِ خودکار (Fit)",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 1D",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 5D",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 1M",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 3M",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 6M",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: YTD",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 1Y",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: 5Y",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "بازهٔ نمایش: All",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "پرش به تاریخ",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "تغییرِ منطقهٔ زمانیِ چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "واچ‌لیست",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "سیگنال AI",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "اسکنر",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "جزئیات",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "اخبار",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "تقویم",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "ترید",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "آلارم",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "پیش‌فرض",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "افزودنِ نماد",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "تنظیمِ ستون‌ها و شخصی‌سازی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "فیلترِ رنگِ red",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "فیلترِ رنگِ orange",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "فیلترِ رنگِ yellow",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "فیلترِ رنگِ green",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "فیلترِ رنگِ blue",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "فیلترِ رنگِ purple",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "فیلترِ رنگِ gray",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مرتب‌سازی بر اساسِ نماد",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مرتب‌سازی بر اساسِ آخرین قیمت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مرتب‌سازی بر اساسِ تغییرِ مطلق",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مرتب‌سازی بر اساسِ درصدِ تغییر",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "فارکسFOREX",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "EUR/USD1.14196-0.00138-0.12٪",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "پرچمِ تفکیک",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "حذف از واچ‌لیست",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "GBP/USD1.33897-0.00259-0.19٪",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "پرچمِ تفکیک",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "حذف از واچ‌لیست",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "USD/JPY162.240-0.123-0.08٪",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "پرچمِ تفکیک",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "حذف از واچ‌لیست",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "USD/CHF0.80947+0.00167+0.21٪",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "پرچمِ تفکیک",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "حذف از واچ‌لیست",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "فلزاتMETALS",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "XAU/USD4,049.54-15.56-0.38٪",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "پرچمِ تفکیک",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "span",
+        "role": "button",
+        "type": "",
+        "name": "حذف از واچ‌لیست",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "جزئیاتِ نمادDETAILS",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "تغییرِ نماد (جستجو)",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "مقایسه (تغییرِ نماد)",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "ویرایشِ تنظیماتِ چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "button",
+        "name": "کپیِ قیمت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "a",
+        "role": "",
+        "type": "",
+        "name": "خلاصه بازارهای آمریکا: نفت بالا، تأیید رتبه کانادا، تنش خاورمیانه",
+        "href": "https://investinglive.com/news/investinglive-americas-fx-news-wrap-14-jul-cpi-lower-warsh-remains-cautious/",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "امتیاز روی تایم‌فریمِ چارت",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "امتیاز روی 5m",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "امتیاز روی 15m",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "امتیاز روی 1H",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "امتیاز روی 4H",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "",
+        "type": "",
+        "name": "امتیاز روی 1D",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "div",
+        "role": "tablist",
+        "type": "",
+        "name": "@keyframes brn-rtip-in{from{opacity:0;transform:translate(-4px,-50%)}to{opacity:1;transform:translate(0,-50%)}}",
+        "href": "",
+        "disabled": false,
+        "tabIndex": -1
+      },
+      {
+        "tag": "button",
+        "role": "tab",
+        "type": "button",
+        "name": "واچ‌لیست",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "tab",
+        "type": "button",
+        "name": "آلارم‌ها",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "tab",
+        "type": "button",
+        "name": "اسکنر",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "tab",
+        "type": "button",
+        "name": "تقویمِ اقتصادی",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "tab",
+        "type": "button",
+        "name": "اخبار",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "tag": "button",
+        "role": "tab",
+        "type": "button",
+        "name": "ایده‌ها و سیگنال",
+        "href": "",
+        "disabled": false,
+        "tabIndex": 0
+      }
+    ]
+  },
+  "cookies": [],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/",
+      "resourceType": "document"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/iranyekanx.css",
+      "resourceType": "stylesheet"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/ravagh.css",
+      "resourceType": "stylesheet"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/anjoman.css",
+      "resourceType": "stylesheet"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/vazirmatn.css",
+      "resourceType": "stylesheet"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/assets/index-40whaxG7.js",
+      "resourceType": "script"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/assets/index-CPBE5gtc.css",
+      "resourceType": "stylesheet"
+    },
+    {
+      "method": "POST",
+      "url": "http://prochart.local:4173/api/academy/auth/bn-guest",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/logo.png",
+      "resourceType": "image"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/iranyekanx/IRANYekanX-Bold.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/ravagh/Ravagh-ExtraBold.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/assets/bn-logo-Cylz0xjn.png",
+      "resourceType": "image"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/iranyekanx/IRANYekanX-Regular.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/ravagh/Ravagh-SemiBold.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/EURUSD?keys=limit,tf",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/news",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/EURUSD?keys=limit,tf",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/me",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/EURUSD?keys=limit,tf",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/EURUSD?keys=limit,tf",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/ai-signal/quota",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/ai-signal/active",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/prices?keys=symbols",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/symbols",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/watchlist",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/scripts",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/layouts",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/alerts",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/ravagh/Ravagh-Regular.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/anjoman/AnjomanMax-SemiBold.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/anjoman/AnjomanMax-Regular.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/ai-signal/active",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/Vazirmatn-Regular.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/fonts/ravagh/Ravagh-Medium.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/EURUSD?keys=limit,tf",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/XAUUSD?keys=limit,tf",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/GBPUSD?keys=limit,tf",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/USDJPY?keys=limit,tf",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/chart/USDCHF?keys=limit,tf",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/prices?keys=symbols",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/prices?keys=symbols",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/prices?keys=symbols",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/prices?keys=symbols",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/prices?keys=symbols",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/prices?keys=symbols",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/prices?keys=symbols",
+      "resourceType": "xhr"
+    },
+    {
+      "method": "GET",
+      "url": "http://prochart.local:4173/api/academy/bn/prices?keys=symbols",
+      "resourceType": "xhr"
+    }
+  ],
+  "mutatingRequests": [
+    {
+      "method": "POST",
+      "url": "http://prochart.local:4173/api/academy/auth/bn-guest",
+      "resourceType": "xhr"
+    }
+  ],
+  "unexpectedMutatingRequests": [],
+  "consoleEvents": [],
+  "pageErrors": [],
+  "requestFailures": [],
+  "badResponses": [],
+  "axeSummary": {
+    "violations": 5,
+    "critical": 0,
+    "serious": 2
+  }
+}

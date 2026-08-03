@@ -1,0 +1,82 @@
+
+> prochart-quality-harness@0.1.0 test:baseline
+> playwright test tests/baseline.spec.mjs
+
+
+Running 2 tests using 1 worker
+
+[1/2] [chromium-desktop] › tests/baseline.spec.mjs:30:1 › BASE-ROOT: public shell stateless-guest characterization
+  1) [chromium-desktop] › tests/baseline.spec.mjs:30:1 › BASE-ROOT: public shell stateless-guest characterization 
+
+    Error: page.goto: net::ERR_NAME_NOT_RESOLVED at http://prochart.local:4173/
+    Call log:
+      - navigating to "http://prochart.local:4173/", waiting until "domcontentloaded"
+
+
+      62 |
+      63 |   const startedAt = new Date().toISOString();
+    > 64 |   const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+         |                               ^
+      65 |   await page.evaluate(() => document.fonts.ready);
+      66 |   await page.waitForTimeout(2_000);
+      67 |
+        at /home/bazaarnama/Pro-Chart/app/qa/tests/baseline.spec.mjs:64:31
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-desktop/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[2/2] [chromium-mobile] › tests/baseline.spec.mjs:30:1 › BASE-ROOT: public shell stateless-guest characterization
+  2) [chromium-mobile] › tests/baseline.spec.mjs:30:1 › BASE-ROOT: public shell stateless-guest characterization 
+
+    Error: page.goto: net::ERR_NAME_NOT_RESOLVED at http://prochart.local:4173/
+    Call log:
+      - navigating to "http://prochart.local:4173/", waiting until "domcontentloaded"
+
+
+      62 |
+      63 |   const startedAt = new Date().toISOString();
+    > 64 |   const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+         |                               ^
+      65 |   await page.evaluate(() => document.fonts.ready);
+      66 |   await page.waitForTimeout(2_000);
+      67 |
+        at /home/bazaarnama/Pro-Chart/app/qa/tests/baseline.spec.mjs:64:31
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-mobile/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-mobile/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011842Z/playwright/test-results/baseline-BASE-ROOT-public--346e9-less-guest-characterization-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2 failed
+    [chromium-desktop] › tests/baseline.spec.mjs:30:1 › BASE-ROOT: public shell stateless-guest characterization 
+    [chromium-mobile] › tests/baseline.spec.mjs:30:1 › BASE-ROOT: public shell stateless-guest characterization 

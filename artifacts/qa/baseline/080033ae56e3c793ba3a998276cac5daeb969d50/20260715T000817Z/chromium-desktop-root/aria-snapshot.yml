@@ -1,0 +1,252 @@
+- main:
+  - heading "Pro-Chart — چارت حرفه‌ای بازارهای مالی" [level=1]
+  - button "EURUSD":
+    - text: EURUSD
+    - img
+  - button "مقایسهٔ نماد":
+    - img
+  - text: مقایسه/افزودنِ نماد به‌صورتِ خطِ overlay 1.14267
+  - button "5m"
+  - button "15m"
+  - button "1H"
+  - button "4H"
+  - button "1D"
+  - button "1W"
+  - button "همهٔ اینتروال‌ها":
+    - img
+  - 'button "نوعِ چارت: کندل"':
+    - img
+    - img
+  - button "اندیکاتورها، سنجه‌ها و استراتژی‌ها":
+    - img
+  - button "ویژهٔ پرمیوم":
+    - img
+    - img
+  - button "افزودنِ هشدارِ قیمت":
+    - img
+  - button "بازپخشِ تاریخی":
+    - img
+  - button "سیگنالِ AI — ستاپِ کاملِ AI در همین نماد/تایم‌فریم (0/0)":
+    - img
+  - button "واگرد (Ctrl+Z)" [disabled]:
+    - img
+  - button "ازنو (Ctrl+Y)" [disabled]:
+    - img
+  - button "درختِ آبجکت‌ها (مدیریتِ ترسیم‌ها)":
+    - img
+  - button "1×":
+    - img
+    - text: 1×
+    - img
+  - button "R":
+    - text: R
+    - img
+  - button "قفلِ مقیاس (خاموش‌کردنِ خودکار)":
+    - img
+  - button "وارونه‌کردنِ محورِ قیمت":
+    - img
+  - text: وارونه‌کردنِ محورِ قیمت — بالا و پایینِ نمودار جابه‌جا می‌شود (مناسبِ تحلیلِ معکوس)
+  - button "بازنشانیِ مقیاس":
+    - img
+  - text: بازنشانیِ زوم و مقیاسِ نمودار به حالتِ اولیه (اتوفیت)
+  - button "حالتِ کراس‌هیر":
+    - img
+  - button "سشن‌ها — نمایش/پنهان‌کردنِ باندهای سشنِ فارکس":
+    - img
+  - button "انتخابِ سشن‌ها و منطقهٔ زمانی":
+    - img
+  - button "تمام‌صفحه":
+    - img
+  - button "عکسِ چارت":
+    - img
+    - img
+  - button "راهنمای میان‌بُرهای صفحه‌کلید": ⌨
+  - button "تنظیماتِ چارت":
+    - img
+  - button "چیدمان‌ها (ذخیره/بارگذاری نماد + تایم‌فریم + اندیکاتورها + ترسیم‌ها)":
+    - img
+    - img
+  - button "حساب / ورود / ثبت‌نام":
+    - img
+  - button "نشانگرها" [pressed]:
+    - img
+  - button "خطوط":
+    - img
+  - button "کانال‌ها":
+    - img
+  - button "فیبوناچی":
+    - img
+  - button "گان":
+    - img
+  - button "الگوها":
+    - img
+  - button "پروجکشن و اندازه‌گیری":
+    - img
+  - button "اشکال":
+    - img
+  - button "یادداشت‌ها":
+    - img
+  - button "آهنربا (Magnet) — چسبیدن به OHLC":
+    - img
+    - button "شدتِ آهنربا"
+  - button "ماندن در حالتِ ترسیم":
+    - img
+  - button "قفلِ همهٔ ترسیم‌ها":
+    - img
+  - button "نمایش/مخفیِ همهٔ ترسیم‌ها":
+    - img
+  - button "حذفِ همهٔ ترسیم‌ها":
+    - img
+    - button "گزینه‌های حذف"
+  - textbox "رنگِ ترسیم": "#3b82f6"
+  - text: رنگِ ترسیم EURUSD یورو / دلار آمریکا 1H · فارکس
+  - img
+  - text: O 1.14273 H 1.14273 L 1.14266 C 1.14267 −0.00006 (−0.01%) Vol 0
+  - button "تنظیماتِ چارت":
+    - img
+  - table:
+    - row:
+      - cell
+      - cell
+      - cell
+    - row:
+      - cell
+      - cell
+      - cell
+  - button "1.14267 SELL"
+  - text: 0 اسپرد
+  - button "1.14267 BUY"
+  - text: "-0.00006 (-0.00%) 51:24"
+  - button "مقیاسِ درصدی": ٪
+  - button "مقیاسِ لگاریتمی": log
+  - button "مقیاسِ خودکار (Fit)": auto
+  - img
+  - text: حجم · Vol
+  - img "بازارنما"
+  - button "1D"
+  - button "5D"
+  - button "1M"
+  - button "3M"
+  - button "6M"
+  - button "YTD"
+  - button "1Y"
+  - button "5Y"
+  - button "All"
+  - button "پرش به تاریخ"
+  - button "03:38:36 (تهران)":
+    - img
+    - text: 03:38:36 (تهران)
+  - button "واچ‌لیست":
+    - img
+    - text: واچ‌لیست
+  - button "سیگنال AI":
+    - img
+    - text: سیگنال AI
+  - button "اسکنر":
+    - img
+    - text: اسکنر
+  - button "جزئیات":
+    - img
+    - text: جزئیات
+  - button "اخبار":
+    - img
+    - text: اخبار
+  - button "تقویم":
+    - img
+    - text: تقویم
+  - button "ترید":
+    - img
+    - text: ترید
+  - button "آلارم":
+    - img
+    - text: آلارم
+  - button "پیش‌فرض":
+    - text: پیش‌فرض
+    - img
+  - text: "5"
+  - button "افزودنِ نماد":
+    - img
+  - button "تنظیمِ ستون‌ها و شخصی‌سازی":
+    - img
+  - button "فیلترِ رنگِ red"
+  - button "فیلترِ رنگِ orange"
+  - button "فیلترِ رنگِ yellow"
+  - button "فیلترِ رنگِ green"
+  - button "فیلترِ رنگِ blue"
+  - button "فیلترِ رنگِ purple"
+  - button "فیلترِ رنگِ gray"
+  - button "نماد"
+  - button "آخرین"
+  - button "تغییر"
+  - button "تغییر٪"
+  - button "فارکس FOREX":
+    - img
+    - text: فارکس FOREX
+  - text: "4"
+  - button "انتخاب EUR/USD": EUR/USD 1.14267 +0.00222 +0.20٪
+  - button "پرچمِ تفکیک":
+    - img
+  - button "حذف از واچ‌لیست":
+    - img
+  - button "انتخاب GBP/USD": GBP/USD 1.33965 +0.00096 +0.07٪
+  - button "پرچمِ تفکیک":
+    - img
+  - button "حذف از واچ‌لیست":
+    - img
+  - button "انتخاب USD/JPY": USD/JPY 162.194 +0.316 +0.20٪
+  - button "پرچمِ تفکیک":
+    - img
+  - button "حذف از واچ‌لیست":
+    - img
+  - button "انتخاب USD/CHF": USD/CHF 0.80903 -0.00033 -0.04٪
+  - button "پرچمِ تفکیک":
+    - img
+  - button "حذف از واچ‌لیست":
+    - img
+  - button "فلزات METALS":
+    - img
+    - text: فلزات METALS
+  - text: "1"
+  - button "انتخاب XAU/USD": XAU/USD 4,053.93 +56.93 +1.42٪
+  - button "پرچمِ تفکیک":
+    - img
+  - button "حذف از واچ‌لیست":
+    - img
+  - button "جزئیاتِ نماد DETAILS":
+    - img
+    - text: جزئیاتِ نماد DETAILS
+    - img
+  - button "EURUSD"
+  - text: جفت‌ارز (فارکس) یورو / دلار آمریکا · FX
+  - button "مقایسه (تغییرِ نماد)":
+    - img
+  - button "ویرایشِ تنظیماتِ چارت":
+    - img
+  - button "کپیِ قیمت":
+    - img
+  - text: 1.14267 USD +0.00222 +0.20% بازار باز · آخرین به‌روزرسانی · 00:08 GMT
+  - img
+  - text: حقایقِ کلیدی Key facts یورو / دلار آمریکا از پرمعامله‌ترین جفت‌ارزهای بازارِ فارکس است و به‌صورتِ ۲۴ساعته از سیدنی تا نیویورک دادوستد می‌شود. بیشتر بخوانید ›
+  - link "اخبار News 2 دقیقه پیش خلاصه بازار فارکس آمریکا – ۱۴ ژوئیه ForexLive":
+    - /url: https://investinglive.com/news/investinglive-americas-fx-news-wrap-14-jul-cpi-lower-warsh-remains-cautious/
+  - text: امتیازِ تکنیکال Technical Rating
+  - button "چارت"
+  - button "5m"
+  - button "15m"
+  - button "1H"
+  - button "4H"
+  - button "1D"
+  - text: فروش خنثی خرید خرید 4 فروش 7 خنثی 15 خرید خریدِ قوی میانگین‌ها 2 · 0 · 13 خنثی نوسان‌گرها 2 · 7 · 2 بازهٔ روز 1.13788 1.14613 بازهٔ ۵۲ هفته 1.03793 1.20236 عملکرد Performance +0.20% 1D -0.50% 1W -1.89% 1M -3.60% 3M -2.07% 6M -3.12% YTD -3.02% 1Y آمارِ کلیدی Key stats بستهٔ روزِ قبل 1.14045 بازشدنِ روز 1.13837 حجمِ روز — میانگینِ حجم — مشخصاتِ معاملاتی Quote بید (Bid) 1.14262 اَسک (Ask) 1.14272 اسپرد 0.00010 دربارهٔ نماد About نماد EURUSD نوعِ ابزار جفت‌ارز (فارکس) ارزِ مظنه USD اندازهٔ قرارداد ۱۰۰٬۰۰۰ حداقلِ حرکتِ قیمت 0.00001 جلسهٔ معاملاتی سیدنی→نیویورک
+  - tablist:
+    - tab "واچ‌لیست" [selected]:
+      - img
+    - tab "آلارم‌ها":
+      - img
+    - tab "اسکنر":
+      - img
+    - tab "تقویمِ اقتصادی":
+      - img
+    - tab "اخبار":
+      - img
+    - tab "ایده‌ها و سیگنال":
+      - img

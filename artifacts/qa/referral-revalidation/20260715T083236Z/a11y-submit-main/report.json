@@ -1,0 +1,309 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/referral-compliance.spec.mjs"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "referral-compliance.spec.mjs",
+      "file": "referral-compliance.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 62060,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs",
+                        "column": 19,
+                        "line": 334
+                      },
+                      "message": "Error: browserContext.unroute: Target page, context or browser has been closed\n\n  332 |   } finally {\n  333 |     await popup?.close();\n> 334 |     await context.unroute(departurePattern, departureHandler);\n      |                   ^\n  335 |   }\n  336 |\n  337 |   const directProviderLinks = await surface.locator('a[href], form[action]').evaluateAll((elements, source) => elements\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs:334:19)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs:387:25"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:41:29.403Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/video-1.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c5871b8167204d4e6a9f-87db357db2acd5d31312",
+          "file": "referral-compliance.spec.mjs",
+          "line": 379,
+          "column": 3
+        },
+        {
+          "title": "REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "interrupted",
+                  "duration": 33741,
+                  "error": {
+                    "message": "Error: browserContext.unroute: Target page, context or browser has been closed",
+                    "stack": "Error: browserContext.unroute: Target page, context or browser has been closed\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs:334:19)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs:387:25",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs",
+                      "column": 19,
+                      "line": 334
+                    },
+                    "snippet": "  332 |   } finally {\n  333 |     await popup?.close();\n> 334 |     await context.unroute(departurePattern, departureHandler);\n      |                   ^\n  335 |   }\n  336 |\n  337 |   const directProviderLinks = await surface.locator('a[href], form[action]').evaluateAll((elements, source) => elements"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs",
+                        "column": 19,
+                        "line": 334
+                      },
+                      "message": "Error: browserContext.unroute: Target page, context or browser has been closed\n\n  332 |   } finally {\n  333 |     await popup?.close();\n> 334 |     await context.unroute(departurePattern, departureHandler);\n      |                   ^\n  335 |   }\n  336 |\n  337 |   const directProviderLinks = await surface.locator('a[href], form[action]').evaluateAll((elements, source) => elements\n    at assertReferralGate (/home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs:334:19)\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs:387:25"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T08:42:32.470Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/video-1.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/referral-revalidation/20260715T083236Z/a11y-submit-main/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs",
+                    "column": 19,
+                    "line": 334
+                  }
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "c5871b8167204d4e6a9f-38e0dea7ff83099a09e9",
+          "file": "referral-compliance.spec.mjs",
+          "line": 379,
+          "column": 3
+        },
+        {
+          "title": "REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "c5871b8167204d4e6a9f-6e24675e5edd618c603c",
+          "file": "referral-compliance.spec.mjs",
+          "line": 379,
+          "column": 3
+        },
+        {
+          "title": "REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "c5871b8167204d4e6a9f-b432fce6232abb07ea8a",
+          "file": "referral-compliance.spec.mjs",
+          "line": 379,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T08:41:28.515Z",
+    "duration": 98266.30099999999,
+    "expected": 0,
+    "skipped": 3,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

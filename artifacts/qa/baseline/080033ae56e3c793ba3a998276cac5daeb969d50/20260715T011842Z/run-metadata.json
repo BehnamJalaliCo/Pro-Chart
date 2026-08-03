@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "scope": "discarded host-run harness validation",
+  "evidenceStatus": "PRESERVED_NONCANONICAL_FAILURE",
+  "result": "FAIL_HARNESS_DNS_CONFIGURATION",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T011842Z",
+  "sourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "expected": 2,
+  "passed": 0,
+  "failed": 2,
+  "cause": "The host Chromium runner could not resolve prochart.local because the required explicit local host mapping was absent.",
+  "supersededBy": "artifacts/qa/baseline/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011904Z",
+  "qualification": "This failure is retained as harness evidence and is not a product result."
+}
