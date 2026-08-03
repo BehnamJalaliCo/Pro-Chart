@@ -1,0 +1,493 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/visual-reference.spec.mjs"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "visual-reference.spec.mjs",
+      "file": "visual-reference.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "VISUAL-REF: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "visual-approval",
+                  "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10169,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:10:25.829Z",
+                  "annotations": [
+                    {
+                      "type": "visual-approval",
+                      "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-desktop-chart-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-desktop-chart-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-1766ecb32cefb9687707",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: mobile-onboarding",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/visual-reference.spec.mjs",
+                    "line": 285,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 258,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:10:37.093Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/visual-reference.spec.mjs",
+                        "line": 285,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-9dd5ca32d5dda632cc52",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/visual-reference.spec.mjs",
+                    "line": 285,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 238,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:10:37.374Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/visual-reference.spec.mjs",
+                        "line": 285,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-chart-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-chart-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-2ba7fa1a0d7009b38ed6",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/work/qa/tests/visual-reference.spec.mjs",
+                    "line": 285,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 298,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:10:38.094Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/work/qa/tests/visual-reference.spec.mjs",
+                        "line": 285,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-desktop-chart-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-desktop-chart-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-629b7743ee4b951ef6d1",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: mobile-onboarding",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 19481,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'چارت حرفه‌ای' })\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'چارت حرفه‌ای' })\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'چارت حرفه‌ای' })\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'چارت حرفه‌ای' })\u001b[22m\n\n    at /work/qa/tests/visual-reference.spec.mjs:327:75",
+                    "location": {
+                      "file": "/work/qa/tests/visual-reference.spec.mjs",
+                      "column": 75,
+                      "line": 327
+                    },
+                    "snippet": "  325 |       await expect(page.locator('.pc-launch')).toHaveCount(0);\n  326 |       if (scenario.onboarding) {\n> 327 |         await expect(page.getByRole('heading', { name: 'چارت حرفه‌ای' })).toBeVisible();\n      |                                                                           ^\n  328 |         await expect(page.getByRole('button', { name: 'بعدی' })).toBeVisible();\n  329 |       } else {\n  330 |         await expect(page.locator('canvas').first()).toBeVisible();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/visual-reference.spec.mjs",
+                        "column": 75,
+                        "line": 327
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'چارت حرفه‌ای' })\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'چارت حرفه‌ای' })\u001b[22m\n\n\n  325 |       await expect(page.locator('.pc-launch')).toHaveCount(0);\n  326 |       if (scenario.onboarding) {\n> 327 |         await expect(page.getByRole('heading', { name: 'چارت حرفه‌ای' })).toBeVisible();\n      |                                                                           ^\n  328 |         await expect(page.getByRole('button', { name: 'بعدی' })).toBeVisible();\n  329 |       } else {\n  330 |         await expect(page.locator('canvas').first()).toBeVisible();\n    at /work/qa/tests/visual-reference.spec.mjs:327:75"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:10:38.528Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/visual-reference.spec.mjs",
+                    "column": 75,
+                    "line": 327
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-d322ed3f5fce9e189256",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "visual-approval",
+                  "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10730,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:10:59.212Z",
+                  "annotations": [
+                    {
+                      "type": "visual-approval",
+                      "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-chart-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001018Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-chart-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-7e6fe4c9ee24b482cdb2",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T00:10:25.406Z",
+    "duration": 45534.844999999994,
+    "expected": 2,
+    "skipped": 3,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

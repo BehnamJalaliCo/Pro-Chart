@@ -1,0 +1,16 @@
+
+Running 6 tests using 1 worker
+
+[1/6] [chromium-desktop] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: desktop-chart
+[2/6] [chromium-desktop] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-onboarding
+[3/6] [chromium-desktop] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-chart
+[4/6] [chromium-mobile] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: desktop-chart
+[5/6] [chromium-mobile] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-onboarding
+[6/6] [chromium-mobile] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-chart
+  3 skipped
+  3 passed (36.5s)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

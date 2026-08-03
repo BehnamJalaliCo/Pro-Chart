@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "scope": "final-current-source-visual-reference-capture-only",
+  "evidenceStatus": "CURRENT_FINAL",
+  "result": "CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T002402Z",
+  "pairedRunId": "20260715T002318Z",
+  "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+  "priorRequestedFingerprint": "0de4e70facc1e0d813235c0e2d0c64f059974fcdcdc06ff8df306552de3af5de",
+  "mode": "capture-only",
+  "approval": "PENDING_MANUAL_APPROVAL",
+  "goldenCreatedOrUpdated": false,
+  "approvedGoldenFiles": 0,
+  "harness": {
+    "path": "qa/tests/visual-reference.spec.mjs",
+    "sha256": "d79af335e0bac87bdb54af2de23c92e10affb8fbe414f4d8bb32c373f097c47d",
+    "fixtureSha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "qaOnlyLocatorHardening": "The onboarding heading is located by stable #pc-onboarding-title and intersected with the heading role; localized accessible-name wording is not hard-coded."
+  },
+  "build": {
+    "mode": "fresh isolated shipping-obfuscated production build",
+    "obfuscationBypassSet": false,
+    "javascriptSha256": "b71525f892f4a5f3a5a789d3899030653558eedc2bf8482f2d6d90d8a717aa48",
+    "cssSha256": "48846613e9d166f6f40b2324740e9fadbd8e4252d76979a647e899fdd676ce2f"
+  },
+  "playwright": {
+    "version": "1.61.0",
+    "retries": 0,
+    "expected": 3,
+    "skipped": 3,
+    "unexpected": 0,
+    "durationMs": 36495.854
+  },
+  "scenarios": {
+    "desktop-chart": {
+      "result": "CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL",
+      "candidateSha256": "2919f422173d330d5c8a330546fe2431f1a3a8dc55d0171ad92b028d4e01ec73",
+      "withinRunByteIdentical": true,
+      "crossRunByteIdentical": true
+    },
+    "mobile-onboarding": {
+      "result": "CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL",
+      "candidateSha256": "fc57b6ff3237b20978e4b5c7ac5ab91de26308784553bebe1b72e9d5f751e0eb",
+      "withinRunByteIdentical": true,
+      "crossRunByteIdentical": true
+    },
+    "mobile-chart": {
+      "result": "CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL",
+      "candidateSha256": "48aae1ce15fbb3043d5f986418590ed10194a54d02ec9f9656aeb2e78fb03afb",
+      "withinRunByteIdentical": true,
+      "crossRunByteIdentical": true
+    }
+  },
+  "network": {
+    "expectedOrigin": "http://prochart.local:4179",
+    "sourceOriginAsserted": true,
+    "unstubbedApiRequests": 0,
+    "unexpectedExternalRequests": 0,
+    "requestFailures": 0,
+    "httpErrorResponses": 0,
+    "pageErrors": 0
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "findings": 0,
+    "redactedReport": true
+  },
+  "fingerprintDifference": "Compared with 0de4e70..., the failed live-render experiment was reverted while mobile accessibility fixes remained; subsequent changes only added/tightened shipping header configuration in Dockerfile, nginx.conf, and security-headers.conf."
+}

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "evidenceType": "visual-determinism-capture-only",
+  "baseline": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "94dff33b4eaf949e2a0d4df83a931e34a528ccd9d03ad9ce6b40caf1cc03fc6a",
+  "runId": "20260714T233811Z",
+  "fixture": {
+    "id": "prochart-synthetic-market-v1",
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "fixedAt": "2026-07-14T12:34:56.000Z",
+    "provenance": "Fully synthetic QA data; no production or customer records."
+  },
+  "runnerImage": {
+    "reference": "mcr.microsoft.com/playwright:v1.61.0-noble",
+    "digest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a"
+  },
+  "execution": {
+    "testFile": "qa/tests/visual-reference.spec.mjs",
+    "mode": "capture-only",
+    "executedScenarioCount": 3,
+    "projectSkipCount": 3,
+    "failedScenarioCount": 0,
+    "result": "CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL",
+    "approval": "PENDING_MANUAL_APPROVAL"
+  },
+  "scenarios": [
+    {
+      "id": "desktop-chart",
+      "project": "chromium-desktop",
+      "candidateSha256": "26db76a58464c8060b2f4668b53e20e77d74badbc78ababddb1e2d1f79735e3f",
+      "withinRunStabilityProbeByteIdentical": true
+    },
+    {
+      "id": "mobile-onboarding",
+      "project": "chromium-mobile",
+      "candidateSha256": "78a851768c49d082a634e0e24acaa6cb76ea178e7ad512c193c81fa38c4a1ed1",
+      "withinRunStabilityProbeByteIdentical": true
+    },
+    {
+      "id": "mobile-chart",
+      "project": "chromium-mobile",
+      "candidateSha256": "f88493358ccaba69af9b236c876b34664df86eff9925b959402e2e60a5dee01f",
+      "withinRunStabilityProbeByteIdentical": true
+    }
+  ],
+  "crossRunReproduction": {
+    "peerRunId": "20260714T233908Z",
+    "allScenarioPngsByteIdentical": true
+  },
+  "networkAndRuntimeAssertions": {
+    "unstubbedApiRequests": 0,
+    "externalRequests": 0,
+    "failedRequests": 0,
+    "badResponses": 0,
+    "pageErrors": 0
+  },
+  "evidenceSealing": {
+    "sealedAt": "2026-07-14T23:53:29Z",
+    "scenarioEvidenceModifiedDuringSealing": false,
+    "originalPlaywrightStdoutAvailable": false,
+    "testLog": "test-log.txt",
+    "testLogProvenance": "Reconstructed from the existing scenario metadata; not represented as original runner stdout.",
+    "securityReport": "gitleaks.json",
+    "securityScanRetrospective": true,
+    "securityScanTarget": "qa",
+    "integrityManifest": "SHA256SUMS"
+  }
+}

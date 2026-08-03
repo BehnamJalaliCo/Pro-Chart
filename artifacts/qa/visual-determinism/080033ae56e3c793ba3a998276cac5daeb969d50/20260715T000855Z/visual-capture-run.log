@@ -1,0 +1,60 @@
+
+Running 6 tests using 1 worker
+
+[1/6] [chromium-desktop] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: desktop-chart
+[2/6] [chromium-desktop] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-onboarding
+[3/6] [chromium-desktop] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-chart
+[4/6] [chromium-mobile] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: desktop-chart
+[5/6] [chromium-mobile] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-onboarding
+  1) [chromium-mobile] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-onboarding ─────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'چارت حرفه‌ای' })
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for getByRole('heading', { name: 'چارت حرفه‌ای' })
+
+
+      325 |       await expect(page.locator('.pc-launch')).toHaveCount(0);
+      326 |       if (scenario.onboarding) {
+    > 327 |         await expect(page.getByRole('heading', { name: 'چارت حرفه‌ای' })).toBeVisible();
+          |                                                                           ^
+      328 |         await expect(page.getByRole('button', { name: 'بعدی' })).toBeVisible();
+      329 |       } else {
+      330 |         await expect(page.locator('canvas').first()).toBeVisible();
+        at /work/qa/tests/visual-reference.spec.mjs:327:75
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T000855Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T000855Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T000855Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T000855Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T000855Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[6/6] [chromium-mobile] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-chart
+  1 failed
+    [chromium-mobile] › tests/visual-reference.spec.mjs:284:3 › VISUAL-REF: mobile-onboarding ──────
+  3 skipped
+  2 passed (45.5s)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

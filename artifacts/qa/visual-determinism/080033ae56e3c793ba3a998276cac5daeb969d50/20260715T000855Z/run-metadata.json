@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "scope": "current-source-visual-reference-capture-only",
+  "evidenceStatus": "SUPERSEDED_DIAGNOSTIC",
+  "result": "SUPERSEDED_DIAGNOSTIC_FAILURE",
+  "superseded": true,
+  "supersededBy": ["20260715T001256Z", "20260715T001344Z"],
+  "supersessionReason": "A stale localized heading assertion omitted the Persian ezafe diacritic. The QA-only locator was replaced with the stable #pc-onboarding-title intersected with the heading role; frontend source was unchanged.",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T000855Z",
+  "pairedRunId": "20260715T001018Z",
+  "sourceFingerprint": "94cc980670bc7c6595f6a4ea8ec6f2c48beea1f01ad8f261ff6e11d535569c40",
+  "mode": "capture-only",
+  "approval": "PENDING_MANUAL_APPROVAL",
+  "goldenCreatedOrUpdated": false,
+  "playwright": { "retries": 0, "expected": 2, "skipped": 3, "unexpected": 1, "durationMs": 45476.484 },
+  "scenarios": {
+    "desktop-chart": { "result": "CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL", "candidateSha256": "2919f422173d330d5c8a330546fe2431f1a3a8dc55d0171ad92b028d4e01ec73", "withinRunByteIdentical": true, "crossRunByteIdentical": true },
+    "mobile-onboarding": { "result": "FAIL", "candidateSha256": null, "failureScreenshotSha256": "fc57b6ff3237b20978e4b5c7ac5ab91de26308784553bebe1b72e9d5f751e0eb", "crossRunFailureScreenshotByteIdentical": true, "reason": "The test expected heading name 'چارت حرفه‌ای', while the captured accessible heading is 'چارتِ حرفه‌ای'. No candidate was promoted or approved." },
+    "mobile-chart": { "result": "CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL", "candidateSha256": "48aae1ce15fbb3043d5f986418590ed10194a54d02ec9f9656aeb2e78fb03afb", "withinRunByteIdentical": true, "crossRunByteIdentical": true }
+  },
+  "network": { "unstubbedApiRequests": 0, "unexpectedExternalRequests": 0, "requestFailures": 0, "httpErrorResponses": 0, "pageErrors": 0 },
+  "gitleaks": { "version": "8.30.1", "findings": 0, "redactedReport": true }
+}

@@ -1,0 +1,469 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/visual-reference.spec.mjs"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "visual-reference.spec.mjs",
+      "file": "visual-reference.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "VISUAL-REF: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "visual-approval",
+                  "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10330,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:13:06.493Z",
+                  "annotations": [
+                    {
+                      "type": "visual-approval",
+                      "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-desktop-chart-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-desktop-chart-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-1766ecb32cefb9687707",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: mobile-onboarding",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/visual-reference.spec.mjs",
+                    "line": 285,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 274,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:13:17.881Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/visual-reference.spec.mjs",
+                        "line": 285,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-9dd5ca32d5dda632cc52",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/visual-reference.spec.mjs",
+                    "line": 285,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 266,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:13:18.177Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/visual-reference.spec.mjs",
+                        "line": 285,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-chart-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-chart-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-2ba7fa1a0d7009b38ed6",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/work/qa/tests/visual-reference.spec.mjs",
+                    "line": 285,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 278,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:13:18.917Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/work/qa/tests/visual-reference.spec.mjs",
+                        "line": 285,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-desktop-chart-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-desktop-chart-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-629b7743ee4b951ef6d1",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: mobile-onboarding",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "visual-approval",
+                  "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10204,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:13:19.356Z",
+                  "annotations": [
+                    {
+                      "type": "visual-approval",
+                      "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-onboarding-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-d322ed3f5fce9e189256",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        },
+        {
+          "title": "VISUAL-REF: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "visual-approval",
+                  "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10317,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T00:13:30.034Z",
+                  "annotations": [
+                    {
+                      "type": "visual-approval",
+                      "description": "PENDING_MANUAL_APPROVAL: capture-only evidence is not a golden snapshot."
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-chart-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/visual-determinism/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001256Z/playwright/test-results/visual-reference-VISUAL-REF-mobile-chart-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "42b246aa69fcc423a7c9-7e6fe4c9ee24b482cdb2",
+          "file": "visual-reference.spec.mjs",
+          "line": 284,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T00:13:06.071Z",
+    "duration": 35132.376000000004,
+    "expected": 3,
+    "skipped": 3,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

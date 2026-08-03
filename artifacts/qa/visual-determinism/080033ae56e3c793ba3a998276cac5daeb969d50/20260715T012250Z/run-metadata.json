@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "scope": "paired frozen-current-source visual capture",
+  "evidenceStatus": "CURRENT_CANDIDATE",
+  "result": "CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T012250Z",
+  "pairedRunId": "20260715T012203Z",
+  "sourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "playwright": {
+    "version": "1.61.0",
+    "runnerDigest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+    "expected": 3,
+    "intentionalProjectSkips": 3,
+    "unexpected": 0,
+    "flaky": 0,
+    "retries": 0,
+    "durationMs": 34850.224
+  },
+  "scenarios": {
+    "desktop-chart": "70b5e2fe9b408403d326691b57e471da52797cc5f8d4aad716c4e4d8568af631",
+    "mobile-onboarding": "fc57b6ff3237b20978e4b5c7ac5ab91de26308784553bebe1b72e9d5f751e0eb",
+    "mobile-chart": "48aae1ce15fbb3043d5f986418590ed10194a54d02ec9f9656aeb2e78fb03afb"
+  },
+  "withinRunByteIdentical": true,
+  "crossRunByteIdentical": true,
+  "approvedGoldenFiles": 0,
+  "approval": "PENDING_MANUAL_APPROVAL",
+  "network": {
+    "unstubbedApiRequests": 0,
+    "unexpectedExternalRequests": 0,
+    "requestFailures": 0,
+    "httpErrors": 0,
+    "pageErrors": 0
+  },
+  "qualification": "No golden was created or updated; deterministic capture is not manual visual approval.",
+  "sealedAtUtc": "2026-07-15T01:28:45Z"
+}

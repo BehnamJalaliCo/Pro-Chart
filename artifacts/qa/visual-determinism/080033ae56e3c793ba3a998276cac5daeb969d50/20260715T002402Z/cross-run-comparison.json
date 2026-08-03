@@ -1,0 +1,24 @@
+{
+  "result": "ALL_CURRENT_SOURCE_CANDIDATES_BYTE_IDENTICAL",
+  "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+  "runA": "20260715T002318Z",
+  "runB": "20260715T002402Z",
+  "goldenCreatedOrUpdated": false,
+  "scenarios": {
+    "desktop-chart": {
+      "runASha256": "2919f422173d330d5c8a330546fe2431f1a3a8dc55d0171ad92b028d4e01ec73",
+      "runBSha256": "2919f422173d330d5c8a330546fe2431f1a3a8dc55d0171ad92b028d4e01ec73",
+      "byteIdentical": true
+    },
+    "mobile-onboarding": {
+      "runASha256": "fc57b6ff3237b20978e4b5c7ac5ab91de26308784553bebe1b72e9d5f751e0eb",
+      "runBSha256": "fc57b6ff3237b20978e4b5c7ac5ab91de26308784553bebe1b72e9d5f751e0eb",
+      "byteIdentical": true
+    },
+    "mobile-chart": {
+      "runASha256": "48aae1ce15fbb3043d5f986418590ed10194a54d02ec9f9656aeb2e78fb03afb",
+      "runBSha256": "48aae1ce15fbb3043d5f986418590ed10194a54d02ec9f9656aeb2e78fb03afb",
+      "byteIdentical": true
+    }
+  }
+}

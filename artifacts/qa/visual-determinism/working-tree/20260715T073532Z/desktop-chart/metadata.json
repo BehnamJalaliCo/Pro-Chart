@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "requirementIds": [
+    "PC-002",
+    "PC-009",
+    "PC-146",
+    "PC-153"
+  ],
+  "scenario": "desktop-chart",
+  "project": "chromium-desktop",
+  "commit": "working-tree",
+  "sourceFingerprint": "unrecorded",
+  "runId": "20260715T073532Z",
+  "fixture": {
+    "id": "prochart-synthetic-market-v1",
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "fixedAt": "2026-07-14T12:34:56.000Z",
+    "provenance": "Fully synthetic QA data; no production or customer records."
+  },
+  "mode": "approved-golden-gate",
+  "approval": "APPROVED_GOLDEN_REQUIRED",
+  "approvedPath": "/home/bazaarnama/Pro-Chart/app/qa/tests/visual-reference.spec.mjs-snapshots/approved/desktop-chart-chromium-desktop-linux.png",
+  "result": "FAIL",
+  "failure": "Error: Approved visual snapshot is missing: /home/bazaarnama/Pro-Chart/app/qa/tests/visual-reference.spec.mjs-snapshots/approved/desktop-chart-chromium-desktop-linux.png. Run explicit capture-only mode, review the candidate, and approve manually before enabling this gate.\n    at file:///home/bazaarnama/Pro-Chart/app/qa/tests/visual-reference.spec.mjs:382:17\n    at /home/bazaarnama/Pro-Chart/app/qa/node_modules/playwright/lib/worker/workerProcessEntry.js:1662:9\n    at /home/bazaarnama/Pro-Chart/app/qa/node_modules/playwright/lib/worker/workerProcessEntry.js:1154:11\n    at TimeoutManager.withRunnable (/home/bazaarnama/Pro-Chart/app/qa/node_modules/playwright/lib/worker/workerProcessEntry.js:425:14)\n    at TestInfoImpl._runWithTimeout (/home/bazaarnama/Pro-Chart/app/qa/node_modules/playwright/lib/worker/workerProcessEntry.js:1152:7)\n    at /home/bazaarnama/Pro-Chart/app/qa/node_modules/playwright/lib/worker/workerProcessEntry.js:1660:7\n    at WorkerMain._runTest (/home/bazaarnama/Pro-Chart/app/qa/node_modules/playwright/lib/worker/workerProcessEntry.js:1633:5)\n    at WorkerMain.runTestGroup (/home/bazaarnama/Pro-Chart/app/qa/node_modules/playwright/lib/worker/workerProcessEntry.js:1528:9)\n    at process.<anonymous> (/home/bazaarnama/Pro-Chart/app/qa/node_modules/playwright/lib/common/index.js:1990:25)",
+  "viewport": {
+    "width": 1440,
+    "height": 900,
+    "dpr": 1,
+    "lang": "fa",
+    "dir": "rtl"
+  },
+  "fonts": {
+    "status": "loaded",
+    "faces": [
+      "400 12px \"IRANYekanX\"",
+      "600 12px \"IRANYekanX\"",
+      "700 12px \"IRANYekanX\"",
+      "800 12px \"IRANYekanX\"",
+      "400 12px \"Ravagh\"",
+      "600 12px \"Ravagh\"",
+      "800 12px \"Ravagh\"",
+      "400 12px \"AnjomanMax\"",
+      "600 12px \"AnjomanMax\"",
+      "400 12px \"Vazirmatn\""
+    ]
+  },
+  "screenshots": {
+    "candidateSha256": "e3f66b940967bf0f5660d28cd90cdbf810204389b2e74f78baf88fffe2a2f15e",
+    "stabilityProbeSha256": "e3f66b940967bf0f5660d28cd90cdbf810204389b2e74f78baf88fffe2a2f15e",
+    "byteIdentical": true
+  },
+  "network": {
+    "apiRequests": [
+      {
+        "method": "POST",
+        "pathname": "/api/academy/auth/bn-guest",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/news",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/me",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/quota",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/symbols",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/watchlist",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/scripts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/layouts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/alerts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/GBPUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/USDJPY",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/USDCHF",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/XAUUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "before",
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      }
+    ],
+    "mocked": [
+      "POST /api/academy/auth/bn-guest",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/news",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/me",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/ai-signal/quota",
+      "GET /api/academy/bn/ai-signal/active",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/chart/symbols",
+      "GET /api/academy/bn/watchlist",
+      "GET /api/academy/bn/scripts",
+      "GET /api/academy/bn/layouts",
+      "GET /api/academy/bn/alerts",
+      "GET /api/academy/bn/ai-signal/active",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/chart/GBPUSD",
+      "GET /api/academy/chart/USDJPY",
+      "GET /api/academy/chart/USDCHF",
+      "GET /api/academy/chart/XAUUSD",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices"
+    ],
+    "mockedWebSockets": [],
+    "unstubbed": [],
+    "unexpectedExternal": [],
+    "requestFailures": [],
+    "badResponses": []
+  },
+  "pageErrors": []
+}

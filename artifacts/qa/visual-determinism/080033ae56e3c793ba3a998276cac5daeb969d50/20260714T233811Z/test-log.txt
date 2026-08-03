@@ -1,0 +1,13 @@
+RECONSTRUCTED EVIDENCE LOG — original Playwright stdout was not retained
+run: 20260714T233811Z
+baseline commit: 080033ae56e3c793ba3a998276cac5daeb969d50
+mode: capture-only
+
+CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL desktop-chart chromium-desktop sha256=26db76a58464c8060b2f4668b53e20e77d74badbc78ababddb1e2d1f79735e3f
+CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL mobile-onboarding chromium-mobile sha256=78a851768c49d082a634e0e24acaa6cb76ea178e7ad512c193c81fa38c4a1ed1
+CAPTURE_ONLY_PASS_PENDING_MANUAL_APPROVAL mobile-chart chromium-mobile sha256=f88493358ccaba69af9b236c876b34664df86eff9925b959402e2e60a5dee01f
+
+aggregate: 3 scenario executions passed capture-only assertions; 3 project-mismatch cases skipped
+network/runtime assertions: 0 unstubbed API, 0 external, 0 failed request, 0 HTTP >=400, 0 page error
+approval status: PENDING_MANUAL_APPROVAL; these captures are not approved goldens
+cross-run reproduction: all three PNGs are byte-identical to run 20260714T233908Z

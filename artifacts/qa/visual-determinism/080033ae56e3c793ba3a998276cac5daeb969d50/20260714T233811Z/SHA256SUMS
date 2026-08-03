@@ -1,0 +1,9 @@
+26db76a58464c8060b2f4668b53e20e77d74badbc78ababddb1e2d1f79735e3f  ./desktop-chart/actual.png
+15c08e3e833d3248a77b7f0b31b95b289c5fe41ac6041d5bf16963d70c46e33a  ./desktop-chart/metadata.json
+37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570  ./gitleaks.json
+f88493358ccaba69af9b236c876b34664df86eff9925b959402e2e60a5dee01f  ./mobile-chart/actual.png
+c618cac11bee25a3866fb74d4fa2049ff513f809496a7a3d3fd7b56dc316a390  ./mobile-chart/metadata.json
+78a851768c49d082a634e0e24acaa6cb76ea178e7ad512c193c81fa38c4a1ed1  ./mobile-onboarding/actual.png
+1e57fa0b0d39b6e051d65d616729d51a4ccfe1170333ca27e21b291e47eb4dc3  ./mobile-onboarding/metadata.json
+31b1fa89430cdabbdd42685062a016eece87cf4f76af57f00141298debae8d46  ./run-metadata.json
+37e485d33db1e72f66003c6d12f781656eaf2982e8af9206c3f819453c7a8375  ./test-log.txt

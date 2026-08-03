@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "runA": "20260715T012203Z",
+  "runB": "20260715T012250Z",
+  "sourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "allScenariosByteIdentical": true,
+  "comparisons": [
+    {
+      "scenario": "desktop-chart",
+      "runASha256": "70b5e2fe9b408403d326691b57e471da52797cc5f8d4aad716c4e4d8568af631",
+      "runBSha256": "70b5e2fe9b408403d326691b57e471da52797cc5f8d4aad716c4e4d8568af631",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "mobile-onboarding",
+      "runASha256": "fc57b6ff3237b20978e4b5c7ac5ab91de26308784553bebe1b72e9d5f751e0eb",
+      "runBSha256": "fc57b6ff3237b20978e4b5c7ac5ab91de26308784553bebe1b72e9d5f751e0eb",
+      "byteIdentical": true
+    },
+    {
+      "scenario": "mobile-chart",
+      "runASha256": "48aae1ce15fbb3043d5f986418590ed10194a54d02ec9f9656aeb2e78fb03afb",
+      "runBSha256": "48aae1ce15fbb3043d5f986418590ed10194a54d02ec9f9656aeb2e78fb03afb",
+      "byteIdentical": true
+    }
+  ],
+  "approval": "PENDING_MANUAL_APPROVAL",
+  "goldenCreatedOrUpdated": false
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "requirementIds": [
+    "PC-002",
+    "PC-009",
+    "PC-146",
+    "PC-153"
+  ],
+  "scenario": "desktop-chart",
+  "project": "chromium-desktop",
+  "commit": "working-tree",
+  "sourceFingerprint": "unrecorded",
+  "runId": "20260716T000000Z-capture",
+  "fixture": {
+    "id": "prochart-synthetic-market-v1",
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "fixedAt": "2026-07-14T12:34:56.000Z",
+    "provenance": "Fully synthetic QA data; no production or customer records."
+  },
+  "mode": "capture-only",
+  "approval": "PENDING_MANUAL_APPROVAL",
+  "approvedPath": "/home/bazaarnama/Pro-Chart/app/qa/tests/visual-reference.spec.mjs-snapshots/approved/desktop-chart-chromium-desktop-linux.png",
+  "result": "FAIL",
+  "failure": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('canvas').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('canvas').first()\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/visual-reference.spec.mjs:332:54",
+  "viewport": null,
+  "fonts": null,
+  "screenshots": {
+    "candidateSha256": null,
+    "stabilityProbeSha256": null,
+    "byteIdentical": false
+  },
+  "network": {
+    "apiRequests": [],
+    "mocked": [],
+    "mockedWebSockets": [],
+    "unstubbed": [],
+    "unexpectedExternal": [
+      {
+        "method": "GET",
+        "origin": "https://pro-chart.com",
+        "pathname": "/"
+      }
+    ],
+    "requestFailures": [
+      {
+        "method": "GET",
+        "pathname": "/",
+        "queryKeys": [],
+        "resourceType": "document",
+        "error": "net::ERR_BLOCKED_BY_CLIENT"
+      }
+    ],
+    "badResponses": []
+  },
+  "pageErrors": []
+}
