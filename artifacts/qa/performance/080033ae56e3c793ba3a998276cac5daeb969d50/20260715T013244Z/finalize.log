@@ -1,0 +1,8 @@
+file:///home/bazaarnama/Pro-Chart/app/qa/scripts/finalize-performance-evidence.mjs:149
+if (!overallPass) throw new Error('Performance evidence contains a failed sample or aggregate gate');
+                        ^
+
+Error: Performance evidence contains a failed sample or aggregate gate
+    at file:///home/bazaarnama/Pro-Chart/app/qa/scripts/finalize-performance-evidence.mjs:149:25
+
+Node.js v20.20.2

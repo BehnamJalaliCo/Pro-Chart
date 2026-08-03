@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "runId": "20260715T024448Z",
+  "environment": "production",
+  "service": "api",
+  "oldContainerId": "b09eec5b6da9d5438a28e97a3e45f7c21cd7756734dbcbe1093b5826a0d01487",
+  "oldImageId": "sha256:5b3b6ee9648f030b88e085c4ee956c55fb851d535ee61b1378976479ac991582",
+  "candidateImageId": "sha256:d703a78a20c5f1d331947dba765de0f64ec0797f81f42412fb2b0ffeeefea3aa",
+  "rollbackTag": "prochart-api:rollback-20260715T024448Z",
+  "newContainerId": "ead82789f8e72fc53f6231e3212c59462e945d304edafc8272ae20b9535aaf26",
+  "newImageId": "sha256:d703a78a20c5f1d331947dba765de0f64ec0797f81f42412fb2b0ffeeefea3aa",
+  "health": "healthy",
+  "result": "PASS"
+}

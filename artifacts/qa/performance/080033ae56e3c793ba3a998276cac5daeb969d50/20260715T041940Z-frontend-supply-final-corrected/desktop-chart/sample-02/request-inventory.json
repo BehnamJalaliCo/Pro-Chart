@@ -1,0 +1,163 @@
+[
+  {
+    "method": "GET",
+    "pathname": "/",
+    "queryKeys": [],
+    "resourceType": "document",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 476,
+      "responseBodySize": 2645,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089194501.3062,
+      "domainLookupStart": 16.321,
+      "domainLookupEnd": 16.353,
+      "connectStart": 16.353,
+      "secureConnectionStart": 16.603,
+      "connectEnd": 19.177,
+      "requestStart": 19.585,
+      "responseStart": 21.065,
+      "responseEnd": 27.712
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/iranyekanx.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 384,
+      "responseBodySize": 1234,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089194548.6838,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.754,
+      "responseStart": 1.841,
+      "responseEnd": 23.122
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/ravagh.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 380,
+      "responseBodySize": 1285,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089194548.783,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.698,
+      "responseStart": 3.635,
+      "responseEnd": 24.36
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/anjoman.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 381,
+      "responseBodySize": 1240,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089194558.5007,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.311,
+      "responseStart": 3.047,
+      "responseEnd": 34.565
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/vazirmatn.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 383,
+      "responseBodySize": 1224,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089194558.676,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.241,
+      "responseStart": 3.032,
+      "responseEnd": 35.208
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/assets/index-BDC3pT6H.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 422,
+      "responseBodySize": 19748,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089194558.867,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.134,
+      "responseStart": 3.15,
+      "responseEnd": 36.257
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/assets/index-Cv9sgCx6.js",
+    "queryKeys": [],
+    "resourceType": "script",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 406,
+      "responseBodySize": 889115,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089194558.771,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.368,
+      "responseStart": 5.636,
+      "responseEnd": 59.593
+    }
+  }
+]

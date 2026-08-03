@@ -1,0 +1,3 @@
+services:
+  user-frontend:
+    image: prochart-user:deploy-referral-a11y-20260715T084924Z

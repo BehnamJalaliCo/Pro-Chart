@@ -1,0 +1,81 @@
+diff --git a/docker-compose.prochart.yml b/docker-compose.prochart.yml
+index d588d62..41213bc 100644
+--- a/docker-compose.prochart.yml
++++ b/docker-compose.prochart.yml
+@@ -131,9 +131,7 @@ services:
+       - "127.0.0.1:8000:8000"
+     volumes:
+       - ./logs:/app/logs
+-      - ./ml_models:/app/ml_models
+-      - ./scripts:/app/scripts
+-      - ./alembic:/app/alembic
++      - ./ml_models:/app/ml_models:ro
+       - ./secrets:/app/secrets:ro
+     deploy:
+       resources:
+@@ -141,7 +139,7 @@ services:
+           memory: 2G
+           cpus: '2'
+     healthcheck:
+-      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
++      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).read()"]
+       interval: 15s
+       timeout: 5s
+       retries: 5
+@@ -164,6 +162,8 @@ services:
+       - ./nginx/panel.conf:/etc/nginx/conf.d/panel.conf:ro
+       # پنلِ کاربری (user.pro-chart.com)
+       - ./nginx/user-panel.conf:/etc/nginx/conf.d/user-panel.conf:ro
++      # مرز امنیتی مشترک و محدود برای هر دو پرتال
++      - ./nginx/portal-security-boundary.conf:/etc/nginx/portal-security-boundary.conf:ro
+     deploy:
+       resources:
+         limits:
+diff --git a/nginx/panel.conf b/nginx/panel.conf
+index 830aca8..6229607 100644
+--- a/nginx/panel.conf
++++ b/nginx/panel.conf
+@@ -7,6 +7,8 @@ server {
+     listen 80;
+     server_name panel.pro-chart.com;
+ 
++    include /etc/nginx/portal-security-boundary.conf;
++
+     location /.well-known/acme-challenge/ { root /var/www/certbot; }
+ 
+     resolver 127.0.0.11 valid=10s ipv6=off;
+@@ -43,10 +45,7 @@ server {
+     ssl_protocols TLSv1.2 TLSv1.3;
+     ssl_ciphers HIGH:!aNULL:!MD5;
+ 
+-    add_header Strict-Transport-Security "max-age=31536000" always;
+-    add_header X-Frame-Options "SAMEORIGIN" always;
+-    add_header X-Content-Type-Options "nosniff" always;
+-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
++    include /etc/nginx/portal-security-boundary.conf;
+ 
+     resolver 127.0.0.11 valid=10s ipv6=off;
+     client_max_body_size 12m;
+diff --git a/nginx/user-panel.conf b/nginx/user-panel.conf
+index 5f4c8f6..249af99 100644
+--- a/nginx/user-panel.conf
++++ b/nginx/user-panel.conf
+@@ -6,6 +6,7 @@
+ server {
+     listen 80;
+     server_name user.pro-chart.com;
++    include /etc/nginx/portal-security-boundary.conf;
+     location /.well-known/acme-challenge/ { root /var/www/certbot; }
+     resolver 127.0.0.11 valid=10s ipv6=off;
+     client_max_body_size 12m;
+@@ -38,9 +39,7 @@ server {
+     ssl_protocols TLSv1.2 TLSv1.3;
+     ssl_ciphers HIGH:!aNULL:!MD5;
+ 
+-    add_header Strict-Transport-Security "max-age=31536000" always;
+-    add_header X-Content-Type-Options "nosniff" always;
+-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
++    include /etc/nginx/portal-security-boundary.conf;
+ 
+     resolver 127.0.0.11 valid=10s ipv6=off;
+     client_max_body_size 12m;

@@ -1,0 +1,1740 @@
+{
+  "schemaVersion": 1,
+  "requirementIds": [
+    "PC-138",
+    "PC-140",
+    "PC-141"
+  ],
+  "scenario": "desktop-chart",
+  "sampleId": "sample-02",
+  "project": "chromium-desktop",
+  "baseline": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "0de4e70facc1e0d813235c0e2d0c64f059974fcdcdc06ff8df306552de3af5de",
+  "runId": "20260715T000400Z",
+  "result": "FAIL",
+  "failure": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": 4220,\u001b[39m\n\u001b[31m+     \"evidence\": \"lab regression\",\u001b[39m\n\u001b[31m+     \"metric\": \"labLcpMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<=\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 2500,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": 21,\u001b[39m\n\u001b[31m+     \"evidence\": \"active-chart rAF interval proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"activeChartFrameP95Ms\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 20,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /work/qa/tests/performance-baseline.spec.mjs:741:79",
+  "fixture": {
+    "id": "prochart-synthetic-market-v1",
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "fixedAt": "2026-07-14T12:34:56.000Z",
+    "provenance": "Fully synthetic QA data; no production or customer records."
+  },
+  "methodology": {
+    "classification": "deterministic Chromium lab regression",
+    "fieldCoreWebVitalsEquivalent": false,
+    "fieldEquivalenceWarning": "These synthetic, unthrottled, local Chromium observations are not RUM and are not a field p75 Core Web Vitals result.",
+    "sampleFrameCount": 120,
+    "observerWindowEndsAfterFrameSampling": true
+  },
+  "metrics": {
+    "navigation": {
+      "startTime": 0,
+      "fetchStart": 0.2,
+      "requestStart": 7.3,
+      "responseStart": 7.8,
+      "responseEnd": 9.3,
+      "domInteractive": 18.4,
+      "domContentLoadedEventEnd": 3857.2,
+      "loadEventEnd": 3857.5,
+      "duration": 3857.5,
+      "ttfbFromRequestStartMs": 0.5,
+      "ttfbFromFetchStartMs": 7.6,
+      "transferSize": 5890,
+      "encodedBodySize": 5590,
+      "decodedBodySize": 5590,
+      "type": "navigate"
+    },
+    "paints": {
+      "first-paint": 4008,
+      "first-contentful-paint": 4132
+    },
+    "webVitalLabObservations": {
+      "lcpMs": 4220,
+      "lcpEntry": {
+        "startTime": 4220,
+        "renderTime": 4220,
+        "loadTime": 3925.0999999046326,
+        "size": 13310,
+        "id": null,
+        "pathname": "/logo.png",
+        "element": "img.pc-launch__logo"
+      },
+      "cls": 0.072,
+      "totalLayoutShift": 0.072,
+      "layoutShifts": [
+        {
+          "startTime": 4157.700000047684,
+          "duration": 0,
+          "value": 0.0005301997599451302,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": "div.flex.items-center.gap-0.5",
+              "previousRect": {
+                "x": 965.234375,
+                "y": 6,
+                "width": 242,
+                "height": 38,
+                "top": 6,
+                "right": 1207.234375,
+                "bottom": 44,
+                "left": 965.234375
+              },
+              "currentRect": {
+                "x": 957.34375,
+                "y": 6,
+                "width": 242,
+                "height": 38,
+                "top": 6,
+                "right": 1199.34375,
+                "bottom": 44,
+                "left": 957.34375
+              }
+            },
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1145,
+                "y": 157.5,
+                "width": 255,
+                "height": 14,
+                "top": 157.5,
+                "right": 1400,
+                "bottom": 171.5,
+                "left": 1145
+              },
+              "currentRect": {
+                "x": 1145,
+                "y": 156.5,
+                "width": 255,
+                "height": 14,
+                "top": 156.5,
+                "right": 1400,
+                "bottom": 170.5,
+                "left": 1145
+              }
+            },
+            {
+              "node": "button.group/tab.relative.shrink-0",
+              "previousRect": {
+                "x": 1223.53125,
+                "y": 49,
+                "width": 79.46875,
+                "height": 32.5,
+                "top": 49,
+                "right": 1303,
+                "bottom": 81.5,
+                "left": 1223.53125
+              },
+              "currentRect": {
+                "x": 1240,
+                "y": 49,
+                "width": 83,
+                "height": 32.5,
+                "top": 49,
+                "right": 1323,
+                "bottom": 81.5,
+                "left": 1240
+              }
+            },
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 886.0625,
+                "width": 231,
+                "height": 13.9375,
+                "top": 886.0625,
+                "right": 1388,
+                "bottom": 900,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 1157,
+                "y": 889.0625,
+                "width": 231,
+                "height": 10.9375,
+                "top": 889.0625,
+                "right": 1388,
+                "bottom": 900,
+                "left": 1157
+              }
+            },
+            {
+              "node": "button.group/tab.relative.shrink-0",
+              "previousRect": {
+                "x": 1163.53125,
+                "y": 49,
+                "width": 60,
+                "height": 32.5,
+                "top": 49,
+                "right": 1223.53125,
+                "bottom": 81.5,
+                "left": 1163.53125
+              },
+              "currentRect": {
+                "x": 1176,
+                "y": 49,
+                "width": 64,
+                "height": 32.5,
+                "top": 49,
+                "right": 1240,
+                "bottom": 81.5,
+                "left": 1176
+              }
+            }
+          ]
+        },
+        {
+          "startTime": 4197.799999952316,
+          "duration": 0,
+          "value": 0.00003864133230452675,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": "div.ml-auto.relative",
+              "previousRect": {
+                "x": 1077,
+                "y": 877.25,
+                "width": 59,
+                "height": 16.5,
+                "top": 877.25,
+                "right": 1136,
+                "bottom": 893.75,
+                "left": 1077
+              },
+              "currentRect": {
+                "x": 1035,
+                "y": 877.25,
+                "width": 101,
+                "height": 16.5,
+                "top": 877.25,
+                "right": 1136,
+                "bottom": 893.75,
+                "left": 1035
+              }
+            }
+          ]
+        },
+        {
+          "startTime": 4258.599999904633,
+          "duration": 0,
+          "value": 0.018001374873408565,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": "div.rounded-lg.p-2.5.mb-1",
+              "previousRect": {
+                "x": 1157,
+                "y": 361,
+                "width": 231,
+                "height": 120.0625,
+                "top": 361,
+                "right": 1388,
+                "bottom": 481.0625,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 1157,
+                "y": 425,
+                "width": 231,
+                "height": 120.0625,
+                "top": 425,
+                "right": 1388,
+                "bottom": 545.0625,
+                "left": 1157
+              }
+            },
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 608.0625,
+                "width": 231,
+                "height": 117,
+                "top": 608.0625,
+                "right": 1388,
+                "bottom": 725.0625,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            },
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 762.0625,
+                "width": 231,
+                "height": 90,
+                "top": 762.0625,
+                "right": 1388,
+                "bottom": 852.0625,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            },
+            {
+              "node": "div.flex.items-center.gap-1.5",
+              "previousRect": {
+                "x": 1157,
+                "y": 333,
+                "width": 231,
+                "height": 16,
+                "top": 333,
+                "right": 1388,
+                "bottom": 349,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 1157,
+                "y": 353,
+                "width": 231,
+                "height": 16,
+                "top": 353,
+                "right": 1388,
+                "bottom": 369,
+                "left": 1157
+              }
+            },
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 889.0625,
+                "width": 231,
+                "height": 10.9375,
+                "top": 889.0625,
+                "right": 1388,
+                "bottom": 900,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            }
+          ]
+        },
+        {
+          "startTime": 4322.5,
+          "duration": 0,
+          "value": 0.05294165809327847,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": "div.mt-2.border-t",
+              "previousRect": {
+                "x": 1145,
+                "y": 204,
+                "width": 255,
+                "height": 696,
+                "top": 204,
+                "right": 1400,
+                "bottom": 900,
+                "left": 1145
+              },
+              "currentRect": {
+                "x": 1145,
+                "y": 399.5,
+                "width": 255,
+                "height": 500.5,
+                "top": 399.5,
+                "right": 1400,
+                "bottom": 900,
+                "left": 1145
+              }
+            },
+            {
+              "node": "div.grid.grid-cols-3.gap-1.5",
+              "previousRect": {
+                "x": 1157,
+                "y": 756.453125,
+                "width": 231,
+                "height": 143.546875,
+                "top": 756.453125,
+                "right": 1388,
+                "bottom": 900,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            },
+            {
+              "node": "div.flex.items-center.gap-0.5",
+              "previousRect": {
+                "x": 957.34375,
+                "y": 6,
+                "width": 242,
+                "height": 38,
+                "top": 6,
+                "right": 1199.34375,
+                "bottom": 44,
+                "left": 957.34375
+              },
+              "currentRect": {
+                "x": 952,
+                "y": 6,
+                "width": 242,
+                "height": 38,
+                "top": 6,
+                "right": 1194,
+                "bottom": 44,
+                "left": 952
+              }
+            },
+            {
+              "node": "div.absolute.z-20.pointer-events-none",
+              "previousRect": {
+                "x": 1055,
+                "y": 813.5,
+                "width": 80,
+                "height": 32.5,
+                "top": 813.5,
+                "right": 1135,
+                "bottom": 846,
+                "left": 1055
+              },
+              "currentRect": {
+                "x": 1065,
+                "y": 461,
+                "width": 80,
+                "height": 32.5,
+                "top": 461,
+                "right": 1145,
+                "bottom": 493.5,
+                "left": 1065
+              }
+            },
+            {
+              "node": "div.relative",
+              "previousRect": {
+                "x": 522.34375,
+                "y": 10,
+                "width": 69,
+                "height": 28,
+                "top": 10,
+                "right": 591.34375,
+                "bottom": 38,
+                "left": 522.34375
+              },
+              "currentRect": {
+                "x": 517,
+                "y": 10,
+                "width": 69,
+                "height": 28,
+                "top": 10,
+                "right": 586,
+                "bottom": 38,
+                "left": 517
+              }
+            }
+          ]
+        },
+        {
+          "startTime": 4367.200000047684,
+          "duration": 0,
+          "value": 0.000007801783264746227,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1193,
+                "y": 266.5,
+                "width": 40,
+                "height": 13,
+                "top": 266.5,
+                "right": 1233,
+                "bottom": 279.5,
+                "left": 1193
+              },
+              "currentRect": {
+                "x": 1193,
+                "y": 266.5,
+                "width": 40,
+                "height": 13,
+                "top": 266.5,
+                "right": 1233,
+                "bottom": 279.5,
+                "left": 1193
+              }
+            },
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1193,
+                "y": 366.5,
+                "width": 40,
+                "height": 13,
+                "top": 366.5,
+                "right": 1233,
+                "bottom": 379.5,
+                "left": 1193
+              },
+              "currentRect": {
+                "x": 1193,
+                "y": 366.5,
+                "width": 40,
+                "height": 13,
+                "top": 366.5,
+                "right": 1233,
+                "bottom": 379.5,
+                "left": 1193
+              }
+            },
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1153,
+                "y": 194.5,
+                "width": 36,
+                "height": 13,
+                "top": 194.5,
+                "right": 1189,
+                "bottom": 207.5,
+                "left": 1153
+              },
+              "currentRect": {
+                "x": 1153,
+                "y": 194.5,
+                "width": 36,
+                "height": 13,
+                "top": 194.5,
+                "right": 1189,
+                "bottom": 207.5,
+                "left": 1153
+              }
+            },
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1153,
+                "y": 230.5,
+                "width": 36,
+                "height": 13,
+                "top": 230.5,
+                "right": 1189,
+                "bottom": 243.5,
+                "left": 1153
+              },
+              "currentRect": {
+                "x": 1153,
+                "y": 230.5,
+                "width": 36,
+                "height": 13,
+                "top": 230.5,
+                "right": 1189,
+                "bottom": 243.5,
+                "left": 1153
+              }
+            },
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1153,
+                "y": 266.5,
+                "width": 36,
+                "height": 13,
+                "top": 266.5,
+                "right": 1189,
+                "bottom": 279.5,
+                "left": 1153
+              },
+              "currentRect": {
+                "x": 1153,
+                "y": 266.5,
+                "width": 36,
+                "height": 13,
+                "top": 266.5,
+                "right": 1189,
+                "bottom": 279.5,
+                "left": 1153
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "longTasks": {
+      "thresholdDefinitionMs": 50,
+      "count": 4,
+      "totalDurationMs": 3883,
+      "maxDurationMs": 3707,
+      "entries": [
+        {
+          "startTime": 150.70000004768372,
+          "duration": 3707,
+          "name": "self"
+        },
+        {
+          "startTime": 3872.7000000476837,
+          "duration": 51,
+          "name": "unknown"
+        },
+        {
+          "startTime": 3955.2000000476837,
+          "duration": 75,
+          "name": "self"
+        },
+        {
+          "startTime": 4044.399999856949,
+          "duration": 50,
+          "name": "unknown"
+        }
+      ],
+      "gate": null,
+      "gateReason": "The repository requires reporting but defines no numeric count or duration ceiling."
+    },
+    "resources": {
+      "totals": {
+        "count": 50,
+        "transferSize": 4805329,
+        "encodedBodySize": 4790329,
+        "decodedBodySize": 4790329
+      },
+      "entries": [
+        {
+          "pathname": "/fonts/iranyekanx.css",
+          "initiatorType": "link",
+          "startTime": 12.6,
+          "duration": 12,
+          "transferSize": 1014,
+          "encodedBodySize": 714,
+          "decodedBodySize": 714
+        },
+        {
+          "pathname": "/fonts/ravagh.css",
+          "initiatorType": "link",
+          "startTime": 12.9,
+          "duration": 12.8,
+          "transferSize": 2215,
+          "encodedBodySize": 1915,
+          "decodedBodySize": 1915
+        },
+        {
+          "pathname": "/fonts/anjoman.css",
+          "initiatorType": "link",
+          "startTime": 13,
+          "duration": 16.8,
+          "transferSize": 1970,
+          "encodedBodySize": 1670,
+          "decodedBodySize": 1670
+        },
+        {
+          "pathname": "/fonts/vazirmatn.css",
+          "initiatorType": "link",
+          "startTime": 13,
+          "duration": 17.2,
+          "transferSize": 1861,
+          "encodedBodySize": 1561,
+          "decodedBodySize": 1561
+        },
+        {
+          "pathname": "/assets/index-vLK2w0G_.css",
+          "initiatorType": "link",
+          "startTime": 13.1,
+          "duration": 19.6,
+          "transferSize": 80086,
+          "encodedBodySize": 79786,
+          "decodedBodySize": 79786
+        },
+        {
+          "pathname": "/assets/index-D-1D6E6S.js",
+          "initiatorType": "script",
+          "startTime": 13,
+          "duration": 46.2,
+          "transferSize": 3711590,
+          "encodedBodySize": 3711290,
+          "decodedBodySize": 3711290
+        },
+        {
+          "pathname": "/logo.png",
+          "initiatorType": "img",
+          "startTime": 3865.7,
+          "duration": 10.2,
+          "transferSize": 416422,
+          "encodedBodySize": 416122,
+          "decodedBodySize": 416122
+        },
+        {
+          "pathname": "/fonts/iranyekanx/IRANYekanX-Bold.woff2",
+          "initiatorType": "css",
+          "startTime": 3873.5,
+          "duration": 58.7,
+          "transferSize": 29120,
+          "encodedBodySize": 28820,
+          "decodedBodySize": 28820
+        },
+        {
+          "pathname": "/api/academy/auth/bn-guest",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 3933.2,
+          "duration": 7.6,
+          "transferSize": 338,
+          "encodedBodySize": 38,
+          "decodedBodySize": 38
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-ExtraBold.woff2",
+          "initiatorType": "css",
+          "startTime": 3944.4,
+          "duration": 15.3,
+          "transferSize": 68656,
+          "encodedBodySize": 68356,
+          "decodedBodySize": 68356
+        },
+        {
+          "pathname": "/assets/bn-logo-Cylz0xjn.png",
+          "initiatorType": "img",
+          "startTime": 4030.6,
+          "duration": 10.6,
+          "transferSize": 78260,
+          "encodedBodySize": 77960,
+          "decodedBodySize": 77960
+        },
+        {
+          "pathname": "/fonts/iranyekanx/IRANYekanX-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 4051.9,
+          "duration": 47.9,
+          "transferSize": 26592,
+          "encodedBodySize": 26292,
+          "decodedBodySize": 26292
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-SemiBold.woff2",
+          "initiatorType": "css",
+          "startTime": 4067.5,
+          "duration": 32.9,
+          "transferSize": 67628,
+          "encodedBodySize": 67328,
+          "decodedBodySize": 67328
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 4115.3,
+          "duration": 42.2,
+          "transferSize": 66452,
+          "encodedBodySize": 66152,
+          "decodedBodySize": 66152
+        },
+        {
+          "pathname": "/fonts/anjoman/AnjomanMax-SemiBold.woff2",
+          "initiatorType": "css",
+          "startTime": 4118.9,
+          "duration": 38.7,
+          "transferSize": 37416,
+          "encodedBodySize": 37116,
+          "decodedBodySize": 37116
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4141.4,
+          "duration": 27.8,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/bn/news",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4141.7,
+          "duration": 28.3,
+          "transferSize": 991,
+          "encodedBodySize": 691,
+          "decodedBodySize": 691
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4141.9,
+          "duration": 32.3,
+          "transferSize": 27173,
+          "encodedBodySize": 26873,
+          "decodedBodySize": 26873
+        },
+        {
+          "pathname": "/api/academy/me",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4142.1,
+          "duration": 32.8,
+          "transferSize": 399,
+          "encodedBodySize": 99,
+          "decodedBodySize": 99
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4142.2,
+          "duration": 33.5,
+          "transferSize": 17995,
+          "encodedBodySize": 17695,
+          "decodedBodySize": 17695
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4142.4,
+          "duration": 33.8,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/bn/ai-signal/quota",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4142.5,
+          "duration": 34.2,
+          "transferSize": 337,
+          "encodedBodySize": 37,
+          "decodedBodySize": 37
+        },
+        {
+          "pathname": "/api/academy/bn/ai-signal/active",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4142.8,
+          "duration": 34.3,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4143.4,
+          "duration": 35.4,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/chart/symbols",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4143.6,
+          "duration": 35.7,
+          "transferSize": 359,
+          "encodedBodySize": 59,
+          "decodedBodySize": 59
+        },
+        {
+          "pathname": "/api/academy/bn/watchlist",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4143.6,
+          "duration": 36.1,
+          "transferSize": 359,
+          "encodedBodySize": 59,
+          "decodedBodySize": 59
+        },
+        {
+          "pathname": "/api/academy/bn/scripts",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4143.9,
+          "duration": 36.1,
+          "transferSize": 328,
+          "encodedBodySize": 28,
+          "decodedBodySize": 28
+        },
+        {
+          "pathname": "/api/academy/bn/layouts",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4143.9,
+          "duration": 36.7,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/api/academy/bn/alerts",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4144.1,
+          "duration": 36.9,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/fonts/anjoman/AnjomanMax-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 4194.6,
+          "duration": 17.5,
+          "transferSize": 37292,
+          "encodedBodySize": 36992,
+          "decodedBodySize": 36992
+        },
+        {
+          "pathname": "/api/academy/bn/ai-signal/active",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4228.7,
+          "duration": 6.6,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/fonts/Vazirmatn-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 4237.8,
+          "duration": 7.8,
+          "transferSize": 50984,
+          "encodedBodySize": 50684,
+          "decodedBodySize": 50684
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-Medium.woff2",
+          "initiatorType": "css",
+          "startTime": 4317.4,
+          "duration": 8.7,
+          "transferSize": 67368,
+          "encodedBodySize": 67068,
+          "decodedBodySize": 67068
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4309.7,
+          "duration": 10.2,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/chart/GBPUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4309.9,
+          "duration": 10.4,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/chart/USDJPY",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4310.1,
+          "duration": 10.7,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/chart/USDCHF",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4310.1,
+          "duration": 11,
+          "transferSize": 489,
+          "encodedBodySize": 189,
+          "decodedBodySize": 189
+        },
+        {
+          "pathname": "/api/academy/chart/XAUUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4310.2,
+          "duration": 13.2,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4310.4,
+          "duration": 13.7,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 5293,
+          "duration": 4.7,
+          "transferSize": 343,
+          "encodedBodySize": 43,
+          "decodedBodySize": 43
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 6396.8,
+          "duration": 4.3,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 6668.8,
+          "duration": 4,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 7405.4,
+          "duration": 4.1,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 7432.9,
+          "duration": 3.7,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 7800.8,
+          "duration": 3.6,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 8904.5,
+          "duration": 2.7,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 9203,
+          "duration": 4.5,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 9901.1,
+          "duration": 6.2,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 10912.9,
+          "duration": 3.9,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 11300,
+          "duration": 3,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        }
+      ]
+    },
+    "observerSupport": {
+      "supportedEntryTypes": [
+        "element",
+        "event",
+        "first-input",
+        "largest-contentful-paint",
+        "layout-shift",
+        "long-animation-frame",
+        "longtask",
+        "mark",
+        "measure",
+        "navigation",
+        "paint",
+        "resource",
+        "visibility-state"
+      ],
+      "observerErrors": []
+    },
+    "readiness": {
+      "domContentLoadedObservedMs": 4060,
+      "shellReadyMs": 4401,
+      "chartReadyMs": 4499,
+      "layoutRestoreAfterShellMs": 98,
+      "applicationReadyLaunchRemovedMs": 7887,
+      "fontsReadyObservedMs": 7896
+    },
+    "activeChartFrames": {
+      "sampleCount": 120,
+      "minMs": 9,
+      "meanMs": 29.608,
+      "medianMs": 16,
+      "p95Ms": 21,
+      "maxMs": 748,
+      "intervalsOver16_7Ms": 27,
+      "intervalsAtOrOver20Ms": 12,
+      "rawIntervalsMs": [
+        24,
+        14,
+        10,
+        20,
+        13,
+        19,
+        12,
+        21,
+        11,
+        20,
+        12,
+        21,
+        11,
+        20,
+        12,
+        20,
+        12,
+        16,
+        16,
+        16,
+        16,
+        19,
+        13,
+        741,
+        16,
+        12,
+        15,
+        17,
+        15,
+        16,
+        16,
+        17,
+        16,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        22,
+        11,
+        15,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        215,
+        12,
+        12,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        19,
+        16,
+        14,
+        15,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        18,
+        15,
+        748,
+        9,
+        12,
+        16,
+        14,
+        17,
+        15,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        20,
+        16,
+        13
+      ],
+      "semantics": "Consecutive requestAnimationFrame intervals while the synthetic chart is visible; a Chromium lab cadence proxy, not direct chart paint CPU duration."
+    },
+    "documentRequestTrace": {
+      "timing": {
+        "startTime": 1784073876974.762,
+        "domainLookupStart": 0.731,
+        "domainLookupEnd": 1.589,
+        "connectStart": 1.589,
+        "secureConnectionStart": -1,
+        "connectEnd": 1.967,
+        "requestStart": 2.27,
+        "responseStart": 2.918,
+        "responseEnd": 9.014
+      },
+      "ttfbMs": 2.918,
+      "semantics": "Playwright Request.timing responseStart for the main document, measured from request start."
+    }
+  },
+  "gates": {
+    "source": "docs/performance/PERFORMANCE_BUDGET.md",
+    "checks": [
+      {
+        "metric": "labLcpMs",
+        "actual": 4220,
+        "operator": "<=",
+        "threshold": 2500,
+        "unit": "ms",
+        "evidence": "lab regression",
+        "pass": false,
+        "result": "FAIL"
+      },
+      {
+        "metric": "labCls",
+        "actual": 0.072,
+        "operator": "<=",
+        "threshold": 0.1,
+        "unit": "score",
+        "evidence": "lab",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "labTtfbMs",
+        "actual": 0.5,
+        "operator": "<",
+        "threshold": 800,
+        "unit": "ms",
+        "evidence": "navigation timing / document request trace lab proxy",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "activeChartFrameP95Ms",
+        "actual": 21,
+        "operator": "<",
+        "threshold": 20,
+        "unit": "ms",
+        "evidence": "active-chart rAF interval proxy",
+        "pass": false,
+        "result": "FAIL"
+      },
+      {
+        "metric": "layoutRestoreAfterShellMs",
+        "actual": 98,
+        "operator": "<",
+        "threshold": 2000,
+        "unit": "ms",
+        "evidence": "synthetic persisted-workspace E2E proxy",
+        "pass": true,
+        "result": "PASS"
+      }
+    ],
+    "result": "FAIL"
+  },
+  "recordedWithoutNumericGate": {
+    "paints": [
+      "first-paint",
+      "first-contentful-paint"
+    ],
+    "applicationAndChartReadiness": true,
+    "requestCountAndBytes": true,
+    "longTasksOver50Ms": true
+  },
+  "deliberatelyNotMeasured": {
+    "inp": "No representative interaction is performed; the repository requires RUM and a separately defined lab interaction proxy.",
+    "inputFeedback": "No interaction trace in this navigation-focused baseline.",
+    "crosshairResponse": "Requires a dedicated interaction benchmark.",
+    "quoteToPaintOverhead": "Requires a timestamped streaming fixture and paint trace.",
+    "indicator10k": "Requires a worker benchmark, not a navigation run.",
+    "memoryLeak": "The budget states that its observation window and tolerance still require an ADR.",
+    "jsBundleBudget": "The budget states that a numeric JS bundle limit still requires an ADR."
+  },
+  "environment": {
+    "image": {
+      "reference": "mcr.microsoft.com/playwright:v1.61.0-noble",
+      "digest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a"
+    },
+    "runtime": {
+      "node": "v24.16.0",
+      "platform": "linux",
+      "architecture": "x64",
+      "playwright": "1.61.0",
+      "browser": "chromium",
+      "browserVersion": "149.0.7827.55",
+      "osRelease": {
+        "PRETTY_NAME": "Ubuntu 24.04.4 LTS",
+        "NAME": "Ubuntu",
+        "VERSION_ID": "24.04",
+        "VERSION": "24.04.4 LTS (Noble Numbat)",
+        "VERSION_CODENAME": "noble",
+        "ID": "ubuntu",
+        "ID_LIKE": "debian",
+        "HOME_URL": "https://www.ubuntu.com/",
+        "SUPPORT_URL": "https://help.ubuntu.com/",
+        "BUG_REPORT_URL": "https://bugs.launchpad.net/ubuntu/",
+        "PRIVACY_POLICY_URL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
+        "UBUNTU_CODENAME": "noble",
+        "LOGO": "ubuntu-logo"
+      },
+      "cpuCountVisibleToNode": 8
+    },
+    "project": {
+      "name": "chromium-desktop",
+      "locale": "fa-IR",
+      "timezoneId": "UTC",
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "serviceWorkers": "block"
+    },
+    "browserEnvironment": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "hardwareConcurrency": 8,
+      "deviceMemoryGiB": null,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "language": "fa-IR",
+      "documentLanguage": "fa",
+      "documentDirection": "rtl"
+    },
+    "profile": {
+      "networkThrottling": "none; local loopback preview with synthetic API fulfillments",
+      "cpuThrottling": "none",
+      "cacheState": "new Playwright browser context per sample",
+      "referenceDeviceAdr": "missing in repository performance budget"
+    }
+  },
+  "network": {
+    "summary": {
+      "observedRequestCount": 51,
+      "completedRequestCount": 51,
+      "requestBodySize": 0,
+      "requestHeadersSize": 15920,
+      "responseBodySize": 4795655,
+      "responseHeadersSize": 8094,
+      "totalWireBytes": 4819669,
+      "byResourceType": {
+        "document": {
+          "count": 1,
+          "requestBodySize": 0,
+          "requestHeadersSize": 344,
+          "responseBodySize": 5590,
+          "responseHeadersSize": 292
+        },
+        "stylesheet": {
+          "count": 5,
+          "requestBodySize": 0,
+          "requestHeadersSize": 1308,
+          "responseBodySize": 85646,
+          "responseHeadersSize": 1192
+        },
+        "script": {
+          "count": 1,
+          "requestBodySize": 0,
+          "requestHeadersSize": 280,
+          "responseBodySize": 3711290,
+          "responseHeadersSize": 258
+        },
+        "image": {
+          "count": 2,
+          "requestBodySize": 0,
+          "requestHeadersSize": 597,
+          "responseBodySize": 494082,
+          "responseHeadersSize": 485
+        },
+        "font": {
+          "count": 9,
+          "requestBodySize": 0,
+          "requestHeadersSize": 2780,
+          "responseBodySize": 448808,
+          "responseHeadersSize": 2182
+        },
+        "xhr": {
+          "count": 33,
+          "requestBodySize": 0,
+          "requestHeadersSize": 10611,
+          "responseBodySize": 50239,
+          "responseHeadersSize": 3685
+        }
+      },
+      "semantics": "Playwright Request.sizes values; response body size may reflect protocol encoding rather than decoded DOM resource size."
+    },
+    "apiRequests": [
+      {
+        "method": "POST",
+        "pathname": "/api/academy/auth/bn-guest",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/news",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/me",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/quota",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/symbols",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/watchlist",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/scripts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/layouts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/alerts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/GBPUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/USDJPY",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/USDCHF",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/XAUUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "before",
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      }
+    ],
+    "mocked": [
+      "POST /api/academy/auth/bn-guest",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/news",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/me",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/ai-signal/quota",
+      "GET /api/academy/bn/ai-signal/active",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/chart/symbols",
+      "GET /api/academy/bn/watchlist",
+      "GET /api/academy/bn/scripts",
+      "GET /api/academy/bn/layouts",
+      "GET /api/academy/bn/alerts",
+      "GET /api/academy/bn/ai-signal/active",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/chart/GBPUSD",
+      "GET /api/academy/chart/USDJPY",
+      "GET /api/academy/chart/USDCHF",
+      "GET /api/academy/chart/XAUUSD",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices"
+    ],
+    "mockedWebSockets": [],
+    "unstubbed": [],
+    "unexpectedExternal": [],
+    "requestFailures": [],
+    "badResponses": [],
+    "sizeErrors": []
+  },
+  "pageErrors": []
+}

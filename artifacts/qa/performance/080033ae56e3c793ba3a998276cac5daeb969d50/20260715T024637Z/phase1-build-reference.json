@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "phase": "phase1-performance-remediation",
+  "frontendBuildEvidence": "artifacts/qa/frontend-build-phase1/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T024316Z/",
+  "sourceFingerprint": "98f5214f5783c485e7d6460ad0a26b83373a852f88ad48bfeef450a64711124b",
+  "buildCommand": "env -u NO_OBF npm run build",
+  "obfuscationBypassSet": false,
+  "javascript": {
+    "path": "dist/assets/index-DE77rbAv.js",
+    "bytes": 2399398,
+    "sha256": "75cf695f0e25cc58628b6bc51eec3d814161f0e7dd8ccf97a11dbe4212042a34",
+    "previewResponseByteMatched": true
+  },
+  "runnerImageDigest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+  "deploymentStatus": "NOT_DEPLOYED_BY_PERFORMANCE_AGENT"
+}

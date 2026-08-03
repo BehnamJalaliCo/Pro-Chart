@@ -1,0 +1,61 @@
+{
+  "result": "PASS",
+  "apiHealth": {
+    "status": "healthy",
+    "database": "connected",
+    "redis": "connected"
+  },
+  "openapiPaths": 421,
+  "services": [
+    {
+      "service": "api",
+      "container": "1c3a8edcd458",
+      "image": "sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6",
+      "state": "running",
+      "user": "1000:1000",
+      "signals": "restarts=0 fatal-signals=0"
+    },
+    {
+      "service": "data-feed",
+      "container": "fa106adeb49c",
+      "image": "sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6",
+      "state": "running",
+      "user": "1000:1000",
+      "signals": "restarts=0 fatal-signals=0"
+    },
+    {
+      "service": "crypto-ws",
+      "container": "fd1080e711cb",
+      "image": "sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6",
+      "state": "running",
+      "user": "1000:1000",
+      "signals": "restarts=0 fatal-signals=0"
+    },
+    {
+      "service": "finnhub-ws",
+      "container": "fce7db61fd43",
+      "image": "sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6",
+      "state": "running",
+      "user": "1000:1000",
+      "signals": "restarts=0 fatal-signals=0"
+    },
+    {
+      "service": "news-worker",
+      "container": "f83411d5a94f",
+      "image": "sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6",
+      "state": "running",
+      "user": "1000:1000",
+      "signals": "restarts=0 fatal-signals=0"
+    }
+  ],
+  "allFiveUseExactCandidate": true,
+  "allFiveNonRoot": true,
+  "apiModelMountReadOnly": true,
+  "apiHostCodeOverridesAbsent": true,
+  "referralBypassRejected": true,
+  "liveHs256Roundtrip": true,
+  "liveWebSocket": true,
+  "projectRunningContainers": 11,
+  "frontendHealthy": true,
+  "publicEdgeStatus": 200
+}

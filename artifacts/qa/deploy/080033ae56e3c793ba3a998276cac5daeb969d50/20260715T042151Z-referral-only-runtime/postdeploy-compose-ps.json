@@ -1,0 +1,339 @@
+[
+  {
+    "Command": "\"/docker-entrypoint.…\"",
+    "CreatedAt": "2026-07-15 04:22:43 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "466dbee3bfb9",
+    "Image": "prochart-admin:deploy-referral-20260715T042151Z",
+    "Labels": "com.docker.compose.config-hash=be6b4e2f16b21b880cfeda3cc9537358960dbbb43371fc5e160cf22481ad46c5,com.docker.compose.image=sha256:8b6231de18db8810b8d83e02b3db83960cb9b5f1b33de0549961360073535ea2,com.docker.compose.oneoff=False,com.docker.compose.project=prochart,com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,/home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/deploy.override.yml,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,com.docker.compose.service=admin-frontend,com.docker.compose.version=5.1.4,com.docker.compose.container-number=1,com.docker.compose.depends_on=api:service_started:false,com.docker.compose.replace=prochart-admin-frontend,maintainer=NGINX Docker Maintainers <docker-maint@nginx.com>",
+    "LocalVolumes": "0",
+    "Mounts": "",
+    "Name": "prochart-admin-frontend",
+    "Names": "prochart-admin-frontend",
+    "Networks": "prochart_default",
+    "Ports": "80/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 80,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "59 seconds ago",
+    "Service": "admin-frontend",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 49 seconds (healthy)"
+  },
+  {
+    "Command": "\"sh -c 'export CENTR…\"",
+    "CreatedAt": "2026-07-15 04:22:42 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "716ed877c722",
+    "Image": "prochart-api:deploy-referral-20260715T042151Z",
+    "Labels": "com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,com.docker.compose.replace=api-1,com.docker.compose.version=5.1.4,com.docker.compose.config-hash=e44cf60680c0dbf7a3af8f58149eacbaa6a03e0d7c210950e0dfda2e6921f721,com.docker.compose.image=sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e,com.docker.compose.project=prochart,com.docker.compose.service=api,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,/home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/deploy.override.yml",
+    "LocalVolumes": "0",
+    "Mounts": "/home/bazaarna…,/home/bazaarna…,/home/bazaarna…",
+    "Name": "prochart-api-1",
+    "Names": "prochart-api-1",
+    "Networks": "prochart_default",
+    "Ports": "127.0.0.1:8000->8000/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "127.0.0.1",
+        "TargetPort": 8000,
+        "PublishedPort": 8000,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "About a minute ago",
+    "Service": "api",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 49 seconds (healthy)"
+  },
+  {
+    "Command": "\"docker-entrypoint.s…\"",
+    "CreatedAt": "2026-06-28 04:17:50 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "4974fa620c6c",
+    "Image": "prochart-claude-llm",
+    "Labels": "com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.replace=claude-llm-1,com.docker.compose.config-hash=bcd28a618a85737b1f1dc543d93d6fa2b6b6b4a769c34db636b4cb8558f3c7ab,com.docker.compose.image=sha256:f80cfee5ebe4dc1a94bea673e68ee744ef6dd9d0fed783f07422ced0c00be1ee,com.docker.compose.oneoff=False,com.docker.compose.project=prochart,com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,com.docker.compose.service=claude-llm,com.docker.compose.version=5.1.4",
+    "LocalVolumes": "1",
+    "Mounts": "prochart_llm_c…",
+    "Name": "prochart-claude-llm-1",
+    "Names": "prochart-claude-llm-1",
+    "Networks": "prochart_default",
+    "Ports": "8085/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 8085,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "2 weeks ago",
+    "Service": "claude-llm",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 2 weeks (healthy)"
+  },
+  {
+    "Command": "\"python run_crypto_w…\"",
+    "CreatedAt": "2026-07-15 04:22:42 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "",
+    "ID": "b58f66bbce52",
+    "Image": "prochart-crypto-ws:deploy-referral-20260715T042151Z",
+    "Labels": "com.docker.compose.version=5.1.4,com.docker.compose.image=sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e,com.docker.compose.project=prochart,com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,/home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/deploy.override.yml,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,com.docker.compose.replace=crypto-ws-1,com.docker.compose.config-hash=73abd3127cda2f6cfd32e5918e1ab2e7fe4c35bb77b84dc28c7099e04c478185,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.service=crypto-ws",
+    "LocalVolumes": "0",
+    "Mounts": "",
+    "Name": "prochart-crypto-ws-1",
+    "Names": "prochart-crypto-ws-1",
+    "Networks": "prochart_default",
+    "Ports": "8000/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 8000,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "About a minute ago",
+    "Service": "crypto-ws",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 49 seconds"
+  },
+  {
+    "Command": "\"python run_data_fee…\"",
+    "CreatedAt": "2026-07-15 04:22:42 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "",
+    "ID": "9bd3dcb94a9a",
+    "Image": "prochart-data-feed:deploy-referral-20260715T042151Z",
+    "Labels": "com.docker.compose.config-hash=d42764f50bb1096cbbf27d73877f9e2d83c661983764455b0ac2ed0f0eb5098c,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e,com.docker.compose.oneoff=False,com.docker.compose.replace=data-feed-1,com.docker.compose.service=data-feed,com.docker.compose.version=5.1.4,com.docker.compose.project=prochart,com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,/home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/deploy.override.yml,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app",
+    "LocalVolumes": "0",
+    "Mounts": "/home/bazaarna…",
+    "Name": "prochart-data-feed-1",
+    "Names": "prochart-data-feed-1",
+    "Networks": "prochart_default",
+    "Ports": "8000/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 8000,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "About a minute ago",
+    "Service": "data-feed",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 49 seconds"
+  },
+  {
+    "Command": "\"python run_finnhub_…\"",
+    "CreatedAt": "2026-07-15 04:22:42 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "",
+    "ID": "bb8dc18b941d",
+    "Image": "prochart-finnhub-ws:deploy-referral-20260715T042151Z",
+    "Labels": "com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,/home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/deploy.override.yml,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,com.docker.compose.replace=finnhub-ws-1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e,com.docker.compose.service=finnhub-ws,com.docker.compose.version=5.1.4,com.docker.compose.config-hash=494ad9519583aa93ec26789daeac9f91a5fdf3048c9aadae139ae0e029bf2e12,com.docker.compose.container-number=1,com.docker.compose.oneoff=False,com.docker.compose.project=prochart",
+    "LocalVolumes": "0",
+    "Mounts": "",
+    "Name": "prochart-finnhub-ws-1",
+    "Names": "prochart-finnhub-ws-1",
+    "Networks": "prochart_default",
+    "Ports": "8000/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 8000,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "About a minute ago",
+    "Service": "finnhub-ws",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 49 seconds"
+  },
+  {
+    "Command": "\"/docker-entrypoint.…\"",
+    "CreatedAt": "2026-07-15 04:22:44 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "4e48912df512",
+    "Image": "prochart-frontend-prochart:deploy-referral-20260715T042151Z",
+    "Labels": "com.docker.compose.config-hash=212f2f512199c1a338b139197f0aaa87d62c2ecf95b1e48cdbf7c73157604578,com.docker.compose.depends_on=api:service_started:false,admin-frontend:service_started:false,com.docker.compose.image=sha256:20e2ad31c1280f44850530a7ac12456f4817da8f163fdd230defe0436f7fa3ec,com.docker.compose.oneoff=False,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,com.docker.compose.replace=frontend-prochart-1,maintainer=NGINX Docker Maintainers <docker-maint@nginx.com>,com.docker.compose.container-number=1,com.docker.compose.project=prochart,com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,/home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/deploy.override.yml,com.docker.compose.service=frontend-prochart,com.docker.compose.version=5.1.4",
+    "LocalVolumes": "0",
+    "Mounts": "/etc/letsencry…,/home/bazaarna…,/home/bazaarna…,/home/bazaarna…,/var/www/certb…",
+    "Name": "prochart-frontend-prochart-1",
+    "Names": "prochart-frontend-prochart-1",
+    "Networks": "prochart_default",
+    "Ports": "0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "0.0.0.0",
+        "TargetPort": 80,
+        "PublishedPort": 80,
+        "Protocol": "tcp"
+      },
+      {
+        "URL": "::",
+        "TargetPort": 80,
+        "PublishedPort": 80,
+        "Protocol": "tcp"
+      },
+      {
+        "URL": "0.0.0.0",
+        "TargetPort": 443,
+        "PublishedPort": 443,
+        "Protocol": "tcp"
+      },
+      {
+        "URL": "::",
+        "TargetPort": 443,
+        "PublishedPort": 443,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "58 seconds ago",
+    "Service": "frontend-prochart",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 49 seconds (healthy)"
+  },
+  {
+    "Command": "\"python run_news_wor…\"",
+    "CreatedAt": "2026-07-15 04:22:42 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "",
+    "ID": "0cd3a98efefe",
+    "Image": "prochart-news-worker:deploy-referral-20260715T042151Z",
+    "Labels": "com.docker.compose.config-hash=7618f6d27d783d299c63aad2e443790975e4ebe849b612525da4ee2643da5e04,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.replace=news-worker-1,com.docker.compose.version=5.1.4,com.docker.compose.container-number=1,com.docker.compose.image=sha256:23f49262ce660e6ad405ae72cd96037aa4d70e75a085163143dc07d98646223e,com.docker.compose.project=prochart,com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,/home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/deploy.override.yml,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,com.docker.compose.service=news-worker",
+    "LocalVolumes": "0",
+    "Mounts": "/home/bazaarna…",
+    "Name": "prochart-news-worker-1",
+    "Names": "prochart-news-worker-1",
+    "Networks": "prochart_default",
+    "Ports": "8000/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 8000,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "About a minute ago",
+    "Service": "news-worker",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 49 seconds"
+  },
+  {
+    "Command": "\"docker-entrypoint.s…\"",
+    "CreatedAt": "2026-06-28 01:29:48 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "375d7f5bac6f",
+    "Image": "valkey/valkey:8-alpine",
+    "Labels": "com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,com.docker.compose.version=5.1.4,com.docker.compose.config-hash=f6f35a9238ec79c5a259f7a927dcb986da34b6c3393fd752855dbe90032949a0,com.docker.compose.project=prochart,com.docker.compose.service=redis,org.opencontainers.image.source=https://github.com/valkey-io/valkey,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:77643d152547b446fc15cbafaff22004545663fcd40c6b28038ad283837baa75,com.docker.compose.oneoff=False",
+    "LocalVolumes": "1",
+    "Mounts": "prochart_redis…",
+    "Name": "prochart-redis-1",
+    "Names": "prochart-redis-1",
+    "Networks": "prochart_default",
+    "Ports": "127.0.0.1:6379->6379/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "127.0.0.1",
+        "TargetPort": 6379,
+        "PublishedPort": 6379,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "2 weeks ago",
+    "Service": "redis",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 2 weeks (healthy)"
+  },
+  {
+    "Command": "\"docker-entrypoint.s…\"",
+    "CreatedAt": "2026-06-28 01:29:48 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "7cbc79bd4dd2",
+    "Image": "timescale/timescaledb:latest-pg17",
+    "Labels": "com.docker.compose.project=prochart,com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,com.docker.compose.service=timescaledb,com.docker.compose.version=5.1.4,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,maintainer=Timescale https://www.timescale.com,com.docker.compose.config-hash=ff6a00977b6a431ed023e42ffb546306289e981ddd1985395ba198f0a6bdfc8c,com.docker.compose.image=sha256:154f1b3915ed050116a85985d5ae1005c8d8bf1562541dc61159610bc05db9a0,com.docker.compose.oneoff=False",
+    "LocalVolumes": "1",
+    "Mounts": "prochart_tsdb_…",
+    "Name": "prochart-timescaledb-1",
+    "Names": "prochart-timescaledb-1",
+    "Networks": "prochart_default",
+    "Ports": "127.0.0.1:5432->5432/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "127.0.0.1",
+        "TargetPort": 5432,
+        "PublishedPort": 5432,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "2 weeks ago",
+    "Service": "timescaledb",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 38 hours (healthy)"
+  },
+  {
+    "Command": "\"/docker-entrypoint.…\"",
+    "CreatedAt": "2026-07-15 04:22:43 +0000 UTC",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "607623bc1f92",
+    "Image": "prochart-user:deploy-referral-20260715T042151Z",
+    "Labels": "com.docker.compose.project.config_files=/home/bazaarnama/Pro-Chart/app/docker-compose.prochart.yml,/home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/deploy.override.yml,com.docker.compose.version=5.1.4,maintainer=NGINX Docker Maintainers <docker-maint@nginx.com>,com.docker.compose.config-hash=ec9b0390add2bf093f5892d249a876622d0ac5892fee4656e22caea6039034df,com.docker.compose.container-number=1,com.docker.compose.depends_on=api:service_started:false,com.docker.compose.project.working_dir=/home/bazaarnama/Pro-Chart/app,com.docker.compose.replace=prochart-user-frontend,com.docker.compose.service=user-frontend,com.docker.compose.image=sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216,com.docker.compose.oneoff=False,com.docker.compose.project=prochart",
+    "LocalVolumes": "0",
+    "Mounts": "",
+    "Name": "prochart-user-frontend",
+    "Names": "prochart-user-frontend",
+    "Networks": "prochart_default",
+    "Ports": "80/tcp",
+    "Project": "prochart",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 80,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "59 seconds ago",
+    "Service": "user-frontend",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 49 seconds (healthy)"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "healthHttpStatus": 200,
+  "openapiHttpStatus": 200,
+  "aiSignalPaths": [
+    "/academy/bn/ai-signal",
+    "/academy/bn/ai-signal/active",
+    "/academy/bn/ai-signal/quota",
+    "/academy/bn/ai-signal/{sig_id}",
+    "/admin/bn/ai-signals",
+    "/admin/bn/ai-signals/stats",
+    "/admin/bn/ai-signals/{signal_id}"
+  ],
+  "aiSignalRoutePresent": true,
+  "liveImageId": "sha256:d703a78a20c5f1d331947dba765de0f64ec0797f81f42412fb2b0ffeeefea3aa",
+  "containerHealth": "healthy",
+  "prochartRunningContainerCount": 11,
+  "result": "PASS"
+}

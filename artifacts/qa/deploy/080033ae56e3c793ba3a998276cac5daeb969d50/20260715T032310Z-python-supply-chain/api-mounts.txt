@@ -1,0 +1,1 @@
+/app/ml_models:false /app/secrets:false /app/logs:true 

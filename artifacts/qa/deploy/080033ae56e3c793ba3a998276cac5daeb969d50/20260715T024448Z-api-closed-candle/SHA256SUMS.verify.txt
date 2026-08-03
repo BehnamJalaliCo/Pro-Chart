@@ -1,0 +1,5 @@
+compose-up.log: OK
+deploy-metadata.json: OK
+operator-attempts.json: OK
+post-deploy-smoke-attempt2.json: OK
+post-deploy-smoke.json: OK

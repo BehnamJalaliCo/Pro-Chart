@@ -1,0 +1,22 @@
+
+Running 12 tests using 1 worker
+
+[1/12] [chromium-desktop] › tests/onboarding-focus.spec.mjs:16:1 › A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape
+[2/12] [chromium-desktop] › tests/onboarding-focus.spec.mjs:153:1 › A11Y-FOCUS: first-run desktop web keeps onboarding disabled and the app interactive
+[3/12] [chromium-desktop] › tests/watchlist-interactions.spec.mjs:54:3 › list: انتخاب با ماوس و کیبورد، منوی زمینه و هندسه
+[4/12] [chromium-desktop] › tests/watchlist-interactions.spec.mjs:93:3 › list: پرچم و حذف، ردیف را انتخاب نمی‌کنند
+[5/12] [chromium-desktop] › tests/watchlist-interactions.spec.mjs:54:3 › table: انتخاب با ماوس و کیبورد، منوی زمینه و هندسه
+[6/12] [chromium-desktop] › tests/watchlist-interactions.spec.mjs:93:3 › table: پرچم و حذف، ردیف را انتخاب نمی‌کنند
+[7/12] [chromium-mobile] › tests/onboarding-focus.spec.mjs:16:1 › A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape
+[8/12] [chromium-mobile] › tests/onboarding-focus.spec.mjs:153:1 › A11Y-FOCUS: first-run desktop web keeps onboarding disabled and the app interactive
+[9/12] [chromium-mobile] › tests/watchlist-interactions.spec.mjs:54:3 › list: انتخاب با ماوس و کیبورد، منوی زمینه و هندسه
+[10/12] [chromium-mobile] › tests/watchlist-interactions.spec.mjs:93:3 › list: پرچم و حذف، ردیف را انتخاب نمی‌کنند
+[11/12] [chromium-mobile] › tests/watchlist-interactions.spec.mjs:54:3 › table: انتخاب با ماوس و کیبورد، منوی زمینه و هندسه
+[12/12] [chromium-mobile] › tests/watchlist-interactions.spec.mjs:93:3 › table: پرچم و حذف، ردیف را انتخاب نمی‌کنند
+  6 skipped
+  6 passed (59.9s)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

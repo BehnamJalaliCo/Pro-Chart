@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "eventId": "20260715T100951Z",
+  "startedAt": "2026-07-15T10:09:51Z",
+  "deployedAt": "2026-07-15T10:10:25Z",
+  "smokeCompletedAt": "2026-07-15T10:14:01Z",
+  "result": "PASS",
+  "runtimeCommit": "40487e8056458a2a343f00e0757f930f9a63ad65",
+  "qaCommit": "928a819",
+  "services": {
+    "api": {
+      "preDeployImage": "sha256:d70a70f7a831fbc43ea54ae1b9146a72572b36d6baa5125a00ddebeda8bbc4d9",
+      "deployedImage": "sha256:809bdfd7bf02a36d4869086333c61571802a910a9b7ee8c04ea089a9917a11c1",
+      "rollbackImage": "sha256:d70a70f7a831fbc43ea54ae1b9146a72572b36d6baa5125a00ddebeda8bbc4d9",
+      "health": "healthy",
+      "restartCount": 0
+    }
+  },
+  "unchangedServices": {
+    "frontend-prochart": "sha256:1c832be00399fc73bb54fde8eb3b286bbeb12350b00ae37c8a6af0ae2e2abcb4",
+    "admin-frontend": "sha256:c898e4485fa46826ed0e9b768b4384af84c7fdbdfa382ccd09aaf71241c96cb4",
+    "user-frontend": "sha256:3ebdde7b42374c1d44d8a88e767575ec5f82d9069aae4d92eb208dcd1bd0aa8d"
+  },
+  "gates": {
+    "redBodylessRegression": "7 passed, 1 failed: /copytrade/forex/settings still exposed a body parameter",
+    "greenBodylessRegression": "8/8 passed on the exact selective snapshot",
+    "providerScannerUnit": "6/6 passed",
+    "providerSourceScan": "931 source + 11 edge files; 0 blocking findings",
+    "exactBuilds": "API PASS; Main PASS (1779 modules); Panel PASS (2369 modules)",
+    "productionReferral": "artifacts/qa/production-referral-bodyless/worktree/20260715T101204Z: 2/2 passed; report sha256 e7dff070c155c212935bd0c746b1d922ea18a4a33204f44fd894e97411f7eaf1"
+  },
+  "liveReadback": {
+    "composeRunning": 11,
+    "composeUnhealthy": 0,
+    "criticalApiLogLines": 0,
+    "dedicatedForexPostRoutes": 5,
+    "dedicatedForexRequestBodies": 0,
+    "redirects": "LBank and OneRoyal returned their exact 302 targets with Cache-Control no-store and Pragma no-cache",
+    "portalHeaders": "Main, User and Panel returned 200 with CSP, HSTS and X-Content-Type-Options"
+  },
+  "rollback": {
+    "override": "rollback.override.yml",
+    "command": "docker compose -f docker-compose.prochart.yml -f artifacts/qa/deploy/worktree/20260715T100951Z/rollback.override.yml up -d --no-deps --force-recreate api"
+  },
+  "attemptDiscipline": [
+    "The new regression first failed 7/8 on the pre-fix snapshot, then passed 8/8 after all dedicated forex write routes became bodyless.",
+    "The first redirect probe used HEAD and correctly received 405 because the departure routes are GET-only; the GET repeat returned the exact 302 destinations."
+  ]
+}

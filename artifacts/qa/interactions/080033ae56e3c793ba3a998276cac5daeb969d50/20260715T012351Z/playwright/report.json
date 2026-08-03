@@ -1,0 +1,783 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/watchlist-interactions.spec.mjs",
+      "tests/onboarding-focus.spec.mjs"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "onboarding-focus.spec.mjs",
+      "file": "onboarding-focus.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Onboarding is intentionally disabled on desktop web",
+                  "location": {
+                    "file": "/work/qa/tests/onboarding-focus.spec.mjs",
+                    "line": 17,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 293,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:23:52.893Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Onboarding is intentionally disabled on desktop web",
+                      "location": {
+                        "file": "/work/qa/tests/onboarding-focus.spec.mjs",
+                        "line": 17,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "7cb2ffc8cb396e9bbe2b-9f5965cdcfeb17aca454",
+          "file": "onboarding-focus.spec.mjs",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "A11Y-FOCUS: first-run desktop web keeps onboarding disabled and the app interactive",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7054,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:23:53.467Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "desktop-state",
+                      "contentType": "application/json",
+                      "body": "ewogICJzY2VuYXJpbyI6ICJkZXNrdG9wLWZpcnN0LXJ1bi1vbmJvYXJkaW5nLWRpc2FibGVkIiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1kZXNrdG9wIiwKICAic3RhdHVzIjogMjAwLAogICJkaWFsb2dDb3VudCI6IDAsCiAgImFwcEludGVyYWN0aXZlIjogdHJ1ZSwKICAibWFpbkNvdW50IjogMQp9"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/onboarding-focus-A11Y-FOCU-6539b-led-and-the-app-interactive-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/onboarding-focus-A11Y-FOCU-6539b-led-and-the-app-interactive-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7cb2ffc8cb396e9bbe2b-b55f01184c17c55eb281",
+          "file": "onboarding-focus.spec.mjs",
+          "line": 153,
+          "column": 1
+        },
+        {
+          "title": "A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14835,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:36.133Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "focus-state",
+                      "contentType": "application/json",
+                      "body": "ewogICJzY2VuYXJpbyI6ICJtb2JpbGUtZmlyc3QtcnVuLW9uYm9hcmRpbmctZm9jdXMiLAogICJwcm9qZWN0IjogImNocm9taXVtLW1vYmlsZSIsCiAgInN0YXR1cyI6IDIwMCwKICAiZGlhbG9nIjogewogICAgInJvbGUiOiAiZGlhbG9nIiwKICAgICJtb2RhbCI6IHRydWUsCiAgICAibGFiZWxsZWRCeSI6ICJwYy1vbmJvYXJkaW5nLXRpdGxlIiwKICAgICJkZXNjcmliZWRCeSI6ICJwYy1vbmJvYXJkaW5nLWRlc2NyaXB0aW9uIiwKICAgICJpbml0aWFsRm9jdXMiOiAicGMtb25ib2FyZGluZy10aXRsZSIsCiAgICAiZm9jdXNhYmxlQ29udHJvbHMiOiAyLAogICAgInRhYldyYXBwZWRGb3J3YXJkIjogdHJ1ZSwKICAgICJ0YWJXcmFwcGVkQmFja3dhcmQiOiB0cnVlLAogICAgImVzY2FwZWRQcm9ncmFtbWF0aWNGb2N1cyI6IGZhbHNlCiAgfSwKICAiYmFja2dyb3VuZCI6IHsKICAgICJpbmVydFdoaWxlT3BlbiI6IHRydWUsCiAgICAiYXJpYUhpZGRlbldoaWxlT3BlbiI6IHRydWUsCiAgICAicmVzdG9yZWRBZnRlckNsb3NlIjogdHJ1ZQogIH0sCiAgImNsb3NlIjogewogICAgInRyaWdnZXIiOiAiRXNjYXBlIiwKICAgICJwZXJzaXN0ZWQiOiB0cnVlLAogICAgImZvY3VzUmVzdG9yZWRUb1ByZXZpb3VzQ29udHJvbCI6IHRydWUsCiAgICAiYWJzZW50QWZ0ZXJSZWxvYWQiOiB0cnVlCiAgfSwKICAiYXhlIjogewogICAgImVuZ2luZSI6IHsKICAgICAgIm5hbWUiOiAiYXhlLWNvcmUiLAogICAgICAidmVyc2lvbiI6ICI0LjEwLjMiCiAgICB9LAogICAgInJ1bGVzIjogWwogICAgICAiYXJpYS1kaWFsb2ctbmFtZSIsCiAgICAgICJhcmlhLWhpZGRlbi1mb2N1cyIsCiAgICAgICJsYW5kbWFyay1vbmUtbWFpbiIsCiAgICAgICJwYWdlLWhhcy1oZWFkaW5nLW9uZSIsCiAgICAgICJyZWdpb24iCiAgICBdLAogICAgInZpb2xhdGlvbnMiOiAwCiAgfSwKICAicmVxdWVzdHMiOiB7CiAgICAidW5leHBlY3RlZE11dGF0aW9ucyI6IFtdCiAgfQp9"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/video-1.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7cb2ffc8cb396e9bbe2b-747f1a8f186434989ed6",
+          "file": "onboarding-focus.spec.mjs",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "A11Y-FOCUS: first-run desktop web keeps onboarding disabled and the app interactive",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "This assertion protects desktop-web behavior",
+                  "location": {
+                    "file": "/work/qa/tests/onboarding-focus.spec.mjs",
+                    "line": 154,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 226,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:51.943Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "This assertion protects desktop-web behavior",
+                      "location": {
+                        "file": "/work/qa/tests/onboarding-focus.spec.mjs",
+                        "line": 154,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/onboarding-focus-A11Y-FOCU-6539b-led-and-the-app-interactive-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/onboarding-focus-A11Y-FOCU-6539b-led-and-the-app-interactive-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "7cb2ffc8cb396e9bbe2b-022792ea7887cc8ccfc4",
+          "file": "onboarding-focus.spec.mjs",
+          "line": 153,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "watchlist-interactions.spec.mjs",
+      "file": "watchlist-interactions.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "list: انتخاب با ماوس و کیبورد، منوی زمینه و هندسه",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8719,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:00.808Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-lis-dc26e--کیبورد،-منوی-زمینه-و-هندسه-chromium-desktop/video-1.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-lis-dc26e--کیبورد،-منوی-زمینه-و-هندسه-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-lis-dc26e--کیبورد،-منوی-زمینه-و-هندسه-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "05c0054e2e39ea858899-a4ea32a84aa31d1eab9f",
+          "file": "watchlist-interactions.spec.mjs",
+          "line": 54,
+          "column": 3
+        },
+        {
+          "title": "list: پرچم و حذف، ردیف را انتخاب نمی‌کنند",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7379,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:10.399Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-lis-93d12-ذف،-ردیف-را-انتخاب-نمی‌کنند-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-lis-93d12-ذف،-ردیف-را-انتخاب-نمی‌کنند-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "05c0054e2e39ea858899-851af9673cbfa549d6e7",
+          "file": "watchlist-interactions.spec.mjs",
+          "line": 93,
+          "column": 3
+        },
+        {
+          "title": "table: انتخاب با ماوس و کیبورد، منوی زمینه و هندسه",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8730,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:18.220Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-tab-52e37--کیبورد،-منوی-زمینه-و-هندسه-chromium-desktop/video-1.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-tab-52e37--کیبورد،-منوی-زمینه-و-هندسه-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-tab-52e37--کیبورد،-منوی-زمینه-و-هندسه-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "05c0054e2e39ea858899-42c2dca6c7d61515a368",
+          "file": "watchlist-interactions.spec.mjs",
+          "line": 54,
+          "column": 3
+        },
+        {
+          "title": "table: پرچم و حذف، ردیف را انتخاب نمی‌کنند",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7226,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:27.965Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-tab-06ada-ذف،-ردیف-را-انتخاب-نمی‌کنند-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-tab-06ada-ذف،-ردیف-را-انتخاب-نمی‌کنند-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "05c0054e2e39ea858899-30e709d533c2e0328bd4",
+          "file": "watchlist-interactions.spec.mjs",
+          "line": 93,
+          "column": 3
+        },
+        {
+          "title": "list: انتخاب با ماوس و کیبورد، منوی زمینه و هندسه",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "پنل واچ‌لیستِ RightPanel فقط در نمای دسکتاپ است",
+                  "location": {
+                    "file": "/work/qa/tests/watchlist-interactions.spec.mjs",
+                    "line": 50,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 0,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:52.197Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "پنل واچ‌لیستِ RightPanel فقط در نمای دسکتاپ است",
+                      "location": {
+                        "file": "/work/qa/tests/watchlist-interactions.spec.mjs",
+                        "line": 50,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-lis-dc26e--کیبورد،-منوی-زمینه-و-هندسه-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "05c0054e2e39ea858899-a465a6b0487b0510b80c",
+          "file": "watchlist-interactions.spec.mjs",
+          "line": 54,
+          "column": 3
+        },
+        {
+          "title": "list: پرچم و حذف، ردیف را انتخاب نمی‌کنند",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "پنل واچ‌لیستِ RightPanel فقط در نمای دسکتاپ است",
+                  "location": {
+                    "file": "/work/qa/tests/watchlist-interactions.spec.mjs",
+                    "line": 50,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 0,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:52.212Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "پنل واچ‌لیستِ RightPanel فقط در نمای دسکتاپ است",
+                      "location": {
+                        "file": "/work/qa/tests/watchlist-interactions.spec.mjs",
+                        "line": 50,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-lis-93d12-ذف،-ردیف-را-انتخاب-نمی‌کنند-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "05c0054e2e39ea858899-79936506077d156d2ead",
+          "file": "watchlist-interactions.spec.mjs",
+          "line": 93,
+          "column": 3
+        },
+        {
+          "title": "table: انتخاب با ماوس و کیبورد، منوی زمینه و هندسه",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "پنل واچ‌لیستِ RightPanel فقط در نمای دسکتاپ است",
+                  "location": {
+                    "file": "/work/qa/tests/watchlist-interactions.spec.mjs",
+                    "line": 50,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 0,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:52.221Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "پنل واچ‌لیستِ RightPanel فقط در نمای دسکتاپ است",
+                      "location": {
+                        "file": "/work/qa/tests/watchlist-interactions.spec.mjs",
+                        "line": 50,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-tab-52e37--کیبورد،-منوی-زمینه-و-هندسه-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "05c0054e2e39ea858899-210ec334fef79fbeb4b0",
+          "file": "watchlist-interactions.spec.mjs",
+          "line": 54,
+          "column": 3
+        },
+        {
+          "title": "table: پرچم و حذف، ردیف را انتخاب نمی‌کنند",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "پنل واچ‌لیستِ RightPanel فقط در نمای دسکتاپ است",
+                  "location": {
+                    "file": "/work/qa/tests/watchlist-interactions.spec.mjs",
+                    "line": 50,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 0,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T01:24:52.245Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "پنل واچ‌لیستِ RightPanel فقط در نمای دسکتاپ است",
+                      "location": {
+                        "file": "/work/qa/tests/watchlist-interactions.spec.mjs",
+                        "line": 50,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/interactions/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012351Z/playwright/test-results/watchlist-interactions-tab-06ada-ذف،-ردیف-را-انتخاب-نمی‌کنند-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "05c0054e2e39ea858899-7f53ff46a50d696b9e3c",
+          "file": "watchlist-interactions.spec.mjs",
+          "line": 93,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T01:23:52.401Z",
+    "duration": 59943.727,
+    "expected": 6,
+    "skipped": 6,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

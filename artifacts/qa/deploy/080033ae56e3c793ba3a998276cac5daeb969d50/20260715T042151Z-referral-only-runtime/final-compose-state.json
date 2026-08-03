@@ -1,0 +1,73 @@
+{
+  "observedAt": "2026-07-15T04:26:37Z",
+  "count": 11,
+  "allRunning": true,
+  "services": [
+    {
+      "service": "admin-frontend",
+      "state": "running",
+      "health": "healthy",
+      "image": "prochart-admin:deploy-referral-20260715T042151Z"
+    },
+    {
+      "service": "api",
+      "state": "running",
+      "health": "healthy",
+      "image": "prochart-api:deploy-referral-20260715T042151Z"
+    },
+    {
+      "service": "claude-llm",
+      "state": "running",
+      "health": "healthy",
+      "image": "prochart-claude-llm"
+    },
+    {
+      "service": "crypto-ws",
+      "state": "running",
+      "health": "",
+      "image": "prochart-crypto-ws:deploy-referral-20260715T042151Z"
+    },
+    {
+      "service": "data-feed",
+      "state": "running",
+      "health": "",
+      "image": "prochart-data-feed:deploy-referral-20260715T042151Z"
+    },
+    {
+      "service": "finnhub-ws",
+      "state": "running",
+      "health": "",
+      "image": "prochart-finnhub-ws:deploy-referral-20260715T042151Z"
+    },
+    {
+      "service": "frontend-prochart",
+      "state": "running",
+      "health": "healthy",
+      "image": "prochart-frontend-prochart:deploy-referral-20260715T042151Z"
+    },
+    {
+      "service": "news-worker",
+      "state": "running",
+      "health": "",
+      "image": "prochart-news-worker:deploy-referral-20260715T042151Z"
+    },
+    {
+      "service": "redis",
+      "state": "running",
+      "health": "healthy",
+      "image": "valkey/valkey:8-alpine"
+    },
+    {
+      "service": "timescaledb",
+      "state": "running",
+      "health": "healthy",
+      "image": "timescale/timescaledb:latest-pg17"
+    },
+    {
+      "service": "user-frontend",
+      "state": "running",
+      "health": "healthy",
+      "image": "prochart-user:deploy-referral-20260715T042151Z"
+    }
+  ]
+}

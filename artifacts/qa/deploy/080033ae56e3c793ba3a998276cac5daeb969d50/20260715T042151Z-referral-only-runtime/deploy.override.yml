@@ -1,0 +1,17 @@
+services:
+  api:
+    image: prochart-api:deploy-referral-20260715T042151Z
+  data-feed:
+    image: prochart-data-feed:deploy-referral-20260715T042151Z
+  crypto-ws:
+    image: prochart-crypto-ws:deploy-referral-20260715T042151Z
+  finnhub-ws:
+    image: prochart-finnhub-ws:deploy-referral-20260715T042151Z
+  news-worker:
+    image: prochart-news-worker:deploy-referral-20260715T042151Z
+  frontend-prochart:
+    image: prochart-frontend-prochart:deploy-referral-20260715T042151Z
+  user-frontend:
+    image: prochart-user:deploy-referral-20260715T042151Z
+  admin-frontend:
+    image: prochart-admin:deploy-referral-20260715T042151Z

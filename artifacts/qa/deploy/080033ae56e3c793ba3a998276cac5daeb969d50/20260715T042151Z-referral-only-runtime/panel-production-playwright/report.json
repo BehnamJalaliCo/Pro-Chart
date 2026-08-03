@@ -1,0 +1,189 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/panel-navigation.spec.mjs",
+      "--project=chromium-desktop"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "panel-navigation.spec.mjs",
+      "file": "panel-navigation.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PANEL-NAV: legacy aliases resolve and unavailable palette actions stay hidden",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2161,
+                  "error": {
+                    "message": "Error: EACCES: permission denied, open '/work/artifacts/qa/panel-navigation/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-production/actual.png'",
+                    "stack": "Error: EACCES: permission denied, open '/work/artifacts/qa/panel-navigation/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-production/actual.png'\n    at /work/qa/tests/panel-navigation.spec.mjs:103:3",
+                    "location": {
+                      "file": "/work/qa/tests/panel-navigation.spec.mjs",
+                      "column": 3,
+                      "line": 103
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 101 |\u001b[39m\n \u001b[90m 102 |\u001b[39m   \u001b[36mconst\u001b[39m ariaSnapshot \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'body'\u001b[39m)\u001b[33m.\u001b[39mariaSnapshot()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 103 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mscreenshot({ path\u001b[33m:\u001b[39m path\u001b[33m.\u001b[39mjoin(outDir\u001b[33m,\u001b[39m \u001b[32m'actual.png'\u001b[39m)\u001b[33m,\u001b[39m fullPage\u001b[33m:\u001b[39m \u001b[36mtrue\u001b[39m\u001b[33m,\u001b[39m animations\u001b[33m:\u001b[39m \u001b[32m'disabled'\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 104 |\u001b[39m   \u001b[36mawait\u001b[39m fs\u001b[33m.\u001b[39mwriteFile(path\u001b[33m.\u001b[39mjoin(outDir\u001b[33m,\u001b[39m \u001b[32m'aria-snapshot.yml'\u001b[39m)\u001b[33m,\u001b[39m \u001b[32m`${ariaSnapshot}\\n`\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'utf8'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 105 |\u001b[39m   \u001b[36mawait\u001b[39m fs\u001b[33m.\u001b[39mwriteFile(path\u001b[33m.\u001b[39mjoin(outDir\u001b[33m,\u001b[39m \u001b[32m'metadata.json'\u001b[39m)\u001b[33m,\u001b[39m \u001b[32m`${JSON.stringify({\u001b[39m\n \u001b[90m 106 |\u001b[39m \u001b[32m    schemaVersion: 1,\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/panel-navigation.spec.mjs",
+                        "column": 3,
+                        "line": 103
+                      },
+                      "message": "Error: EACCES: permission denied, open '/work/artifacts/qa/panel-navigation/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-production/actual.png'\n\n  101 |\n  102 |   const ariaSnapshot = await page.locator('body').ariaSnapshot();\n> 103 |   await page.screenshot({ path: path.join(outDir, 'actual.png'), fullPage: true, animations: 'disabled' });\n      |   ^\n  104 |   await fs.writeFile(path.join(outDir, 'aria-snapshot.yml'), `${ariaSnapshot}\\n`, 'utf8');\n  105 |   await fs.writeFile(path.join(outDir, 'metadata.json'), `${JSON.stringify({\n  106 |     schemaVersion: 1,\n    at /work/qa/tests/panel-navigation.spec.mjs:103:3"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:25:39.097Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/work/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results/panel-navigation-PANEL-NAV-99ae1-palette-actions-stay-hidden-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results/panel-navigation-PANEL-NAV-99ae1-palette-actions-stay-hidden-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results/panel-navigation-PANEL-NAV-99ae1-palette-actions-stay-hidden-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results/panel-navigation-PANEL-NAV-99ae1-palette-actions-stay-hidden-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/panel-navigation.spec.mjs",
+                    "column": 3,
+                    "line": 103
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "2e6334960ad6d7e294c4-c2c7aa5ed6ca0ca72e2a",
+          "file": "panel-navigation.spec.mjs",
+          "line": 27,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T04:25:38.718Z",
+    "duration": 3009.895,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

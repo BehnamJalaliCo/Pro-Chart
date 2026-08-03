@@ -1,0 +1,17 @@
+services:
+  api:
+    image: prochart-api:rollback-referral-20260715T042151Z
+  data-feed:
+    image: prochart-data-feed:rollback-referral-20260715T042151Z
+  crypto-ws:
+    image: prochart-crypto-ws:rollback-referral-20260715T042151Z
+  finnhub-ws:
+    image: prochart-finnhub-ws:rollback-referral-20260715T042151Z
+  news-worker:
+    image: prochart-news-worker:rollback-referral-20260715T042151Z
+  frontend-prochart:
+    image: prochart-frontend-prochart:rollback-referral-20260715T042151Z
+  user-frontend:
+    image: prochart-user:rollback-referral-20260715T042151Z
+  admin-frontend:
+    image: prochart-admin:rollback-referral-20260715T042151Z

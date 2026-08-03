@@ -1,0 +1,97 @@
+# ── پنل ادمین — panel.pro-chart.com ──────────────────────────────────────────
+# additive: بلاکِ اختصاصی برای این هاست (دقیق‌تر از server_name «_» پس اولویت دارد).
+# هم روی :80 و هم :443 سرو می‌کند تا با هر حالتِ SSL کلادفلر (Flexible/Full/Full-strict) کار کند.
+# فرانتِ SPA از کانتینرِ prochart-admin-frontend، و /api(/v1)/ با strip به سرویسِ api می‌رود.
+
+server {
+    listen 80;
+    server_name panel.pro-chart.com;
+
+    include /etc/nginx/portal-security-boundary.conf;
+
+    location /.well-known/acme-challenge/ { root /var/www/certbot; }
+
+    resolver 127.0.0.11 valid=10s ipv6=off;
+    client_max_body_size 12m;
+
+    location ~ ^/api(/v1)?/ {
+        set $up_api http://api:8000;
+        rewrite ^/api(/v1)?/(.*)$ /$2 break;
+        proxy_pass $up_api;
+        proxy_read_timeout 120s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        set $up_admin http://prochart-admin-frontend:80;
+        proxy_pass $up_admin;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name panel.pro-chart.com;
+
+    ssl_certificate     /etc/letsencrypt/live/panel.pro-chart.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/panel.pro-chart.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    include /etc/nginx/portal-security-boundary.conf;
+
+    resolver 127.0.0.11 valid=10s ipv6=off;
+    client_max_body_size 12m;
+
+    # WebSocket چتِ لایو
+    location ~ ^/api(/v1)?/live/ws/ {
+        set $up_api http://api:8000;
+        rewrite ^/api(/v1)?/(.*)$ /$2 break;
+        proxy_pass $up_api;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_read_timeout 86400;
+    }
+
+    # REST API — حذفِ پیشوندِ /api یا /api/v1 و فوروارد به بک‌اند
+    location ~ ^/api(/v1)?/ {
+        set $up_api http://api:8000;
+        rewrite ^/api(/v1)?/(.*)$ /$2 break;
+        proxy_pass $up_api;
+        proxy_read_timeout 120s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # استریمِ قیمتِ زنده (WebSocket)
+    location /ws/ {
+        set $up_api http://api:8000;
+        proxy_pass $up_api;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_read_timeout 86400;
+    }
+
+    # فرانتِ SPA پنل
+    location / {
+        set $up_admin http://prochart-admin-frontend:80;
+        proxy_pass $up_admin;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

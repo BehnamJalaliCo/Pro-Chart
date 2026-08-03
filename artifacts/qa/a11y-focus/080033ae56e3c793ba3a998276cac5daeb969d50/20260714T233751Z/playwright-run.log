@@ -1,0 +1,49 @@
+
+Running 1 test using 1 worker
+
+[1/1] [chromium-mobile] › tests/onboarding-focus.spec.mjs:16:1 › A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape
+  1) [chromium-mobile] › tests/onboarding-focus.spec.mjs:16:1 › A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+      46 |
+      47 |   const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+    > 48 |   await expect.poll(() => page.evaluate(() => window.__onboardingReturnTargetReady)).toBe(true);
+         |                                                                                      ^
+      49 |
+      50 |   const app = page.locator('.pc-approot');
+      51 |   const dialog = page.getByRole('dialog');
+        at /work/qa/tests/onboarding-focus.spec.mjs:48:86
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [chromium-mobile] › tests/onboarding-focus.spec.mjs:16:1 › A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape 
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

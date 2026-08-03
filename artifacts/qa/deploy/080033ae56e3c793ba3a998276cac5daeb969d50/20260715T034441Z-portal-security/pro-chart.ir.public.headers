@@ -1,0 +1,17 @@
+HTTP/2 200 
+server: nginx/1.27.5
+date: Wed, 15 Jul 2026 03:45:04 GMT
+content-type: text/html
+content-length: 5590
+last-modified: Wed, 15 Jul 2026 02:51:03 GMT
+etag: "6a56f597-15d6"
+strict-transport-security: max-age=31536000; includeSubDomains
+x-frame-options: DENY
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)
+content-security-policy: default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests
+cache-control: no-cache, no-store, must-revalidate
+accept-ranges: bytes
+

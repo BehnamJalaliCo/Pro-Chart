@@ -1,0 +1,7 @@
+services:
+  api:
+    image: prochart-api:deploy-p0-20260715T092601Z
+  frontend-prochart:
+    image: prochart-frontend-prochart:deploy-p0-20260715T092601Z
+  admin-frontend:
+    image: prochart-admin:deploy-p0-20260715T092601Z

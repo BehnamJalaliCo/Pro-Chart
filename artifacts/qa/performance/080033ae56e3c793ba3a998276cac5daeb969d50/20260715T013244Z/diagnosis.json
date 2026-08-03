@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "classification": "current-candidate deterministic Chromium lab diagnosis",
+  "result": "FAIL",
+  "sourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "runnerDigest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+  "retries": 0,
+  "desktop": {
+    "lcpSampleMs": [4336, 4344, 4308],
+    "lcpLabP75Ms": 4344,
+    "activeChartFrameP95SampleMs": [22, 22, 28],
+    "activeChartFrameP95LabP75Ms": 28,
+    "failedGates": ["labLcpMs <= 2500", "activeChartFrameP95Ms < 20"]
+  },
+  "mobile": {
+    "lcpSampleMs": [4084, 4168, 4188],
+    "lcpLabP75Ms": 4188,
+    "activeChartFrameP95SampleMs": [19, 19, 19],
+    "activeChartFrameP95LabP75Ms": 19,
+    "failedGates": ["labLcpMs <= 2500"]
+  },
+  "currentEntrypoint": {
+    "javascriptResponseBodyBytes": 3719876,
+    "javascriptSha256": "cee49cabb1e68fef79090795abc7c591b5933cef36cc3c771cef5df5078d0549",
+    "desktopDomContentLoadedSample01Ms": 3924.9,
+    "desktopFirstContentfulPaintSample01Ms": 4224,
+    "desktopLcpElementSample01": "img.pc-launch__logo"
+  },
+  "comparison": {
+    "priorRun": "artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T235150Z",
+    "priorSourceFingerprint": "94dff33b4eaf949e2a0d4df83a931e34a528ccd9d03ad9ce6b40caf1cc03fc6a",
+    "priorJavascriptResponseBodyBytes": 2129858,
+    "priorDesktopDomContentLoadedSample01Ms": 118,
+    "priorDesktopLcpSample01Ms": 380,
+    "comparability": "diagnostic only because the source fingerprints and entrypoint bytes differ"
+  },
+  "inference": "The larger current JavaScript response and delayed DOMContentLoaded/FCP are strongly correlated with the LCP regression, but this run alone does not prove which source or obfuscation transform caused the increase.",
+  "fieldCoreWebVitalsEquivalent": false,
+  "qualification": "No threshold was relaxed and no rerun was substituted for the failed samples."
+}

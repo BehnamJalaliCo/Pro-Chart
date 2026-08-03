@@ -1,0 +1,974 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/performance-baseline.spec.mjs",
+      "--repeat-each=3"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results",
+        "repeatEach": 3,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results",
+        "repeatEach": 3,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "performance-baseline.spec.mjs",
+      "file": "performance-baseline.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5785,
+                  "error": {
+                    "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79",
+                    "location": {
+                      "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                      "column": 79,
+                      "line": 683
+                    },
+                    "snippet": "  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "column": 79,
+                        "line": 683
+                      },
+                      "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:49:47.726Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "column": 79,
+                    "line": 683
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-bf0738c9e34edc89ded6",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 602,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 258,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:49:55.312Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 602,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-01433e06e4badac3b2a8",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5509,
+                  "error": {
+                    "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": 20,\u001b[39m\n\u001b[31m+     \"evidence\": \"active-chart rAF interval proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"activeChartFrameP95Ms\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 20,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": 20,\u001b[39m\n\u001b[31m+     \"evidence\": \"active-chart rAF interval proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"activeChartFrameP95Ms\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 20,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79",
+                    "location": {
+                      "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                      "column": 79,
+                      "line": 683
+                    },
+                    "snippet": "  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "column": 79,
+                        "line": 683
+                      },
+                      "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": 20,\u001b[39m\n\u001b[31m+     \"evidence\": \"active-chart rAF interval proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"activeChartFrameP95Ms\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 20,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:49:56.173Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat1/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat1/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat1/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat1/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "column": 79,
+                    "line": 683
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-35915efd927af966ac2b",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 602,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 236,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:50:03.011Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 602,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-desktop-repeat1/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-desktop-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-4d7cc39f55017eca266c",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5838,
+                  "error": {
+                    "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": 20,\u001b[39m\n\u001b[31m+     \"evidence\": \"active-chart rAF interval proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"activeChartFrameP95Ms\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 20,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": 20,\u001b[39m\n\u001b[31m+     \"evidence\": \"active-chart rAF interval proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"activeChartFrameP95Ms\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 20,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79",
+                    "location": {
+                      "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                      "column": 79,
+                      "line": 683
+                    },
+                    "snippet": "  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "column": 79,
+                        "line": 683
+                      },
+                      "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": 20,\u001b[39m\n\u001b[31m+     \"evidence\": \"active-chart rAF interval proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"activeChartFrameP95Ms\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 20,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:50:03.805Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat2/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat2/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat2/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat2/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "column": 79,
+                    "line": 683
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-a1cad8b98c49fce2a144",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 602,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 287,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:50:11.411Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 602,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-desktop-repeat2/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-desktop-repeat2/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-a94d4fc7b2d5b8c8e331",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 602,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 280,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:50:12.267Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 602,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-8ad7621dc134b8faaac3",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6219,
+                  "error": {
+                    "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79",
+                    "location": {
+                      "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                      "column": 79,
+                      "line": 683
+                    },
+                    "snippet": "  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "column": 79,
+                        "line": 683
+                      },
+                      "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:50:12.699Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "column": 79,
+                    "line": 683
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-357dd4b286910aa3ebe1",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 602,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 322,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:50:20.221Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 602,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-mobile-repeat1/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-mobile-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-1265e06b5dd42f436b68",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5665,
+                  "error": {
+                    "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79",
+                    "location": {
+                      "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                      "column": 79,
+                      "line": 683
+                    },
+                    "snippet": "  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "column": 79,
+                        "line": 683
+                      },
+                      "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:50:20.683Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat1/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat1/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat1/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat1/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "column": 79,
+                    "line": 683
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-b6b625100c4881dedb9b",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 602,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 337,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:50:27.657Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 602,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-mobile-repeat2/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-mobile-repeat2/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-dc8648492df7df4a638e",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6350,
+                  "error": {
+                    "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79",
+                    "location": {
+                      "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                      "column": 79,
+                      "line": 683
+                    },
+                    "snippet": "  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "column": 79,
+                        "line": 683
+                      },
+                      "message": "Error: numeric performance gates\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 12\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"actual\": null,\u001b[39m\n\u001b[31m+     \"evidence\": \"local navigation lab proxy\",\u001b[39m\n\u001b[31m+     \"metric\": \"labTtfbMs\",\u001b[39m\n\u001b[31m+     \"operator\": \"<\",\u001b[39m\n\u001b[31m+     \"pass\": false,\u001b[39m\n\u001b[31m+     \"result\": \"FAIL\",\u001b[39m\n\u001b[31m+     \"threshold\": 800,\u001b[39m\n\u001b[31m+     \"unit\": \"ms\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  681 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);\n  682 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);\n> 683 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);\n      |                                                                               ^\n  684 |       result = 'PASS';\n  685 |     } catch (error) {\n  686 |       failure = safeError(error);\n    at /work/qa/tests/performance-baseline.spec.mjs:683:79"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:50:28.165Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat2/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat2/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat2/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234927Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat2/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "column": 79,
+                    "line": 683
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-ef29c4c0964068f968e8",
+          "file": "performance-baseline.spec.mjs",
+          "line": 601,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-14T23:49:47.257Z",
+    "duration": 48313.127,
+    "expected": 0,
+    "skipped": 6,
+    "unexpected": 6,
+    "flaky": 0
+  }
+}

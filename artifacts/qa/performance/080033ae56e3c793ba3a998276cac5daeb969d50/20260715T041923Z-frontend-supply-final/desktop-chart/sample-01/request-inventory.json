@@ -1,0 +1,163 @@
+[
+  {
+    "method": "GET",
+    "pathname": "/",
+    "queryKeys": [],
+    "resourceType": "document",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 476,
+      "responseBodySize": 2645,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089164716.6472,
+      "domainLookupStart": 25.88,
+      "domainLookupEnd": 25.912,
+      "connectStart": 25.912,
+      "secureConnectionStart": 26.137,
+      "connectEnd": 28.012,
+      "requestStart": 28.328,
+      "responseStart": 29.602,
+      "responseEnd": 37.119
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/iranyekanx.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 384,
+      "responseBodySize": 1233,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089164770.54,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.319,
+      "responseStart": 2.895,
+      "responseEnd": 20.951
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/ravagh.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 380,
+      "responseBodySize": 1284,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089164770.848,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.377,
+      "responseStart": 3.007,
+      "responseEnd": 21.694
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/anjoman.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 381,
+      "responseBodySize": 1239,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089164771.3389,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.921,
+      "responseStart": 4.431,
+      "responseEnd": 23.515
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/fonts/vazirmatn.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 383,
+      "responseBodySize": 1223,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089164778.162,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.487,
+      "responseStart": 2.607,
+      "responseEnd": 27.349
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/assets/index-BDC3pT6H.css",
+    "queryKeys": [],
+    "resourceType": "stylesheet",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 422,
+      "responseBodySize": 19747,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089164778.842,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 0.924,
+      "responseStart": 4.039,
+      "responseEnd": 29.936
+    }
+  },
+  {
+    "method": "GET",
+    "pathname": "/assets/index-Cv9sgCx6.js",
+    "queryKeys": [],
+    "resourceType": "script",
+    "sizes": {
+      "requestBodySize": 0,
+      "requestHeadersSize": 406,
+      "responseBodySize": 889114,
+      "responseHeadersSize": 0
+    },
+    "timing": {
+      "startTime": 1784089164778.703,
+      "domainLookupStart": -1,
+      "domainLookupEnd": -1,
+      "connectStart": -1,
+      "secureConnectionStart": -1,
+      "connectEnd": -1,
+      "requestStart": 1.127,
+      "responseStart": 7.003,
+      "responseEnd": 69.243
+    }
+  }
+]

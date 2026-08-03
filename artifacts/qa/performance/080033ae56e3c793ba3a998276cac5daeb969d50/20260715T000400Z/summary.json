@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "classification": "deterministic Chromium lab regression",
+  "fieldCoreWebVitalsEquivalent": false,
+  "fieldEquivalenceWarning": "labP75 is only the nearest-rank p75 of this small synthetic repeat set; it is not RUM or a field Core Web Vitals p75.",
+  "baseline": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "0de4e70facc1e0d813235c0e2d0c64f059974fcdcdc06ff8df306552de3af5de",
+  "runId": "20260715T000400Z",
+  "result": "FAIL",
+  "expectedSamplesPerScenario": 3,
+  "scenarios": {
+    "desktop-chart": {
+      "sampleCount": 3,
+      "samples": [
+        {
+          "sampleId": "sample-01",
+          "relativePath": "desktop-chart/sample-01/metrics.json",
+          "metricsSha256": "555e188a2b235350c30a35a5713efe0bc49e3fc6a2b6b6b42c5efe0ad02cda56",
+          "result": "FAIL",
+          "gateResult": "FAIL"
+        },
+        {
+          "sampleId": "sample-02",
+          "relativePath": "desktop-chart/sample-02/metrics.json",
+          "metricsSha256": "77c6ad038cfbdb24c3421f9cf80056d7dbd3ed3bc95531ad5bb876f3a6e07c7f",
+          "result": "FAIL",
+          "gateResult": "FAIL"
+        },
+        {
+          "sampleId": "sample-03",
+          "relativePath": "desktop-chart/sample-03/metrics.json",
+          "metricsSha256": "0b41364367c9a4b07f7b0ff51e2fc49d6682abd483a17aed8588709a22bb9195",
+          "result": "FAIL",
+          "gateResult": "FAIL"
+        }
+      ],
+      "aggregateGates": [
+        {
+          "metric": "labLcpMs",
+          "sampleValues": [
+            4240,
+            4220,
+            4164
+          ],
+          "min": 4164,
+          "median": 4220,
+          "labP75": 4240,
+          "max": 4240,
+          "operator": "<=",
+          "threshold": 2500,
+          "unit": "ms",
+          "allSamplesPass": false,
+          "labP75Pass": false,
+          "result": "FAIL"
+        },
+        {
+          "metric": "labCls",
+          "sampleValues": [
+            0.092,
+            0.072,
+            0.092
+          ],
+          "min": 0.072,
+          "median": 0.092,
+          "labP75": 0.092,
+          "max": 0.092,
+          "operator": "<=",
+          "threshold": 0.1,
+          "unit": "score",
+          "allSamplesPass": true,
+          "labP75Pass": true,
+          "result": "PASS"
+        },
+        {
+          "metric": "labTtfbMs",
+          "sampleValues": [
+            0.7,
+            0.5,
+            0.5
+          ],
+          "min": 0.5,
+          "median": 0.5,
+          "labP75": 0.7,
+          "max": 0.7,
+          "operator": "<",
+          "threshold": 800,
+          "unit": "ms",
+          "allSamplesPass": true,
+          "labP75Pass": true,
+          "result": "PASS"
+        },
+        {
+          "metric": "activeChartFrameP95Ms",
+          "sampleValues": [
+            21,
+            21,
+            20
+          ],
+          "min": 20,
+          "median": 21,
+          "labP75": 21,
+          "max": 21,
+          "operator": "<",
+          "threshold": 20,
+          "unit": "ms",
+          "allSamplesPass": false,
+          "labP75Pass": false,
+          "result": "FAIL"
+        },
+        {
+          "metric": "layoutRestoreAfterShellMs",
+          "sampleValues": [
+            84,
+            98,
+            75
+          ],
+          "min": 75,
+          "median": 84,
+          "labP75": 98,
+          "max": 98,
+          "operator": "<",
+          "threshold": 2000,
+          "unit": "ms",
+          "allSamplesPass": true,
+          "labP75Pass": true,
+          "result": "PASS"
+        }
+      ]
+    },
+    "mobile-chart": {
+      "sampleCount": 3,
+      "samples": [
+        {
+          "sampleId": "sample-01",
+          "relativePath": "mobile-chart/sample-01/metrics.json",
+          "metricsSha256": "f4ac356ed6f734ad6b63dcc313eb21648c6ccc76d7d57d5adc9e4ed9ddba845f",
+          "result": "FAIL",
+          "gateResult": "FAIL"
+        },
+        {
+          "sampleId": "sample-02",
+          "relativePath": "mobile-chart/sample-02/metrics.json",
+          "metricsSha256": "f54a6de530e59999ab0d4381dfc52fda4b244e783e228c1aac515ffde8a60f61",
+          "result": "FAIL",
+          "gateResult": "FAIL"
+        },
+        {
+          "sampleId": "sample-03",
+          "relativePath": "mobile-chart/sample-03/metrics.json",
+          "metricsSha256": "87bc47792c6886de999a9c71bfa690666f426e69b28dba084005ba3f58a53c0a",
+          "result": "FAIL",
+          "gateResult": "FAIL"
+        }
+      ],
+      "aggregateGates": [
+        {
+          "metric": "labLcpMs",
+          "sampleValues": [
+            4252,
+            4268,
+            4168
+          ],
+          "min": 4168,
+          "median": 4252,
+          "labP75": 4268,
+          "max": 4268,
+          "operator": "<=",
+          "threshold": 2500,
+          "unit": "ms",
+          "allSamplesPass": false,
+          "labP75Pass": false,
+          "result": "FAIL"
+        },
+        {
+          "metric": "labCls",
+          "sampleValues": [
+            0.005,
+            0.005,
+            0.005
+          ],
+          "min": 0.005,
+          "median": 0.005,
+          "labP75": 0.005,
+          "max": 0.005,
+          "operator": "<=",
+          "threshold": 0.1,
+          "unit": "score",
+          "allSamplesPass": true,
+          "labP75Pass": true,
+          "result": "PASS"
+        },
+        {
+          "metric": "labTtfbMs",
+          "sampleValues": [
+            0.6,
+            0.6,
+            0.5
+          ],
+          "min": 0.5,
+          "median": 0.6,
+          "labP75": 0.6,
+          "max": 0.6,
+          "operator": "<",
+          "threshold": 800,
+          "unit": "ms",
+          "allSamplesPass": true,
+          "labP75Pass": true,
+          "result": "PASS"
+        },
+        {
+          "metric": "activeChartFrameP95Ms",
+          "sampleValues": [
+            18,
+            26,
+            17
+          ],
+          "min": 17,
+          "median": 18,
+          "labP75": 26,
+          "max": 26,
+          "operator": "<",
+          "threshold": 20,
+          "unit": "ms",
+          "allSamplesPass": false,
+          "labP75Pass": false,
+          "result": "FAIL"
+        },
+        {
+          "metric": "layoutRestoreAfterShellMs",
+          "sampleValues": [
+            38,
+            47,
+            44
+          ],
+          "min": 38,
+          "median": 44,
+          "labP75": 47,
+          "max": 47,
+          "operator": "<",
+          "threshold": 2000,
+          "unit": "ms",
+          "allSamplesPass": true,
+          "labP75Pass": true,
+          "result": "PASS"
+        }
+      ]
+    }
+  },
+  "securityScan": {
+    "tool": "gitleaks",
+    "report": "gitleaks.json",
+    "findingCount": 0,
+    "result": "PASS"
+  },
+  "integrityManifest": "SHA256SUMS"
+}

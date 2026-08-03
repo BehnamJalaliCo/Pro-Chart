@@ -1,0 +1,37 @@
+[
+  {
+    "service": "crypto-ws",
+    "imageName": "prochart-crypto-ws",
+    "oldImageId": "sha256:04e08b83e1ad3b219ffd24d81eb8d04bd07fb44c0531d823eefaa9eb28ac747c",
+    "oldContainerId": "282363c62d677ce7682646099cd2cbc597240e6c3fb5d9ed97ed3ce362505277",
+    "rollbackTag": "prochart-crypto-ws:rollback-20260715T032310Z"
+  },
+  {
+    "service": "finnhub-ws",
+    "imageName": "prochart-finnhub-ws",
+    "oldImageId": "sha256:32a1a12b36616502eb127e37e8bbb210e4dca8fc6bd37b210b989f85c5f2330c",
+    "oldContainerId": "23e041453e9c5818cbfc331a688bd4cee4bd09309a37c07766d30ef950a311f9",
+    "rollbackTag": "prochart-finnhub-ws:rollback-20260715T032310Z"
+  },
+  {
+    "service": "data-feed",
+    "imageName": "prochart-data-feed",
+    "oldImageId": "sha256:54b56fa44a9f04ddeaf0e8616bf937d574b6e4e559338461db1690c2a906d284",
+    "oldContainerId": "b35849d71e5d03954f7f51148c21838501b2afda4c0e9709acfd94c343743674",
+    "rollbackTag": "prochart-data-feed:rollback-20260715T032310Z"
+  },
+  {
+    "service": "news-worker",
+    "imageName": "prochart-news-worker",
+    "oldImageId": "sha256:467a6fd22f0c55271334be87764c3433b14899a9fc9249979a517032054365c4",
+    "oldContainerId": "d8f8dcf74e0fbbe45cc4706c0f2ae114dfae0f65ffc5358cb7f3c27fad5099e8",
+    "rollbackTag": "prochart-news-worker:rollback-20260715T032310Z"
+  },
+  {
+    "service": "api",
+    "imageName": "prochart-api",
+    "oldImageId": "sha256:d703a78a20c5f1d331947dba765de0f64ec0797f81f42412fb2b0ffeeefea3aa",
+    "oldContainerId": "ead82789f8e72fc53f6231e3212c59462e945d304edafc8272ae20b9535aaf26",
+    "rollbackTag": "prochart-api:rollback-20260715T032310Z"
+  }
+]

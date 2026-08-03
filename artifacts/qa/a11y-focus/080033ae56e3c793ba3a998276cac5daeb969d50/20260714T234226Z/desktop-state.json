@@ -1,0 +1,8 @@
+{
+  "scenario": "desktop-first-run-onboarding-disabled",
+  "project": "chromium-desktop",
+  "status": 200,
+  "dialogCount": 0,
+  "appInteractive": true,
+  "mainCount": 1
+}

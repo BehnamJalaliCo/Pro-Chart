@@ -1,0 +1,8 @@
+prochart-api-1 critical-log-patterns=
+prochart-data-feed-1 critical-log-patterns=
+prochart-crypto-ws-1 critical-log-patterns=
+prochart-finnhub-ws-1 critical-log-patterns=
+prochart-news-worker-1 critical-log-patterns=
+prochart-frontend-prochart-1 critical-log-patterns=
+prochart-user-frontend critical-log-patterns=
+prochart-admin-frontend critical-log-patterns=

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "scope": "onboarding-dialog-focus-and-modality",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260714T234226Z",
+  "sourceFingerprint": "94dff33b4eaf949e2a0d4df83a931e34a528ccd9d03ad9ce6b40caf1cc03fc6a",
+  "files": {
+    "product": {
+      "path": "frontend/prochart/src/app/Onboarding.jsx",
+      "sha256": "06c9ecab3c78c52a3bf8ada590f777350d29498ca56797d6afdc3b829330dfcf"
+    },
+    "test": {
+      "path": "qa/tests/onboarding-focus.spec.mjs",
+      "sha256": "c16ea6d2f1a9cc418c7e9aef3c326b33c8b2ae4b676fed2c5b62b853ff0afe4c"
+    }
+  },
+  "build": {
+    "mode": "isolated NO_OBF=1 production build",
+    "node": "v20.20.2",
+    "passed": true,
+    "javascriptSha256": "527b454d9d130858d085cf4ca4523f7b4d7c725e47b43165158ae93a2b14ffed",
+    "shippingObfuscated": {
+      "passed": true,
+      "javascriptSha256": "325b5fb91a2de407e6468ba9ff788edc3f66022697893de6dd37f84d67c3f066",
+      "runtimeFocusTested": true
+    }
+  },
+  "validation": {
+    "focusSuite": {
+      "expected": 2,
+      "skippedByViewport": 2,
+      "unexpected": 0,
+      "durationMs": 12901.063
+    },
+    "postOnboardingLandmarks": {
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "durationMs": 5386.525
+    },
+    "shippingObfuscatedFocus": {
+      "expected": 1,
+      "skippedByViewport": 1,
+      "unexpected": 0,
+      "durationMs": 16220.367
+    },
+    "axe": {
+      "version": "4.10.3",
+      "targetedViolations": 0
+    },
+    "gitleaks": {
+      "version": "8.30.1",
+      "findings": 0,
+      "redactedReport": true
+    },
+    "unexpectedMutatingRequests": 0
+  }
+}

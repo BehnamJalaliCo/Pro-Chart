@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "event": "20260715T084924Z-referral-a11y",
+  "containerCreatedAtUtc": "2026-07-15T08:49:40.303191339Z",
+  "service": "user-frontend",
+  "result": "PASS",
+  "imageBefore": "sha256:6a5c2512392cdb8257c804a0ca116c4fed9ce4186fd9a6e2685c313d1dcf6216",
+  "imageAfter": "sha256:3ebdde7b42374c1d44d8a88e767575ec5f82d9069aae4d92eb208dcd1bd0aa8d",
+  "deployTag": "prochart-user:deploy-referral-a11y-20260715T084924Z",
+  "rollbackTag": "prochart-user:rollback-referral-a11y-20260715T084924Z",
+  "rollbackActivated": false,
+  "health": {
+    "status": "healthy",
+    "firstRetainedSuccessfulProbeAtUtc": "2026-07-15T08:51:11.651625309Z",
+    "restartCount": 0,
+    "httpsStatus": 200,
+    "criticalLogMatches": 0
+  },
+  "compose": {
+    "runningServices": 11,
+    "unhealthyServices": 0
+  },
+  "productionBrowser": {
+    "userConnect": { "passed": 4, "failed": 0, "skipped": 0 },
+    "userPlacementMatrix": { "passed": 16, "failed": 0, "skipped": 0 }
+  },
+  "securityHeaders": {
+    "strictTransportSecurity": true,
+    "xFrameOptions": true,
+    "xContentTypeOptions": true,
+    "referrerPolicy": true,
+    "permissionsPolicy": true,
+    "contentSecurityPolicy": true
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "pathCount": 421,
+  "methodPathCount": 475,
+  "mt5Connect": {
+    "present": true,
+    "requestBody": null,
+    "security": null
+  },
+  "forexSettingsPostPresent": true,
+  "realOrderPresent": true
+}

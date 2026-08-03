@@ -1,0 +1,9 @@
+{
+  "healthHttpStatus": 200,
+  "openapiHttpStatus": 200,
+  "aiSignalRoutePresent": false,
+  "liveImageId": "sha256:d703a78a20c5f1d331947dba765de0f64ec0797f81f42412fb2b0ffeeefea3aa",
+  "containerHealth": "healthy",
+  "prochartRunningContainerCount": 11,
+  "result": "FAIL"
+}

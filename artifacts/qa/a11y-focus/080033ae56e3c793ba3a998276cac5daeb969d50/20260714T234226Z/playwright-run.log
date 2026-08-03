@@ -1,0 +1,14 @@
+
+Running 4 tests using 1 worker
+
+[1/4] [chromium-desktop] › tests/onboarding-focus.spec.mjs:16:1 › A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape
+[2/4] [chromium-desktop] › tests/onboarding-focus.spec.mjs:153:1 › A11Y-FOCUS: first-run desktop web keeps onboarding disabled and the app interactive
+[3/4] [chromium-mobile] › tests/onboarding-focus.spec.mjs:16:1 › A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape
+[4/4] [chromium-mobile] › tests/onboarding-focus.spec.mjs:153:1 › A11Y-FOCUS: first-run desktop web keeps onboarding disabled and the app interactive
+  2 skipped
+  2 passed (12.9s)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "scope": "current-candidate watchlist and onboarding keyboard interactions",
+  "evidenceStatus": "CURRENT_CANDIDATE",
+  "result": "PASS_WITH_INTENTIONAL_DEVICE_SKIPS",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T012351Z",
+  "sourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "playwright": {
+    "version": "1.61.0",
+    "runnerDigest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+    "expected": 6,
+    "intentionalDeviceSkips": 6,
+    "unexpected": 0,
+    "flaky": 0,
+    "retries": 0,
+    "durationMs": 59943.727
+  },
+  "coverage": [
+    "Watchlist list/table mouse and keyboard selection, context menu, geometry, flag and delete isolation on desktop.",
+    "Mobile onboarding focus trap, inert shell, Tab/Shift+Tab wrapping, Escape close, and focus restoration.",
+    "Desktop first-run onboarding suppression and interactive shell."
+  ],
+  "qualification": "These focused cases do not constitute a complete pointer-free walkthrough of every P0 workflow.",
+  "sealedAtUtc": "2026-07-15T01:28:45Z"
+}

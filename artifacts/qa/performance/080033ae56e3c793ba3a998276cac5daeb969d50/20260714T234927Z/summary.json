@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "classification": "invalid pre-canonical harness attempt",
+  "fieldCoreWebVitalsEquivalent": false,
+  "baseline": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "94dff33b4eaf949e2a0d4df83a931e34a528ccd9d03ad9ce6b40caf1cc03fc6a",
+  "runId": "20260714T234927Z",
+  "result": "INVALID_HARNESS_ATTEMPT",
+  "reason": "The first harness revision relied on direct navigation/paint entry lists, which were empty in this clocked Chromium context. It failed closed because TTFB was unavailable. Observer-based navigation/paint capture plus an independent document-request timing record were added before the canonical run.",
+  "playwrightResult": {
+    "failed": 6,
+    "skipped": 6,
+    "passed": 0
+  },
+  "supersededBy": "../20260714T235150Z",
+  "securityScan": {
+    "tool": "gitleaks",
+    "report": "gitleaks.json",
+    "target": "qa",
+    "retrospective": true
+  },
+  "integrityManifest": "SHA256SUMS",
+  "baselineEligible": false
+}

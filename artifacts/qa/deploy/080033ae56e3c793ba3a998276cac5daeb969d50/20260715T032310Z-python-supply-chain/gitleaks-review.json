@@ -1,0 +1,12 @@
+{
+  "status": "reviewed-false-positives",
+  "findingCount": 1,
+  "findings": [
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/prior-images.tsv",
+      "line": 5,
+      "reason": "Docker content-addressed image digest"
+    }
+  ]
+}

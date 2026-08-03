@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "containerId": "663ec7af2e2e4120e8cddb0ce6743f69e2b37548337c24a13915012cae624f89",
+  "imageId": "sha256:3d77c7fe483fd6d74b842cdaf4631128a81c20139c863abd2e0623cd38fd4a8a",
+  "state": "running",
+  "health": "healthy",
+  "restartCount": 0,
+  "indexAndAssetHashParity": true,
+  "localHttp": true,
+  "localHttps": true,
+  "publicEdge": true,
+  "browserExpected": 1,
+  "browserPassed": 1,
+  "legacyRedirects": {
+    "/signals": "/ai-signals",
+    "/visitors": "/analytics"
+  },
+  "unsupportedActionableCount": 0,
+  "browserEvidence": "artifacts/qa/panel-navigation/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T033248Z-production"
+}

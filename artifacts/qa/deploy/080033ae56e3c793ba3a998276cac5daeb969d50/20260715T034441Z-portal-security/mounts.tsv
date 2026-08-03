@@ -1,0 +1,6 @@
+/home/bazaarnama/Pro-Chart/app/nginx/portal-security-boundary.conf 	 /etc/nginx/portal-security-boundary.conf 	 false
+/etc/letsencrypt 	 /etc/letsencrypt 	 false
+/var/www/certbot 	 /var/www/certbot 	 false
+/home/bazaarnama/Pro-Chart/app/nginx/panel.conf 	 /etc/nginx/conf.d/panel.conf 	 false
+/home/bazaarnama/Pro-Chart/app/nginx/user-panel.conf 	 /etc/nginx/conf.d/user-panel.conf 	 false
+

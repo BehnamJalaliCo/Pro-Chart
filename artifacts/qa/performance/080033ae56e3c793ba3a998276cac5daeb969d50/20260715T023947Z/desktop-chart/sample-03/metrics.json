@@ -1,0 +1,1658 @@
+{
+  "schemaVersion": 1,
+  "requirementIds": [
+    "PC-138",
+    "PC-140",
+    "PC-141"
+  ],
+  "scenario": "desktop-chart",
+  "sampleId": "sample-03",
+  "project": "chromium-desktop",
+  "baseline": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "549c7d78aab7a89ac04655ff6deb82dfbe943614fb054b017ad3c9efc3452132",
+  "runId": "20260715T023947Z",
+  "result": "PASS",
+  "failure": null,
+  "fixture": {
+    "id": "prochart-synthetic-market-v1",
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "fixedAt": "2026-07-14T12:34:56.000Z",
+    "provenance": "Fully synthetic QA data; no production or customer records."
+  },
+  "methodology": {
+    "classification": "deterministic Chromium lab regression",
+    "fieldCoreWebVitalsEquivalent": false,
+    "fieldEquivalenceWarning": "These synthetic, unthrottled, local Chromium observations are not RUM and are not a field p75 Core Web Vitals result.",
+    "sampleFrameCount": 120,
+    "observerWindowEndsAfterFrameSampling": true
+  },
+  "metrics": {
+    "navigation": {
+      "startTime": 0,
+      "fetchStart": 0.2,
+      "requestStart": 7.6,
+      "responseStart": 9.1,
+      "responseEnd": 10.7,
+      "domInteractive": 26.2,
+      "domContentLoadedEventEnd": 242,
+      "loadEventEnd": 242.3,
+      "duration": 242.3,
+      "ttfbFromRequestStartMs": 1.5,
+      "ttfbFromFetchStartMs": 8.9,
+      "transferSize": 1942,
+      "encodedBodySize": 1642,
+      "decodedBodySize": 5590,
+      "type": "navigate"
+    },
+    "paints": {
+      "first-paint": 340,
+      "first-contentful-paint": 444
+    },
+    "webVitalLabObservations": {
+      "lcpMs": 544,
+      "lcpEntry": {
+        "startTime": 544,
+        "renderTime": 544,
+        "loadTime": 301.60000014305115,
+        "size": 11165,
+        "id": null,
+        "pathname": "/logo.png",
+        "element": "img.pc-launch__logo"
+      },
+      "cls": 0.087,
+      "totalLayoutShift": 0.087,
+      "layoutShifts": [
+        {
+          "startTime": 475.10000014305115,
+          "duration": 0,
+          "value": 0.0005301997599451302,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": "div.flex.items-center.gap-0.5",
+              "previousRect": {
+                "x": 965.234375,
+                "y": 6,
+                "width": 242,
+                "height": 38,
+                "top": 6,
+                "right": 1207.234375,
+                "bottom": 44,
+                "left": 965.234375
+              },
+              "currentRect": {
+                "x": 957.34375,
+                "y": 6,
+                "width": 242,
+                "height": 38,
+                "top": 6,
+                "right": 1199.34375,
+                "bottom": 44,
+                "left": 957.34375
+              }
+            },
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1145,
+                "y": 157.5,
+                "width": 255,
+                "height": 14,
+                "top": 157.5,
+                "right": 1400,
+                "bottom": 171.5,
+                "left": 1145
+              },
+              "currentRect": {
+                "x": 1145,
+                "y": 156.5,
+                "width": 255,
+                "height": 14,
+                "top": 156.5,
+                "right": 1400,
+                "bottom": 170.5,
+                "left": 1145
+              }
+            },
+            {
+              "node": "button.group/tab.relative.shrink-0",
+              "previousRect": {
+                "x": 1223.53125,
+                "y": 49,
+                "width": 79.46875,
+                "height": 32.5,
+                "top": 49,
+                "right": 1303,
+                "bottom": 81.5,
+                "left": 1223.53125
+              },
+              "currentRect": {
+                "x": 1240,
+                "y": 49,
+                "width": 83,
+                "height": 32.5,
+                "top": 49,
+                "right": 1323,
+                "bottom": 81.5,
+                "left": 1240
+              }
+            },
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 886.0625,
+                "width": 231,
+                "height": 13.9375,
+                "top": 886.0625,
+                "right": 1388,
+                "bottom": 900,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 1157,
+                "y": 889.0625,
+                "width": 231,
+                "height": 10.9375,
+                "top": 889.0625,
+                "right": 1388,
+                "bottom": 900,
+                "left": 1157
+              }
+            },
+            {
+              "node": "button.group/tab.relative.shrink-0",
+              "previousRect": {
+                "x": 1163.53125,
+                "y": 49,
+                "width": 60,
+                "height": 32.5,
+                "top": 49,
+                "right": 1223.53125,
+                "bottom": 81.5,
+                "left": 1163.53125
+              },
+              "currentRect": {
+                "x": 1176,
+                "y": 49,
+                "width": 64,
+                "height": 32.5,
+                "top": 49,
+                "right": 1240,
+                "bottom": 81.5,
+                "left": 1176
+              }
+            }
+          ]
+        },
+        {
+          "startTime": 495,
+          "duration": 0,
+          "value": 0.00003864133230452675,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": "div.ml-auto.relative",
+              "previousRect": {
+                "x": 1077,
+                "y": 877.25,
+                "width": 59,
+                "height": 16.5,
+                "top": 877.25,
+                "right": 1136,
+                "bottom": 893.75,
+                "left": 1077
+              },
+              "currentRect": {
+                "x": 1035,
+                "y": 877.25,
+                "width": 101,
+                "height": 16.5,
+                "top": 877.25,
+                "right": 1136,
+                "bottom": 893.75,
+                "left": 1035
+              }
+            }
+          ]
+        },
+        {
+          "startTime": 545.6000001430511,
+          "duration": 0,
+          "value": 0.005711211630738812,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 608.0625,
+                "width": 231,
+                "height": 117,
+                "top": 608.0625,
+                "right": 1388,
+                "bottom": 725.0625,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 1157,
+                "y": 712.453125,
+                "width": 231,
+                "height": 117,
+                "top": 712.453125,
+                "right": 1388,
+                "bottom": 829.453125,
+                "left": 1157
+              }
+            },
+            {
+              "node": "div.rounded-lg.p-2.5.mb-1",
+              "previousRect": {
+                "x": 1157,
+                "y": 361,
+                "width": 231,
+                "height": 120.0625,
+                "top": 361,
+                "right": 1388,
+                "bottom": 481.0625,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 1157,
+                "y": 381,
+                "width": 231,
+                "height": 120.0625,
+                "top": 381,
+                "right": 1388,
+                "bottom": 501.0625,
+                "left": 1157
+              }
+            },
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 762.0625,
+                "width": 231,
+                "height": 90,
+                "top": 762.0625,
+                "right": 1388,
+                "bottom": 852.0625,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 1157,
+                "y": 866.453125,
+                "width": 231,
+                "height": 33.546875,
+                "top": 866.453125,
+                "right": 1388,
+                "bottom": 900,
+                "left": 1157
+              }
+            },
+            {
+              "node": "div.flex.items-center.gap-1.5",
+              "previousRect": {
+                "x": 1157,
+                "y": 333,
+                "width": 231,
+                "height": 16,
+                "top": 333,
+                "right": 1388,
+                "bottom": 349,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 1157,
+                "y": 353,
+                "width": 231,
+                "height": 16,
+                "top": 353,
+                "right": 1388,
+                "bottom": 369,
+                "left": 1157
+              }
+            },
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 889.0625,
+                "width": 231,
+                "height": 10.9375,
+                "top": 889.0625,
+                "right": 1388,
+                "bottom": 900,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            }
+          ]
+        },
+        {
+          "startTime": 601.4000000953674,
+          "duration": 0,
+          "value": 0.0799829791452332,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": "div.mt-2.border-t",
+              "previousRect": {
+                "x": 1145,
+                "y": 204,
+                "width": 255,
+                "height": 696,
+                "top": 204,
+                "right": 1400,
+                "bottom": 900,
+                "left": 1145
+              },
+              "currentRect": {
+                "x": 1145,
+                "y": 399.5,
+                "width": 255,
+                "height": 500.5,
+                "top": 399.5,
+                "right": 1400,
+                "bottom": 900,
+                "left": 1145
+              }
+            },
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 712.453125,
+                "width": 231,
+                "height": 117,
+                "top": 712.453125,
+                "right": 1388,
+                "bottom": 829.453125,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            },
+            {
+              "node": "div.flex.items-center.gap-0.5",
+              "previousRect": {
+                "x": 957.34375,
+                "y": 6,
+                "width": 242,
+                "height": 38,
+                "top": 6,
+                "right": 1199.34375,
+                "bottom": 44,
+                "left": 957.34375
+              },
+              "currentRect": {
+                "x": 952,
+                "y": 6,
+                "width": 242,
+                "height": 38,
+                "top": 6,
+                "right": 1194,
+                "bottom": 44,
+                "left": 952
+              }
+            },
+            {
+              "node": "div.rounded-lg.border.px-3",
+              "previousRect": {
+                "x": 1157,
+                "y": 866.453125,
+                "width": 231,
+                "height": 33.546875,
+                "top": 866.453125,
+                "right": 1388,
+                "bottom": 900,
+                "left": 1157
+              },
+              "currentRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            },
+            {
+              "node": "div.absolute.z-20.pointer-events-none",
+              "previousRect": {
+                "x": 1055,
+                "y": 813.5,
+                "width": 80,
+                "height": 32.5,
+                "top": 813.5,
+                "right": 1135,
+                "bottom": 846,
+                "left": 1055
+              },
+              "currentRect": {
+                "x": 1065,
+                "y": 461,
+                "width": 80,
+                "height": 32.5,
+                "top": 461,
+                "right": 1145,
+                "bottom": 493.5,
+                "left": 1065
+              }
+            }
+          ]
+        },
+        {
+          "startTime": 692.5,
+          "duration": 0,
+          "value": 0.00030559842249657063,
+          "hadRecentInput": false,
+          "sources": [
+            {
+              "node": "canvas",
+              "previousRect": {
+                "x": 1088,
+                "y": 49,
+                "width": 56,
+                "height": 792,
+                "top": 49,
+                "right": 1144,
+                "bottom": 841,
+                "left": 1088
+              },
+              "currentRect": {
+                "x": 1078,
+                "y": 49,
+                "width": 66,
+                "height": 792,
+                "top": 49,
+                "right": 1144,
+                "bottom": 841,
+                "left": 1078
+              }
+            },
+            {
+              "node": "td",
+              "previousRect": {
+                "x": 1088,
+                "y": 841,
+                "width": 56,
+                "height": 28,
+                "top": 841,
+                "right": 1144,
+                "bottom": 869,
+                "left": 1088
+              },
+              "currentRect": {
+                "x": 1078,
+                "y": 841,
+                "width": 66,
+                "height": 28,
+                "top": 841,
+                "right": 1144,
+                "bottom": 869,
+                "left": 1078
+              }
+            },
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1193,
+                "y": 366.5,
+                "width": 40,
+                "height": 13,
+                "top": 366.5,
+                "right": 1233,
+                "bottom": 379.5,
+                "left": 1193
+              },
+              "currentRect": {
+                "x": 1193,
+                "y": 366.5,
+                "width": 40,
+                "height": 13,
+                "top": 366.5,
+                "right": 1233,
+                "bottom": 379.5,
+                "left": 1193
+              }
+            },
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1193,
+                "y": 266.5,
+                "width": 40,
+                "height": 13,
+                "top": 266.5,
+                "right": 1233,
+                "bottom": 279.5,
+                "left": 1193
+              },
+              "currentRect": {
+                "x": 1193,
+                "y": 266.5,
+                "width": 40,
+                "height": 13,
+                "top": 266.5,
+                "right": 1233,
+                "bottom": 279.5,
+                "left": 1193
+              }
+            },
+            {
+              "node": null,
+              "previousRect": {
+                "x": 1153,
+                "y": 230.5,
+                "width": 36,
+                "height": 13,
+                "top": 230.5,
+                "right": 1189,
+                "bottom": 243.5,
+                "left": 1153
+              },
+              "currentRect": {
+                "x": 1153,
+                "y": 230.5,
+                "width": 36,
+                "height": 13,
+                "top": 230.5,
+                "right": 1189,
+                "bottom": 243.5,
+                "left": 1153
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "longTasks": {
+      "thresholdDefinitionMs": 50,
+      "count": 2,
+      "totalDurationMs": 123,
+      "maxDurationMs": 72,
+      "entries": [
+        {
+          "startTime": 170.20000004768372,
+          "duration": 72,
+          "name": "self"
+        },
+        {
+          "startTime": 248.90000009536743,
+          "duration": 51,
+          "name": "unknown"
+        }
+      ],
+      "gate": null,
+      "gateReason": "The repository requires reporting but defines no numeric count or duration ceiling."
+    },
+    "resources": {
+      "totals": {
+        "count": 46,
+        "transferSize": 1749613,
+        "encodedBodySize": 1735813,
+        "decodedBodySize": 3474442
+      },
+      "entries": [
+        {
+          "pathname": "/fonts/iranyekanx.css",
+          "initiatorType": "link",
+          "startTime": 14.9,
+          "duration": 18.7,
+          "transferSize": 1014,
+          "encodedBodySize": 714,
+          "decodedBodySize": 714
+        },
+        {
+          "pathname": "/fonts/ravagh.css",
+          "initiatorType": "link",
+          "startTime": 15.2,
+          "duration": 21.3,
+          "transferSize": 685,
+          "encodedBodySize": 385,
+          "decodedBodySize": 1915
+        },
+        {
+          "pathname": "/fonts/anjoman.css",
+          "initiatorType": "link",
+          "startTime": 15.3,
+          "duration": 21.6,
+          "transferSize": 647,
+          "encodedBodySize": 347,
+          "decodedBodySize": 1670
+        },
+        {
+          "pathname": "/fonts/vazirmatn.css",
+          "initiatorType": "link",
+          "startTime": 15.4,
+          "duration": 22.9,
+          "transferSize": 625,
+          "encodedBodySize": 325,
+          "decodedBodySize": 1561
+        },
+        {
+          "pathname": "/assets/index-BDC3pT6H.css",
+          "initiatorType": "link",
+          "startTime": 15.5,
+          "duration": 26.1,
+          "transferSize": 15852,
+          "encodedBodySize": 15552,
+          "decodedBodySize": 79848
+        },
+        {
+          "pathname": "/assets/index-C-dnyg6v.js",
+          "initiatorType": "script",
+          "startTime": 15.5,
+          "duration": 131.6,
+          "transferSize": 726577,
+          "encodedBodySize": 726277,
+          "decodedBodySize": 2396521
+        },
+        {
+          "pathname": "/logo.png",
+          "initiatorType": "img",
+          "startTime": 248.6,
+          "duration": 9.7,
+          "transferSize": 416422,
+          "encodedBodySize": 416122,
+          "decodedBodySize": 416122
+        },
+        {
+          "pathname": "/fonts/iranyekanx/IRANYekanX-Bold.woff2",
+          "initiatorType": "css",
+          "startTime": 249.6,
+          "duration": 57.8,
+          "transferSize": 29120,
+          "encodedBodySize": 28820,
+          "decodedBodySize": 28820
+        },
+        {
+          "pathname": "/api/academy/auth/bn-guest",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 309,
+          "duration": 10.3,
+          "transferSize": 338,
+          "encodedBodySize": 38,
+          "decodedBodySize": 38
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-ExtraBold.woff2",
+          "initiatorType": "css",
+          "startTime": 313.2,
+          "duration": 14.5,
+          "transferSize": 68656,
+          "encodedBodySize": 68356,
+          "decodedBodySize": 68356
+        },
+        {
+          "pathname": "/assets/bn-logo-Cylz0xjn.png",
+          "initiatorType": "img",
+          "startTime": 371.4,
+          "duration": 8.6,
+          "transferSize": 78260,
+          "encodedBodySize": 77960,
+          "decodedBodySize": 77960
+        },
+        {
+          "pathname": "/fonts/iranyekanx/IRANYekanX-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 378.8,
+          "duration": 47.8,
+          "transferSize": 26592,
+          "encodedBodySize": 26292,
+          "decodedBodySize": 26292
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-SemiBold.woff2",
+          "initiatorType": "css",
+          "startTime": 396.6,
+          "duration": 34.1,
+          "transferSize": 67628,
+          "encodedBodySize": 67328,
+          "decodedBodySize": 67328
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 464.6,
+          "duration": 15.8,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/bn/news",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 464.7,
+          "duration": 16.2,
+          "transferSize": 991,
+          "encodedBodySize": 691,
+          "decodedBodySize": 691
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 469.7,
+          "duration": 47.1,
+          "transferSize": 66452,
+          "encodedBodySize": 66152,
+          "decodedBodySize": 66152
+        },
+        {
+          "pathname": "/fonts/anjoman/AnjomanMax-SemiBold.woff2",
+          "initiatorType": "css",
+          "startTime": 473.5,
+          "duration": 44.1,
+          "transferSize": 37416,
+          "encodedBodySize": 37116,
+          "decodedBodySize": 37116
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 464.9,
+          "duration": 35.6,
+          "transferSize": 27173,
+          "encodedBodySize": 26873,
+          "decodedBodySize": 26873
+        },
+        {
+          "pathname": "/api/academy/me",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 465.3,
+          "duration": 35.6,
+          "transferSize": 399,
+          "encodedBodySize": 99,
+          "decodedBodySize": 99
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 465.5,
+          "duration": 35.7,
+          "transferSize": 17995,
+          "encodedBodySize": 17695,
+          "decodedBodySize": 17695
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 466.7,
+          "duration": 34.8,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/bn/ai-signal/quota",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 466.8,
+          "duration": 34.9,
+          "transferSize": 337,
+          "encodedBodySize": 37,
+          "decodedBodySize": 37
+        },
+        {
+          "pathname": "/api/academy/bn/ai-signal/active",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 467,
+          "duration": 34.8,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 467.1,
+          "duration": 35.7,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/chart/symbols",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 467.2,
+          "duration": 36.4,
+          "transferSize": 359,
+          "encodedBodySize": 59,
+          "decodedBodySize": 59
+        },
+        {
+          "pathname": "/api/academy/bn/watchlist",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 467.4,
+          "duration": 37.8,
+          "transferSize": 359,
+          "encodedBodySize": 59,
+          "decodedBodySize": 59
+        },
+        {
+          "pathname": "/api/academy/bn/scripts",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 467.4,
+          "duration": 41,
+          "transferSize": 328,
+          "encodedBodySize": 28,
+          "decodedBodySize": 28
+        },
+        {
+          "pathname": "/api/academy/bn/layouts",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 467.5,
+          "duration": 41.8,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/api/academy/bn/alerts",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 467.6,
+          "duration": 42.4,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/fonts/anjoman/AnjomanMax-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 541.8,
+          "duration": 28.5,
+          "transferSize": 37292,
+          "encodedBodySize": 36992,
+          "decodedBodySize": 36992
+        },
+        {
+          "pathname": "/api/academy/bn/ai-signal/active",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 538.9,
+          "duration": 3.5,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/fonts/Vazirmatn-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 592.9,
+          "duration": 34.2,
+          "transferSize": 50984,
+          "encodedBodySize": 50684,
+          "decodedBodySize": 50684
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-Medium.woff2",
+          "initiatorType": "css",
+          "startTime": 595.5,
+          "duration": 33.1,
+          "transferSize": 67368,
+          "encodedBodySize": 67068,
+          "decodedBodySize": 67068
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 625.1,
+          "duration": 6.3,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/chart/GBPUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 625.3,
+          "duration": 6.4,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/chart/USDJPY",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 625.5,
+          "duration": 9.6,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/chart/USDCHF",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 625.7,
+          "duration": 9.6,
+          "transferSize": 489,
+          "encodedBodySize": 189,
+          "decodedBodySize": 189
+        },
+        {
+          "pathname": "/api/academy/chart/XAUUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 625.9,
+          "duration": 9.6,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 626,
+          "duration": 10.1,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 677.9,
+          "duration": 3.4,
+          "transferSize": 343,
+          "encodedBodySize": 43,
+          "decodedBodySize": 43
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 1318.5,
+          "duration": 4.1,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 2018.3,
+          "duration": 4.1,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 2718.6,
+          "duration": 3.4,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 3418.8,
+          "duration": 5.2,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4118.7,
+          "duration": 4.2,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4818.9,
+          "duration": 4.4,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        }
+      ]
+    },
+    "observerSupport": {
+      "supportedEntryTypes": [
+        "element",
+        "event",
+        "first-input",
+        "largest-contentful-paint",
+        "layout-shift",
+        "long-animation-frame",
+        "longtask",
+        "mark",
+        "measure",
+        "navigation",
+        "paint",
+        "resource",
+        "visibility-state"
+      ],
+      "observerErrors": []
+    },
+    "readiness": {
+      "domContentLoadedObservedMs": 448,
+      "shellReadyMs": 732,
+      "chartReadyMs": 836,
+      "layoutRestoreAfterShellMs": 104,
+      "applicationReadyLaunchRemovedMs": 3167,
+      "fontsReadyObservedMs": 3175
+    },
+    "activeChartFrames": {
+      "sampleCount": 120,
+      "minMs": 10,
+      "meanMs": 16,
+      "medianMs": 16,
+      "p95Ms": 17,
+      "maxMs": 22,
+      "intervalsOver16_7Ms": 21,
+      "intervalsAtOrOver20Ms": 2,
+      "rawIntervalsMs": [
+        16,
+        16,
+        17,
+        16,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        18,
+        14,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        17,
+        15,
+        22,
+        10,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        20,
+        13,
+        15,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        17,
+        15,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16
+      ],
+      "semantics": "Consecutive requestAnimationFrame intervals while the synthetic chart is visible; a Chromium lab cadence proxy, not direct chart paint CPU duration."
+    },
+    "documentRequestTrace": {
+      "timing": {
+        "startTime": 1784083210262.185,
+        "domainLookupStart": 0.606,
+        "domainLookupEnd": 1.725,
+        "connectStart": 1.725,
+        "secureConnectionStart": -1,
+        "connectEnd": 2.045,
+        "requestStart": 2.27,
+        "responseStart": 3.956,
+        "responseEnd": 10.459
+      },
+      "ttfbMs": 3.956,
+      "semantics": "Playwright Request.timing responseStart for the main document, measured from request start."
+    }
+  },
+  "gates": {
+    "source": "docs/performance/PERFORMANCE_BUDGET.md",
+    "checks": [
+      {
+        "metric": "labLcpMs",
+        "actual": 544,
+        "operator": "<=",
+        "threshold": 2500,
+        "unit": "ms",
+        "evidence": "lab regression",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "labCls",
+        "actual": 0.087,
+        "operator": "<=",
+        "threshold": 0.1,
+        "unit": "score",
+        "evidence": "lab",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "labTtfbMs",
+        "actual": 1.5,
+        "operator": "<",
+        "threshold": 800,
+        "unit": "ms",
+        "evidence": "navigation timing / document request trace lab proxy",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "activeChartFrameP95Ms",
+        "actual": 17,
+        "operator": "<",
+        "threshold": 20,
+        "unit": "ms",
+        "evidence": "active-chart rAF interval proxy",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "layoutRestoreAfterShellMs",
+        "actual": 104,
+        "operator": "<",
+        "threshold": 2000,
+        "unit": "ms",
+        "evidence": "synthetic persisted-workspace E2E proxy",
+        "pass": true,
+        "result": "PASS"
+      }
+    ],
+    "result": "PASS"
+  },
+  "recordedWithoutNumericGate": {
+    "paints": [
+      "first-paint",
+      "first-contentful-paint"
+    ],
+    "applicationAndChartReadiness": true,
+    "requestCountAndBytes": true,
+    "longTasksOver50Ms": true
+  },
+  "deliberatelyNotMeasured": {
+    "inp": "No representative interaction is performed; the repository requires RUM and a separately defined lab interaction proxy.",
+    "inputFeedback": "No interaction trace in this navigation-focused baseline.",
+    "crosshairResponse": "Requires a dedicated interaction benchmark.",
+    "quoteToPaintOverhead": "Requires a timestamped streaming fixture and paint trace.",
+    "indicator10k": "Requires a worker benchmark, not a navigation run.",
+    "memoryLeak": "The budget states that its observation window and tolerance still require an ADR.",
+    "jsBundleBudget": "The budget states that a numeric JS bundle limit still requires an ADR."
+  },
+  "environment": {
+    "image": {
+      "reference": "mcr.microsoft.com/playwright@sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+      "digest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a"
+    },
+    "runtime": {
+      "node": "v24.16.0",
+      "platform": "linux",
+      "architecture": "x64",
+      "playwright": "1.61.0",
+      "browser": "chromium",
+      "browserVersion": "149.0.7827.55",
+      "osRelease": {
+        "PRETTY_NAME": "Ubuntu 24.04.4 LTS",
+        "NAME": "Ubuntu",
+        "VERSION_ID": "24.04",
+        "VERSION": "24.04.4 LTS (Noble Numbat)",
+        "VERSION_CODENAME": "noble",
+        "ID": "ubuntu",
+        "ID_LIKE": "debian",
+        "HOME_URL": "https://www.ubuntu.com/",
+        "SUPPORT_URL": "https://help.ubuntu.com/",
+        "BUG_REPORT_URL": "https://bugs.launchpad.net/ubuntu/",
+        "PRIVACY_POLICY_URL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
+        "UBUNTU_CODENAME": "noble",
+        "LOGO": "ubuntu-logo"
+      },
+      "cpuCountVisibleToNode": 8
+    },
+    "project": {
+      "name": "chromium-desktop",
+      "locale": "fa-IR",
+      "timezoneId": "UTC",
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "serviceWorkers": "block"
+    },
+    "browserEnvironment": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "hardwareConcurrency": 8,
+      "deviceMemoryGiB": null,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "language": "fa-IR",
+      "documentLanguage": "fa",
+      "documentDirection": "rtl"
+    },
+    "profile": {
+      "networkThrottling": "none; local loopback preview with synthetic API fulfillments",
+      "cpuThrottling": "none",
+      "cacheState": "new Playwright browser context per sample",
+      "referenceDeviceAdr": "missing in repository performance budget"
+    }
+  },
+  "network": {
+    "summary": {
+      "observedRequestCount": 47,
+      "completedRequestCount": 47,
+      "requestBodySize": 0,
+      "requestHeadersSize": 14640,
+      "responseBodySize": 1737885,
+      "responseHeadersSize": 8191,
+      "totalWireBytes": 1760716,
+      "byResourceType": {
+        "document": {
+          "count": 1,
+          "requestBodySize": 0,
+          "requestHeadersSize": 344,
+          "responseBodySize": 1659,
+          "responseHeadersSize": 263
+        },
+        "stylesheet": {
+          "count": 5,
+          "requestBodySize": 0,
+          "requestHeadersSize": 1308,
+          "responseBodySize": 17392,
+          "responseHeadersSize": 1439
+        },
+        "script": {
+          "count": 1,
+          "requestBodySize": 0,
+          "requestHeadersSize": 280,
+          "responseBodySize": 726853,
+          "responseHeadersSize": 304
+        },
+        "image": {
+          "count": 2,
+          "requestBodySize": 0,
+          "requestHeadersSize": 597,
+          "responseBodySize": 494082,
+          "responseHeadersSize": 536
+        },
+        "font": {
+          "count": 9,
+          "requestBodySize": 0,
+          "requestHeadersSize": 2780,
+          "responseBodySize": 448808,
+          "responseHeadersSize": 2412
+        },
+        "xhr": {
+          "count": 29,
+          "requestBodySize": 0,
+          "requestHeadersSize": 9331,
+          "responseBodySize": 49091,
+          "responseHeadersSize": 3237
+        }
+      },
+      "semantics": "Playwright Request.sizes values; response body size may reflect protocol encoding rather than decoded DOM resource size."
+    },
+    "apiRequests": [
+      {
+        "method": "POST",
+        "pathname": "/api/academy/auth/bn-guest",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/news",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/me",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/quota",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/symbols",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/watchlist",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/scripts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/layouts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/alerts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/GBPUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/USDJPY",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/USDCHF",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/XAUUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "before",
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      }
+    ],
+    "mocked": [
+      "POST /api/academy/auth/bn-guest",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/news",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/me",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/ai-signal/quota",
+      "GET /api/academy/bn/ai-signal/active",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/chart/symbols",
+      "GET /api/academy/bn/watchlist",
+      "GET /api/academy/bn/scripts",
+      "GET /api/academy/bn/layouts",
+      "GET /api/academy/bn/alerts",
+      "GET /api/academy/bn/ai-signal/active",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/chart/GBPUSD",
+      "GET /api/academy/chart/USDJPY",
+      "GET /api/academy/chart/USDCHF",
+      "GET /api/academy/chart/XAUUSD",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices"
+    ],
+    "mockedWebSockets": [],
+    "unstubbed": [],
+    "unexpectedExternal": [],
+    "requestFailures": [],
+    "badResponses": [],
+    "sizeErrors": []
+  },
+  "pageErrors": []
+}

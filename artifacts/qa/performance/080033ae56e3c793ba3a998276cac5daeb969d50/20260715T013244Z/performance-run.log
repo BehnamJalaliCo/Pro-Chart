@@ -1,0 +1,268 @@
+
+Running 12 tests using 1 worker
+
+[1/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+  1) [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ─
+
+    Error: numeric performance gates
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 22
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "actual": 4336,
+    +     "evidence": "lab regression",
+    +     "metric": "labLcpMs",
+    +     "operator": "<=",
+    +     "pass": false,
+    +     "result": "FAIL",
+    +     "threshold": 2500,
+    +     "unit": "ms",
+    +   },
+    +   Object {
+    +     "actual": 22,
+    +     "evidence": "active-chart rAF interval proxy",
+    +     "metric": "activeChartFrameP95Ms",
+    +     "operator": "<",
+    +     "pass": false,
+    +     "result": "FAIL",
+    +     "threshold": 20,
+    +     "unit": "ms",
+    +   },
+    + ]
+
+      739 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);
+      740 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);
+    > 741 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);
+          |                                                                               ^
+      742 |       result = 'PASS';
+      743 |     } catch (error) {
+      744 |       failure = safeError(error);
+        at /work/qa/tests/performance-baseline.spec.mjs:741:79
+
+    Error Context: ../artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T013244Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop/error-context.md
+
+
+[2/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[3/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+  2) [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ─
+
+    Error: numeric performance gates
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 22
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "actual": 4344,
+    +     "evidence": "lab regression",
+    +     "metric": "labLcpMs",
+    +     "operator": "<=",
+    +     "pass": false,
+    +     "result": "FAIL",
+    +     "threshold": 2500,
+    +     "unit": "ms",
+    +   },
+    +   Object {
+    +     "actual": 22,
+    +     "evidence": "active-chart rAF interval proxy",
+    +     "metric": "activeChartFrameP95Ms",
+    +     "operator": "<",
+    +     "pass": false,
+    +     "result": "FAIL",
+    +     "threshold": 20,
+    +     "unit": "ms",
+    +   },
+    + ]
+
+      739 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);
+      740 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);
+    > 741 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);
+          |                                                                               ^
+      742 |       result = 'PASS';
+      743 |     } catch (error) {
+      744 |       failure = safeError(error);
+        at /work/qa/tests/performance-baseline.spec.mjs:741:79
+
+    Error Context: ../artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T013244Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat1/error-context.md
+
+
+[4/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[5/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+  3) [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ─
+
+    Error: numeric performance gates
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 22
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "actual": 4308,
+    +     "evidence": "lab regression",
+    +     "metric": "labLcpMs",
+    +     "operator": "<=",
+    +     "pass": false,
+    +     "result": "FAIL",
+    +     "threshold": 2500,
+    +     "unit": "ms",
+    +   },
+    +   Object {
+    +     "actual": 28,
+    +     "evidence": "active-chart rAF interval proxy",
+    +     "metric": "activeChartFrameP95Ms",
+    +     "operator": "<",
+    +     "pass": false,
+    +     "result": "FAIL",
+    +     "threshold": 20,
+    +     "unit": "ms",
+    +   },
+    + ]
+
+      739 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);
+      740 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);
+    > 741 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);
+          |                                                                               ^
+      742 |       result = 'PASS';
+      743 |     } catch (error) {
+      744 |       failure = safeError(error);
+        at /work/qa/tests/performance-baseline.spec.mjs:741:79
+
+    Error Context: ../artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T013244Z/playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat2/error-context.md
+
+
+[6/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[7/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[8/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+  4) [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ───
+
+    Error: numeric performance gates
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 12
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "actual": 4084,
+    +     "evidence": "lab regression",
+    +     "metric": "labLcpMs",
+    +     "operator": "<=",
+    +     "pass": false,
+    +     "result": "FAIL",
+    +     "threshold": 2500,
+    +     "unit": "ms",
+    +   },
+    + ]
+
+      739 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);
+      740 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);
+    > 741 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);
+          |                                                                               ^
+      742 |       result = 'PASS';
+      743 |     } catch (error) {
+      744 |       failure = safeError(error);
+        at /work/qa/tests/performance-baseline.spec.mjs:741:79
+
+    Error Context: ../artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T013244Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile/error-context.md
+
+
+[9/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[10/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+  5) [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ───
+
+    Error: numeric performance gates
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 12
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "actual": 4168,
+    +     "evidence": "lab regression",
+    +     "metric": "labLcpMs",
+    +     "operator": "<=",
+    +     "pass": false,
+    +     "result": "FAIL",
+    +     "threshold": 2500,
+    +     "unit": "ms",
+    +   },
+    + ]
+
+      739 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);
+      740 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);
+    > 741 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);
+          |                                                                               ^
+      742 |       result = 'PASS';
+      743 |     } catch (error) {
+      744 |       failure = safeError(error);
+        at /work/qa/tests/performance-baseline.spec.mjs:741:79
+
+    Error Context: ../artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T013244Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat1/error-context.md
+
+
+[11/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[12/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+  6) [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ───
+
+    Error: numeric performance gates
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 12
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "actual": 4188,
+    +     "evidence": "lab regression",
+    +     "metric": "labLcpMs",
+    +     "operator": "<=",
+    +     "pass": false,
+    +     "result": "FAIL",
+    +     "threshold": 2500,
+    +     "unit": "ms",
+    +   },
+    + ]
+
+      739 |       expect(state.badResponses, 'HTTP responses >= 400').toEqual([]);
+      740 |       expect(state.sizeErrors, 'request byte accounting errors').toEqual([]);
+    > 741 |       expect(gates.filter((gate) => !gate.pass), 'numeric performance gates').toEqual([]);
+          |                                                                               ^
+      742 |       result = 'PASS';
+      743 |     } catch (error) {
+      744 |       failure = safeError(error);
+        at /work/qa/tests/performance-baseline.spec.mjs:741:79
+
+    Error Context: ../artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T013244Z/playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat2/error-context.md
+
+
+  6 failed
+    [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ──
+    [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ──
+    [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ──
+    [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ────
+    [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ────
+    [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ────
+  6 skipped
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

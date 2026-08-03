@@ -1,0 +1,189 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/onboarding-focus.spec.mjs",
+      "--project=chromium-mobile"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "onboarding-focus.spec.mjs",
+      "file": "onboarding-focus.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "A11Y-FOCUS: onboarding traps focus, inerts the app, and restores focus on Escape",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10207,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nCall Log:\n- Timeout 10000ms exceeded while waiting on the predicate",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nCall Log:\n- Timeout 10000ms exceeded while waiting on the predicate\n    at /work/qa/tests/onboarding-focus.spec.mjs:48:86",
+                    "location": {
+                      "file": "/work/qa/tests/onboarding-focus.spec.mjs",
+                      "column": 86,
+                      "line": 48
+                    },
+                    "snippet": "  46 |\n  47 |   const response = await page.goto('/', { waitUntil: 'domcontentloaded' });\n> 48 |   await expect.poll(() => page.evaluate(() => window.__onboardingReturnTargetReady)).toBe(true);\n     |                                                                                      ^\n  49 |\n  50 |   const app = page.locator('.pc-approot');\n  51 |   const dialog = page.getByRole('dialog');"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/work/qa/tests/onboarding-focus.spec.mjs",
+                        "column": 86,
+                        "line": 48
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nCall Log:\n- Timeout 10000ms exceeded while waiting on the predicate\n\n  46 |\n  47 |   const response = await page.goto('/', { waitUntil: 'domcontentloaded' });\n> 48 |   await expect.poll(() => page.evaluate(() => window.__onboardingReturnTargetReady)).toBe(true);\n     |                                                                                      ^\n  49 |\n  50 |   const app = page.locator('.pc-approot');\n  51 |   const dialog = page.getByRole('dialog');\n    at /work/qa/tests/onboarding-focus.spec.mjs:48:86"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-14T23:38:35.060Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/work/artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/work/artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/work/artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/work/artifacts/qa/a11y-focus/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233751Z/playwright/test-results/onboarding-focus-A11Y-FOCU-98f8e-nd-restores-focus-on-Escape-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/work/qa/tests/onboarding-focus.spec.mjs",
+                    "column": 86,
+                    "line": 48
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "7cb2ffc8cb396e9bbe2b-747f1a8f186434989ed6",
+          "file": "onboarding-focus.spec.mjs",
+          "line": 16,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-14T23:38:34.601Z",
+    "duration": 11321.705,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

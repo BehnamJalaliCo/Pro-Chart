@@ -1,0 +1,14 @@
+{
+  "attempts": [
+    {
+      "id": 1,
+      "result": "FAIL_HARNESS",
+      "diagnosis": "The first jq expression tested top-level OpenAPI keys instead of .paths; product health and image checks passed."
+    },
+    {
+      "id": 2,
+      "result": "PASS",
+      "canonical": true
+    }
+  ]
+}

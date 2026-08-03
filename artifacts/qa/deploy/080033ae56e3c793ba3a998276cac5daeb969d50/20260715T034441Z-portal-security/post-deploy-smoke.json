@@ -1,0 +1,29 @@
+{
+  "result": "PASS",
+  "containerId": "6b6a0947ef94f0109aa05511fd4ce2334319825964ebe8546c0eb8b53d79577c",
+  "imageId": "sha256:972fdb60d3a273748bf4b31e37f2071e64b2616d8168a96b4b63d98b23a45b1e",
+  "state": "running",
+  "health": "healthy",
+  "restartCount": 0,
+  "headerParity": {
+    "panelOrigin": 7,
+    "panelPublic": 7,
+    "userOrigin": 7,
+    "userPublic": 7
+  },
+  "narrowPortalCsp": true,
+  "indexHashParity": {
+    "main": true,
+    "panel": true,
+    "user": true
+  },
+  "apiHealth": "healthy",
+  "referralBypassRejected": true,
+  "browser": {
+    "panelNavigation": "PASS",
+    "userLoginCsp": "PASS",
+    "cspViolations": 0,
+    "pageErrors": 0
+  },
+  "projectRunningContainers": 11
+}

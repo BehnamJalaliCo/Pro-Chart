@@ -1,0 +1,22 @@
+[
+ {
+  "RuleID": "generic-api-key",
+  "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+  "StartLine": 5,
+  "EndLine": 5,
+  "StartColumn": 2,
+  "EndColumn": 90,
+  "Match": "api\tprochart-api\tsha256:REDACTED\t",
+  "Secret": "REDACTED",
+  "File": "/scan/prior-images.tsv",
+  "SymlinkFile": "",
+  "Commit": "",
+  "Entropy": 3.8610334,
+  "Author": "",
+  "Email": "",
+  "Date": "",
+  "Message": "",
+  "Tags": [],
+  "Fingerprint": "/scan/prior-images.tsv:generic-api-key:5"
+ }
+]

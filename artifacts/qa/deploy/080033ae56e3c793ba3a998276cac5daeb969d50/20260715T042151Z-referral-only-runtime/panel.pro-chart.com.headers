@@ -1,0 +1,20 @@
+HTTP/2 200 
+server: nginx/1.30.3
+date: Wed, 15 Jul 2026 04:23:56 GMT
+content-type: text/html
+content-length: 1011
+last-modified: Wed, 15 Jul 2026 04:13:35 GMT
+etag: "6a5708ef-3f3"
+expires: Wed, 15 Jul 2026 04:23:55 GMT
+cache-control: no-cache
+cache-control: no-cache, no-store, must-revalidate
+pragma: no-cache
+accept-ranges: bytes
+strict-transport-security: max-age=31536000; includeSubDomains
+x-frame-options: DENY
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)
+content-security-policy: default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://panel.pro-chart.com wss://user.pro-chart.com; frame-src 'none'; manifest-src 'self'; upgrade-insecure-requests
+

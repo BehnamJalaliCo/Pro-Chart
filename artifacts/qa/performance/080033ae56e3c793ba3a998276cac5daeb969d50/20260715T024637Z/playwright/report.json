@@ -1,0 +1,638 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/work/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/performance-baseline.spec.mjs",
+      "--repeat-each=3"
+    ],
+    "configFile": "/work/qa/playwright.config.mjs",
+    "rootDir": "/work/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T024637Z/playwright/test-results",
+        "repeatEach": 3,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T024637Z/playwright/test-results",
+        "repeatEach": 3,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/work/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T024637Z/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/work/artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T024637Z/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "performance-baseline.spec.mjs",
+      "file": "performance-baseline.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5284,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:46:47.500Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-bf0738c9e34edc89ded6",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 86,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:46:53.119Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-01433e06e4badac3b2a8",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5213,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:46:53.619Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-35915efd927af966ac2b",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 54,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:46:58.951Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-4d7cc39f55017eca266c",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5188,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:46:59.452Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-a1cad8b98c49fce2a144",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 73,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:47:04.770Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-a94d4fc7b2d5b8c8e331",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 87,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:47:05.284Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-8ad7621dc134b8faaac3",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4933,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:47:05.489Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-357dd4b286910aa3ebe1",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 61,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:47:10.882Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-1265e06b5dd42f436b68",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4952,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:47:11.086Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-b6b625100c4881dedb9b",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 60,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:47:16.514Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/work/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-dc8648492df7df4a638e",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5137,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T02:47:16.686Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-ef29c4c0964068f968e8",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T02:46:47.044Z",
+    "duration": 34875.025,
+    "expected": 6,
+    "skipped": 6,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

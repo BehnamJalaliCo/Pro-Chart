@@ -1,0 +1,18 @@
+HTTP/2 302 
+server: nginx/1.30.3
+date: Wed, 15 Jul 2026 04:23:56 GMT
+content-length: 0
+location: https://vc.cabinet.oneroyal.com/fa/links/go/12412
+cache-control: no-store
+pragma: no-cache
+x-ratelimit-limit: 240
+x-ratelimit-remaining: 239
+x-ratelimit-reset: 1784089496
+strict-transport-security: max-age=31536000; includeSubDomains
+x-frame-options: DENY
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)
+content-security-policy: default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://panel.pro-chart.com wss://user.pro-chart.com; frame-src 'none'; manifest-src 'self'; upgrade-insecure-requests
+

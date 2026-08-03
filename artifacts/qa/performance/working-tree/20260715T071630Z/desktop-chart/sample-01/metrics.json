@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "requirementIds": [
+    "PC-138",
+    "PC-140",
+    "PC-141"
+  ],
+  "scenario": "desktop-chart",
+  "sampleId": "sample-01",
+  "project": "chromium-desktop",
+  "baseline": "working-tree",
+  "commit": "working-tree",
+  "sourceFingerprint": "unrecorded",
+  "runId": "20260715T071630Z",
+  "result": "FAIL",
+  "failure": "Error: PLAYWRIGHT_IMAGE_DIGEST is required so the runner image is attributable\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:682:102",
+  "fixture": {
+    "id": "prochart-synthetic-market-v1",
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "fixedAt": "2026-07-14T12:34:56.000Z",
+    "provenance": "Fully synthetic QA data; no production or customer records."
+  },
+  "methodology": {
+    "classification": "deterministic Chromium lab regression",
+    "fieldCoreWebVitalsEquivalent": false,
+    "fieldEquivalenceWarning": "These synthetic, unthrottled, local Chromium observations are not RUM and are not a field p75 Core Web Vitals result.",
+    "sampleFrameCount": 120,
+    "observerWindowEndsAfterFrameSampling": true
+  },
+  "metrics": null,
+  "gates": {
+    "source": "docs/performance/PERFORMANCE_BUDGET.md",
+    "checks": [],
+    "result": "FAIL"
+  },
+  "recordedWithoutNumericGate": {
+    "paints": [
+      "first-paint",
+      "first-contentful-paint"
+    ],
+    "applicationAndChartReadiness": true,
+    "requestCountAndBytes": true,
+    "longTasksOver50Ms": true
+  },
+  "deliberatelyNotMeasured": {
+    "inp": "No representative interaction is performed; the repository requires RUM and a separately defined lab interaction proxy.",
+    "inputFeedback": "No interaction trace in this navigation-focused baseline.",
+    "crosshairResponse": "Requires a dedicated interaction benchmark.",
+    "quoteToPaintOverhead": "Requires a timestamped streaming fixture and paint trace.",
+    "indicator10k": "Requires a worker benchmark, not a navigation run.",
+    "memoryLeak": "The budget states that its observation window and tolerance still require an ADR.",
+    "jsBundleBudget": "The budget states that a numeric JS bundle limit still requires an ADR."
+  },
+  "environment": null,
+  "network": {
+    "summary": {
+      "observedRequestCount": 0,
+      "completedRequestCount": 0,
+      "requestBodySize": 0,
+      "requestHeadersSize": 0,
+      "responseBodySize": 0,
+      "responseHeadersSize": 0,
+      "totalWireBytes": 0,
+      "byResourceType": {},
+      "semantics": "Playwright Request.sizes values; response body size may reflect protocol encoding rather than decoded DOM resource size."
+    },
+    "apiRequests": [],
+    "mocked": [],
+    "mockedWebSockets": [],
+    "unstubbed": [],
+    "unexpectedExternal": [],
+    "requestFailures": [],
+    "badResponses": [],
+    "sizeErrors": []
+  },
+  "pageErrors": []
+}

@@ -1,0 +1,44 @@
+{
+  "scenario": "mobile-first-run-onboarding-focus",
+  "project": "chromium-mobile",
+  "status": 200,
+  "dialog": {
+    "role": "dialog",
+    "modal": true,
+    "labelledBy": "pc-onboarding-title",
+    "describedBy": "pc-onboarding-description",
+    "initialFocus": "pc-onboarding-title",
+    "focusableControls": 2,
+    "tabWrappedForward": true,
+    "tabWrappedBackward": true,
+    "escapedProgrammaticFocus": false
+  },
+  "background": {
+    "inertWhileOpen": true,
+    "ariaHiddenWhileOpen": true,
+    "restoredAfterClose": true
+  },
+  "close": {
+    "trigger": "Escape",
+    "persisted": true,
+    "focusRestoredToPreviousControl": true,
+    "absentAfterReload": true
+  },
+  "axe": {
+    "engine": {
+      "name": "axe-core",
+      "version": "4.10.3"
+    },
+    "rules": [
+      "aria-dialog-name",
+      "aria-hidden-focus",
+      "landmark-one-main",
+      "page-has-heading-one",
+      "region"
+    ],
+    "violations": 0
+  },
+  "requests": {
+    "unexpectedMutations": []
+  }
+}

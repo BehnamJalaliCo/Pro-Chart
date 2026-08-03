@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "environment": "production",
+  "service": "frontend-prochart",
+  "change": "portal security boundary",
+  "runId": "20260715T034441Z",
+  "startedAt": "2026-07-15T03:44:41Z",
+  "completedAt": "2026-07-15T03:45:45Z",
+  "priorContainerId": "b2d5495ef956cf855ceaf7a9001f7900a4e791a8529025b544bc5aa703650db3",
+  "newContainerId": "6b6a0947ef94f0109aa05511fd4ce2334319825964ebe8546c0eb8b53d79577c",
+  "imageId": "sha256:972fdb60d3a273748bf4b31e37f2071e64b2616d8168a96b4b63d98b23a45b1e",
+  "imageUnchanged": true,
+  "state": "running",
+  "health": "healthy",
+  "restartCount": 0,
+  "portalHeaderCount": 7,
+  "portalCspNarrow": true,
+  "indexHashParity": {
+    "main": true,
+    "panel": true,
+    "user": true
+  },
+  "apiHealth": "healthy",
+  "referralBypassRejected": true,
+  "projectRunningContainers": 11,
+  "automaticRollbackTriggered": false,
+  "basicSmoke": "PASS",
+  "browserSmoke": "PASS",
+  "result": "PASS",
+  "browserTests": {
+    "panelNavigation": {
+      "passed": 1,
+      "failed": 0
+    },
+    "userLoginCsp": {
+      "passed": 1,
+      "failed": 0,
+      "cspViolations": 0,
+      "pageErrors": 0
+    }
+  },
+  "knownBlockers": [
+    "frontend/user referral and OneRoyal referral-only contract requires a separate product patch; the legacy referral browser harness does not represent this portal"
+  ]
+}

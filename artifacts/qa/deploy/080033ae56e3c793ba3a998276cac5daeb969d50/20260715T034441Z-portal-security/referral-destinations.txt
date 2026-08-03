@@ -1,0 +1,2 @@
+lbank=https://www.lbank.com/ref/PROCHART
+oneroyal=https://vc.cabinet.oneroyal.com/fa/links/go/12412

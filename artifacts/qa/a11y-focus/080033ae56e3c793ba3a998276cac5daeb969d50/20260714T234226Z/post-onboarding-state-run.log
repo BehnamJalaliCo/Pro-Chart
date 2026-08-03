@@ -1,0 +1,10 @@
+
+Running 1 test using 1 worker
+
+[1/1] [chromium-mobile] › tests/a11y-states.spec.mjs:4:1 › A11Y-STATE: mobile chart after onboarding has a named main region
+  1 passed (5.4s)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

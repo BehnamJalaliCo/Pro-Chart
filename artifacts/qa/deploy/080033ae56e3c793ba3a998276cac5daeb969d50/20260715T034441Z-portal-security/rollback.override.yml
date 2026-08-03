@@ -1,0 +1,8 @@
+services:
+  frontend-prochart:
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
+      - /home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034441Z-portal-security/panel.conf.before:/etc/nginx/conf.d/panel.conf:ro
+      - /home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034441Z-portal-security/user-panel.conf.before:/etc/nginx/conf.d/user-panel.conf:ro
+      - /home/bazaarnama/Pro-Chart/app/artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034441Z-portal-security/portal-security-boundary.conf:/etc/nginx/portal-security-boundary.conf:ro

@@ -1,0 +1,28 @@
+{
+  "runId": "20260714T232021Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "ab392cb73ff72c0bd0c2ba9d0d892c7b7ba2cc765392ab14f6f3fa8393a35585",
+  "baseUrl": "http://prochart.local:4173",
+  "runner": "mcr.microsoft.com/playwright:v1.61.0-noble",
+  "project": "chromium-desktop",
+  "testFile": "qa/tests/watchlist-interactions.spec.mjs",
+  "workers": 1,
+  "retries": 0,
+  "expected": 4,
+  "unexpected": 0,
+  "skipped": 0,
+  "durationMs": 17792.726,
+  "watchlistGet": "fulfilled from route fixture",
+  "watchlistPut": "intercepted and asserted; not forwarded",
+  "liveAccountMutation": false,
+  "coverage": [
+    "list and table rendering",
+    "mouse, Enter and Space selection",
+    "context-menu propagation",
+    "hover geometry stability",
+    "flag persistence",
+    "remove persistence contract",
+    "action-to-row selection isolation",
+    "nested-interactive axe rule"
+  ]
+}

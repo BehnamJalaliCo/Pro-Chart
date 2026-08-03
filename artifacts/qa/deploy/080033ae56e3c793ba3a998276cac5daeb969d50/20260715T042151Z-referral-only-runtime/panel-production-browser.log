@@ -1,0 +1,38 @@
+
+Running 1 test using 1 worker
+
+[1/1] [chromium-desktop] › tests/panel-navigation.spec.mjs:27:1 › PANEL-NAV: legacy aliases resolve and unavailable palette actions stay hidden
+  1) [chromium-desktop] › tests/panel-navigation.spec.mjs:27:1 › PANEL-NAV: legacy aliases resolve and unavailable palette actions stay hidden 
+
+    Error: EACCES: permission denied, open '/work/artifacts/qa/panel-navigation/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-production/actual.png'
+
+      101 |
+      102 |   const ariaSnapshot = await page.locator('body').ariaSnapshot();
+    > 103 |   await page.screenshot({ path: path.join(outDir, 'actual.png'), fullPage: true, animations: 'disabled' });
+          |   ^
+      104 |   await fs.writeFile(path.join(outDir, 'aria-snapshot.yml'), `${ariaSnapshot}\n`, 'utf8');
+      105 |   await fs.writeFile(path.join(outDir, 'metadata.json'), `${JSON.stringify({
+      106 |     schemaVersion: 1,
+        at /work/qa/tests/panel-navigation.spec.mjs:103:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results/panel-navigation-PANEL-NAV-99ae1-palette-actions-stay-hidden-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results/panel-navigation-PANEL-NAV-99ae1-palette-actions-stay-hidden-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results/panel-navigation-PANEL-NAV-99ae1-palette-actions-stay-hidden-chromium-desktop/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results/panel-navigation-PANEL-NAV-99ae1-palette-actions-stay-hidden-chromium-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/panel-production-playwright/test-results/panel-navigation-PANEL-NAV-99ae1-palette-actions-stay-hidden-chromium-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [chromium-desktop] › tests/panel-navigation.spec.mjs:27:1 › PANEL-NAV: legacy aliases resolve and unavailable palette actions stay hidden 

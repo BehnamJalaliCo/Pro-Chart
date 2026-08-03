@@ -1,0 +1,20 @@
+
+> coinepro-academy@1.0.0 build
+> node copy-crypto-icons.mjs && vite build
+
+[crypto-icons] copied 483 coin logos → public/crypto-icons/
+vite v6.4.3 building for production...
+transforming...
+✓ 1782 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                       5.59 kB │ gzip:   1.64 kB
+dist/assets/bn-logo-Cylz0xjn.png     77.96 kB
+dist/assets/index-BKauCo0Y.css       79.82 kB │ gzip:  15.55 kB
+dist/assets/index-CkSObbw5.js     2,132.68 kB │ gzip: 585.86 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 5.18s

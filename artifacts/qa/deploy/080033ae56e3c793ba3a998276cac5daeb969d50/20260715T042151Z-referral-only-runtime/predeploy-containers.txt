@@ -1,0 +1,8 @@
+/prochart-admin-frontend|image=sha256:3d77c7fe483fd6d74b842cdaf4631128a81c20139c863abd2e0623cd38fd4a8a|status=running|health=healthy|restarts=0|started=2026-07-15T03:32:49.03062233Z
+/prochart-api-1|image=sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6|status=running|health=healthy|restarts=0|started=2026-07-15T03:25:06.231140499Z
+/prochart-crypto-ws-1|image=sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6|status=running|health=none|restarts=0|started=2026-07-15T03:24:04.807700951Z
+/prochart-data-feed-1|image=sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6|status=running|health=none|restarts=0|started=2026-07-15T03:24:40.659788139Z
+/prochart-finnhub-ws-1|image=sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6|status=running|health=none|restarts=0|started=2026-07-15T03:24:22.281039254Z
+/prochart-frontend-prochart-1|image=sha256:972fdb60d3a273748bf4b31e37f2071e64b2616d8168a96b4b63d98b23a45b1e|status=running|health=healthy|restarts=0|started=2026-07-15T03:44:43.058801883Z
+/prochart-news-worker-1|image=sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6|status=running|health=none|restarts=0|started=2026-07-15T03:24:58.083303259Z
+/prochart-user-frontend|image=sha256:af80b67b177d55d4aa66705bd2dfe45cef3161aac672e8360283bc005f13b77a|status=running|health=healthy|restarts=0|started=2026-07-01T16:55:46.81960765Z

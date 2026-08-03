@@ -1,0 +1,83 @@
+
+Running 4 tests using 1 worker
+
+[1/4] [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin
+  1) [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin 
+
+    Error: page.goto: net::ERR_NAME_NOT_RESOLVED at https://user.pro-chart.ir/#/connect
+    Call log:
+      - navigating to "https://user.pro-chart.ir/#/connect", waiting until "domcontentloaded"
+
+
+      154 |   const target = userPanelUrl(testInfo.project.use.baseURL);
+      155 |   const state = await installUserPanelFixture(page, target.origin, provider);
+    > 156 |   const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });
+          |                               ^
+      157 |
+      158 |   expect(response?.status(), 'desktop UserPanel document status').toBe(200);
+      159 |   await expect.poll(() => new URL(page.url()).hash).toBe('#/connect');
+        at openDesktopUserPanel (/work/qa/tests/referral-compliance.spec.mjs:156:31)
+        at /work/qa/tests/referral-compliance.spec.mjs:319:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[2/4] [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin
+  2) [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin 
+
+    Error: page.goto: net::ERR_NAME_NOT_RESOLVED at https://user.pro-chart.ir/#/connect
+    Call log:
+      - navigating to "https://user.pro-chart.ir/#/connect", waiting until "domcontentloaded"
+
+
+      154 |   const target = userPanelUrl(testInfo.project.use.baseURL);
+      155 |   const state = await installUserPanelFixture(page, target.origin, provider);
+    > 156 |   const response = await page.goto(target.href, { waitUntil: 'domcontentloaded' });
+          |                               ^
+      157 |
+      158 |   expect(response?.status(), 'desktop UserPanel document status').toBe(200);
+      159 |   await expect.poll(() => new URL(page.url()).hash).toBe('#/connect');
+        at openDesktopUserPanel (/work/qa/tests/referral-compliance.spec.mjs:156:31)
+        at /work/qa/tests/referral-compliance.spec.mjs:319:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/deploy/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T042151Z-referral-only-runtime/main-production-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[3/4] [chromium-mobile] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin
+[4/4] [chromium-mobile] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin
+  2 failed
+    [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin 
+    [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin 
+  2 passed (13.0s)

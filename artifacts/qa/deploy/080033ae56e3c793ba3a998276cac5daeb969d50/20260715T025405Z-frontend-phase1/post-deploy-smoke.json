@@ -1,0 +1,32 @@
+{
+  "origin": {
+    "rootStatus": 200,
+    "assetStatus": 200,
+    "assetSha256": "75cf695f0e25cc58628b6bc51eec3d814161f0e7dd8ccf97a11dbe4212042a34",
+    "indexReferencesExpectedAsset": true,
+    "securityHeaderCount": 6
+  },
+  "referrals": {
+    "lbank": {
+      "status": 302,
+      "exactDestination": true
+    },
+    "oneroyal": {
+      "status": 302,
+      "exactDestination": true
+    }
+  },
+  "api": {
+    "healthHttpStatus": 200,
+    "containerHealth": "healthy"
+  },
+  "frontend": {
+    "containerHealth": "healthy"
+  },
+  "publicEdge": {
+    "status": 200,
+    "indexReferencesExpectedAsset": true
+  },
+  "prochartRunningContainerCount": 11,
+  "result": "PASS"
+}
