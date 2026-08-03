@@ -1,0 +1,19 @@
+{
+  "id": "sha256:8afb633d3e05da51eea362794b7edfddbbd683e407490b4f787d47cac9665495",
+  "repoTags": [
+    "prochart-qa-pytest:9.1.1-current-20260715"
+  ],
+  "repoDigests": [
+    "prochart-qa-pytest@sha256:8afb633d3e05da51eea362794b7edfddbbd683e407490b4f787d47cac9665495"
+  ],
+  "created": "2026-07-15T00:45:19.104159771Z",
+  "architecture": "amd64",
+  "os": "linux",
+  "workingDir": "/workspace",
+  "entrypoint": [
+    "python",
+    "-m",
+    "pytest"
+  ],
+  "baseImage": "prochart-api@sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337"
+}

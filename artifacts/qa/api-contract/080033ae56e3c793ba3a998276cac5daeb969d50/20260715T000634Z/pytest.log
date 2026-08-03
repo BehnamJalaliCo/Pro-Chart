@@ -1,0 +1,27 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace
+configfile: pyproject.toml
+plugins: asyncio-1.4.0, anyio-4.14.2, typeguard-4.5.2
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 7 items
+
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_ea_runtime_contract_is_mounted_once PASSED [ 14%]
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_every_ea_handler_enforces_the_shared_token_guard PASSED [ 28%]
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_every_ea_route_rejects_an_invalid_token_at_runtime 
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_every_ea_route_rejects_an_invalid_token_at_runtime PASSED [ 42%]
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_live_admin_contract_remains_admin_protected 
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_live_admin_contract_remains_admin_protected PASSED [ 57%]
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_live_frontend_contract_is_mounted PASSED [ 71%]
+qa/python/security_regressions.py::EaConsumerContractRegressionTests::test_ea_signals_missing_uid_falls_back_to_master_namespace PASSED [ 85%]
+qa/python/security_regressions.py::EaConsumerContractRegressionTests::test_mt5_user_bridge_scopes_signals_and_config_to_the_same_uid 
+qa/python/security_regressions.py::EaConsumerContractRegressionTests::test_mt5_user_bridge_scopes_signals_and_config_to_the_same_uid PASSED [100%]
+
+=============================== warnings summary ===============================
+../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:469
+  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/workspace/pytest-cache-files-b4xts77o'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============== 7 passed, 1 warning, 26 subtests passed in 4.47s ===============

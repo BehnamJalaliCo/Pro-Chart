@@ -1,0 +1,45 @@
+- heading "پروفایل" [level=1]
+- img
+- img "Pro-Chart"
+- text: visual-fixture visual-fixture رایگان
+- button "اشتراک و ارتقا ارتقا به پرمیوم":
+  - img
+  - text: اشتراک و ارتقا ارتقا به پرمیوم
+  - img
+- img
+- text: زبان
+- button "فارسی"
+- button "English"
+- img
+- text: تم
+- button "روشن":
+  - img
+  - text: روشن
+- button "تاریک":
+  - img
+  - text: تاریک
+- img
+- text: اتصالِ بروکر/صرافی
+- button "LBank (کریپتو) متصل نیست":
+  - img
+  - text: LBank (کریپتو) متصل نیست
+  - img
+- button "معرفی OneRoyal فقط معرفی":
+  - img
+  - text: معرفی OneRoyal فقط معرفی
+  - img
+- paragraph: OneRoyal در Pro Chart فقط به‌عنوان مسیر معرفی نمایش داده می‌شود؛ اتصال حساب و معاملهٔ مستقیم فعال نیست.
+- region "لینک معرفی OneRoyal":
+  - paragraph:
+    - strong: "لینک معرفی:"
+    - text: با استفاده از این لینک ممکن است Pro Chart اعتبار معرفی دریافت کند.
+  - paragraph: ارائه این خدمت به محل اقامت و شرایط ارائه‌دهنده بستگی دارد.
+  - checkbox "شرایط محل اقامت و ارائه‌دهنده را بررسی کرده‌ام و می‌خواهم ادامه دهم." [checked]
+  - text: شرایط محل اقامت و ارائه‌دهنده را بررسی کرده‌ام و می‌خواهم ادامه دهم.
+  - button "لینک معرفی — ورود به وب‌سایت OneRoyal"
+- button "قفلِ اپ (PIN)":
+  - img
+  - text: قفلِ اپ (PIN)
+- img
+- text: نسخهٔ اپ 1.0.0
+- paragraph: پلتفرمِ چارت و تحلیلِ مستقل — کریپتو (LBank) و فارکس (OneRoyal).

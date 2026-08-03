@@ -1,0 +1,38 @@
+{
+  "runId": "20260714T234935Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "contextSourceFingerprint": "6b8efe63bed01d43e90a3c9bf0e68fa893fd1427741c8f52426b6eba09157f7b",
+  "contextBytesBeforeDockerCompression": 3926168,
+  "dockerTransferredIncrementalContext": "26.61kB",
+  "baseImage": "python:3.12-slim@sha256:c3d81d25b3154142b0b42eb1e61300024426268edeb5b5a26dd7ddf64d9daf28",
+  "imageTag": "prochart-api:qa-current-20260714",
+  "imageId": "sha256:768613b6398c2ef089e0c8b73ac03ceddb6e9b1dac94d32a2b54c893dab1efdb",
+  "imageSizeBytes": 3582633783,
+  "buildExitCode": 0,
+  "buildFinalStepSeconds": 0.5,
+  "dependencyLayersCachedFromValidatedBuild": true,
+  "offlineValidationNetwork": "none",
+  "offlineValidationExitCode": 0,
+  "pipCheckExitCode": 0,
+  "pipCheckResult": "No broken requirements found.",
+  "analyticImports": {
+    "numpy": "2.2.6",
+    "pandas": "2.2.3",
+    "talib": "0.4.32"
+  },
+  "removedPackages": {
+    "pandas_ta_present": false,
+    "numba_present": false
+  },
+  "fastApiImport": {
+    "routeObjects": 487,
+    "httpMethodPaths": 486,
+    "webSocketPaths": ["/live/ws/chat", "/ws/prices"],
+    "liveHttpMethodPaths": 17,
+    "liveAdminRoutes": 15,
+    "liveAdminAllProtected": true
+  },
+  "liveServicesOrDataUsedForValidation": false,
+  "gitleaksVersion": "8.30.1",
+  "gitleaksFindings": 0
+}

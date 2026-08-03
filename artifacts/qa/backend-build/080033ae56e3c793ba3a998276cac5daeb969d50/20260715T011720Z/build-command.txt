@@ -1,0 +1,1 @@
+docker build --pull=false --tag prochart-api:qa-backend-080033ae56e3-20260715T011720Z .

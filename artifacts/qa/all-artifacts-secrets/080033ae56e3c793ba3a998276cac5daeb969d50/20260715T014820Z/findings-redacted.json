@@ -1,0 +1,173 @@
+[
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/image-inspect.json",
+    "StartLine": 5,
+    "EndLine": 5,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/image-inspect.json:generic-api-key:5"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/image-inspect.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/image-inspect.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/run-metadata.json",
+    "StartLine": 8,
+    "EndLine": 8,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/run-metadata.json:generic-api-key:8"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003954Z/clean-python-image-inspect.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003954Z/clean-python-image-inspect.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003954Z/image-inspect.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003954Z/image-inspect.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234935Z/image-inspect.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234935Z/image-inspect.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003954Z/image-history.jsonl",
+    "StartLine": 23,
+    "EndLine": 23,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T003954Z/image-history.jsonl:generic-api-key:23"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011720Z/image-inspect.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011720Z/image-inspect.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011720Z/test-image-inspect.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011720Z/test-image-inspect.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/build.log",
+    "StartLine": 651,
+    "EndLine": 651,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/build.log:generic-api-key:651"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/build.log",
+    "StartLine": 652,
+    "EndLine": 652,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/build.log:generic-api-key:652"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/build.log",
+    "StartLine": 653,
+    "EndLine": 653,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T233000Z/build.log:generic-api-key:653"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011720Z/test-image-history.jsonl",
+    "StartLine": 27,
+    "EndLine": 27,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011720Z/test-image-history.jsonl:generic-api-key:27"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/python/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234035Z/run-metadata.json",
+    "StartLine": 5,
+    "EndLine": 5,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/python/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234035Z/run-metadata.json:generic-api-key:5"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/python/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234120Z/run-metadata.json",
+    "StartLine": 5,
+    "EndLine": 5,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/python/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234120Z/run-metadata.json:generic-api-key:5"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234542Z/run-metadata.json",
+    "StartLine": 12,
+    "EndLine": 12,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T234542Z/run-metadata.json:generic-api-key:12"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012504Z/image-inspect-by-repodigest.raw.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012504Z/image-inspect-by-repodigest.raw.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012504Z/image-inspect.raw.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012504Z/image-inspect.raw.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012504Z/image-inspect-by-id.raw.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012504Z/image-inspect-by-id.raw.json:generic-api-key:19"
+  }
+]

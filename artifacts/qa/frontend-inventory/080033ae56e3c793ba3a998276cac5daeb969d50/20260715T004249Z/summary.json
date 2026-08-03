@@ -1,0 +1,562 @@
+{
+  "schema_version": "1.0.0",
+  "repository_head": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "canonical_source_fingerprint": "bd0496e9a29b435bdf36b15fc7a38818c83b29920137544b149b55a87bf6ea50",
+  "aggregate_counts": {
+    "applications_declared": 6,
+    "applications_legacy_observation_only": 4,
+    "applications_with_tracked_canonical_source": 2,
+    "asset_items": 564,
+    "assets_without_tracked_license_evidence": 564,
+    "browser_storage_evidence": 74,
+    "canonical_source_files": 188,
+    "controls": 775,
+    "declared_routes": 14,
+    "dialogs_modals_drawers": 12,
+    "empty_inline_handler_candidates": 4,
+    "feature_flag_entitlement_evidence": 350,
+    "ignored_present_files": 207,
+    "keyboard_shortcut_evidence": 156,
+    "manual_review_controls": 1,
+    "menus_context_menus_palettes": 8,
+    "navigation_targets": 37,
+    "pages_screens": 47,
+    "placeholder_text_candidates": 9,
+    "reachable_dialogs_modals_drawers": 11,
+    "reachable_menus_context_menus_palettes": 7,
+    "reachable_pages_screens": 20,
+    "reachable_source_files": 137,
+    "reachable_tab_state_occurrences": 37,
+    "tab_state_occurrences": 51,
+    "tracked_deleted_files": 510,
+    "tracked_present_files": 922,
+    "tracked_present_noncanonical_tree_files": 116,
+    "unmatched_navigation_targets": 9,
+    "unreachable_source_files": 51,
+    "untracked_present_files": 18
+  },
+  "application_classes": [
+    {
+      "id": "academy",
+      "source_classification": "ignored_filesystem_legacy_observation",
+      "canonical_support_claim": false,
+      "build_context_declared": false,
+      "historical_removal_commit": "e5ae2d24ddee1cf9506806b0425ce3ce198540e0",
+      "hosts": [
+        "academy.fx.trade-future.ir"
+      ],
+      "counts": {
+        "asset_items": 0,
+        "assets_without_tracked_license_evidence": 0,
+        "browser_storage_evidence": 0,
+        "canonical_source_files": 0,
+        "controls": 0,
+        "declared_routes": 0,
+        "dialogs_modals_drawers": 0,
+        "empty_inline_handler_candidates": 0,
+        "feature_flag_entitlement_evidence": 0,
+        "ignored_present_files": 74,
+        "keyboard_shortcut_evidence": 0,
+        "manual_review_controls": 0,
+        "menus_context_menus_palettes": 0,
+        "navigation_targets": 0,
+        "pages_screens": 0,
+        "placeholder_text_candidates": 0,
+        "reachable_dialogs_modals_drawers": 0,
+        "reachable_menus_context_menus_palettes": 0,
+        "reachable_pages_screens": 0,
+        "reachable_source_files": 0,
+        "reachable_tab_state_occurrences": 0,
+        "tab_state_occurrences": 0,
+        "tracked_deleted_files": 0,
+        "tracked_present_files": 0,
+        "tracked_present_noncanonical_tree_files": 0,
+        "unmatched_navigation_targets": 0,
+        "unreachable_source_files": 0,
+        "untracked_present_files": 0
+      },
+      "observed_legacy_source_files": 52,
+      "observed_legacy_route_matches": 29
+    },
+    {
+      "id": "ig",
+      "source_classification": "ignored_filesystem_legacy_observation",
+      "canonical_support_claim": false,
+      "build_context_declared": false,
+      "historical_removal_commit": "e5ae2d24ddee1cf9506806b0425ce3ce198540e0",
+      "hosts": [
+        "ig-hub.ir",
+        "ig.trade-future.ir",
+        "www.ig-hub.ir"
+      ],
+      "counts": {
+        "asset_items": 0,
+        "assets_without_tracked_license_evidence": 0,
+        "browser_storage_evidence": 0,
+        "canonical_source_files": 0,
+        "controls": 0,
+        "declared_routes": 0,
+        "dialogs_modals_drawers": 0,
+        "empty_inline_handler_candidates": 0,
+        "feature_flag_entitlement_evidence": 0,
+        "ignored_present_files": 33,
+        "keyboard_shortcut_evidence": 0,
+        "manual_review_controls": 0,
+        "menus_context_menus_palettes": 0,
+        "navigation_targets": 0,
+        "pages_screens": 0,
+        "placeholder_text_candidates": 0,
+        "reachable_dialogs_modals_drawers": 0,
+        "reachable_menus_context_menus_palettes": 0,
+        "reachable_pages_screens": 0,
+        "reachable_source_files": 0,
+        "reachable_tab_state_occurrences": 0,
+        "tab_state_occurrences": 0,
+        "tracked_deleted_files": 0,
+        "tracked_present_files": 0,
+        "tracked_present_noncanonical_tree_files": 0,
+        "unmatched_navigation_targets": 0,
+        "unreachable_source_files": 0,
+        "untracked_present_files": 0
+      },
+      "observed_legacy_source_files": 15,
+      "observed_legacy_route_matches": 11
+    },
+    {
+      "id": "panel",
+      "source_classification": "tracked_present_canonical_source",
+      "canonical_support_claim": true,
+      "build_context_declared": true,
+      "historical_removal_commit": null,
+      "hosts": [
+        "panel.pro-chart.com"
+      ],
+      "counts": {
+        "asset_items": 9,
+        "assets_without_tracked_license_evidence": 9,
+        "browser_storage_evidence": 9,
+        "canonical_source_files": 57,
+        "controls": 147,
+        "declared_routes": 14,
+        "dialogs_modals_drawers": 5,
+        "empty_inline_handler_candidates": 0,
+        "feature_flag_entitlement_evidence": 123,
+        "ignored_present_files": 0,
+        "keyboard_shortcut_evidence": 15,
+        "manual_review_controls": 0,
+        "menus_context_menus_palettes": 2,
+        "navigation_targets": 34,
+        "pages_screens": 13,
+        "placeholder_text_candidates": 0,
+        "reachable_dialogs_modals_drawers": 5,
+        "reachable_menus_context_menus_palettes": 2,
+        "reachable_pages_screens": 13,
+        "reachable_source_files": 53,
+        "reachable_tab_state_occurrences": 10,
+        "tab_state_occurrences": 10,
+        "tracked_deleted_files": 0,
+        "tracked_present_files": 74,
+        "tracked_present_noncanonical_tree_files": 0,
+        "unmatched_navigation_targets": 9,
+        "unreachable_source_files": 4,
+        "untracked_present_files": 0
+      },
+      "observed_legacy_source_files": 0,
+      "observed_legacy_route_matches": 0
+    },
+    {
+      "id": "prochart",
+      "source_classification": "tracked_present_canonical_source",
+      "canonical_support_claim": true,
+      "build_context_declared": true,
+      "historical_removal_commit": null,
+      "hosts": [
+        "pro-chart.ir"
+      ],
+      "counts": {
+        "asset_items": 555,
+        "assets_without_tracked_license_evidence": 555,
+        "browser_storage_evidence": 65,
+        "canonical_source_files": 131,
+        "controls": 628,
+        "declared_routes": 0,
+        "dialogs_modals_drawers": 7,
+        "empty_inline_handler_candidates": 4,
+        "feature_flag_entitlement_evidence": 227,
+        "ignored_present_files": 0,
+        "keyboard_shortcut_evidence": 141,
+        "manual_review_controls": 1,
+        "menus_context_menus_palettes": 6,
+        "navigation_targets": 3,
+        "pages_screens": 34,
+        "placeholder_text_candidates": 9,
+        "reachable_dialogs_modals_drawers": 6,
+        "reachable_menus_context_menus_palettes": 5,
+        "reachable_pages_screens": 7,
+        "reachable_source_files": 84,
+        "reachable_tab_state_occurrences": 27,
+        "tab_state_occurrences": 41,
+        "tracked_deleted_files": 510,
+        "tracked_present_files": 848,
+        "tracked_present_noncanonical_tree_files": 116,
+        "unmatched_navigation_targets": 0,
+        "unreachable_source_files": 47,
+        "untracked_present_files": 18
+      },
+      "observed_legacy_source_files": 0,
+      "observed_legacy_route_matches": 0
+    },
+    {
+      "id": "user",
+      "source_classification": "ignored_filesystem_legacy_observation",
+      "canonical_support_claim": false,
+      "build_context_declared": true,
+      "historical_removal_commit": "e5ae2d24ddee1cf9506806b0425ce3ce198540e0",
+      "hosts": [
+        "user.pro-chart.com"
+      ],
+      "counts": {
+        "asset_items": 0,
+        "assets_without_tracked_license_evidence": 0,
+        "browser_storage_evidence": 0,
+        "canonical_source_files": 0,
+        "controls": 0,
+        "declared_routes": 0,
+        "dialogs_modals_drawers": 0,
+        "empty_inline_handler_candidates": 0,
+        "feature_flag_entitlement_evidence": 0,
+        "ignored_present_files": 34,
+        "keyboard_shortcut_evidence": 0,
+        "manual_review_controls": 0,
+        "menus_context_menus_palettes": 0,
+        "navigation_targets": 0,
+        "pages_screens": 0,
+        "placeholder_text_candidates": 0,
+        "reachable_dialogs_modals_drawers": 0,
+        "reachable_menus_context_menus_palettes": 0,
+        "reachable_pages_screens": 0,
+        "reachable_source_files": 0,
+        "reachable_tab_state_occurrences": 0,
+        "tab_state_occurrences": 0,
+        "tracked_deleted_files": 0,
+        "tracked_present_files": 0,
+        "tracked_present_noncanonical_tree_files": 0,
+        "unmatched_navigation_targets": 0,
+        "unreachable_source_files": 0,
+        "untracked_present_files": 0
+      },
+      "observed_legacy_source_files": 16,
+      "observed_legacy_route_matches": 9
+    },
+    {
+      "id": "website",
+      "source_classification": "ignored_filesystem_legacy_observation",
+      "canonical_support_claim": false,
+      "build_context_declared": false,
+      "historical_removal_commit": "e5ae2d24ddee1cf9506806b0425ce3ce198540e0",
+      "hosts": [
+        "FX.trade-future.ir",
+        "api.FX.trade-future.ir"
+      ],
+      "counts": {
+        "asset_items": 0,
+        "assets_without_tracked_license_evidence": 0,
+        "browser_storage_evidence": 0,
+        "canonical_source_files": 0,
+        "controls": 0,
+        "declared_routes": 0,
+        "dialogs_modals_drawers": 0,
+        "empty_inline_handler_candidates": 0,
+        "feature_flag_entitlement_evidence": 0,
+        "ignored_present_files": 66,
+        "keyboard_shortcut_evidence": 0,
+        "manual_review_controls": 0,
+        "menus_context_menus_palettes": 0,
+        "navigation_targets": 0,
+        "pages_screens": 0,
+        "placeholder_text_candidates": 0,
+        "reachable_dialogs_modals_drawers": 0,
+        "reachable_menus_context_menus_palettes": 0,
+        "reachable_pages_screens": 0,
+        "reachable_source_files": 0,
+        "reachable_tab_state_occurrences": 0,
+        "tab_state_occurrences": 0,
+        "tracked_deleted_files": 0,
+        "tracked_present_files": 0,
+        "tracked_present_noncanonical_tree_files": 0,
+        "unmatched_navigation_targets": 0,
+        "unreachable_source_files": 0,
+        "untracked_present_files": 0
+      },
+      "observed_legacy_source_files": 40,
+      "observed_legacy_route_matches": 18
+    }
+  ],
+  "gap_counts": [
+    {
+      "code": "ASSET_LICENSE_EVIDENCE_MISSING",
+      "count": 2,
+      "severities": [
+        "high"
+      ]
+    },
+    {
+      "code": "COMPOSE_CONTEXT_NOT_REPRODUCIBLE",
+      "count": 1,
+      "severities": [
+        "critical"
+      ]
+    },
+    {
+      "code": "CONTROL_WITHOUT_STATIC_BINDING_CANDIDATE",
+      "count": 1,
+      "severities": [
+        "high"
+      ]
+    },
+    {
+      "code": "EMPTY_INLINE_HANDLER_CANDIDATE",
+      "count": 4,
+      "severities": [
+        "high"
+      ]
+    },
+    {
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "count": 9,
+      "severities": [
+        "high"
+      ]
+    },
+    {
+      "code": "NONCANONICAL_FRONTEND_SOURCE",
+      "count": 4,
+      "severities": [
+        "high"
+      ]
+    },
+    {
+      "code": "PLACEHOLDER_OR_DEFERRED_UI_TEXT_CANDIDATES",
+      "count": 1,
+      "severities": [
+        "high"
+      ]
+    },
+    {
+      "code": "REACHABLE_IMPORT_OUTSIDE_TRACKED_SOURCE",
+      "count": 6,
+      "severities": [
+        "high"
+      ]
+    },
+    {
+      "code": "SOURCE_REDIRECT_HOST_NOT_IN_APP_NGINX_SERVER_NAMES",
+      "count": 1,
+      "severities": [
+        "high"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "application": "user",
+      "code": "COMPOSE_CONTEXT_NOT_REPRODUCIBLE",
+      "detail": "Canonical compose declares a build context whose application source is ignored/noncanonical.",
+      "severity": "critical"
+    },
+    {
+      "application": "panel",
+      "code": "ASSET_LICENSE_EVIDENCE_MISSING",
+      "detail": "9 tracked asset files have no colocated tracked license evidence.",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "ASSET_LICENSE_EVIDENCE_MISSING",
+      "detail": "555 tracked asset files have no colocated tracked license evidence.",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "CONTROL_WITHOUT_STATIC_BINDING_CANDIDATE",
+      "detail": "frontend/prochart/src/app/screens/WatchlistScreen.jsx:85 <button> has no native destination or statically visible event binding; manual/runtime confirmation is required.",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "EMPTY_INLINE_HANDLER_CANDIDATE",
+      "detail": "frontend/prochart/src/UserPanel.jsx:1249 has an empty inline onChange candidate.",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "EMPTY_INLINE_HANDLER_CANDIDATE",
+      "detail": "frontend/prochart/src/UserPanel.jsx:1250 has an empty inline onChange candidate.",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "EMPTY_INLINE_HANDLER_CANDIDATE",
+      "detail": "frontend/prochart/src/UserPanel.jsx:1251 has an empty inline onChange candidate.",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "EMPTY_INLINE_HANDLER_CANDIDATE",
+      "detail": "frontend/prochart/src/bazaarnama/overlays/ChartOverlays.jsx:424 has an empty inline onMore candidate.",
+      "severity": "high"
+    },
+    {
+      "application": "panel",
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "detail": "frontend/panel/src/components/common/CommandPalette.jsx:17 targets /signals (falls_through_wildcard_not_declared).",
+      "severity": "high"
+    },
+    {
+      "application": "panel",
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "detail": "frontend/panel/src/components/common/CommandPalette.jsx:18 targets /backtest (falls_through_wildcard_not_declared).",
+      "severity": "high"
+    },
+    {
+      "application": "panel",
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "detail": "frontend/panel/src/components/common/CommandPalette.jsx:19 targets /risk (falls_through_wildcard_not_declared).",
+      "severity": "high"
+    },
+    {
+      "application": "panel",
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "detail": "frontend/panel/src/components/common/CommandPalette.jsx:21 targets /performance (falls_through_wildcard_not_declared).",
+      "severity": "high"
+    },
+    {
+      "application": "panel",
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "detail": "frontend/panel/src/components/common/CommandPalette.jsx:22 targets /reports (falls_through_wildcard_not_declared).",
+      "severity": "high"
+    },
+    {
+      "application": "panel",
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "detail": "frontend/panel/src/components/common/CommandPalette.jsx:23 targets /ml-models (falls_through_wildcard_not_declared).",
+      "severity": "high"
+    },
+    {
+      "application": "panel",
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "detail": "frontend/panel/src/components/common/CommandPalette.jsx:24 targets /monitoring (falls_through_wildcard_not_declared).",
+      "severity": "high"
+    },
+    {
+      "application": "panel",
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "detail": "frontend/panel/src/components/common/CommandPalette.jsx:25 targets /visitors (falls_through_wildcard_not_declared).",
+      "severity": "high"
+    },
+    {
+      "application": "panel",
+      "code": "NAVIGATION_TARGET_WITHOUT_DECLARED_ROUTE",
+      "detail": "frontend/panel/src/components/common/CommandPalette.jsx:26 targets /articles (falls_through_wildcard_not_declared).",
+      "severity": "high"
+    },
+    {
+      "application": "academy",
+      "code": "NONCANONICAL_FRONTEND_SOURCE",
+      "detail": "No tracked, present application source; filesystem observations are excluded from canonical support counts.",
+      "severity": "high"
+    },
+    {
+      "application": "ig",
+      "code": "NONCANONICAL_FRONTEND_SOURCE",
+      "detail": "No tracked, present application source; filesystem observations are excluded from canonical support counts.",
+      "severity": "high"
+    },
+    {
+      "application": "user",
+      "code": "NONCANONICAL_FRONTEND_SOURCE",
+      "detail": "No tracked, present application source; filesystem observations are excluded from canonical support counts.",
+      "severity": "high"
+    },
+    {
+      "application": "website",
+      "code": "NONCANONICAL_FRONTEND_SOURCE",
+      "detail": "No tracked, present application source; filesystem observations are excluded from canonical support counts.",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "PLACEHOLDER_OR_DEFERRED_UI_TEXT_CANDIDATES",
+      "detail": "9 reachable lexical candidate(s) contain TODO/FIXME/coming-soon/future wording; the JSON preserves line evidence and does not assert all are defects.",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "REACHABLE_IMPORT_OUTSIDE_TRACKED_SOURCE",
+      "detail": "frontend/prochart/src/bazaarnama/panels/Details.jsx:9 imports ../techRating (target_present_untracked).",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "REACHABLE_IMPORT_OUTSIDE_TRACKED_SOURCE",
+      "detail": "frontend/prochart/src/pages/BazaarNama.jsx:16 imports ../bazaarnama/bandFill (target_present_untracked).",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "REACHABLE_IMPORT_OUTSIDE_TRACKED_SOURCE",
+      "detail": "frontend/prochart/src/pages/BazaarNama.jsx:29 imports ../bazaarnama/symbolExpr (target_present_untracked).",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "REACHABLE_IMPORT_OUTSIDE_TRACKED_SOURCE",
+      "detail": "frontend/prochart/src/pages/BazaarNama.jsx:30 imports ../bazaarnama/resample (target_present_untracked).",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "REACHABLE_IMPORT_OUTSIDE_TRACKED_SOURCE",
+      "detail": "frontend/prochart/src/pages/BazaarNama.jsx:31 imports ../bazaarnama/volumeProfile (target_present_untracked).",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "REACHABLE_IMPORT_OUTSIDE_TRACKED_SOURCE",
+      "detail": "frontend/prochart/src/pages/BazaarNama.jsx:40 imports ../bazaarnama/techRating (target_present_untracked).",
+      "severity": "high"
+    },
+    {
+      "application": "prochart",
+      "code": "SOURCE_REDIRECT_HOST_NOT_IN_APP_NGINX_SERVER_NAMES",
+      "detail": "frontend/prochart/src/main.jsx:13 redirects to pro-chart.com, while the app's tracked nginx server names are ['pro-chart.ir']. Deployment runtime was not inferred.",
+      "severity": "high"
+    }
+  ],
+  "test_reliability": {
+    "tracked_files": 3,
+    "untracked_files": 23,
+    "candidates": 14,
+    "limitation": "Static candidates do not establish flakiness; repeated clean executions and CI history are required for PC-157."
+  },
+  "false_positive_controls": [
+    "JS line and block comments are blanked while strings and line numbers are preserved.",
+    "Only relative imports from tracked entrypoints establish static reachability.",
+    "node_modules, dist, www, .vite and src.bak never enter source analysis.",
+    "Ignored legacy trees, untracked additions and tracked deletions remain separate evidence classes.",
+    "Tracked dist, www and src.bak trees are listed as noncanonical and excluded from source reachability and asset counts.",
+    "Controls without a visible binding are manual-review candidates, not asserted defects.",
+    "State, entitlement, provider and placeholder matches are lexical candidates, not runtime assertions.",
+    "A wildcard redirect is not treated as declaration/support for an otherwise missing navigation target.",
+    "License evidence requires a tracked LICENSE/LICENCE/COPYING/NOTICE file; package-manager licenses are not attributed to product assets."
+  ],
+  "limitations": [
+    "No browser, server, API, service worker, native shell, or external provider was executed.",
+    "Conditional/dynamic imports assembled from nonliteral strings are outside the import graph.",
+    "Static reachability does not prove a route, dialog, menu, CTA, keyboard shortcut, state, or entitlement works.",
+    "The regex inventory cannot prove empty/error/offline/permission visual completeness or fake-success absence.",
+    "Asset presence and hashes do not establish ownership, provenance, trademark permission, or license compatibility.",
+    "PC-157 requires repeated clean runs and CI history; this inventory only surfaces retry/skip/timeout candidates.",
+    "Host config presence and compose literals do not prove DNS, certificates, deployed containers, or nginx selection order."
+  ]
+}

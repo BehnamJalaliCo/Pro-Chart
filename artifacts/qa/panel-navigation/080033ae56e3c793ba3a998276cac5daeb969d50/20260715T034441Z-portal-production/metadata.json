@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "requirementIds": [
+    "PC-003",
+    "PC-005",
+    "PC-147",
+    "PC-159"
+  ],
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T034441Z-portal-production",
+  "sourceFingerprint": "eaeb57bcf61caf0625fb0312b0faca89e96eacded76a6ee9f4400e972bd0fbde",
+  "project": "chromium-desktop",
+  "expectedOrigin": "https://panel.pro-chart.com",
+  "redirectResults": [
+    {
+      "from": "/signals",
+      "to": "/ai-signals",
+      "documentStatus": 200,
+      "observedPath": "/ai-signals"
+    },
+    {
+      "from": "/visitors",
+      "to": "/analytics",
+      "documentStatus": 200,
+      "observedPath": "/analytics"
+    }
+  ],
+  "unavailableResults": [
+    {
+      "query": "backtest",
+      "label": "بک‌تست",
+      "actionableCount": 0,
+      "emptyVisible": true
+    },
+    {
+      "query": "risk",
+      "label": "مدیریت ریسک",
+      "actionableCount": 0,
+      "emptyVisible": true
+    },
+    {
+      "query": "pnl",
+      "label": "عملکرد",
+      "actionableCount": 0,
+      "emptyVisible": true
+    },
+    {
+      "query": "heatmap",
+      "label": "گزارش‌های پیشرفته",
+      "actionableCount": 0,
+      "emptyVisible": true
+    },
+    {
+      "query": "model",
+      "label": "مدل‌های ML",
+      "actionableCount": 0,
+      "emptyVisible": true
+    },
+    {
+      "query": "monitor",
+      "label": "مانیتورینگ",
+      "actionableCount": 0,
+      "emptyVisible": true
+    },
+    {
+      "query": "cms",
+      "label": "مقالات",
+      "actionableCount": 0,
+      "emptyVisible": false
+    }
+  ],
+  "enabledKeyboardResult": {
+    "query": "signal",
+    "observedPath": "/ai-signals"
+  },
+  "keyboardContract": {
+    "open": "Control+k",
+    "activate": "Enter",
+    "close": "Escape"
+  },
+  "unexpectedExternalRequests": [],
+  "pageErrors": []
+}

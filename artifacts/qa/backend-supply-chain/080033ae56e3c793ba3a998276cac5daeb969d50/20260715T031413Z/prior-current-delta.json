@@ -1,0 +1,25 @@
+{
+  "databaseComparison": "same-current-db",
+  "priorImage": "sha256:d703a78a20c5f1d331947dba765de0f64ec0797f81f42412fb2b0ffeeefea3aa",
+  "currentImage": "sha256:c388f3aaa5b23ced63ccf2af5a59c3ed16e685df518971475f399329be7a8dd6",
+  "prior": {
+    "total": 817,
+    "critical": 29,
+    "high": 73,
+    "medium": 97
+  },
+  "current": {
+    "total": 171,
+    "critical": 5,
+    "high": 23,
+    "medium": 49
+  },
+  "delta": {
+    "total": -646,
+    "critical": -24,
+    "high": -50,
+    "medium": -48
+  },
+  "currentHighCriticalAppPackages": [],
+  "currentHighCriticalBaseOnly": true
+}

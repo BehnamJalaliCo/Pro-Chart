@@ -1,0 +1,26 @@
+{
+  "runId": "20260715T082000Z-clean-current",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "f7d8d613a945d7f8956eacdb4bdca9ee516b9e9a9f06de4adc46ce22adb3c7ef",
+  "baseImage": "prochart-api:latest",
+  "testImage": "prochart-qa-pytest:20260715T082000Z-clean-current",
+  "repositorySnapshot": "sanitized worktree copy mounted read-only",
+  "testNetwork": "none",
+  "testTargets": [
+    "tests/",
+    "qa/python/security_regressions.py",
+    "qa/python/referral_redirects_regression.py",
+    "qa/python/security_headers_api_regression.py",
+    "qa/python/security_headers_runtime.py --help"
+  ],
+  "liveServicesOrDataUsed": false,
+  "pythonDontWriteBytecode": true,
+  "pytestCacheDisabled": true,
+  "pytestExitCode": 1,
+  "apiHeaderRegressionExitCode": 0,
+  "runtimeHeaderHarnessSmokeExitCode": 0,
+  "runtimeHeaderBehaviorExecuted": false,
+  "runtimeHeaderBehaviorExclusion": "requires a served HTTPS frontend image; incompatible with this network-none backend suite",
+  "pipCheckExitCode": 0,
+  "exitCode": 1
+}

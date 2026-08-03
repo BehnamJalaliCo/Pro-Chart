@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "classification": "performance gate diagnosis; not a replacement gate",
+  "baseline": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T001035Z",
+  "result": "DIAGNOSED_NOT_REMEDIATED",
+  "gateStatus": "FAIL_UNCHANGED",
+  "thresholdChanged": false,
+  "productChangeMade": false,
+  "finalFrontendSourceFingerprint": "94cc980670bc7c6595f6a4ea8ec6f2c48beea1f01ad8f261ff6e11d535569c40",
+  "harness": {
+    "source": "qa/tests/performance-baseline.spec.mjs",
+    "metric": "activeChartFrameP95Ms",
+    "sampleCount": 120,
+    "semantics": "Consecutive requestAnimationFrame callback timestamp deltas while the synthetic chart is visible.",
+    "percentile": "nearest-rank p95",
+    "gate": { "operator": "<", "threshold": 20, "unit": "ms" },
+    "directChartCpuMeasurement": false,
+    "directPaintDurationMeasurement": false
+  },
+  "canonicalApplicationEvidence": {
+    "run": "artifacts/qa/performance/080033ae56e3c793ba3a998276cac5daeb969d50/20260714T235150Z",
+    "integrityManifestVerified": true,
+    "sourceFingerprint": "94dff33b4eaf949e2a0d4df83a931e34a528ccd9d03ad9ce6b40caf1cc03fc6a",
+    "desktopSamples": [
+      {
+        "sampleId": "sample-01",
+        "metrics": "desktop-chart/sample-01/metrics.json",
+        "sha256": "5ef6d8a9229691b3907d54f645cd1879e2122ec12ca9172d016d7e05f8e38b95",
+        "meanMs": 16.067,
+        "medianMs": 16,
+        "p95Ms": 20,
+        "maxMs": 26,
+        "intervalsAtOrOver20Ms": 10,
+        "rawIntervalsField": "metrics.activeChartFrames.rawIntervalsMs"
+      },
+      {
+        "sampleId": "sample-02",
+        "metrics": "desktop-chart/sample-02/metrics.json",
+        "sha256": "40913ba16fc649ee3690be9cb13054aaf99f7713ecebea072e585d4288bcf83c",
+        "meanMs": 15.992,
+        "medianMs": 16,
+        "p95Ms": 19,
+        "maxMs": 22,
+        "intervalsAtOrOver20Ms": 6,
+        "rawIntervalsField": "metrics.activeChartFrames.rawIntervalsMs"
+      },
+      {
+        "sampleId": "sample-03",
+        "metrics": "desktop-chart/sample-03/metrics.json",
+        "sha256": "adc8989cfa77c7c618e3ab4dd2ee6271990795ef4979174e2b05a6875e7bfb87",
+        "meanMs": 16.208,
+        "medianMs": 16,
+        "p95Ms": 20,
+        "maxMs": 30,
+        "intervalsAtOrOver20Ms": 7,
+        "rawIntervalsField": "metrics.activeChartFrames.rawIntervalsMs"
+      }
+    ]
+  },
+  "blankSchedulerControl": {
+    "evidence": "blank-control.json",
+    "samples": 5,
+    "intervalsPerSample": 120,
+    "p95ValuesMs": [16, 17, 17, 17, 17],
+    "medianValuesMs": [16, 16, 16, 16, 16],
+    "meanRangeMs": [15.875, 15.941666666666666],
+    "maxValuesMs": [17, 17, 17, 17, 17],
+    "intervalsAtOrOver20Ms": [0, 0, 0, 0, 0],
+    "rawIntervalsIncluded": true
+  },
+  "observations": [
+    "The blank control establishes an approximately 16 ms headless Chromium cadence with integer-quantized timestamps under Playwright fixed time.",
+    "The canonical application adds a small upper-tail delay: 6-10 of 120 desktop intervals reached 20 ms or more, while medians and means remained approximately 16 ms.",
+    "The canonical desktop aggregate fails because two of three nearest-rank p95 values equal the strict 20 ms boundary; the threshold was not relaxed or reinterpreted.",
+    "requestAnimationFrame timestamp deltas combine compositor cadence, OS/container scheduling, JavaScript work, rendering work, and unrelated runner jitter. The harness does not bracket applyMid, series.update, applyOptions, layout, or paint, so it cannot attribute the tail to BazaarNama's real-time loop.",
+    "The synthetic fixture fixes Math.random to 0.5 and returns an unchanged quote. It is useful for determinism but does not exercise a representative changing-quote sequence.",
+    "A narrow exact-state deduplication experiment did not reliably clear the strict gate under repeat execution and was fully reverted. No performance-motivated product change remains."
+  ],
+  "conclusion": {
+    "causeClass": "scheduler-and-rendering tail observed; code-level cause not established",
+    "safeProductFixEstablished": false,
+    "reasonNoProductChange": "Changing the live animation without direct work attribution would be speculative and could alter intended tick motion, new-bar rollover, or settings propagation.",
+    "currentGateDecision": "Keep FAIL until a direct, reproducible chart-work benchmark passes the existing intent without changing the numeric budget."
+  },
+  "recommendedBenchmark": {
+    "name": "deterministic changing-quote chart work",
+    "requirements": [
+      "Run alone on a pinned reference device or explicitly pinned CPU allocation; execute an idle control in the same job and invalidate the run if the control is unstable rather than subtracting it from product results.",
+      "Feed a deterministic sequence of genuinely changing quotes through a test-only entry point, independent of polling, Math.random, and the network.",
+      "Bracket the synchronous live update with User Timing marks to report applyMid/series update self-time p50, p95, and max.",
+      "Capture a Chromium trace with main-thread task, style/layout, raster, and paint events; report quote-to-next-frame latency, dropped/over-budget frames, paint time, and long tasks.",
+      "Use at least 600 updates per scenario and multiple isolated repeats so p95 is not decided by six scheduler samples.",
+      "Keep the existing <20 ms intent as a separately defined quote-to-present latency gate; do not treat an uninstrumented free-running rAF cadence sample as chart CPU time."
+    ]
+  },
+  "securityScan": {
+    "tool": "gitleaks 8.30.1",
+    "report": "gitleaks.json",
+    "findingCount": 0,
+    "result": "PASS"
+  },
+  "integrityManifest": "SHA256SUMS"
+}

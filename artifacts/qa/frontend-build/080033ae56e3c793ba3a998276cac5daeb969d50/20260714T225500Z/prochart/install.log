@@ -1,0 +1,37 @@
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@capacitor/cli@8.4.1',
+npm warn EBADENGINE   required: { node: '>=22.0.0' },
+npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '10.8.2' }
+npm warn EBADENGINE }
+npm warn deprecated git-semver-tags@4.1.1: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
+npm warn deprecated git-raw-commits@2.0.11: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
+npm warn deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+npm warn deprecated
+npm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+npm warn deprecated conventional-changelog-core@4.2.4: Deprecated and no longer maintained. Please use conventional-changelog instead.
+npm warn deprecated conventional-changelog-eslint@3.0.9: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
+npm warn deprecated conventional-changelog-atom@2.0.8: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
+npm warn deprecated conventional-changelog-jquery@3.0.11: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
+npm warn deprecated conventional-changelog-codemirror@2.0.8: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
+npm warn deprecated conventional-changelog-express@2.0.6: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
+npm warn deprecated conventional-changelog-ember@2.0.9: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
+npm warn deprecated conventional-changelog-jshint@2.0.9: This preset is deprecated. Please use conventional-changelog-conventionalcommits or conventional-changelog-angular instead.
+npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+npm warn deprecated tar@6.2.1: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated glob@9.3.5: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 656 packages, and audited 657 packages in 6s
+
+110 packages are looking for funding
+  run `npm fund` for details
+
+8 vulnerabilities (2 moderate, 6 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.

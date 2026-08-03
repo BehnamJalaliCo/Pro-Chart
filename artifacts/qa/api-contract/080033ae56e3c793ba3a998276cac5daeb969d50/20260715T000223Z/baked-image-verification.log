@@ -1,0 +1,9 @@
+2026-07-15 00:05:33 [info     ] cors_configured                debug=False origins=['https://FX.trade-future.ir', 'https://Panel.FX.trade-future.ir', 'https://api.FX.trade-future.ir', 'https://coinepro.com', 'https://www.coinepro.com', 'https://panel.coinepro.com', 'https://localhost'] source=production_defaults
+image=prochart-api:qa-current-ea-20260715
+image_id=sha256:9b37a34357df76e8d8ebbb0a43fef1a461546bf627474cfe24838e924704382d
+base_image_id=sha256:768613b6398c2ef089e0c8b73ac03ceddb6e9b1dac94d32a2b54c893dab1efdb
+network=none
+route_objects 496
+http_method_paths 495
+ea_routes [('GET', '/ea/config'), ('GET', '/ea/master-account'), ('GET', '/ea/signals'), ('GET', '/ea/users'), ('POST', '/ea/deals'), ('POST', '/ea/diag'), ('POST', '/ea/heartbeat'), ('POST', '/ea/specs'), ('POST', '/ea/symbols')]
+duplicate_method_paths 0

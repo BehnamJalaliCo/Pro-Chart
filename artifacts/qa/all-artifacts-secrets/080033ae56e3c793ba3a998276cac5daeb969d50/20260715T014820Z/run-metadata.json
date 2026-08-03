@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "requirementId": "PC-132",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T014820Z",
+  "scope": "Entire artifacts/qa tree after the backend live-container command-field correction and before this scan's own output directory was added",
+  "scopeSnapshot": {
+    "fileCount": 2720,
+    "bytes": 2083949161,
+    "includesCurrentAndStaleRuns": true,
+    "scannerOutputExcludedByConstruction": true
+  },
+  "scanner": {
+    "name": "Gitleaks",
+    "version": "8.30.1",
+    "imageId": "sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+    "network": "none",
+    "redactionPercent": 100,
+    "exitCode": 1,
+    "findingCount": 19,
+    "matchedFileCount": 16,
+    "allReportSecretsRedacted": true
+  },
+  "review": {
+    "publicBaseImageGpgKeyIdentifierFindings": 11,
+    "localImageTagHeuristicFindings": 8,
+    "otherFindings": 0,
+    "scannerFailurePreserved": true,
+    "releasePassGranted": false
+  },
+  "credentialCaptureCorrection": {
+    "notice": "artifacts/qa/backend-build/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T011720Z/security-redaction-notice.json",
+    "rawCredentialValueStoredHere": false,
+    "credentialBearingDockerCommandPatternMatchesAfterCorrection": 0,
+    "rotationAndRevocationStillRequired": true
+  },
+  "result": "FAIL_REVIEWED_NONSECRET_HEURISTICS",
+  "fullyVerified": false,
+  "reasonNotFullyVerified": "A detector-only artifact scan cannot prove absence of every credential; the scanner exit code is preserved, Git history and ignored local stores are separate scopes, and the credential exposed before this scan still requires rotation/revocation."
+}

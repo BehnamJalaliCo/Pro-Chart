@@ -1,0 +1,7 @@
+gitleaks-run.log: OK
+gitleaks-status.txt: OK
+gitleaks.json: OK
+inventory.json: OK
+run-metadata.json: OK
+summary.json: OK
+validation.log: OK

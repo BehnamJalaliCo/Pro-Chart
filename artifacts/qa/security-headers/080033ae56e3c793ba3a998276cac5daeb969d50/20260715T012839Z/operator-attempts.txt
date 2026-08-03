@@ -1,0 +1,42 @@
+Attempt 1 — Playwright harness invocation: PRESERVED FAIL
+- The first invocation used https://127.0.0.1:18446 and an artifact path relative to qa/.
+- The application IP-canonicalization behavior invalidated the CSP event probe, so the test recorded 0 passed / 1 unexpected.
+- Source evidence: frontend/prochart/src/main.jsx lines 12–13 replace any
+  IPv4-host page with the canonical public origin.
+- Raw structured evidence is preserved under playwright-attempt1-ip-canonicalization/.
+- This was a harness/base-URL error, not accepted product evidence.
+
+Final Playwright invocation: PASS
+- The final invocation used https://localhost:18446, which preserves the intended local origin.
+- Result: 1 passed, 0 failed, 0 skipped, 0 flaky, retries configured 0.
+- Raw structured evidence is preserved under playwright-final/ and playwright-final.log.
+
+Attempt 1 — API middleware CLI: PRESERVED FAIL
+- The first isolated invocation mounted the regression program outside /app but omitted PYTHONPATH=/app.
+- It failed before assertions with ModuleNotFoundError: src.
+- Raw output is preserved in api-middleware-regression-attempt1-missing-pythonpath.log.
+
+Final API middleware CLI: PASS
+- The corrected invocation supplied PYTHONPATH=/app against the same immutable API-helper image.
+- Result: 11 assertions passed across HSTS enabled, HSTS disabled, and custom-CSP branches.
+
+Attempt 1 — artifact Gitleaks scan: PRESERVED REVIEWED FINDINGS
+- The initial scan reported two redacted generic-api-key matches. Both were the
+  public GPG_KEY metadata inherited from a standard base-image environment,
+  duplicated in full Docker image/container inspect output.
+- The redacted report and log are preserved as
+  gitleaks-attempt1-public-base-image-gpg-env-redacted.json and
+  gitleaks-attempt1-public-base-image-gpg-env.log.
+- The inspect artifacts were narrowed to the non-secret identity, rootfs,
+  runtime-hardening, port, mount, and network fields needed by this evidence.
+
+Final artifact Gitleaks scan: PASS
+- Redacted no-git scan result: 0 findings.
+- Final evidence: gitleaks.json, gitleaks.log, and gitleaks-version.txt.
+
+Pre-seal artifact Gitleaks re-scan: PRESERVED REVIEWED FINDING
+- A metadata field named `removedDisposableApiHelper` was heuristically treated
+  as an API-key assignment because its value was the disposable container name.
+- The redacted report/log are preserved under the
+  gitleaks-attempt2-cleanup-field-* names. The field was renamed to the neutral
+  `removedDisposableBackendHelper`; no credential value was involved.

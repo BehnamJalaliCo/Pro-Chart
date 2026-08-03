@@ -1,0 +1,2 @@
+14cdffdb75430ca2ed2f0b4cbe5a2b707870331758648ff8b71e452010a0e191  /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-inventory/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012524Z/inventory-a.json
+14cdffdb75430ca2ed2f0b4cbe5a2b707870331758648ff8b71e452010a0e191  /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-inventory/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012524Z/inventory-b.json

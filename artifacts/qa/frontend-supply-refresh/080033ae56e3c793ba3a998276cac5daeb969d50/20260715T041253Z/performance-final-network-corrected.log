@@ -1,0 +1,17 @@
+
+Running 12 tests using 1 worker
+
+[1/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[2/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[3/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[4/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[5/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[6/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[7/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[8/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[9/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[10/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[11/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[12/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+  6 skipped
+  6 passed (33.4s)

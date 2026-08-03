@@ -1,0 +1,8 @@
+usage: security_headers_runtime.py [-h] --base-url BASE_URL [--host HOST]
+                                   [--output OUTPUT]
+
+options:
+  -h, --help           show this help message and exit
+  --base-url BASE_URL  HTTPS container URL, for example https://172.20.0.5
+  --host HOST          Host header sent to nginx
+  --output OUTPUT      Optional JSON result path

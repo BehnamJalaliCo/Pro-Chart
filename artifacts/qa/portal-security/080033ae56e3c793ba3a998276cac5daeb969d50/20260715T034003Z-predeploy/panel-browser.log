@@ -1,0 +1,10 @@
+
+Running 1 test using 1 worker
+
+[1/1] [chromium-desktop] › tests/panel-navigation.spec.mjs:27:1 › PANEL-NAV: legacy aliases resolve and unavailable palette actions stay hidden
+  1 passed (2.9s)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

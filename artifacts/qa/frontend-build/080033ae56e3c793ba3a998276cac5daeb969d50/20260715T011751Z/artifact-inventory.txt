@@ -1,0 +1,13 @@
+artifact-inventory.txt
+asset-digests.txt
+build-directory.txt
+build-output-files.sha256
+frontend-build-shipping-obfuscated.log
+gitleaks-exit-code.txt
+gitleaks-run.log
+gitleaks-scan-manifest.sha256
+gitleaks-version.txt
+gitleaks.json
+run-metadata.json
+source-fingerprint.txt
+source-snapshot-files.sha256

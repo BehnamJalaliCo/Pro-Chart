@@ -1,0 +1,15 @@
+{
+  "scanner": "gitleaks 8.30.1",
+  "redactionPercent": 100,
+  "rawFindingCount": 1,
+  "findings": [
+    {
+      "ruleId": "generic-api-key",
+      "file": "run-metadata.json",
+      "line": 12,
+      "classification": "FALSE_POSITIVE_PUBLIC_DOCKER_REFERENCE",
+      "secretValueStoredOrReported": false
+    }
+  ],
+  "gateInterpretation": "No credential/secret finding after manual location review; raw redacted scanner exit remains non-zero and is preserved."
+}

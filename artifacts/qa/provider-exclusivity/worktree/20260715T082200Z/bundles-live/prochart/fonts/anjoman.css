@@ -1,0 +1,10 @@
+/* Anjoman Max — فونتِ اختصاصیِ خریداری‌شدهٔ پرو‌چارت (لایسنس‌دار). خودمیزبان، font-display: swap. */
+@font-face { font-family: 'AnjomanMax'; font-style: normal; font-weight: 100; font-display: swap; src: url('/fonts/anjoman/AnjomanMax-Thin.woff2') format('woff2'); }
+@font-face { font-family: 'AnjomanMax'; font-style: normal; font-weight: 200; font-display: swap; src: url('/fonts/anjoman/AnjomanMax-ExLight.woff2') format('woff2'); }
+@font-face { font-family: 'AnjomanMax'; font-style: normal; font-weight: 300; font-display: swap; src: url('/fonts/anjoman/AnjomanMax-Light.woff2') format('woff2'); }
+@font-face { font-family: 'AnjomanMax'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/anjoman/AnjomanMax-Regular.woff2') format('woff2'); }
+@font-face { font-family: 'AnjomanMax'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/anjoman/AnjomanMax-Medium.woff2') format('woff2'); }
+@font-face { font-family: 'AnjomanMax'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/anjoman/AnjomanMax-SemiBold.woff2') format('woff2'); }
+@font-face { font-family: 'AnjomanMax'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/anjoman/AnjomanMax-Bold.woff2') format('woff2'); }
+@font-face { font-family: 'AnjomanMax'; font-style: normal; font-weight: 800; font-display: swap; src: url('/fonts/anjoman/AnjomanMax-ExBold.woff2') format('woff2'); }
+@font-face { font-family: 'AnjomanMax'; font-style: normal; font-weight: 900; font-display: swap; src: url('/fonts/anjoman/AnjomanMax-Black.woff2') format('woff2'); }

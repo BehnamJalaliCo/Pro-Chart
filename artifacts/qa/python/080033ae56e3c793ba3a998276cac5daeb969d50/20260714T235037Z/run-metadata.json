@@ -1,0 +1,19 @@
+{
+  "runId": "20260714T235037Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "7b9228e5e9c3db2031469fc7bcd6b1198682fd553b46489007e6295beddee431",
+  "baseImage": "prochart-api:qa-current-20260714",
+  "testImage": "prochart-qa-pytest:current-20260714",
+  "repositorySnapshot": "sanitized worktree copy mounted read-only",
+  "testNetwork": "none",
+  "testTargets": [
+    "tests/",
+    "qa/python/security_regressions.py"
+  ],
+  "liveServicesOrDataUsed": false,
+  "pythonDontWriteBytecode": true,
+  "pytestCacheDisabled": true,
+  "pytestExitCode": 1,
+  "pipCheckExitCode": 0,
+  "exitCode": 1
+}

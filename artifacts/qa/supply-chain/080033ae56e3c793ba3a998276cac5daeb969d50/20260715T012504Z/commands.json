@@ -1,0 +1,100 @@
+{
+  "commands": [
+    {
+      "step": "enumerate-exact-image",
+      "networkMode": "local Docker Engine metadata only; no external network",
+      "readOnly": true,
+      "command": "docker image inspect prochart-api:qa-backend-080033ae56e3-20260715T011720Z; docker image inspect sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf; docker image inspect prochart-api@sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf"
+    },
+    {
+      "step": "syft-version",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none anchore/syft@sha256:86fde6445b483d902fe011dd9f68c4987dd94e07da1e9edc004e3c2422650de6 version -o json"
+    },
+    {
+      "step": "generate-cyclonedx-sbom",
+      "networkMode": "none",
+      "readOnlyTargetImage": true,
+      "command": "docker run --rm --network none -e SYFT_CHECK_FOR_APP_UPDATE=false -v /var/run/docker.sock:/var/run/docker.sock:ro anchore/syft@sha256:86fde6445b483d902fe011dd9f68c4987dd94e07da1e9edc004e3c2422650de6 scan docker:sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf --scope squashed -o cyclonedx-json"
+    },
+    {
+      "step": "generate-spdx-sbom",
+      "networkMode": "none",
+      "readOnlyTargetImage": true,
+      "command": "docker run --rm --network none -e SYFT_CHECK_FOR_APP_UPDATE=false -v /var/run/docker.sock:/var/run/docker.sock:ro anchore/syft@sha256:86fde6445b483d902fe011dd9f68c4987dd94e07da1e9edc004e3c2422650de6 scan docker:sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf --scope squashed -o spdx-json"
+    },
+    {
+      "step": "grype-version",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d version -o json"
+    },
+    {
+      "step": "populate-ephemeral-grype-db-cache",
+      "networkMode": "bridge (only network-enabled scanner step; vulnerability database download only)",
+      "readOnlyTargetImage": true,
+      "command": "docker run --rm --network bridge -e GRYPE_DB_CACHE_DIR=/cache -e GRYPE_CHECK_FOR_APP_UPDATE=false -v /tmp/prochart-grype-db-20260715T012504Z:/cache anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d db update"
+    },
+    {
+      "step": "grype-db-status",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none -e GRYPE_DB_CACHE_DIR=/cache -e GRYPE_CHECK_FOR_APP_UPDATE=false -e GRYPE_DB_AUTO_UPDATE=false -v /tmp/prochart-grype-db-20260715T012504Z:/cache:ro anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d db status -o json"
+    },
+    {
+      "step": "hash-extracted-grype-db",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none --entrypoint python -v /tmp/prochart-grype-db-20260715T012504Z:/cache:ro prochart-api@sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf -c <streaming SHA-256 of /cache/6/vulnerability.db>"
+    },
+    {
+      "step": "grype-sbom-scan",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none -e GRYPE_DB_CACHE_DIR=/cache -e GRYPE_CHECK_FOR_APP_UPDATE=false -e GRYPE_DB_AUTO_UPDATE=false -v /tmp/prochart-grype-db-20260715T012504Z:/cache:ro -v /home/bazaarnama/Pro-Chart/app/artifacts/qa/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012504Z:/evidence:ro anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d sbom:/evidence/sbom.cyclonedx.json -o json"
+    },
+    {
+      "step": "normalize-vulnerability-records",
+      "networkMode": "none",
+      "readOnlyInputs": true,
+      "command": "deterministic jq projection of matches and ignoredMatches -> vulnerabilities.normalized.jsonl; deterministic aggregation -> severity-summary.json"
+    },
+    {
+      "step": "summarize-license-and-integrity-metadata",
+      "networkMode": "none",
+      "readOnlyInputs": true,
+      "command": "deterministic jq aggregation over both SBOMs plus SHA-256 file hashing -> license-summary.json and integrity-metadata.json"
+    },
+    {
+      "step": "inspect-local-signing-evidence",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "inspect local image labels/RepoDigest and SBOM signature fields; do not create or attach signatures or attestations"
+    },
+    {
+      "step": "compare-prior-canonical-scan",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "deterministic counts and canonical SHA-256 over prior/current matches, ignoredMatches, and CycloneDX components -> prior-delta.json"
+    },
+    {
+      "step": "redacted-secret-scan-initial",
+      "networkMode": "none",
+      "readOnlyInput": true,
+      "command": "docker run --rm --network none -v /home/bazaarnama/Pro-Chart/app/artifacts/qa/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012504Z:/scan:ro -v /tmp/prochart-gitleaks-20260715T012504Z:/report zricethezav/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f dir /scan --no-banner --no-color --redact=100 --report-format json --report-path /report/gitleaks.json"
+    },
+    {
+      "step": "redacted-secret-rescan-after-review-metadata",
+      "networkMode": "none",
+      "readOnlyInput": true,
+      "command": "docker run --rm --network none -v /home/bazaarnama/Pro-Chart/app/artifacts/qa/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012504Z:/scan:ro -v /tmp/prochart-gitleaks-final2-20260715T012504Z:/report zricethezav/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f dir /scan --no-banner --no-color --redact=100 --report-format json --report-path /report/gitleaks.json"
+    },
+    {
+      "step": "seal-and-verify",
+      "networkMode": "none",
+      "readOnlyInputs": true,
+      "command": "sha256sum every evidence file except seal outputs -> SHA256SUMS; sha256sum -c SHA256SUMS -> SHA256SUMS.verify.txt"
+    }
+  ]
+}

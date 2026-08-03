@@ -1,0 +1,4 @@
+version=8.30.1
+exit_code=0
+redacted=100%
+findings=0

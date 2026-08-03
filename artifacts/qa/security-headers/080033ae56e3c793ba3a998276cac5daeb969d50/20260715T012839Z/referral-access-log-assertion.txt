@@ -1,0 +1,5 @@
+effectiveConfigExactReferralLocations=2
+effectiveConfigReferralAccessLogOff=2
+runtimeReferralAccessLogEntries=0
+runtimeNonReferralAccessLogEntries=74
+result=PASS

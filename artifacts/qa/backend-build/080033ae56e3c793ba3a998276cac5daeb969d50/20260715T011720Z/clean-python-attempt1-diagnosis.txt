@@ -1,0 +1,1 @@
+attempt1 stopped before the derived test-image build because BuildKit attempted remote resolution for the local repo digest; verified unique local tag resolves to exact image ID and used it in attempt2

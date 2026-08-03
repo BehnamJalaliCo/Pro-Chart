@@ -1,0 +1,19 @@
+{
+  "javascript": "dist/assets/index-DE77rbAv.js",
+  "counts": {
+    "Function(": 109,
+    "charCodeAt": 19,
+    "fromCharCode": 4,
+    "RegExp": 7,
+    "setInterval": 16,
+    "debugger": 0
+  },
+  "comparisonShippingPhase0": {
+    "javascriptBytes": 3719876,
+    "Function(": 201,
+    "charCodeAt": 207,
+    "fromCharCode": 99,
+    "RegExp": 292
+  },
+  "semantics": "Literal token counts are diagnostic signatures, not a security-strength or deobfuscation proof."
+}

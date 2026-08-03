@@ -1,0 +1,9 @@
+{
+  "sourceFingerprint": "6f34f72085572cadfb5f65d2e43123c5d488f6de7fb0facf9e3c827f785fdc73",
+  "bakedSourceFingerprint": "6f34f72085572cadfb5f65d2e43123c5d488f6de7fb0facf9e3c827f785fdc73",
+  "sourceMatchesBaked": true,
+  "dockerfileSha256": "b7ec04528ff0031238ddc6c96516e7a67ef1867458dca5841ced100bcc32769e",
+  "dockerignoreSha256": "2c3c026a2fc4c6ae00455cd5cabeb0a8bc57e1b1d7d6c86260a44f188e1158d4",
+  "requirementsSha256": "e9dcad0d02f72156741fe67ab3b4cc968dc1c34514a3920c5c24e76f393090ae",
+  "manifestScope": "requirements.txt; src/; alembic/; scripts/; run_*.py; excludes bytecode caches"
+}

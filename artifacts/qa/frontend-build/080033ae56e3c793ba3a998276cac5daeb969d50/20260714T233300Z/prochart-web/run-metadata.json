@@ -1,0 +1,22 @@
+{
+  "runId": "20260714T233300Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "e7e854d3179b52584316217f33ff0fe232be59e1a2b4c28a513a8829714285d3",
+  "sourceCopyMatchesRepository": true,
+  "repositoryBuildOutputTouched": false,
+  "command": "NO_OBF=1 npm run build",
+  "node": "v20.20.2",
+  "npm": "10.8.2",
+  "vite": "6.4.3",
+  "modulesTransformed": 1782,
+  "durationSeconds": 5.01,
+  "outputFiles": 534,
+  "outputBytes": 5533969,
+  "mainJavaScript": "assets/index-DAReZjmF.js",
+  "mainJavaScriptKiB": 2129.86,
+  "mainJavaScriptGzipKiB": 584.90,
+  "mainCss": "assets/index-BKauCo0Y.css",
+  "mainCssKiB": 79.82,
+  "bundleSyntaxCheck": "PASS",
+  "result": "PASS_WITH_LARGE_CHUNK_WARNING"
+}

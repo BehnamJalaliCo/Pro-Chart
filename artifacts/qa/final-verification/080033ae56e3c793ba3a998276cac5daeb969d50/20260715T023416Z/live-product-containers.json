@@ -1,0 +1,112 @@
+[
+  {
+    "name": "prochart-admin-frontend",
+    "id": "2c379a7a58df15b9d2f74596ce3c8be5bd24233ee92952accb96b6a6638ad06d",
+    "imageId": "sha256:1ca3dd1890a589bd27b20af6bab9be59a575b668504459e2b72b208836891777",
+    "configuredImage": "prochart-admin:latest",
+    "created": "2026-07-14T12:45:41.304335572Z",
+    "startedAt": "2026-07-14T12:45:43.371024663Z",
+    "status": "running",
+    "health": "healthy"
+  },
+  {
+    "name": "prochart-api-1",
+    "id": "b09eec5b6da9d5438a28e97a3e45f7c21cd7756734dbcbe1093b5826a0d01487",
+    "imageId": "sha256:5b3b6ee9648f030b88e085c4ee956c55fb851d535ee61b1378976479ac991582",
+    "configuredImage": "prochart-api",
+    "created": "2026-07-14T17:33:56.104028754Z",
+    "startedAt": "2026-07-14T17:34:08.34842941Z",
+    "status": "running",
+    "health": "healthy"
+  },
+  {
+    "name": "prochart-claude-llm-1",
+    "id": "4974fa620c6c82be0aa11bc8cfb8b6ea0032de847444c5073c38f86bf0e8096d",
+    "imageId": "sha256:f80cfee5ebe4dc1a94bea673e68ee744ef6dd9d0fed783f07422ced0c00be1ee",
+    "configuredImage": "prochart-claude-llm",
+    "created": "2026-06-28T04:17:50.235243575Z",
+    "startedAt": "2026-06-28T04:18:12.994079075Z",
+    "status": "running",
+    "health": "healthy"
+  },
+  {
+    "name": "prochart-crypto-ws-1",
+    "id": "282363c62d677ce7682646099cd2cbc597240e6c3fb5d9ed97ed3ce362505277",
+    "imageId": "sha256:04e08b83e1ad3b219ffd24d81eb8d04bd07fb44c0531d823eefaa9eb28ac747c",
+    "configuredImage": "prochart-crypto-ws",
+    "created": "2026-07-10T04:00:11.783404051Z",
+    "startedAt": "2026-07-10T04:00:22.731374882Z",
+    "status": "running",
+    "health": null
+  },
+  {
+    "name": "prochart-data-feed-1",
+    "id": "b35849d71e5d03954f7f51148c21838501b2afda4c0e9709acfd94c343743674",
+    "imageId": "sha256:54b56fa44a9f04ddeaf0e8616bf937d574b6e4e559338461db1690c2a906d284",
+    "configuredImage": "prochart-data-feed",
+    "created": "2026-07-10T03:25:16.75783493Z",
+    "startedAt": "2026-07-10T03:25:27.799237077Z",
+    "status": "running",
+    "health": null
+  },
+  {
+    "name": "prochart-finnhub-ws-1",
+    "id": "23e041453e9c5818cbfc331a688bd4cee4bd09309a37c07766d30ef950a311f9",
+    "imageId": "sha256:32a1a12b36616502eb127e37e8bbb210e4dca8fc6bd37b210b989f85c5f2330c",
+    "configuredImage": "prochart-finnhub-ws",
+    "created": "2026-07-10T03:29:22.503512449Z",
+    "startedAt": "2026-07-10T03:29:33.398719705Z",
+    "status": "running",
+    "health": null
+  },
+  {
+    "name": "prochart-frontend-prochart-1",
+    "id": "8b76d5c53b7e7e283e447c88b91f1135e45bfc0df9b4fc36ef59034f007578ed",
+    "imageId": "sha256:d3e237880adcaa5cbcba2e3ef8ed9d46231cd655fbf378d948ad0e39218d9a20",
+    "configuredImage": "prochart-frontend-prochart",
+    "created": "2026-07-14T17:33:57.157877558Z",
+    "startedAt": "2026-07-14T17:34:08.618020915Z",
+    "status": "running",
+    "health": "healthy"
+  },
+  {
+    "name": "prochart-news-worker-1",
+    "id": "d8f8dcf74e0fbbe45cc4706c0f2ae114dfae0f65ffc5358cb7f3c27fad5099e8",
+    "imageId": "sha256:467a6fd22f0c55271334be87764c3433b14899a9fc9249979a517032054365c4",
+    "configuredImage": "prochart-news-worker",
+    "created": "2026-07-01T11:27:04.157968122Z",
+    "startedAt": "2026-07-01T11:27:14.937906911Z",
+    "status": "running",
+    "health": null
+  },
+  {
+    "name": "prochart-redis-1",
+    "id": "375d7f5bac6f7cac68e96a2b241d7f5da5fd115a3a7fac052dbb5e16806d53e3",
+    "imageId": "sha256:77643d152547b446fc15cbafaff22004545663fcd40c6b28038ad283837baa75",
+    "configuredImage": "valkey/valkey:8-alpine",
+    "created": "2026-06-28T01:29:48.500296078Z",
+    "startedAt": "2026-06-28T01:29:48.616755929Z",
+    "status": "running",
+    "health": "healthy"
+  },
+  {
+    "name": "prochart-timescaledb-1",
+    "id": "7cbc79bd4dd2de668c67f39acea480ea7485c5ff67068bc761e5501495f659c0",
+    "imageId": "sha256:154f1b3915ed050116a85985d5ae1005c8d8bf1562541dc61159610bc05db9a0",
+    "configuredImage": "timescale/timescaledb:latest-pg17",
+    "created": "2026-06-28T01:29:48.506992346Z",
+    "startedAt": "2026-07-13T14:45:08.771664188Z",
+    "status": "running",
+    "health": "healthy"
+  },
+  {
+    "name": "prochart-user-frontend",
+    "id": "ac4be45054e1985831295031d40a60278ab37b4b2d5e653ffad9efddc86af98d",
+    "imageId": "sha256:af80b67b177d55d4aa66705bd2dfe45cef3161aac672e8360283bc005f13b77a",
+    "configuredImage": "prochart-user:latest",
+    "created": "2026-07-01T16:55:46.103706332Z",
+    "startedAt": "2026-07-01T16:55:46.81960765Z",
+    "status": "running",
+    "health": "healthy"
+  }
+]

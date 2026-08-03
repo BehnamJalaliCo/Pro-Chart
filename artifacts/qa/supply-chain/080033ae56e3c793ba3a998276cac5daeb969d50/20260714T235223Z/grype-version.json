@@ -1,0 +1,12 @@
+{
+ "application": "grype",
+ "buildDate": "2026-05-01T18:57:12Z",
+ "compiler": "gc",
+ "gitCommit": "244f2a10a5668078fcf771454bbd832b3a5b9e8a",
+ "gitDescription": "v0.112.0",
+ "goVersion": "go1.26.2",
+ "platform": "linux/amd64",
+ "supportedDbSchema": 6,
+ "syftVersion": "v1.44.0",
+ "version": "0.112.0"
+}

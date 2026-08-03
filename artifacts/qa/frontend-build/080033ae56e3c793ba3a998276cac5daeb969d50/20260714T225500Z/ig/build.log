@@ -1,0 +1,13 @@
+
+> coinepro-ig-panel@1.0.0 build
+> vite build
+
+vite v6.4.3 building for production...
+transforming...
+✓ 1696 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.91 kB │ gzip:   0.56 kB
+dist/assets/index-Ls9u-1eT.css   34.84 kB │ gzip:   6.68 kB
+dist/assets/index-CSbcyo41.js   402.39 kB │ gzip: 120.41 kB
+✓ built in 5.39s

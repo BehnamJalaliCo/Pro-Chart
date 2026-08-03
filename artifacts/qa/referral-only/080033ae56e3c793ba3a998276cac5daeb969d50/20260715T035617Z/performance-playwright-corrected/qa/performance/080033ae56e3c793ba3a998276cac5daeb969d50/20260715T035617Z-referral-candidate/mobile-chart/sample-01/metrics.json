@@ -1,0 +1,1061 @@
+{
+  "schemaVersion": 1,
+  "requirementIds": [
+    "PC-138",
+    "PC-140",
+    "PC-141"
+  ],
+  "scenario": "mobile-chart",
+  "sampleId": "sample-01",
+  "project": "chromium-mobile",
+  "baseline": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "0c69cc388079f503433c16a0bb1b921560a606abe928b686d46636d2132b94fb",
+  "runId": "20260715T035617Z-referral-candidate",
+  "result": "PASS",
+  "failure": null,
+  "fixture": {
+    "id": "prochart-synthetic-market-v1",
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "fixedAt": "2026-07-14T12:34:56.000Z",
+    "provenance": "Fully synthetic QA data; no production or customer records."
+  },
+  "methodology": {
+    "classification": "deterministic Chromium lab regression",
+    "fieldCoreWebVitalsEquivalent": false,
+    "fieldEquivalenceWarning": "These synthetic, unthrottled, local Chromium observations are not RUM and are not a field p75 Core Web Vitals result.",
+    "sampleFrameCount": 120,
+    "observerWindowEndsAfterFrameSampling": true
+  },
+  "metrics": {
+    "navigation": {
+      "startTime": 0,
+      "fetchStart": 0.2,
+      "requestStart": 29,
+      "responseStart": 30.3,
+      "responseEnd": 32.5,
+      "domInteractive": 51.7,
+      "domContentLoadedEventEnd": 235.9,
+      "loadEventEnd": 236.4,
+      "duration": 236.4,
+      "ttfbFromRequestStartMs": 1.3,
+      "ttfbFromFetchStartMs": 30.1,
+      "transferSize": 2093,
+      "encodedBodySize": 1793,
+      "decodedBodySize": 5590,
+      "type": "navigate"
+    },
+    "paints": {
+      "first-paint": 360,
+      "first-contentful-paint": 420
+    },
+    "webVitalLabObservations": {
+      "lcpMs": 488,
+      "lcpEntry": {
+        "startTime": 488,
+        "renderTime": 488,
+        "loadTime": 304.90000009536743,
+        "size": 11739,
+        "id": null,
+        "pathname": "/logo.png",
+        "element": "img.pc-launch__logo"
+      },
+      "cls": 0,
+      "totalLayoutShift": 0,
+      "layoutShifts": [
+        {
+          "startTime": 454.80000019073486,
+          "duration": 0,
+          "value": 0.000012245733646870187,
+          "hadRecentInput": true,
+          "sources": [
+            {
+              "node": "span.text-[11px]",
+              "previousRect": {
+                "x": 188.125,
+                "y": 15.75,
+                "width": 46,
+                "height": 16.5,
+                "top": 15.75,
+                "right": 234.125,
+                "bottom": 32.25,
+                "left": 188.125
+              },
+              "currentRect": {
+                "x": 184.171875,
+                "y": 15.75,
+                "width": 53.65625,
+                "height": 16.5,
+                "top": 15.75,
+                "right": 237.828125,
+                "bottom": 32.25,
+                "left": 184.171875
+              }
+            }
+          ]
+        },
+        {
+          "startTime": 586,
+          "duration": 0,
+          "value": 0.0492523281292205,
+          "hadRecentInput": true,
+          "sources": [
+            {
+              "node": "canvas",
+              "previousRect": {
+                "x": 334,
+                "y": 49,
+                "width": 56,
+                "height": 668,
+                "top": 49,
+                "right": 390,
+                "bottom": 717,
+                "left": 334
+              },
+              "currentRect": {
+                "x": 324,
+                "y": 49,
+                "width": 66,
+                "height": 668,
+                "top": 49,
+                "right": 390,
+                "bottom": 717,
+                "left": 324
+              }
+            },
+            {
+              "node": "div.absolute.z-20.pointer-events-none",
+              "previousRect": {
+                "x": 301,
+                "y": 689.5,
+                "width": 80,
+                "height": 32.5,
+                "top": 689.5,
+                "right": 381,
+                "bottom": 722,
+                "left": 301
+              },
+              "currentRect": {
+                "x": 311,
+                "y": 399,
+                "width": 79,
+                "height": 32.5,
+                "top": 399,
+                "right": 390,
+                "bottom": 431.5,
+                "left": 311
+              }
+            },
+            {
+              "node": "td",
+              "previousRect": {
+                "x": 334,
+                "y": 717,
+                "width": 56,
+                "height": 28,
+                "top": 717,
+                "right": 390,
+                "bottom": 745,
+                "left": 334
+              },
+              "currentRect": {
+                "x": 324,
+                "y": 717,
+                "width": 66,
+                "height": 28,
+                "top": 717,
+                "right": 390,
+                "bottom": 745,
+                "left": 324
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "longTasks": {
+      "thresholdDefinitionMs": 50,
+      "count": 3,
+      "totalDurationMs": 180,
+      "maxDurationMs": 73,
+      "entries": [
+        {
+          "startTime": 162.90000009536743,
+          "duration": 73,
+          "name": "self"
+        },
+        {
+          "startTime": 249.5,
+          "duration": 54,
+          "name": "unknown"
+        },
+        {
+          "startTime": 308.10000014305115,
+          "duration": 53,
+          "name": "self"
+        }
+      ],
+      "gate": null,
+      "gateReason": "The repository requires reporting but defines no numeric count or duration ceiling."
+    },
+    "resources": {
+      "totals": {
+        "count": 35,
+        "transferSize": 1793559,
+        "encodedBodySize": 1783059,
+        "decodedBodySize": 3361153
+      },
+      "entries": [
+        {
+          "pathname": "/fonts/iranyekanx.css",
+          "initiatorType": "link",
+          "startTime": 48.1,
+          "duration": 20.4,
+          "transferSize": 642,
+          "encodedBodySize": 342,
+          "decodedBodySize": 714
+        },
+        {
+          "pathname": "/fonts/ravagh.css",
+          "initiatorType": "link",
+          "startTime": 48.3,
+          "duration": 21.8,
+          "transferSize": 693,
+          "encodedBodySize": 393,
+          "decodedBodySize": 1915
+        },
+        {
+          "pathname": "/fonts/anjoman.css",
+          "initiatorType": "link",
+          "startTime": 48.6,
+          "duration": 21.9,
+          "transferSize": 648,
+          "encodedBodySize": 348,
+          "decodedBodySize": 1670
+        },
+        {
+          "pathname": "/fonts/vazirmatn.css",
+          "initiatorType": "link",
+          "startTime": 48.6,
+          "duration": 24.6,
+          "transferSize": 632,
+          "encodedBodySize": 332,
+          "decodedBodySize": 1561
+        },
+        {
+          "pathname": "/assets/index-BDC3pT6H.css",
+          "initiatorType": "link",
+          "startTime": 48.8,
+          "duration": 25.6,
+          "transferSize": 19137,
+          "encodedBodySize": 18837,
+          "decodedBodySize": 79848
+        },
+        {
+          "pathname": "/assets/index-Cv9sgCx6.js",
+          "initiatorType": "script",
+          "startTime": 48.7,
+          "duration": 60.9,
+          "transferSize": 887440,
+          "encodedBodySize": 887140,
+          "decodedBodySize": 2399778
+        },
+        {
+          "pathname": "/api/academy/auth/bn-guest",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 247.8,
+          "duration": 10.1,
+          "transferSize": 338,
+          "encodedBodySize": 38,
+          "decodedBodySize": 38
+        },
+        {
+          "pathname": "/logo.png",
+          "initiatorType": "img",
+          "startTime": 248.9,
+          "duration": 17.6,
+          "transferSize": 416422,
+          "encodedBodySize": 416122,
+          "decodedBodySize": 416122
+        },
+        {
+          "pathname": "/fonts/iranyekanx/IRANYekanX-Bold.woff2",
+          "initiatorType": "css",
+          "startTime": 251.2,
+          "duration": 61.5,
+          "transferSize": 29120,
+          "encodedBodySize": 28820,
+          "decodedBodySize": 28820
+        },
+        {
+          "pathname": "/assets/bn-logo-Cylz0xjn.png",
+          "initiatorType": "img",
+          "startTime": 361.5,
+          "duration": 7.8,
+          "transferSize": 78260,
+          "encodedBodySize": 77960,
+          "decodedBodySize": 77960
+        },
+        {
+          "pathname": "/fonts/iranyekanx/IRANYekanX-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 366.8,
+          "duration": 48.2,
+          "transferSize": 26592,
+          "encodedBodySize": 26292,
+          "decodedBodySize": 26292
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-SemiBold.woff2",
+          "initiatorType": "css",
+          "startTime": 394.3,
+          "duration": 21.5,
+          "transferSize": 67628,
+          "encodedBodySize": 67328,
+          "decodedBodySize": 67328
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-ExtraBold.woff2",
+          "initiatorType": "css",
+          "startTime": 397.9,
+          "duration": 20.1,
+          "transferSize": 68656,
+          "encodedBodySize": 68356,
+          "decodedBodySize": 68356
+        },
+        {
+          "pathname": "/api/academy/me",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 440.4,
+          "duration": 11.8,
+          "transferSize": 399,
+          "encodedBodySize": 99,
+          "decodedBodySize": 99
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 441.4,
+          "duration": 48.1,
+          "transferSize": 17995,
+          "encodedBodySize": 17695,
+          "decodedBodySize": 17695
+        },
+        {
+          "pathname": "/api/academy/chart/EURUSD",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 441.6,
+          "duration": 48.7,
+          "transferSize": 490,
+          "encodedBodySize": 190,
+          "decodedBodySize": 190
+        },
+        {
+          "pathname": "/api/academy/bn/ai-signal/quota",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 441.8,
+          "duration": 48.9,
+          "transferSize": 337,
+          "encodedBodySize": 37,
+          "decodedBodySize": 37
+        },
+        {
+          "pathname": "/api/academy/bn/ai-signal/active",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 442,
+          "duration": 49,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 442.3,
+          "duration": 49.2,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/chart/symbols",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 442.4,
+          "duration": 49.4,
+          "transferSize": 359,
+          "encodedBodySize": 59,
+          "decodedBodySize": 59
+        },
+        {
+          "pathname": "/api/academy/bn/watchlist",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 442.7,
+          "duration": 49.6,
+          "transferSize": 359,
+          "encodedBodySize": 59,
+          "decodedBodySize": 59
+        },
+        {
+          "pathname": "/api/academy/bn/scripts",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 442.9,
+          "duration": 49.8,
+          "transferSize": 328,
+          "encodedBodySize": 28,
+          "decodedBodySize": 28
+        },
+        {
+          "pathname": "/api/academy/bn/layouts",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 443.4,
+          "duration": 49.7,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/api/academy/bn/alerts",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 443.5,
+          "duration": 50,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 453.3,
+          "duration": 46.8,
+          "transferSize": 66452,
+          "encodedBodySize": 66152,
+          "decodedBodySize": 66152
+        },
+        {
+          "pathname": "/api/academy/bn/ai-signal/active",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 508.7,
+          "duration": 6.5,
+          "transferSize": 303,
+          "encodedBodySize": 3,
+          "decodedBodySize": 3
+        },
+        {
+          "pathname": "/fonts/anjoman/AnjomanMax-Regular.woff2",
+          "initiatorType": "css",
+          "startTime": 513.8,
+          "duration": 31.2,
+          "transferSize": 37292,
+          "encodedBodySize": 36992,
+          "decodedBodySize": 36992
+        },
+        {
+          "pathname": "/fonts/ravagh/Ravagh-Medium.woff2",
+          "initiatorType": "css",
+          "startTime": 557.4,
+          "duration": 20.5,
+          "transferSize": 67368,
+          "encodedBodySize": 67068,
+          "decodedBodySize": 67068
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 583.7,
+          "duration": 4.3,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 1281.4,
+          "duration": 4.4,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 1981.3,
+          "duration": 3.4,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 2681.9,
+          "duration": 4.1,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 3383.3,
+          "duration": 3.1,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4081.3,
+          "duration": 4,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        },
+        {
+          "pathname": "/api/academy/bn/prices",
+          "initiatorType": "xmlhttprequest",
+          "startTime": 4781.6,
+          "duration": 4,
+          "transferSize": 595,
+          "encodedBodySize": 295,
+          "decodedBodySize": 295
+        }
+      ]
+    },
+    "observerSupport": {
+      "supportedEntryTypes": [
+        "element",
+        "event",
+        "first-input",
+        "largest-contentful-paint",
+        "layout-shift",
+        "long-animation-frame",
+        "longtask",
+        "mark",
+        "measure",
+        "navigation",
+        "paint",
+        "resource",
+        "visibility-state"
+      ],
+      "observerErrors": []
+    },
+    "readiness": {
+      "domContentLoadedObservedMs": 488,
+      "shellReadyMs": 736,
+      "chartReadyMs": 788,
+      "layoutRestoreAfterShellMs": 52,
+      "applicationReadyLaunchRemovedMs": 3099,
+      "fontsReadyObservedMs": 3108
+    },
+    "activeChartFrames": {
+      "sampleCount": 120,
+      "minMs": 12,
+      "meanMs": 15.983,
+      "medianMs": 16,
+      "p95Ms": 16,
+      "maxMs": 20,
+      "intervalsOver16_7Ms": 6,
+      "intervalsAtOrOver20Ms": 1,
+      "rawIntervalsMs": [
+        14,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        19,
+        13,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        15,
+        16,
+        16,
+        20,
+        12,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16
+      ],
+      "semantics": "Consecutive requestAnimationFrame intervals while the synthetic chart is visible; a Chromium lab cadence proxy, not direct chart paint CPU duration."
+    },
+    "documentRequestTrace": {
+      "timing": {
+        "startTime": 1784088051178.695,
+        "domainLookupStart": 16.83,
+        "domainLookupEnd": 16.834,
+        "connectStart": 16.834,
+        "secureConnectionStart": 17.081,
+        "connectEnd": 19.123,
+        "requestStart": 19.48,
+        "responseStart": 21.053,
+        "responseEnd": 32.173
+      },
+      "ttfbMs": 21.053,
+      "semantics": "Playwright Request.timing responseStart for the main document, measured from request start."
+    }
+  },
+  "gates": {
+    "source": "docs/performance/PERFORMANCE_BUDGET.md",
+    "checks": [
+      {
+        "metric": "labLcpMs",
+        "actual": 488,
+        "operator": "<=",
+        "threshold": 2500,
+        "unit": "ms",
+        "evidence": "lab regression",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "labCls",
+        "actual": 0,
+        "operator": "<=",
+        "threshold": 0.1,
+        "unit": "score",
+        "evidence": "lab",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "labTtfbMs",
+        "actual": 1.3,
+        "operator": "<",
+        "threshold": 800,
+        "unit": "ms",
+        "evidence": "navigation timing / document request trace lab proxy",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "activeChartFrameP95Ms",
+        "actual": 16,
+        "operator": "<",
+        "threshold": 20,
+        "unit": "ms",
+        "evidence": "active-chart rAF interval proxy",
+        "pass": true,
+        "result": "PASS"
+      },
+      {
+        "metric": "layoutRestoreAfterShellMs",
+        "actual": 52,
+        "operator": "<",
+        "threshold": 2000,
+        "unit": "ms",
+        "evidence": "synthetic persisted-workspace E2E proxy",
+        "pass": true,
+        "result": "PASS"
+      }
+    ],
+    "result": "PASS"
+  },
+  "recordedWithoutNumericGate": {
+    "paints": [
+      "first-paint",
+      "first-contentful-paint"
+    ],
+    "applicationAndChartReadiness": true,
+    "requestCountAndBytes": true,
+    "longTasksOver50Ms": true
+  },
+  "deliberatelyNotMeasured": {
+    "inp": "No representative interaction is performed; the repository requires RUM and a separately defined lab interaction proxy.",
+    "inputFeedback": "No interaction trace in this navigation-focused baseline.",
+    "crosshairResponse": "Requires a dedicated interaction benchmark.",
+    "quoteToPaintOverhead": "Requires a timestamped streaming fixture and paint trace.",
+    "indicator10k": "Requires a worker benchmark, not a navigation run.",
+    "memoryLeak": "The budget states that its observation window and tolerance still require an ADR.",
+    "jsBundleBudget": "The budget states that a numeric JS bundle limit still requires an ADR."
+  },
+  "environment": {
+    "image": {
+      "reference": "mcr.microsoft.com/playwright",
+      "digest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a"
+    },
+    "runtime": {
+      "node": "v24.16.0",
+      "platform": "linux",
+      "architecture": "x64",
+      "playwright": "1.61.0",
+      "browser": "chromium",
+      "browserVersion": "149.0.7827.55",
+      "osRelease": {
+        "PRETTY_NAME": "Ubuntu 24.04.4 LTS",
+        "NAME": "Ubuntu",
+        "VERSION_ID": "24.04",
+        "VERSION": "24.04.4 LTS (Noble Numbat)",
+        "VERSION_CODENAME": "noble",
+        "ID": "ubuntu",
+        "ID_LIKE": "debian",
+        "HOME_URL": "https://www.ubuntu.com/",
+        "SUPPORT_URL": "https://help.ubuntu.com/",
+        "BUG_REPORT_URL": "https://bugs.launchpad.net/ubuntu/",
+        "PRIVACY_POLICY_URL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
+        "UBUNTU_CODENAME": "noble",
+        "LOGO": "ubuntu-logo"
+      },
+      "cpuCountVisibleToNode": 8
+    },
+    "project": {
+      "name": "chromium-mobile",
+      "locale": "fa-IR",
+      "timezoneId": "UTC",
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "serviceWorkers": "block"
+    },
+    "browserEnvironment": {
+      "userAgent": "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Mobile Safari/537.36",
+      "hardwareConcurrency": 8,
+      "deviceMemoryGiB": 16,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "language": "fa-IR",
+      "documentLanguage": "fa",
+      "documentDirection": "rtl"
+    },
+    "profile": {
+      "networkThrottling": "none; local loopback preview with synthetic API fulfillments",
+      "cpuThrottling": "none",
+      "cacheState": "new Playwright browser context per sample",
+      "referenceDeviceAdr": "missing in repository performance budget"
+    }
+  },
+  "network": {
+    "summary": {
+      "observedRequestCount": 36,
+      "completedRequestCount": 36,
+      "requestBodySize": 0,
+      "requestHeadersSize": 16180,
+      "responseBodySize": 1800987,
+      "responseHeadersSize": 2228,
+      "totalWireBytes": 1819395,
+      "byResourceType": {
+        "document": {
+          "count": 1,
+          "requestBodySize": 0,
+          "requestHeadersSize": 482,
+          "responseBodySize": 2645,
+          "responseHeadersSize": 0
+        },
+        "stylesheet": {
+          "count": 5,
+          "requestBodySize": 0,
+          "requestHeadersSize": 2010,
+          "responseBodySize": 24726,
+          "responseHeadersSize": 0
+        },
+        "script": {
+          "count": 1,
+          "requestBodySize": 0,
+          "requestHeadersSize": 422,
+          "responseBodySize": 889114,
+          "responseHeadersSize": 0
+        },
+        "image": {
+          "count": 2,
+          "requestBodySize": 0,
+          "requestHeadersSize": 877,
+          "responseBodySize": 496410,
+          "responseHeadersSize": 0
+        },
+        "xhr": {
+          "count": 20,
+          "requestBodySize": 0,
+          "requestHeadersSize": 9231,
+          "responseBodySize": 20417,
+          "responseHeadersSize": 2228
+        },
+        "font": {
+          "count": 7,
+          "requestBodySize": 0,
+          "requestHeadersSize": 3158,
+          "responseBodySize": 367675,
+          "responseHeadersSize": 0
+        }
+      },
+      "semantics": "Playwright Request.sizes values; response body size may reflect protocol encoding rather than decoded DOM resource size."
+    },
+    "apiRequests": [
+      {
+        "method": "POST",
+        "pathname": "/api/academy/auth/bn-guest",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/me",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/quota",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/symbols",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/watchlist",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/scripts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/layouts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/alerts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      }
+    ],
+    "mocked": [
+      "POST /api/academy/auth/bn-guest",
+      "GET /api/academy/me",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/bn/ai-signal/quota",
+      "GET /api/academy/bn/ai-signal/active",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/chart/symbols",
+      "GET /api/academy/bn/watchlist",
+      "GET /api/academy/bn/scripts",
+      "GET /api/academy/bn/layouts",
+      "GET /api/academy/bn/alerts",
+      "GET /api/academy/bn/ai-signal/active",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/prices"
+    ],
+    "mockedWebSockets": [],
+    "unstubbed": [],
+    "unexpectedExternal": [],
+    "requestFailures": [],
+    "badResponses": [],
+    "sizeErrors": []
+  },
+  "pageErrors": []
+}

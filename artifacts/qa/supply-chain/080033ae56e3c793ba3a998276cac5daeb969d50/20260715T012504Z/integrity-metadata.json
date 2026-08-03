@@ -1,0 +1,74 @@
+{
+  "exactTarget": {
+    "requestedImageId": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+    "dockerInspectId": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+    "identityMatch": true,
+    "imageInspectFileSha256": "fd25fe5627f78ed633db134393560768901866b2e22aa30739625a5dbdabfe68"
+  },
+  "cyclonedx": {
+    "file": "sbom.cyclonedx.json",
+    "fileSha256": "fcc141783e9f1397aba150e45c8c8c2c149a299e53237e60c3dd1da09fc26907",
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.6",
+    "serialNumber": "urn:uuid:13fbfb23-75b4-4dcf-a817-2c9b094176f3",
+    "generatedAt": "2026-07-15T01:28:15Z",
+    "componentCount": 8971,
+    "rootComponent": {
+      "bomRef": "78ca7a091e20f049",
+      "type": "container",
+      "name": "sha256",
+      "version": "20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf"
+    },
+    "rootVersionMatchesRequestedImageId": true,
+    "embeddedSignaturePresent": false
+  },
+  "spdx": {
+    "file": "sbom.spdx.json",
+    "fileSha256": "b9373b7f0d37ba4d041355eabe9349386e1c2e1b277e6972717cc887f5d57eb8",
+    "spdxVersion": "SPDX-2.3",
+    "documentNamespace": "https://anchore.com/syft/image/sha256-c4040a1e-5dab-40a2-b622-9a4bcd81cc8a",
+    "generatedAt": "2026-07-15T01:30:54Z",
+    "packageCount": 346,
+    "fileCount": 9075,
+    "documentRoot": {
+      "spdxId": "SPDXRef-DocumentRoot-Image-sha256",
+      "name": "sha256",
+      "versionInfo": "20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "529b6e78f6dfc53137a1c9b00277a9664cf0d6f48f9a2c56d9d3ec3e7afe29f7"
+        }
+      ],
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:oci/sha256@sha256%3A529b6e78f6dfc53137a1c9b00277a9664cf0d6f48f9a2c56d9d3ec3e7afe29f7?arch=amd64&tag=20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf"
+        }
+      ]
+    },
+    "rootVersionMatchesRequestedImageId": true,
+    "note": "The root package checksum/external OCI reference is Syft-emitted inventory metadata and was not resolved against a remote registry; it is not evidence of publication or a registry-verified manifest."
+  },
+  "vulnerabilityScan": {
+    "rawFile": "vulnerabilities.grype.json",
+    "rawFileSha256": "ed6e4d90e8c880b1d3c92f6f35df1bb1dcef8a2fa005be5d2d6bcd8cef28605f",
+    "normalizedFile": "vulnerabilities.normalized.jsonl",
+    "normalizedFileSha256": "7ec9be9075d326355f76fb01901966437411a9ec0c450e58bd66cdcbeba48f82",
+    "normalizedRecordCount": 1161
+  },
+  "vulnerabilityDatabase": {
+    "path": "/cache/6/vulnerability.db",
+    "sha256": "7859d1a0e0a28bce313e8067683463e4f3590f5a312e11f00efa343b9203ef35",
+    "sizeBytes": 1757487104
+  },
+  "finalSeal": {
+    "algorithm": "SHA-256",
+    "manifest": "SHA256SUMS",
+    "verificationOutput": "SHA256SUMS.verify.txt",
+    "coverage": "Every regular evidence file present at seal time except SHA256SUMS and SHA256SUMS.verify.txt",
+    "status": "SEALED_AND_VERIFIED_BY_SHA256SUM_C"
+  },
+  "caveat": "File hashes and the final SHA256SUMS manifest provide local integrity detection only. They do not establish publisher identity, registry publication, a digital signature, an attestation, or SLSA provenance."
+}

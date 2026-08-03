@@ -1,0 +1,72 @@
+{
+  "status": "reviewed-false-positives",
+  "findingCount": 11,
+  "findings": [
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/image-inspect.json",
+      "line": 5,
+      "reason": "local Docker image tag/provenance identifier"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/image-inspect.json",
+      "line": 19,
+      "reason": "official public Python image GPG fingerprint"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/build.log",
+      "line": 536,
+      "reason": "local Docker image tag/provenance identifier"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/build.log",
+      "line": 537,
+      "reason": "local Docker image tag/provenance identifier"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/build.log",
+      "line": 538,
+      "reason": "local Docker image tag/provenance identifier"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/base-trixie.grype.json",
+      "line": 1,
+      "reason": "official public Python image GPG fingerprint"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/base-trixie.grype.json",
+      "line": 1,
+      "reason": "official public Python image GPG fingerprint"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/base-bookworm.grype.json",
+      "line": 1,
+      "reason": "official public Python image GPG fingerprint"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/base-bookworm.grype.json",
+      "line": 1,
+      "reason": "official public Python image GPG fingerprint"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/prior-live-image-current-db.grype.json",
+      "line": 1,
+      "reason": "official public Python image GPG fingerprint"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "/scan/prior-live-image-current-db.grype.json",
+      "line": 1,
+      "reason": "official public Python image GPG fingerprint"
+    }
+  ]
+}

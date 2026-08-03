@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T023416Z",
+  "scope": "phase-0 frozen current-candidate final integrity and noninterference verification",
+  "result": "PASS_WITH_RELEASE_BLOCKERS",
+  "canonicalArtifactsVerified": 17,
+  "canonicalJsonFilesParsed": 172,
+  "sourceFingerprintsStable": true,
+  "requirementsMatrixValid": true,
+  "documentationIndexExcludedFromRecursiveSeal": true,
+  "liveProductContainersStable": true,
+  "qaPreviewRemoved": true,
+  "buildEvidence": {
+    "prochart": "shipping-obfuscated build 20260715T011751Z",
+    "panel": "isolated candidate build 20260715T010846Z",
+    "backend": "local candidate image 20260715T011720Z",
+    "qualification": "No product source changed after these builds; source manifests/fingerprints were revalidated in this run."
+  },
+  "harnessAccounting": {
+    "preservedSetupFailures": 1,
+    "acceptedAttempt": 2,
+    "productFailuresHidden": 0
+  },
+  "releaseBlockers": [
+    "Python clean suite has 54 failures and 32 errors",
+    "Desktop and mobile LCP fail; desktop active-chart frame budget fails",
+    "Dependency scan has 29 Critical and 73 High applicable matches; image/SBOM unsigned",
+    "Credential exposure requires authorized rotation/revocation and Git history remains uncleared",
+    "Functional source files remain modified/untracked and candidates are not deployed",
+    "No approved visual Golden, full accessibility review, or three clean full-suite runs"
+  ],
+  "fullyVerified": false,
+  "releaseReady": false,
+  "deployed": false,
+  "signedOrAttested": false
+}

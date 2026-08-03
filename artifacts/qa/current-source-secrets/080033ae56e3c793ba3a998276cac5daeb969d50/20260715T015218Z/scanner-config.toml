@@ -1,0 +1,4 @@
+title = "ProChart strict built-in Gitleaks defaults"
+
+[extend]
+useDefault = true

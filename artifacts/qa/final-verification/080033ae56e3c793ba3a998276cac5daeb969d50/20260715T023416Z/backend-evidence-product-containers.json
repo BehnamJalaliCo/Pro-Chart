@@ -1,0 +1,57 @@
+[
+  {
+    "name": "prochart-admin-frontend",
+    "id": "2c379a7a58df15b9d2f74596ce3c8be5bd24233ee92952accb96b6a6638ad06d",
+    "configuredImage": "prochart-admin:latest"
+  },
+  {
+    "name": "prochart-api-1",
+    "id": "b09eec5b6da9d5438a28e97a3e45f7c21cd7756734dbcbe1093b5826a0d01487",
+    "configuredImage": "prochart-api"
+  },
+  {
+    "name": "prochart-claude-llm-1",
+    "id": "4974fa620c6c82be0aa11bc8cfb8b6ea0032de847444c5073c38f86bf0e8096d",
+    "configuredImage": "prochart-claude-llm"
+  },
+  {
+    "name": "prochart-crypto-ws-1",
+    "id": "282363c62d677ce7682646099cd2cbc597240e6c3fb5d9ed97ed3ce362505277",
+    "configuredImage": "prochart-crypto-ws"
+  },
+  {
+    "name": "prochart-data-feed-1",
+    "id": "b35849d71e5d03954f7f51148c21838501b2afda4c0e9709acfd94c343743674",
+    "configuredImage": "prochart-data-feed"
+  },
+  {
+    "name": "prochart-finnhub-ws-1",
+    "id": "23e041453e9c5818cbfc331a688bd4cee4bd09309a37c07766d30ef950a311f9",
+    "configuredImage": "prochart-finnhub-ws"
+  },
+  {
+    "name": "prochart-frontend-prochart-1",
+    "id": "8b76d5c53b7e7e283e447c88b91f1135e45bfc0df9b4fc36ef59034f007578ed",
+    "configuredImage": "prochart-frontend-prochart"
+  },
+  {
+    "name": "prochart-news-worker-1",
+    "id": "d8f8dcf74e0fbbe45cc4706c0f2ae114dfae0f65ffc5358cb7f3c27fad5099e8",
+    "configuredImage": "prochart-news-worker"
+  },
+  {
+    "name": "prochart-redis-1",
+    "id": "375d7f5bac6f7cac68e96a2b241d7f5da5fd115a3a7fac052dbb5e16806d53e3",
+    "configuredImage": "valkey/valkey:8-alpine"
+  },
+  {
+    "name": "prochart-timescaledb-1",
+    "id": "7cbc79bd4dd2de668c67f39acea480ea7485c5ff67068bc761e5501495f659c0",
+    "configuredImage": "timescale/timescaledb:latest-pg17"
+  },
+  {
+    "name": "prochart-user-frontend",
+    "id": "ac4be45054e1985831295031d40a60278ab37b4b2d5e653ffad9efddc86af98d",
+    "configuredImage": "prochart-user:latest"
+  }
+]

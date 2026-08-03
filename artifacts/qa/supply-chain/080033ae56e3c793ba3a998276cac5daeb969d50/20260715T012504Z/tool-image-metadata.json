@@ -1,0 +1,36 @@
+{
+  "localDockerEngineOnly": true,
+  "registryResolutionPerformed": false,
+  "images": [
+    {
+      "tool": "syft",
+      "requestedReference": "anchore/syft@sha256:86fde6445b483d902fe011dd9f68c4987dd94e07da1e9edc004e3c2422650de6",
+      "id": "sha256:86fde6445b483d902fe011dd9f68c4987dd94e07da1e9edc004e3c2422650de6",
+      "repoDigests": [
+        "anchore/syft@sha256:86fde6445b483d902fe011dd9f68c4987dd94e07da1e9edc004e3c2422650de6"
+      ],
+      "created": "2026-05-01T17:12:30.477506868Z",
+      "platform": "linux/amd64"
+    },
+    {
+      "tool": "grype",
+      "requestedReference": "anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d",
+      "id": "sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d",
+      "repoDigests": [
+        "anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d"
+      ],
+      "created": "2026-05-01T19:08:17.602629482Z",
+      "platform": "linux/amd64"
+    },
+    {
+      "tool": "gitleaks",
+      "requestedReference": "zricethezav/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+      "id": "sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+      "repoDigests": [
+        "zricethezav/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f"
+      ],
+      "created": "2026-03-21T02:19:08.677791034Z",
+      "platform": "linux/amd64"
+    }
+  ]
+}

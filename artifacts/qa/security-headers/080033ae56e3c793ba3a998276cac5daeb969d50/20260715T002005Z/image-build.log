@@ -1,0 +1,84 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 796B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/nginx:1.27-alpine
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:20-alpine
+#3 DONE 0.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [builder 1/6] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293
+#5 resolve docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 0.0s done
+#5 DONE 0.0s
+
+#6 [production 1/5] FROM docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+#6 resolve docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 2.29MB 0.8s done
+#7 DONE 0.8s
+
+#8 [builder 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [builder 3/6] COPY package.json package-lock.json* ./
+#9 CACHED
+
+#10 [builder 4/6] RUN npm install --legacy-peer-deps
+#10 CACHED
+
+#11 [builder 5/6] COPY . .
+#11 DONE 7.4s
+
+#12 [builder 6/6] RUN npm run build
+#12 0.640 
+#12 0.640 > coinepro-academy@1.0.0 build
+#12 0.640 > node copy-crypto-icons.mjs && vite build
+#12 0.640 
+#12 0.942 [crypto-icons] copied 483 coin logos → public/crypto-icons/
+#12 1.431 vite v6.4.3 building for production...
+#12 1.692 transforming...
+#12 6.930 ✓ 1782 modules transformed.
+#12 7.748 rendering chunks...
+#12 7.785 computing gzip size...
+#12 7.848 
+#12 7.848 (!) Some chunks are larger than 500 kB after minification. Consider:
+#12 7.848 - Using dynamic import() to code-split the application
+#12 7.848 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+#12 7.848 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#12 7.851 dist/index.html                       5.59 kB │ gzip:   1.64 kB
+#12 7.851 dist/assets/bn-logo-Cylz0xjn.png     77.96 kB
+#12 7.851 dist/assets/index-vLK2w0G_.css       79.79 kB │ gzip:  15.55 kB
+#12 7.851 dist/assets/index-DPKFDi_m.js     2,133.13 kB │ gzip: 585.91 kB
+#12 7.851 ✓ built in 6.40s
+#12 DONE 8.0s
+
+#13 [production 2/5] RUN rm -rf /usr/share/nginx/html/*
+#13 CACHED
+
+#14 [production 3/5] COPY --from=builder /app/dist /usr/share/nginx/html
+#14 CACHED
+
+#15 [production 4/5] COPY nginx.conf /etc/nginx/conf.d/default.conf
+#15 CACHED
+
+#16 [production 5/5] COPY security-headers.conf /etc/nginx/prochart-security-headers.conf
+#16 DONE 0.0s
+
+#17 exporting to image
+#17 exporting layers 0.0s done
+#17 exporting manifest sha256:02321c0648dbce438eecc7ff9176d1b30b1ba9935b569d24c32b4f1af558b301 done
+#17 exporting config sha256:b059474c111ad938d9723e5c7ec5bf792e21b0b2fbde7bf4b6343e3592af431e done
+#17 exporting attestation manifest sha256:b418ccc6ff5b47bc774c1169f92126ca786961daa1d707658f5adbbdd11efdaa done
+#17 exporting manifest list sha256:7be597caae5f57abb1b9a6d319e793ed69fc825642879c0c3d2e86024936d0a6 done
+#17 naming to docker.io/library/prochart-frontend:qa-pc130-20260715T002005Z done
+#17 unpacking to docker.io/library/prochart-frontend:qa-pc130-20260715T002005Z 0.0s done
+#17 DONE 0.1s

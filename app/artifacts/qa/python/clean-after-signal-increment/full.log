@@ -1,0 +1,1358 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+rootdir: /workspace
+configfile: pyproject.toml
+plugins: asyncio-1.4.0, anyio-4.14.2, typeguard-4.5.2
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 297 items / 12 errors
+
+tests/test_api.py::test_health_endpoint FAILED                           [  0%]
+tests/test_api.py::test_signals_list FAILED                              [  0%]
+tests/test_api.py::test_performance_summary FAILED                       [  1%]
+tests/test_api.py::test_auth_login_missing_credentials PASSED            [  1%]
+tests/test_bot_v2_channel.py::test_create_invite_uses_single_use_and_expiry PASSED [  1%]
+tests/test_bot_v2_channel.py::test_create_invite_returns_none_when_forbidden PASSED [  2%]
+tests/test_bot_v2_channel.py::test_remove_member_bans_then_unbans PASSED [  2%]
+tests/test_bot_v2_channel.py::test_remove_member_treats_not_member_as_success PASSED [  2%]
+tests/test_bot_v2_channel.py::test_remove_member_fails_when_forbidden PASSED [  3%]
+tests/test_bot_v2_phone.py::test_valid_numbers_normalize_to_canonical[09121234567] PASSED [  3%]
+tests/test_bot_v2_phone.py::test_valid_numbers_normalize_to_canonical[+989121234567] PASSED [  3%]
+tests/test_bot_v2_phone.py::test_valid_numbers_normalize_to_canonical[00989121234567] PASSED [  4%]
+tests/test_bot_v2_phone.py::test_valid_numbers_normalize_to_canonical[989121234567] PASSED [  4%]
+tests/test_bot_v2_phone.py::test_valid_numbers_normalize_to_canonical[9121234567] PASSED [  4%]
+tests/test_bot_v2_phone.py::test_valid_numbers_normalize_to_canonical[0912 123 4567] PASSED [  5%]
+tests/test_bot_v2_phone.py::test_valid_numbers_normalize_to_canonical[0912-123-4567] PASSED [  5%]
+tests/test_bot_v2_phone.py::test_valid_numbers_normalize_to_canonical[\u06f0\u06f9\u06f1\u06f2\u06f1\u06f2\u06f3\u06f4\u06f5\u06f6\u06f7] PASSED [  5%]
+tests/test_bot_v2_phone.py::test_invalid_numbers_return_none[] PASSED    [  6%]
+tests/test_bot_v2_phone.py::test_invalid_numbers_return_none[12345] PASSED [  6%]
+tests/test_bot_v2_phone.py::test_invalid_numbers_return_none[0812123456] PASSED [  6%]
+tests/test_bot_v2_phone.py::test_invalid_numbers_return_none[081234567890] PASSED [  7%]
+tests/test_bot_v2_phone.py::test_invalid_numbers_return_none[+1202555019] PASSED [  7%]
+tests/test_bot_v2_phone.py::test_invalid_numbers_return_none[0912abc4567] PASSED [  7%]
+tests/test_bot_v2_phone.py::test_invalid_numbers_return_none[0912123456] PASSED [  8%]
+tests/test_bot_v2_phone.py::test_invalid_numbers_return_none[091212345678] PASSED [  8%]
+tests/test_bot_v2_phone.py::test_is_valid_helper PASSED                  [  8%]
+tests/test_bot_v2_quiz.py::test_total_questions_is_four PASSED           [  9%]
+tests/test_bot_v2_quiz.py::test_score_all_correct PASSED                 [  9%]
+tests/test_bot_v2_quiz.py::test_score_all_wrong PASSED                   [  9%]
+tests/test_bot_v2_quiz.py::test_score_partial PASSED                     [ 10%]
+tests/test_bot_v2_quiz.py::test_score_missing_answers_counts_zero PASSED [ 10%]
+tests/test_bot_v2_quiz.py::test_skill_level_boundaries[0-beginner] PASSED [ 10%]
+tests/test_bot_v2_quiz.py::test_skill_level_boundaries[1-beginner] PASSED [ 11%]
+tests/test_bot_v2_quiz.py::test_skill_level_boundaries[2-intermediate] PASSED [ 11%]
+tests/test_bot_v2_quiz.py::test_skill_level_boundaries[3-advanced] PASSED [ 11%]
+tests/test_bot_v2_quiz.py::test_skill_level_boundaries[4-expert] PASSED  [ 12%]
+tests/test_bot_v2_quiz.py::test_skill_score_percent[0-0] PASSED          [ 12%]
+tests/test_bot_v2_quiz.py::test_skill_score_percent[1-25] PASSED         [ 12%]
+tests/test_bot_v2_quiz.py::test_skill_score_percent[2-50] PASSED         [ 13%]
+tests/test_bot_v2_quiz.py::test_skill_score_percent[3-75] PASSED         [ 13%]
+tests/test_bot_v2_quiz.py::test_skill_score_percent[4-100] PASSED        [ 13%]
+tests/test_bot_v2_quiz.py::test_skill_label_has_emoji PASSED             [ 14%]
+tests/test_bot_v2_referral.py::test_generate_default_length_and_charset PASSED [ 14%]
+tests/test_bot_v2_referral.py::test_generate_custom_length PASSED        [ 14%]
+tests/test_bot_v2_referral.py::test_generate_unique_enough PASSED        [ 15%]
+tests/test_bot_v2_referral.py::test_is_valid_accepts_generated PASSED    [ 15%]
+tests/test_bot_v2_referral.py::test_is_valid_rejects_bad PASSED          [ 15%]
+tests/test_bot_v2_referral.py::test_normalize_uppercases_and_strips PASSED [ 16%]
+tests/test_bot_v2_subscription.py::test_plan_prices_from_settings PASSED [ 16%]
+tests/test_bot_v2_subscription.py::test_plan_days[monthly-30] PASSED     [ 16%]
+tests/test_bot_v2_subscription.py::test_plan_days[quarterly-90] PASSED   [ 17%]
+tests/test_bot_v2_subscription.py::test_plan_days[biannual-180] PASSED   [ 17%]
+tests/test_bot_v2_subscription.py::test_is_paid_plan PASSED              [ 17%]
+tests/test_bot_v2_subscription.py::test_trial_expiry_uses_trial_hours PASSED [ 18%]
+tests/test_bot_v2_subscription.py::test_compute_expiry_fresh_monthly PASSED [ 18%]
+tests/test_bot_v2_subscription.py::test_compute_expiry_trial PASSED      [ 18%]
+tests/test_bot_v2_subscription.py::test_renewal_extends_from_current_expiry_not_now PASSED [ 19%]
+tests/test_bot_v2_subscription.py::test_renewal_from_now_when_already_expired PASSED [ 19%]
+tests/test_bot_v2_subscription.py::test_plan_label PASSED                [ 19%]
+tests/test_phase0_fixes.py::test_redis_client_uses_property_not_method PASSED [ 20%]
+tests/test_phase0_fixes.py::test_redis_client_property_raises_when_not_connected PASSED [ 20%]
+tests/test_phase0_fixes.py::test_jwt_access_token_contains_jti_and_iat PASSED [ 20%]
+tests/test_phase0_fixes.py::test_two_tokens_have_different_jti PASSED    [ 21%]
+tests/test_phase0_fixes.py::test_refresh_token_contains_jti PASSED       [ 21%]
+tests/test_phase0_fixes.py::test_settings_rejects_default_passwords_in_production PASSED [ 21%]
+tests/test_phase0_fixes.py::test_settings_rejects_short_jwt_secret_in_production PASSED [ 22%]
+tests/test_phase0_fixes.py::test_settings_allows_defaults_in_debug PASSED [ 22%]
+tests/test_phase0_fixes.py::test_settings_accepts_strong_secrets PASSED  [ 22%]
+tests/test_phase0_fixes.py::test_drop_unclosed_candle_removes_incomplete PASSED [ 23%]
+tests/test_phase0_fixes.py::test_drop_unclosed_candle_keeps_closed PASSED [ 23%]
+tests/test_phase0_fixes.py::test_drop_unclosed_candle_handles_empty_df PASSED [ 23%]
+tests/test_phase0_fixes.py::test_drop_unclosed_candle_handles_unknown_timeframe PASSED [ 24%]
+tests/test_phase0_fixes.py::test_rate_limit_middleware_imports_correctly PASSED [ 24%]
+tests/test_phase0_fixes.py::test_rate_limit_middleware_registered_in_app PASSED [ 24%]
+tests/test_phase13_production_ops.py::TestCorrelationID::test_new_correlation_id_is_unique PASSED [ 25%]
+tests/test_phase13_production_ops.py::TestCorrelationID::test_correlation_id_length PASSED [ 25%]
+tests/test_phase13_production_ops.py::TestCorrelationID::test_context_var_starts_none PASSED [ 25%]
+tests/test_phase13_production_ops.py::TestCorrelationID::test_context_manager_sets_and_resets PASSED [ 26%]
+tests/test_phase13_production_ops.py::TestCorrelationID::test_context_manager_auto_generates PASSED [ 26%]
+tests/test_phase13_production_ops.py::TestCorrelationID::test_processor_adds_cid_to_event_dict PASSED [ 26%]
+tests/test_phase13_production_ops.py::TestCorrelationID::test_processor_no_overwrite PASSED [ 27%]
+tests/test_phase13_production_ops.py::TestSentry::test_setup_with_no_dsn_skips PASSED [ 27%]
+tests/test_phase13_production_ops.py::TestSentry::test_setup_with_disabled_skips PASSED [ 27%]
+tests/test_phase13_production_ops.py::TestSentry::test_capture_exception_safe_when_not_initialized PASSED [ 28%]
+tests/test_phase13_production_ops.py::TestSentry::test_capture_message_safe_when_not_initialized PASSED [ 28%]
+tests/test_phase13_production_ops.py::TestTracing::test_trace_span_no_otel_works PASSED [ 28%]
+tests/test_phase13_production_ops.py::TestTracing::test_trace_span_propagates_exceptions PASSED [ 29%]
+tests/test_phase13_production_ops.py::TestTracing::test_traced_decorator_async PASSED [ 29%]
+tests/test_phase13_production_ops.py::TestTracing::test_traced_decorator_sync PASSED [ 29%]
+tests/test_phase13_production_ops.py::TestHealthChecker::test_all_healthy PASSED [ 30%]
+tests/test_phase13_production_ops.py::TestHealthChecker::test_critical_failure_makes_unhealthy PASSED [ 30%]
+tests/test_phase13_production_ops.py::TestHealthChecker::test_non_critical_failure_makes_degraded PASSED [ 30%]
+tests/test_phase13_production_ops.py::TestHealthChecker::test_exception_in_check_marked_unhealthy PASSED [ 31%]
+tests/test_phase13_production_ops.py::TestHealthChecker::test_timeout_marks_unhealthy PASSED [ 31%]
+tests/test_phase13_production_ops.py::TestHealthChecker::test_liveness_always_healthy PASSED [ 31%]
+tests/test_phase13_production_ops.py::TestHealthChecker::test_disk_space_check_runs PASSED [ 32%]
+tests/test_phase13_production_ops.py::TestHealthChecker::test_disk_space_unhealthy_when_below_min PASSED [ 32%]
+tests/test_phase13_production_ops.py::TestRateLimiterHelpers::test_quota_defaults_exist PASSED [ 32%]
+tests/test_phase13_production_ops.py::TestRateLimiterHelpers::test_extract_user_id_handles_missing_header PASSED [ 33%]
+tests/test_phase13_production_ops.py::TestRateLimiterHelpers::test_extract_tier_anonymous_for_invalid PASSED [ 33%]
+tests/test_phase13_production_ops.py::TestInfrastructureFiles::test_alertmanager_config_exists PASSED [ 34%]
+tests/test_phase13_production_ops.py::TestInfrastructureFiles::test_telegram_template_exists PASSED [ 34%]
+tests/test_phase13_production_ops.py::TestInfrastructureFiles::test_recording_rules_exists PASSED [ 34%]
+tests/test_phase13_production_ops.py::TestInfrastructureFiles::test_restore_script_exists_and_executable PASSED [ 35%]
+tests/test_phase13_production_ops.py::TestInfrastructureFiles::test_dr_drill_script_exists PASSED [ 35%]
+tests/test_phase13_production_ops.py::TestInfrastructureFiles::test_slo_doc_exists PASSED [ 35%]
+tests/test_phase13_production_ops.py::TestObservabilityInvariants::test_correlation_id_middleware_class_exists PASSED [ 36%]
+tests/test_phase13_production_ops.py::TestObservabilityInvariants::test_sentry_redacts_sensitive_headers PASSED [ 36%]
+tests/test_phase13_production_ops.py::TestObservabilityInvariants::test_health_module_has_db_redis_data_feed_checks PASSED [ 36%]
+tests/test_phase15_ux.py::TestCompactFormatter::test_compact_is_short PASSED [ 37%]
+tests/test_phase15_ux.py::TestCompactFormatter::test_compact_contains_essentials PASSED [ 37%]
+tests/test_phase15_ux.py::TestCompactFormatter::test_compact_short_for_sell PASSED [ 37%]
+tests/test_phase15_ux.py::TestCompactFormatter::test_compact_handles_missing_targets PASSED [ 38%]
+tests/test_phase15_ux.py::TestCompactFormatter::test_compact_uses_html_bold PASSED [ 38%]
+tests/test_phase15_ux.py::TestInlineKeyboard::test_builds_two_rows PASSED [ 38%]
+tests/test_phase15_ux.py::TestInlineKeyboard::test_callback_data_includes_signal_id PASSED [ 39%]
+tests/test_phase15_ux.py::TestInlineKeyboard::test_callback_data_namespaced PASSED [ 39%]
+tests/test_phase15_ux.py::TestInlineKeyboard::test_buttons_have_persian_text PASSED [ 39%]
+tests/test_phase15_ux.py::TestTierSummary::test_free_tier_shows_upgrade_hint PASSED [ 40%]
+tests/test_phase15_ux.py::TestTierSummary::test_premium_tier_no_upgrade_hint PASSED [ 40%]
+tests/test_phase15_ux.py::TestTierSummary::test_vip_tier PASSED          [ 40%]
+tests/test_phase15_ux.py::TestTierSummary::test_unknown_plan_falls_back_to_free PASSED [ 41%]
+tests/test_phase15_ux.py::TestTierSummary::test_remaining_calculated PASSED [ 41%]
+tests/test_phase15_ux.py::TestFrontendFiles::test_command_palette_exists FAILED [ 41%]
+tests/test_phase15_ux.py::TestFrontendFiles::test_command_palette_has_keyboard_navigation FAILED [ 42%]
+tests/test_phase15_ux.py::TestFrontendFiles::test_command_palette_has_aria FAILED [ 42%]
+tests/test_phase15_ux.py::TestFrontendFiles::test_empty_state_component_exists FAILED [ 42%]
+tests/test_phase15_ux.py::TestFrontendFiles::test_skeleton_components_exist FAILED [ 43%]
+tests/test_phase15_ux.py::TestSidebarMobile::test_sidebar_uses_media_query FAILED [ 43%]
+tests/test_phase15_ux.py::TestSidebarMobile::test_sidebar_has_drawer_state FAILED [ 43%]
+tests/test_phase15_ux.py::TestSidebarMobile::test_sidebar_has_overlay FAILED [ 44%]
+tests/test_phase15_ux.py::TestSidebarMobile::test_sidebar_has_focus_visible FAILED [ 44%]
+tests/test_phase15_ux.py::TestSidebarMobile::test_admin_layout_has_hamburger FAILED [ 44%]
+tests/test_phase15_ux.py::TestSidebarMobile::test_admin_layout_includes_command_palette FAILED [ 45%]
+tests/test_phase15_ux.py::TestStoreMobileDrawer::test_store_has_mobile_drawer_actions FAILED [ 45%]
+tests/test_phase15_ux.py::TestStoreMobileDrawer::test_store_excludes_drawer_from_persist FAILED [ 45%]
+tests/test_phase15_ux.py::TestI18n::test_i18n_module_exists FAILED       [ 46%]
+tests/test_phase15_ux.py::TestI18n::test_i18n_has_translations_dictionary FAILED [ 46%]
+tests/test_phase15_ux.py::TestI18n::test_i18n_has_common_keys FAILED     [ 46%]
+tests/test_phase15_ux.py::TestI18n::test_i18n_supports_interpolation FAILED [ 47%]
+tests/test_phase15_ux.py::TestI18n::test_i18n_helpers_exported FAILED    [ 47%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_redacts_password_field PASSED [ 47%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_redacts_token_fields PASSED [ 48%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_redacts_authorization_field PASSED [ 48%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_redacts_jwt_in_string_value PASSED [ 48%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_redacts_bearer_token_in_string PASSED [ 49%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_redacts_recursively_in_nested_dict PASSED [ 49%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_redacts_in_lists PASSED [ 49%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_non_string_values_unchanged PASSED [ 50%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_case_insensitive_key_matching PASSED [ 50%]
+tests/test_phase4_quality.py::TestSecretRedactor::test_safe_keys_not_redacted PASSED [ 50%]
+tests/test_phase4_quality.py::TestCorsConfig::test_parse_origins_empty PASSED [ 51%]
+tests/test_phase4_quality.py::TestCorsConfig::test_parse_origins_single PASSED [ 51%]
+tests/test_phase4_quality.py::TestCorsConfig::test_parse_origins_multiple PASSED [ 51%]
+tests/test_phase4_quality.py::TestCorsConfig::test_default_dev_origins_no_wildcard PASSED [ 52%]
+tests/test_phase4_quality.py::TestCorsConfig::test_default_production_origins_https_only PASSED [ 52%]
+tests/test_phase4_quality.py::TestFailoverLock::test_feed_manager_has_failover_lock PASSED [ 52%]
+tests/test_phase4_quality.py::TestConnectionPools::test_db_pool_settings_present PASSED [ 53%]
+tests/test_phase4_quality.py::TestConnectionPools::test_database_uses_settings_pool_size PASSED [ 53%]
+tests/test_phase4_quality.py::TestGetDb::test_get_db_uses_in_transaction_check PASSED [ 53%]
+tests/test_phase4_quality.py::TestTimezoneConsistency::test_no_utcnow_in_src PASSED [ 54%]
+tests/test_phase5_frontend.py::TestAdminAppRoutes::test_backtest_route_registered FAILED [ 54%]
+tests/test_phase5_frontend.py::TestAdminAppRoutes::test_risk_route_registered FAILED [ 54%]
+tests/test_phase5_frontend.py::TestAdminAppRoutes::test_backtest_page_exists FAILED [ 55%]
+tests/test_phase5_frontend.py::TestAdminAppRoutes::test_risk_page_exists FAILED [ 55%]
+tests/test_phase5_frontend.py::TestSidebarNavigation::test_sidebar_includes_backtest FAILED [ 55%]
+tests/test_phase5_frontend.py::TestSidebarNavigation::test_sidebar_includes_risk FAILED [ 56%]
+tests/test_phase5_frontend.py::TestApiClient::test_backtest_api_exported FAILED [ 56%]
+tests/test_phase5_frontend.py::TestApiClient::test_risk_api_exported FAILED [ 56%]
+tests/test_phase5_frontend.py::TestRiskRoutes::test_risk_module_loadable FAILED [ 57%]
+tests/test_phase5_frontend.py::TestRiskRoutes::test_risk_router_mounted_in_main FAILED [ 57%]
+tests/test_phase5_frontend.py::TestRiskRoutes::test_risk_uses_admin_auth FAILED [ 57%]
+tests/test_phase5_frontend.py::TestFormatterEnhancements::test_signal_without_extras_still_formats PASSED [ 58%]
+tests/test_phase5_frontend.py::TestFormatterEnhancements::test_dominant_component_displayed PASSED [ 58%]
+tests/test_phase5_frontend.py::TestFormatterEnhancements::test_market_regime_displayed PASSED [ 58%]
+tests/test_phase5_frontend.py::TestFormatterEnhancements::test_session_displayed PASSED [ 59%]
+tests/test_phase5_frontend.py::TestFormatterEnhancements::test_higher_tf_bias_displayed_when_not_neutral PASSED [ 59%]
+tests/test_phase7_followups.py::TestDSTHandling::test_eu_dst_in_summer ERROR [ 59%]
+tests/test_phase7_followups.py::TestDSTHandling::test_eu_dst_in_winter ERROR [ 60%]
+tests/test_phase7_followups.py::TestDSTHandling::test_us_dst_in_summer ERROR [ 60%]
+tests/test_phase7_followups.py::TestDSTHandling::test_london_session_shifts_with_dst ERROR [ 60%]
+tests/test_phase7_followups.py::TestDSTHandling::test_ny_session_shifts_with_dst ERROR [ 61%]
+tests/test_phase7_followups.py::TestHolidayCalendar::test_christmas_full_closure ERROR [ 61%]
+tests/test_phase7_followups.py::TestHolidayCalendar::test_new_year_full_closure ERROR [ 61%]
+tests/test_phase7_followups.py::TestHolidayCalendar::test_us_independence_partial ERROR [ 62%]
+tests/test_phase7_followups.py::TestHolidayCalendar::test_thanksgiving_2026 ERROR [ 62%]
+tests/test_phase7_followups.py::TestHolidayCalendar::test_good_friday_2026 ERROR [ 62%]
+tests/test_phase7_followups.py::TestHolidayCalendar::test_regular_day_returns_none ERROR [ 63%]
+tests/test_phase7_followups.py::TestHolidayCalendar::test_is_holiday_blackout_christmas ERROR [ 63%]
+tests/test_phase7_followups.py::TestHolidayCalendar::test_is_holiday_blackout_regular_day ERROR [ 63%]
+tests/test_phase7_followups.py::TestChandelierTrailing::test_chandelier_long ERROR [ 64%]
+tests/test_phase7_followups.py::TestChandelierTrailing::test_chandelier_short ERROR [ 64%]
+tests/test_phase7_followups.py::TestChandelierTrailing::test_chandelier_insufficient_data ERROR [ 64%]
+tests/test_phase7_followups.py::TestChandelierTrailing::test_trailing_moves_to_breakeven_after_tp1 ERROR [ 65%]
+tests/test_phase7_followups.py::TestChandelierTrailing::test_trailing_locks_tp1_after_tp2 ERROR [ 65%]
+tests/test_phase7_followups.py::TestChandelierTrailing::test_trailing_never_moves_backward ERROR [ 65%]
+tests/test_phase7_followups.py::TestInstrumentsModule::test_eurusd_spec PASSED [ 66%]
+tests/test_phase7_followups.py::TestInstrumentsModule::test_xauusd_spec PASSED [ 66%]
+tests/test_phase7_followups.py::TestInstrumentsModule::test_unknown_falls_back PASSED [ 67%]
+tests/test_phase7_followups.py::TestInstrumentsModule::test_helper_functions PASSED [ 67%]
+tests/test_phase7_followups.py::TestIntegrationPresence::test_tracker_records_to_daily_loss FAILED [ 67%]
+tests/test_phase7_followups.py::TestIntegrationPresence::test_riskguard_uses_holiday_calendar FAILED [ 68%]
+tests/test_phase7_followups.py::TestIntegrationPresence::test_riskguard_checks_liquidity FAILED [ 68%]
+tests/test_phase7_followups.py::TestIntegrationPresence::test_trainer_saves_scaler FAILED [ 68%]
+tests/test_phase7_followups.py::TestIntegrationPresence::test_backtest_api_runs_engine FAILED [ 69%]
+tests/test_phase7_followups.py::TestIntegrationPresence::test_launch_api_registered FAILED [ 69%]
+tests/test_phase7_followups.py::TestIntegrationPresence::test_launch_routes_admin_protected FAILED [ 69%]
+tests/test_phase7_followups.py::TestRiskGuardWithNewFilters::test_christmas_blocks_signal ERROR [ 70%]
+tests/test_phase8_security_hotfix.py::TestHTMLSanitization::test_strips_script_tag PASSED [ 70%]
+tests/test_phase8_security_hotfix.py::TestHTMLSanitization::test_strips_iframe PASSED [ 70%]
+tests/test_phase8_security_hotfix.py::TestHTMLSanitization::test_strips_onclick_handler PASSED [ 71%]
+tests/test_phase8_security_hotfix.py::TestHTMLSanitization::test_strips_javascript_url PASSED [ 71%]
+tests/test_phase8_security_hotfix.py::TestHTMLSanitization::test_keeps_safe_tags PASSED [ 71%]
+tests/test_phase8_security_hotfix.py::TestHTMLSanitization::test_no_tags_mode_strips_everything PASSED [ 72%]
+tests/test_phase8_security_hotfix.py::TestHTMLSanitization::test_empty_input PASSED [ 72%]
+tests/test_phase8_security_hotfix.py::TestHTMLSanitization::test_strips_object_embed PASSED [ 72%]
+tests/test_phase8_security_hotfix.py::TestURLValidation::test_valid_https_url PASSED [ 73%]
+tests/test_phase8_security_hotfix.py::TestURLValidation::test_valid_http_url PASSED [ 73%]
+tests/test_phase8_security_hotfix.py::TestURLValidation::test_rejects_javascript_scheme PASSED [ 73%]
+tests/test_phase8_security_hotfix.py::TestURLValidation::test_rejects_data_url PASSED [ 74%]
+tests/test_phase8_security_hotfix.py::TestURLValidation::test_rejects_localhost PASSED [ 74%]
+tests/test_phase8_security_hotfix.py::TestURLValidation::test_rejects_private_ip PASSED [ 74%]
+tests/test_phase8_security_hotfix.py::TestURLValidation::test_rejects_credentials_in_url PASSED [ 75%]
+tests/test_phase8_security_hotfix.py::TestURLValidation::test_rejects_empty PASSED [ 75%]
+tests/test_phase8_security_hotfix.py::TestMaskSensitiveID::test_masks_telegram_id PASSED [ 75%]
+tests/test_phase8_security_hotfix.py::TestMaskSensitiveID::test_masks_short_id PASSED [ 76%]
+tests/test_phase8_security_hotfix.py::TestMaskSensitiveID::test_custom_visible_digits PASSED [ 76%]
+tests/test_phase8_security_hotfix.py::TestRequireRole::test_role_hierarchy_satisfies PASSED [ 76%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_refresh_uses_verify_refresh_token PASSED [ 77%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_refresh_endpoint_has_blacklist_check PASSED [ 77%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_get_current_admin_is_fail_secure PASSED [ 77%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_security_headers_middleware_registered PASSED [ 78%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_security_headers_includes_all_required PASSED [ 78%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_articles_uses_sanitizer PASSED [ 78%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_articles_update_uses_whitelist PASSED [ 79%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_users_route_masks_telegram_id PASSED [ 79%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_launch_metrics_use_whitelist FAILED [ 79%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_backup_script_enforces_passphrase PASSED [ 80%]
+tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_rotate_secrets_script_exists PASSED [ 80%]
+tests/test_phase9_performance.py::TestRunInThread::test_runs_sync_function PASSED [ 80%]
+tests/test_phase9_performance.py::TestRunInThread::test_propagates_exceptions PASSED [ 81%]
+tests/test_phase9_performance.py::TestRunInThread::test_does_not_block_event_loop PASSED [ 81%]
+tests/test_phase9_performance.py::TestRunInThread::test_timeout_works PASSED [ 81%]
+tests/test_phase9_performance.py::TestRunInThread::test_accepts_kwargs PASSED [ 82%]
+tests/test_phase9_performance.py::TestRunInThread::test_default_executor_is_singleton PASSED [ 82%]
+tests/test_phase9_performance.py::TestRunInThread::test_shutdown_resets_executor PASSED [ 82%]
+tests/test_phase9_performance.py::TestRedisClientOptimizations::test_get_all_active_signals_uses_sorted_set PASSED [ 83%]
+tests/test_phase9_performance.py::TestRedisClientOptimizations::test_get_all_active_signals_does_not_use_keys PASSED [ 83%]
+tests/test_phase9_performance.py::TestRedisClientOptimizations::test_set_active_signal_uses_pipeline PASSED [ 83%]
+tests/test_phase9_performance.py::TestRedisClientOptimizations::test_remove_active_signal_uses_pipeline PASSED [ 84%]
+tests/test_phase9_performance.py::TestRedisClientOptimizations::test_get_all_prices_uses_scan PASSED [ 84%]
+tests/test_phase9_performance.py::TestRedisClientOptimizations::test_count_active_signals_exists PASSED [ 84%]
+tests/test_phase9_performance.py::TestCandleBuilderBulk::test_save_candles_uses_bulk PASSED [ 85%]
+tests/test_phase9_performance.py::TestCandleBuilderBulk::test_save_candles_validates_symbol_timeframe PASSED [ 85%]
+tests/test_phase9_performance.py::TestCandleBuilderBulk::test_save_candles_uses_itertuples PASSED [ 85%]
+tests/test_phase9_performance.py::TestCountQueryOptimization::test_signals_uses_func_count FAILED [ 86%]
+tests/test_phase9_performance.py::TestCountQueryOptimization::test_users_uses_func_count PASSED [ 86%]
+tests/test_phase9_performance.py::TestAggregationOptimization::test_performance_uses_date_trunc FAILED [ 86%]
+tests/test_phase9_performance.py::TestAggregationOptimization::test_performance_does_not_python_loop_for_daily FAILED [ 87%]
+tests/test_phase9_performance.py::TestActiveSignalsPagination::test_active_signals_has_pagination FAILED [ 87%]
+tests/test_phase9_performance.py::TestConcurrentTracker::test_tracker_uses_asyncio_gather FAILED [ 87%]
+tests/test_phase9_performance.py::TestEngineThreadPool::test_engine_uses_run_in_thread FAILED [ 88%]
+tests/test_phase9_performance.py::TestBroadcastPipeline::test_broadcast_uses_pipeline_for_block_check PASSED [ 88%]
+tests/test_signals.py::TestScorer::test_score_calculation PASSED         [ 88%]
+tests/test_signals.py::TestScorer::test_strong_signal PASSED             [ 89%]
+tests/test_signals.py::TestScorer::test_no_signal_low_score PASSED       [ 89%]
+tests/test_signals.py::TestRiskManager::test_calculate_levels PASSED     [ 89%]
+qa/python/security_regressions.py::HtmlSanitizerRegressionTests::test_dangerous_raw_text_blocks_are_removed_with_content PASSED [ 90%]
+qa/python/security_regressions.py::HtmlSanitizerRegressionTests::test_plain_text_mode_does_not_retain_script_payload PASSED [ 90%]
+qa/python/security_regressions.py::CorsRegressionTests::test_current_production_defaults_use_https_origins_only PASSED [ 90%]
+qa/python/security_regressions.py::SecurityHeaderRegressionTests::test_api_disables_deprecated_xss_auditor_and_uses_restrictive_csp PASSED [ 91%]
+qa/python/security_regressions.py::TimezoneRegressionTests::test_source_has_no_naive_datetime_utcnow_calls PASSED [ 91%]
+qa/python/security_regressions.py::DependencyRegressionTests::test_api_image_uses_hardened_runtime_dependencies 
+qa/python/security_regressions.py::DependencyRegressionTests::test_api_image_uses_hardened_runtime_dependencies PASSED [ 91%]
+qa/python/security_regressions.py::DependencyRegressionTests::test_supported_analytics_stack_imports PASSED [ 92%]
+qa/python/security_regressions.py::DependencyRegressionTests::test_unused_pandas_ta_numba_stack_is_not_installed 
+qa/python/security_regressions.py::DependencyRegressionTests::test_unused_pandas_ta_numba_stack_is_not_installed PASSED [ 92%]
+qa/python/security_regressions.py::JwtIssuerRegressionTests::test_central_rs256_token_requires_expected_issuer PASSED [ 92%]
+qa/python/security_regressions.py::LocalSecretHygieneRegressionTests::test_cloudflare_loader_rejects_open_permissions_and_symlinks PASSED [ 93%]
+qa/python/security_regressions.py::LocalSecretHygieneRegressionTests::test_cloudflare_template_is_empty_and_runtime_file_is_excluded PASSED [ 93%]
+qa/python/security_regressions.py::BackupSecretHygieneRegressionTests::test_env_backup_passphrase_is_not_exposed_in_process_arguments PASSED [ 93%]
+qa/python/security_regressions.py::BackupSecretHygieneRegressionTests::test_hourly_archive_excludes_secret_and_backup_paths 
+qa/python/security_regressions.py::BackupSecretHygieneRegressionTests::test_hourly_archive_excludes_secret_and_backup_paths PASSED [ 94%]
+qa/python/security_regressions.py::BackupSecretHygieneRegressionTests::test_remote_backup_keeps_compose_unresolved_and_excludes_secrets 
+qa/python/security_regressions.py::BackupSecretHygieneRegressionTests::test_remote_backup_keeps_compose_unresolved_and_excludes_secrets PASSED [ 94%]
+qa/python/security_regressions.py::BackupSecretHygieneRegressionTests::test_rotation_output_is_owner_only_and_values_are_not_logged 
+qa/python/security_regressions.py::BackupSecretHygieneRegressionTests::test_rotation_output_is_owner_only_and_values_are_not_logged PASSED [ 94%]
+qa/python/security_regressions.py::BackupSecretHygieneRegressionTests::test_rotation_rejects_symlink_output_and_open_source_permissions PASSED [ 95%]
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_live_admin_contract_remains_admin_protected 
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_live_admin_contract_remains_admin_protected PASSED [ 95%]
+qa/python/security_regressions.py::RouteRegistrationRegressionTests::test_live_frontend_contract_is_mounted PASSED [ 95%]
+qa/python/referral_redirects_regression.py::test_redirect_is_exact_uncached_and_ignores_query_override[/go/lbank-https://www.lbank.com/ref/PROCHART] PASSED [ 96%]
+qa/python/referral_redirects_regression.py::test_redirect_is_exact_uncached_and_ignores_query_override[/go/oneroyal-https://vc.cabinet.oneroyal.com/fa/links/go/12412] PASSED [ 96%]
+qa/python/referral_redirects_regression.py::test_router_exposes_only_two_explicit_get_routes PASSED [ 96%]
+qa/python/referral_redirects_regression.py::test_redirect_module_does_not_consume_or_log_request_data PASSED [ 97%]
+qa/python/referral_redirects_regression.py::test_product_api_payloads_expose_internal_paths_only PASSED [ 97%]
+qa/python/referral_redirects_regression.py::test_legacy_api_fields_keep_names_but_return_internal_paths PASSED [ 97%]
+qa/python/referral_redirects_regression.py::test_bot_departure_uses_notice_gate_and_absolute_internal_route PASSED [ 98%]
+qa/python/referral_redirects_regression.py::test_mt5_connect_is_bodyless_and_never_reaches_storage PASSED [ 98%]
+qa/python/referral_redirects_regression.py::test_historical_mt5_status_is_inactive_and_redacted PASSED [ 98%]
+qa/python/referral_redirects_regression.py::test_forex_copy_toggle_and_subscription_fail_before_db_or_network PASSED [ 99%]
+qa/python/referral_redirects_regression.py::test_non_crypto_real_order_fails_before_account_or_order_work PASSED [ 99%]
+qa/python/referral_redirects_regression.py::test_seo_copy_distinguishes_lbank_trading_from_oneroyal_referral PASSED [100%]
+
+==================================== ERRORS ====================================
+______________________ ERROR collecting tests/test_ml.py _______________________
+ImportError while importing test module '/workspace/tests/test_ml.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ml.py:7: in <module>
+    from src.ml.feature_engine import FeatureEngine
+E   ModuleNotFoundError: No module named 'src.ml'
+___________________ ERROR collecting tests/test_patterns.py ____________________
+ImportError while importing test module '/workspace/tests/test_patterns.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_patterns.py:7: in <module>
+    from src.analysis.candlestick_patterns import CandlestickAnalyzer
+E   ModuleNotFoundError: No module named 'src.analysis'
+______________ ERROR collecting tests/test_phase10_ml_rebuild.py _______________
+tests/test_phase10_ml_rebuild.py:37: in <module>
+    fm = _load("_test_fm", "src/ml/financial_metrics.py")
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase10_ml_rebuild.py:33: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/ml/financial_metrics.py'
+__________ ERROR collecting tests/test_phase11_quant_institutional.py __________
+tests/test_phase11_quant_institutional.py:37: in <module>
+    sizer_mod = _load("_test_sizer", "src/risk/position_sizer.py")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase11_quant_institutional.py:32: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/position_sizer.py'
+_____________ ERROR collecting tests/test_phase12_architecture.py ______________
+tests/test_phase12_architecture.py:41: in <module>
+    sm_mod = _load("src.signals.state_machine", "src/signals/state_machine.py")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase12_architecture.py:32: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/state_machine.py'
+_______________ ERROR collecting tests/test_phase14_reporting.py _______________
+tests/test_phase14_reporting.py:38: in <module>
+    adv_mod = _load("src.backtest.advanced_metrics", "src/backtest/advanced_metrics.py")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase14_reporting.py:34: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/backtest/advanced_metrics.py'
+________________ ERROR collecting tests/test_phase1_backtest.py ________________
+tests/test_phase1_backtest.py:38: in <module>
+    _simulator_mod = _load("_test_simulator", "src/backtest/simulator.py")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase1_backtest.py:28: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/backtest/simulator.py'
+__________________ ERROR collecting tests/test_phase2_risk.py __________________
+tests/test_phase2_risk.py:39: in <module>
+    symbol_config = _load("_test_symbol_config", "src/risk/symbol_config.py")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase2_risk.py:34: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/symbol_config.py'
+______________ ERROR collecting tests/test_phase3_optimization.py ______________
+tests/test_phase3_optimization.py:34: in <module>
+    scaler_mod = _load("_test_scaler", "src/ml/scaler.py")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase3_optimization.py:29: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/ml/scaler.py'
+_________________ ERROR collecting tests/test_phase6_launch.py _________________
+tests/test_phase6_launch.py:34: in <module>
+    paper_mod = _load("_test_paper", "src/launch/paper_trading.py")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase6_launch.py:28: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/launch/paper_trading.py'
+__________________ ERROR collecting tests/test_smart_money.py __________________
+ImportError while importing test module '/workspace/tests/test_smart_money.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_smart_money.py:7: in <module>
+    from src.analysis.smart_money import SmartMoneyAnalyzer
+E   ModuleNotFoundError: No module named 'src.analysis'
+___________________ ERROR collecting tests/test_technical.py ___________________
+ImportError while importing test module '/workspace/tests/test_technical.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_technical.py:7: in <module>
+    from src.analysis.technical import TechnicalAnalyzer
+E   ModuleNotFoundError: No module named 'src.analysis'
+___________ ERROR at setup of TestDSTHandling.test_eu_dst_in_summer ____________
+tests/test_phase7_followups.py:46: in session_filter
+    return _load("_test_sess_dst", "src/risk/session_filter.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/session_filter.py'
+___________ ERROR at setup of TestDSTHandling.test_eu_dst_in_winter ____________
+tests/test_phase7_followups.py:46: in session_filter
+    return _load("_test_sess_dst", "src/risk/session_filter.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/session_filter.py'
+___________ ERROR at setup of TestDSTHandling.test_us_dst_in_summer ____________
+tests/test_phase7_followups.py:46: in session_filter
+    return _load("_test_sess_dst", "src/risk/session_filter.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/session_filter.py'
+____ ERROR at setup of TestDSTHandling.test_london_session_shifts_with_dst _____
+tests/test_phase7_followups.py:46: in session_filter
+    return _load("_test_sess_dst", "src/risk/session_filter.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/session_filter.py'
+______ ERROR at setup of TestDSTHandling.test_ny_session_shifts_with_dst _______
+tests/test_phase7_followups.py:46: in session_filter
+    return _load("_test_sess_dst", "src/risk/session_filter.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/session_filter.py'
+______ ERROR at setup of TestHolidayCalendar.test_christmas_full_closure _______
+tests/test_phase7_followups.py:91: in holiday_mod
+    return _load("_test_holiday", "src/risk/holiday_calendar.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/holiday_calendar.py'
+_______ ERROR at setup of TestHolidayCalendar.test_new_year_full_closure _______
+tests/test_phase7_followups.py:91: in holiday_mod
+    return _load("_test_holiday", "src/risk/holiday_calendar.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/holiday_calendar.py'
+______ ERROR at setup of TestHolidayCalendar.test_us_independence_partial ______
+tests/test_phase7_followups.py:91: in holiday_mod
+    return _load("_test_holiday", "src/risk/holiday_calendar.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/holiday_calendar.py'
+_________ ERROR at setup of TestHolidayCalendar.test_thanksgiving_2026 _________
+tests/test_phase7_followups.py:91: in holiday_mod
+    return _load("_test_holiday", "src/risk/holiday_calendar.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/holiday_calendar.py'
+_________ ERROR at setup of TestHolidayCalendar.test_good_friday_2026 __________
+tests/test_phase7_followups.py:91: in holiday_mod
+    return _load("_test_holiday", "src/risk/holiday_calendar.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/holiday_calendar.py'
+_____ ERROR at setup of TestHolidayCalendar.test_regular_day_returns_none ______
+tests/test_phase7_followups.py:91: in holiday_mod
+    return _load("_test_holiday", "src/risk/holiday_calendar.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/holiday_calendar.py'
+___ ERROR at setup of TestHolidayCalendar.test_is_holiday_blackout_christmas ___
+tests/test_phase7_followups.py:91: in holiday_mod
+    return _load("_test_holiday", "src/risk/holiday_calendar.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/holiday_calendar.py'
+__ ERROR at setup of TestHolidayCalendar.test_is_holiday_blackout_regular_day __
+tests/test_phase7_followups.py:91: in holiday_mod
+    return _load("_test_holiday", "src/risk/holiday_calendar.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/holiday_calendar.py'
+________ ERROR at setup of TestChandelierTrailing.test_chandelier_long _________
+tests/test_phase7_followups.py:147: in trailing_mod
+    return _load("_test_trailing", "src/signals/trailing_stop.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/trailing_stop.py'
+________ ERROR at setup of TestChandelierTrailing.test_chandelier_short ________
+tests/test_phase7_followups.py:147: in trailing_mod
+    return _load("_test_trailing", "src/signals/trailing_stop.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/trailing_stop.py'
+__ ERROR at setup of TestChandelierTrailing.test_chandelier_insufficient_data __
+tests/test_phase7_followups.py:147: in trailing_mod
+    return _load("_test_trailing", "src/signals/trailing_stop.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/trailing_stop.py'
+_ ERROR at setup of TestChandelierTrailing.test_trailing_moves_to_breakeven_after_tp1 _
+tests/test_phase7_followups.py:147: in trailing_mod
+    return _load("_test_trailing", "src/signals/trailing_stop.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/trailing_stop.py'
+__ ERROR at setup of TestChandelierTrailing.test_trailing_locks_tp1_after_tp2 __
+tests/test_phase7_followups.py:147: in trailing_mod
+    return _load("_test_trailing", "src/signals/trailing_stop.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/trailing_stop.py'
+_ ERROR at setup of TestChandelierTrailing.test_trailing_never_moves_backward __
+tests/test_phase7_followups.py:147: in trailing_mod
+    return _load("_test_trailing", "src/signals/trailing_stop.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/trailing_stop.py'
+__ ERROR at setup of TestRiskGuardWithNewFilters.test_christmas_blocks_signal __
+tests/test_phase7_followups.py:316: in setup_modules
+    sym_cfg = _load("_test_sc", "src/risk/symbol_config.py")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_phase7_followups.py:31: in _load
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:1019: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1156: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1214: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/symbol_config.py'
+=================================== FAILURES ===================================
+_____________________________ test_health_endpoint _____________________________
+tests/test_api.py:13: in test_health_endpoint
+    assert response.status_code == 200
+E   assert 503 == 200
+E    +  where 503 = <Response [503 Service Unavailable]>.status_code
+----------------------------- Captured stdout call -----------------------------
+2026-07-15 06:06:54 [info     ] cors_configured                debug=True origins=['http://localhost', 'http://localhost:3000', 'http://localhost:5173', 'http://localhost:8080', 'http://127.0.0.1:3000', 'http://127.0.0.1:5173'] source=dev_defaults
+2026-07-15 06:06:54 [warning  ] بررسی سلامت دیتابیس ناموفق: [Errno -3] Temporary failure in name resolution
+2026-07-15 06:06:54 [warning  ] بررسی سلامت ردیس ناموفق: Redis متصل نیست. ابتدا connect() را صدا بزنید.
+______________________________ test_signals_list _______________________________
+tests/test_api.py:26: in test_signals_list
+    assert response.status_code in (401, 403)
+E   assert 404 in (401, 403)
+E    +  where 404 = <Response [404 Not Found]>.status_code
+----------------------------- Captured stdout call -----------------------------
+2026-07-15 06:06:54 [warning  ] ردیس در دسترس نیست. محدودکننده نرخ غیرفعال شد.
+___________________________ test_performance_summary ___________________________
+tests/test_api.py:35: in test_performance_summary
+    assert response.status_code in (200, 401)
+E   assert 404 in (200, 401)
+E    +  where 404 = <Response [404 Not Found]>.status_code
+----------------------------- Captured stdout call -----------------------------
+2026-07-15 06:06:55 [warning  ] ردیس در دسترس نیست. محدودکننده نرخ غیرفعال شد.
+________________ TestFrontendFiles.test_command_palette_exists _________________
+tests/test_phase15_ux.py:194: in test_command_palette_exists
+    assert path.exists()
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/workspace/frontend/admin/src/components/common/CommandPalette.jsx').exists
+________ TestFrontendFiles.test_command_palette_has_keyboard_navigation ________
+tests/test_phase15_ux.py:205: in test_command_palette_has_keyboard_navigation
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/common/CommandPalette.jsx'
+_______________ TestFrontendFiles.test_command_palette_has_aria ________________
+tests/test_phase15_ux.py:214: in test_command_palette_has_aria
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/common/CommandPalette.jsx'
+_____________ TestFrontendFiles.test_empty_state_component_exists ______________
+tests/test_phase15_ux.py:220: in test_empty_state_component_exists
+    assert path.exists()
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/workspace/frontend/admin/src/components/common/EmptyState.jsx').exists
+_______________ TestFrontendFiles.test_skeleton_components_exist _______________
+tests/test_phase15_ux.py:230: in test_skeleton_components_exist
+    assert path.exists()
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/workspace/frontend/admin/src/components/common/Skeleton.jsx').exists
+_______________ TestSidebarMobile.test_sidebar_uses_media_query ________________
+tests/test_phase15_ux.py:249: in test_sidebar_uses_media_query
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/Layout/Sidebar.jsx'
+_______________ TestSidebarMobile.test_sidebar_has_drawer_state ________________
+tests/test_phase15_ux.py:256: in test_sidebar_has_drawer_state
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/Layout/Sidebar.jsx'
+__________________ TestSidebarMobile.test_sidebar_has_overlay __________________
+tests/test_phase15_ux.py:263: in test_sidebar_has_overlay
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/Layout/Sidebar.jsx'
+_______________ TestSidebarMobile.test_sidebar_has_focus_visible _______________
+tests/test_phase15_ux.py:273: in test_sidebar_has_focus_visible
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/Layout/Sidebar.jsx'
+______________ TestSidebarMobile.test_admin_layout_has_hamburger _______________
+tests/test_phase15_ux.py:279: in test_admin_layout_has_hamburger
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/Layout/AdminLayout.jsx'
+_________ TestSidebarMobile.test_admin_layout_includes_command_palette _________
+tests/test_phase15_ux.py:287: in test_admin_layout_includes_command_palette
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/Layout/AdminLayout.jsx'
+__________ TestStoreMobileDrawer.test_store_has_mobile_drawer_actions __________
+tests/test_phase15_ux.py:300: in test_store_has_mobile_drawer_actions
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/store/index.js'
+________ TestStoreMobileDrawer.test_store_excludes_drawer_from_persist _________
+tests/test_phase15_ux.py:310: in test_store_excludes_drawer_from_persist
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/store/index.js'
+_______________________ TestI18n.test_i18n_module_exists _______________________
+tests/test_phase15_ux.py:323: in test_i18n_module_exists
+    assert path.exists()
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/workspace/frontend/admin/src/i18n/index.js').exists
+________________ TestI18n.test_i18n_has_translations_dictionary ________________
+tests/test_phase15_ux.py:328: in test_i18n_has_translations_dictionary
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/i18n/index.js'
+______________________ TestI18n.test_i18n_has_common_keys ______________________
+tests/test_phase15_ux.py:335: in test_i18n_has_common_keys
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/i18n/index.js'
+__________________ TestI18n.test_i18n_supports_interpolation ___________________
+tests/test_phase15_ux.py:351: in test_i18n_supports_interpolation
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/i18n/index.js'
+_____________________ TestI18n.test_i18n_helpers_exported ______________________
+tests/test_phase15_ux.py:360: in test_i18n_helpers_exported
+    ).read_text(encoding="utf-8")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/i18n/index.js'
+______________ TestAdminAppRoutes.test_backtest_route_registered _______________
+tests/test_phase5_frontend.py:44: in test_backtest_route_registered
+    app_jsx = (REPO_ROOT / "frontend/admin/src/App.jsx").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/App.jsx'
+________________ TestAdminAppRoutes.test_risk_route_registered _________________
+tests/test_phase5_frontend.py:49: in test_risk_route_registered
+    app_jsx = (REPO_ROOT / "frontend/admin/src/App.jsx").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/App.jsx'
+_________________ TestAdminAppRoutes.test_backtest_page_exists _________________
+tests/test_phase5_frontend.py:55: in test_backtest_page_exists
+    assert path.exists(), "BacktestPage.jsx ساخته نشده"
+E   AssertionError: BacktestPage.jsx ساخته نشده
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/workspace/frontend/admin/src/pages/BacktestPage.jsx').exists
+___________________ TestAdminAppRoutes.test_risk_page_exists ___________________
+tests/test_phase5_frontend.py:66: in test_risk_page_exists
+    assert path.exists(), "RiskPage.jsx ساخته نشده"
+E   AssertionError: RiskPage.jsx ساخته نشده
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/workspace/frontend/admin/src/pages/RiskPage.jsx').exists
+_____________ TestSidebarNavigation.test_sidebar_includes_backtest _____________
+tests/test_phase5_frontend.py:79: in test_sidebar_includes_backtest
+    sidebar = (REPO_ROOT / "frontend/admin/src/components/Layout/Sidebar.jsx").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/Layout/Sidebar.jsx'
+_______________ TestSidebarNavigation.test_sidebar_includes_risk _______________
+tests/test_phase5_frontend.py:83: in test_sidebar_includes_risk
+    sidebar = (REPO_ROOT / "frontend/admin/src/components/Layout/Sidebar.jsx").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/components/Layout/Sidebar.jsx'
+___________________ TestApiClient.test_backtest_api_exported ___________________
+tests/test_phase5_frontend.py:91: in test_backtest_api_exported
+    content = (REPO_ROOT / "frontend/admin/src/api/client.js").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/api/client.js'
+_____________________ TestApiClient.test_risk_api_exported _____________________
+tests/test_phase5_frontend.py:101: in test_risk_api_exported
+    content = (REPO_ROOT / "frontend/admin/src/api/client.js").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/frontend/admin/src/api/client.js'
+___________________ TestRiskRoutes.test_risk_module_loadable ___________________
+tests/test_phase5_frontend.py:120: in test_risk_module_loadable
+    content = (REPO_ROOT / "src/api/routes/risk.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/api/routes/risk.py'
+_______________ TestRiskRoutes.test_risk_router_mounted_in_main ________________
+tests/test_phase5_frontend.py:132: in test_risk_router_mounted_in_main
+    assert "risk," in main or "risk\n" in main
+E   assert ('risk,' in '"""\nماژول اصلی FastAPI برای پلتفرم سیگنال فارکس.\n\nاین ماژول اپلیکیشن FastAPI را با تمام میان\u200cافزارها، مسیرها و رویدادهای\nراه\u200cاندازی/خاموشی پیکربندی و ایجاد می\u200cکند.\n"""\n\nimport time\nfrom contextlib import asynccontextmanager\n\nfrom fastapi import Depends, FastAPI, Request\nfrom fastapi.responses import JSONResponse\nfrom prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST\nfrom starlette.responses import Response\n\nfrom src.api.deps import get_current_admin\nfrom src.api.middleware.cors import setup_cors\nfrom src.api.middleware.rate_limit import RateLimitMiddleware\nfrom src.api.middleware.security_headers import SecurityHeadersMiddleware\nfrom src.api.routes import (\n    academy,\n    bazaarnama,\n    admin,\n    admin_academy,\n    admin_bn_core,\n    admin_bn_dash,\n    admin_bn_trading,\n    bn_user_extra,\n    bn_social,\n    bn_r7,\n    bn_r8,\n    bn_bauth,\n    bn_gate,\n    admin_ig_users,\n    analytics,\n    articles,\n    auth,\n    broadcasts,\n    ig_panel,\n    live,\n    live_prices,\n    monitoring,\n    panel,\n    payments,\n    public,\n    referrals,\n    seo,\n    seo_admin,\n    settings as settings_r... کاربری VIP"])\napp.include_router(academy.router, prefix="/academy", tags=["آکادمی VIP"])\napp.include_router(bn_r8.router, prefix="/academy/bn", tags=["کپی\u200cتریدِ فارکسِ زنده"])\napp.include_router(bazaarnama.router, prefix="/academy/bn", tags=["بازارنما (TradingView ایرانی)"])\napp.include_router(bn_user_extra.router, prefix="/academy/bn", tags=["بازارنما — پنل کاربر"])\napp.include_router(bn_social.router, prefix="/academy/bn/social", tags=["سوشالِ سراسری"])\napp.include_router(bn_r7.router, prefix="/academy/bn", tags=["مرکزِ حساب/اتاقِ کنترل"])\napp.include_router(bn_gate.router, prefix="/academy/bn", tags=["B24 گیت/تنظیمات"])\napp.include_router(admin_academy.router, prefix="/admin/academy", tags=["مدیریت آکادمی VIP"])\napp.include_router(admin_ig_users.router, prefix="/admin/ig-users", tags=["مدیریت کاربران IG"])\napp.include_router(admin_bn_core.router, prefix="/admin/bn", tags=["بازارنما — هسته"])\napp.include_router(admin_bn_trading.router, prefix="/admin/bn", tags=["بازارنما — معاملات"])\napp.include_router(admin_bn_dash.router, prefix="/admin/bn", tags=["بازارنما — داشبورد/بازار"])\napp.include_router(ig_panel.router, prefix="/ig", tags=["پنل مستقل اینستاگرام"])\n' or 'risk\n' in '"""\nماژول اصلی FastAPI برای پلتفرم سیگنال فارکس.\n\nاین ماژول اپلیکیشن FastAPI را با تمام میان\u200cافزارها، مسیرها و رویدادهای\nراه\u200cاندازی/خاموشی پیکربندی و ایجاد می\u200cکند.\n"""\n\nimport time\nfrom contextlib import asynccontextmanager\n\nfrom fastapi import Depends, FastAPI, Request\nfrom fastapi.responses import JSONResponse\nfrom prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST\nfrom starlette.responses import Response\n\nfrom src.api.deps import get_current_admin\nfrom src.api.middleware.cors import setup_cors\nfrom src.api.middleware.rate_limit import RateLimitMiddleware\nfrom src.api.middleware.security_headers import SecurityHeadersMiddleware\nfrom src.api.routes import (\n    academy,\n    bazaarnama,\n    admin,\n    admin_academy,\n    admin_bn_core,\n    admin_bn_dash,\n    admin_bn_trading,\n    bn_user_extra,\n    bn_social,\n    bn_r7,\n    bn_r8,\n    bn_bauth,\n    bn_gate,\n    admin_ig_users,\n    analytics,\n    articles,\n    auth,\n    broadcasts,\n    ig_panel,\n    live,\n    live_prices,\n    monitoring,\n    panel,\n    payments,\n    public,\n    referrals,\n    seo,\n    seo_admin,\n    settings as settings_r... کاربری VIP"])\napp.include_router(academy.router, prefix="/academy", tags=["آکادمی VIP"])\napp.include_router(bn_r8.router, prefix="/academy/bn", tags=["کپی\u200cتریدِ فارکسِ زنده"])\napp.include_router(bazaarnama.router, prefix="/academy/bn", tags=["بازارنما (TradingView ایرانی)"])\napp.include_router(bn_user_extra.router, prefix="/academy/bn", tags=["بازارنما — پنل کاربر"])\napp.include_router(bn_social.router, prefix="/academy/bn/social", tags=["سوشالِ سراسری"])\napp.include_router(bn_r7.router, prefix="/academy/bn", tags=["مرکزِ حساب/اتاقِ کنترل"])\napp.include_router(bn_gate.router, prefix="/academy/bn", tags=["B24 گیت/تنظیمات"])\napp.include_router(admin_academy.router, prefix="/admin/academy", tags=["مدیریت آکادمی VIP"])\napp.include_router(admin_ig_users.router, prefix="/admin/ig-users", tags=["مدیریت کاربران IG"])\napp.include_router(admin_bn_core.router, prefix="/admin/bn", tags=["بازارنما — هسته"])\napp.include_router(admin_bn_trading.router, prefix="/admin/bn", tags=["بازارنما — معاملات"])\napp.include_router(admin_bn_dash.router, prefix="/admin/bn", tags=["بازارنما — داشبورد/بازار"])\napp.include_router(ig_panel.router, prefix="/ig", tags=["پنل مستقل اینستاگرام"])\n')
+___________________ TestRiskRoutes.test_risk_uses_admin_auth ___________________
+tests/test_phase5_frontend.py:136: in test_risk_uses_admin_auth
+    content = (REPO_ROOT / "src/api/routes/risk.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/api/routes/risk.py'
+__________ TestIntegrationPresence.test_tracker_records_to_daily_loss __________
+tests/test_phase7_followups.py:261: in test_tracker_records_to_daily_loss
+    content = (REPO_ROOT / "src/signals/tracker.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/tracker.py'
+_________ TestIntegrationPresence.test_riskguard_uses_holiday_calendar _________
+tests/test_phase7_followups.py:266: in test_riskguard_uses_holiday_calendar
+    content = (REPO_ROOT / "src/risk/guard.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/guard.py'
+___________ TestIntegrationPresence.test_riskguard_checks_liquidity ____________
+tests/test_phase7_followups.py:271: in test_riskguard_checks_liquidity
+    content = (REPO_ROOT / "src/risk/guard.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/risk/guard.py'
+______________ TestIntegrationPresence.test_trainer_saves_scaler _______________
+tests/test_phase7_followups.py:276: in test_trainer_saves_scaler
+    content = (REPO_ROOT / "src/ml/trainer.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/ml/trainer.py'
+____________ TestIntegrationPresence.test_backtest_api_runs_engine _____________
+tests/test_phase7_followups.py:285: in test_backtest_api_runs_engine
+    content = (REPO_ROOT / "src/api/routes/backtest.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/api/routes/backtest.py'
+______________ TestIntegrationPresence.test_launch_api_registered ______________
+tests/test_phase7_followups.py:293: in test_launch_api_registered
+    assert "launch," in content or "launch\n" in content
+E   assert ('launch,' in '"""\nماژول اصلی FastAPI برای پلتفرم سیگنال فارکس.\n\nاین ماژول اپلیکیشن FastAPI را با تمام میان\u200cافزارها، مسیرها و رویدادهای\nراه\u200cاندازی/خاموشی پیکربندی و ایجاد می\u200cکند.\n"""\n\nimport time\nfrom contextlib import asynccontextmanager\n\nfrom fastapi import Depends, FastAPI, Request\nfrom fastapi.responses import JSONResponse\nfrom prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST\nfrom starlette.responses import Response\n\nfrom src.api.deps import get_current_admin\nfrom src.api.middleware.cors import setup_cors\nfrom src.api.middleware.rate_limit import RateLimitMiddleware\nfrom src.api.middleware.security_headers import SecurityHeadersMiddleware\nfrom src.api.routes import (\n    academy,\n    bazaarnama,\n    admin,\n    admin_academy,\n    admin_bn_core,\n    admin_bn_dash,\n    admin_bn_trading,\n    bn_user_extra,\n    bn_social,\n    bn_r7,\n    bn_r8,\n    bn_bauth,\n    bn_gate,\n    admin_ig_users,\n    analytics,\n    articles,\n    auth,\n    broadcasts,\n    ig_panel,\n    live,\n    live_prices,\n    monitoring,\n    panel,\n    payments,\n    public,\n    referrals,\n    seo,\n    seo_admin,\n    settings as settings_r... کاربری VIP"])\napp.include_router(academy.router, prefix="/academy", tags=["آکادمی VIP"])\napp.include_router(bn_r8.router, prefix="/academy/bn", tags=["کپی\u200cتریدِ فارکسِ زنده"])\napp.include_router(bazaarnama.router, prefix="/academy/bn", tags=["بازارنما (TradingView ایرانی)"])\napp.include_router(bn_user_extra.router, prefix="/academy/bn", tags=["بازارنما — پنل کاربر"])\napp.include_router(bn_social.router, prefix="/academy/bn/social", tags=["سوشالِ سراسری"])\napp.include_router(bn_r7.router, prefix="/academy/bn", tags=["مرکزِ حساب/اتاقِ کنترل"])\napp.include_router(bn_gate.router, prefix="/academy/bn", tags=["B24 گیت/تنظیمات"])\napp.include_router(admin_academy.router, prefix="/admin/academy", tags=["مدیریت آکادمی VIP"])\napp.include_router(admin_ig_users.router, prefix="/admin/ig-users", tags=["مدیریت کاربران IG"])\napp.include_router(admin_bn_core.router, prefix="/admin/bn", tags=["بازارنما — هسته"])\napp.include_router(admin_bn_trading.router, prefix="/admin/bn", tags=["بازارنما — معاملات"])\napp.include_router(admin_bn_dash.router, prefix="/admin/bn", tags=["بازارنما — داشبورد/بازار"])\napp.include_router(ig_panel.router, prefix="/ig", tags=["پنل مستقل اینستاگرام"])\n' or 'launch\n' in '"""\nماژول اصلی FastAPI برای پلتفرم سیگنال فارکس.\n\nاین ماژول اپلیکیشن FastAPI را با تمام میان\u200cافزارها، مسیرها و رویدادهای\nراه\u200cاندازی/خاموشی پیکربندی و ایجاد می\u200cکند.\n"""\n\nimport time\nfrom contextlib import asynccontextmanager\n\nfrom fastapi import Depends, FastAPI, Request\nfrom fastapi.responses import JSONResponse\nfrom prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST\nfrom starlette.responses import Response\n\nfrom src.api.deps import get_current_admin\nfrom src.api.middleware.cors import setup_cors\nfrom src.api.middleware.rate_limit import RateLimitMiddleware\nfrom src.api.middleware.security_headers import SecurityHeadersMiddleware\nfrom src.api.routes import (\n    academy,\n    bazaarnama,\n    admin,\n    admin_academy,\n    admin_bn_core,\n    admin_bn_dash,\n    admin_bn_trading,\n    bn_user_extra,\n    bn_social,\n    bn_r7,\n    bn_r8,\n    bn_bauth,\n    bn_gate,\n    admin_ig_users,\n    analytics,\n    articles,\n    auth,\n    broadcasts,\n    ig_panel,\n    live,\n    live_prices,\n    monitoring,\n    panel,\n    payments,\n    public,\n    referrals,\n    seo,\n    seo_admin,\n    settings as settings_r... کاربری VIP"])\napp.include_router(academy.router, prefix="/academy", tags=["آکادمی VIP"])\napp.include_router(bn_r8.router, prefix="/academy/bn", tags=["کپی\u200cتریدِ فارکسِ زنده"])\napp.include_router(bazaarnama.router, prefix="/academy/bn", tags=["بازارنما (TradingView ایرانی)"])\napp.include_router(bn_user_extra.router, prefix="/academy/bn", tags=["بازارنما — پنل کاربر"])\napp.include_router(bn_social.router, prefix="/academy/bn/social", tags=["سوشالِ سراسری"])\napp.include_router(bn_r7.router, prefix="/academy/bn", tags=["مرکزِ حساب/اتاقِ کنترل"])\napp.include_router(bn_gate.router, prefix="/academy/bn", tags=["B24 گیت/تنظیمات"])\napp.include_router(admin_academy.router, prefix="/admin/academy", tags=["مدیریت آکادمی VIP"])\napp.include_router(admin_ig_users.router, prefix="/admin/ig-users", tags=["مدیریت کاربران IG"])\napp.include_router(admin_bn_core.router, prefix="/admin/bn", tags=["بازارنما — هسته"])\napp.include_router(admin_bn_trading.router, prefix="/admin/bn", tags=["بازارنما — معاملات"])\napp.include_router(admin_bn_dash.router, prefix="/admin/bn", tags=["بازارنما — داشبورد/بازار"])\napp.include_router(ig_panel.router, prefix="/ig", tags=["پنل مستقل اینستاگرام"])\n')
+__________ TestIntegrationPresence.test_launch_routes_admin_protected __________
+tests/test_phase7_followups.py:297: in test_launch_routes_admin_protected
+    content = (REPO_ROOT / "src/api/routes/launch.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/api/routes/launch.py'
+_________ TestSourceLevelInvariants.test_launch_metrics_use_whitelist __________
+tests/test_phase8_security_hotfix.py:220: in test_launch_metrics_use_whitelist
+    content = (REPO_ROOT / "src/api/routes/launch.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/api/routes/launch.py'
+___________ TestCountQueryOptimization.test_signals_uses_func_count ____________
+tests/test_phase9_performance.py:200: in test_signals_uses_func_count
+    content = (REPO_ROOT / "src/api/routes/signals.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/api/routes/signals.py'
+_________ TestAggregationOptimization.test_performance_uses_date_trunc _________
+tests/test_phase9_performance.py:211: in test_performance_uses_date_trunc
+    content = (REPO_ROOT / "src/api/routes/performance.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/api/routes/performance.py'
+_ TestAggregationOptimization.test_performance_does_not_python_loop_for_daily __
+tests/test_phase9_performance.py:217: in test_performance_does_not_python_loop_for_daily
+    content = (REPO_ROOT / "src/api/routes/performance.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/api/routes/performance.py'
+________ TestActiveSignalsPagination.test_active_signals_has_pagination ________
+tests/test_phase9_performance.py:227: in test_active_signals_has_pagination
+    content = (REPO_ROOT / "src/api/routes/signals.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/api/routes/signals.py'
+____________ TestConcurrentTracker.test_tracker_uses_asyncio_gather ____________
+tests/test_phase9_performance.py:238: in test_tracker_uses_asyncio_gather
+    content = (REPO_ROOT / "src/signals/tracker.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/tracker.py'
+_____________ TestEngineThreadPool.test_engine_uses_run_in_thread ______________
+tests/test_phase9_performance.py:249: in test_engine_uses_run_in_thread
+    content = (REPO_ROOT / "src/signals/engine.py").read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:537: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/workspace/src/signals/engine.py'
+------------------ generated xml file: /evidence/results.xml -------------------
+=========================== short test summary info ============================
+FAILED tests/test_api.py::test_health_endpoint - assert 503 == 200
+FAILED tests/test_api.py::test_signals_list - assert 404 in (401, 403)
+FAILED tests/test_api.py::test_performance_summary - assert 404 in (200, 401)
+FAILED tests/test_phase15_ux.py::TestFrontendFiles::test_command_palette_exists
+FAILED tests/test_phase15_ux.py::TestFrontendFiles::test_command_palette_has_keyboard_navigation
+FAILED tests/test_phase15_ux.py::TestFrontendFiles::test_command_palette_has_aria
+FAILED tests/test_phase15_ux.py::TestFrontendFiles::test_empty_state_component_exists
+FAILED tests/test_phase15_ux.py::TestFrontendFiles::test_skeleton_components_exist
+FAILED tests/test_phase15_ux.py::TestSidebarMobile::test_sidebar_uses_media_query
+FAILED tests/test_phase15_ux.py::TestSidebarMobile::test_sidebar_has_drawer_state
+FAILED tests/test_phase15_ux.py::TestSidebarMobile::test_sidebar_has_overlay
+FAILED tests/test_phase15_ux.py::TestSidebarMobile::test_sidebar_has_focus_visible
+FAILED tests/test_phase15_ux.py::TestSidebarMobile::test_admin_layout_has_hamburger
+FAILED tests/test_phase15_ux.py::TestSidebarMobile::test_admin_layout_includes_command_palette
+FAILED tests/test_phase15_ux.py::TestStoreMobileDrawer::test_store_has_mobile_drawer_actions
+FAILED tests/test_phase15_ux.py::TestStoreMobileDrawer::test_store_excludes_drawer_from_persist
+FAILED tests/test_phase15_ux.py::TestI18n::test_i18n_module_exists - Assertio...
+FAILED tests/test_phase15_ux.py::TestI18n::test_i18n_has_translations_dictionary
+FAILED tests/test_phase15_ux.py::TestI18n::test_i18n_has_common_keys - FileNo...
+FAILED tests/test_phase15_ux.py::TestI18n::test_i18n_supports_interpolation
+FAILED tests/test_phase15_ux.py::TestI18n::test_i18n_helpers_exported - FileN...
+FAILED tests/test_phase5_frontend.py::TestAdminAppRoutes::test_backtest_route_registered
+FAILED tests/test_phase5_frontend.py::TestAdminAppRoutes::test_risk_route_registered
+FAILED tests/test_phase5_frontend.py::TestAdminAppRoutes::test_backtest_page_exists
+FAILED tests/test_phase5_frontend.py::TestAdminAppRoutes::test_risk_page_exists
+FAILED tests/test_phase5_frontend.py::TestSidebarNavigation::test_sidebar_includes_backtest
+FAILED tests/test_phase5_frontend.py::TestSidebarNavigation::test_sidebar_includes_risk
+FAILED tests/test_phase5_frontend.py::TestApiClient::test_backtest_api_exported
+FAILED tests/test_phase5_frontend.py::TestApiClient::test_risk_api_exported
+FAILED tests/test_phase5_frontend.py::TestRiskRoutes::test_risk_module_loadable
+FAILED tests/test_phase5_frontend.py::TestRiskRoutes::test_risk_router_mounted_in_main
+FAILED tests/test_phase5_frontend.py::TestRiskRoutes::test_risk_uses_admin_auth
+FAILED tests/test_phase7_followups.py::TestIntegrationPresence::test_tracker_records_to_daily_loss
+FAILED tests/test_phase7_followups.py::TestIntegrationPresence::test_riskguard_uses_holiday_calendar
+FAILED tests/test_phase7_followups.py::TestIntegrationPresence::test_riskguard_checks_liquidity
+FAILED tests/test_phase7_followups.py::TestIntegrationPresence::test_trainer_saves_scaler
+FAILED tests/test_phase7_followups.py::TestIntegrationPresence::test_backtest_api_runs_engine
+FAILED tests/test_phase7_followups.py::TestIntegrationPresence::test_launch_api_registered
+FAILED tests/test_phase7_followups.py::TestIntegrationPresence::test_launch_routes_admin_protected
+FAILED tests/test_phase8_security_hotfix.py::TestSourceLevelInvariants::test_launch_metrics_use_whitelist
+FAILED tests/test_phase9_performance.py::TestCountQueryOptimization::test_signals_uses_func_count
+FAILED tests/test_phase9_performance.py::TestAggregationOptimization::test_performance_uses_date_trunc
+FAILED tests/test_phase9_performance.py::TestAggregationOptimization::test_performance_does_not_python_loop_for_daily
+FAILED tests/test_phase9_performance.py::TestActiveSignalsPagination::test_active_signals_has_pagination
+FAILED tests/test_phase9_performance.py::TestConcurrentTracker::test_tracker_uses_asyncio_gather
+FAILED tests/test_phase9_performance.py::TestEngineThreadPool::test_engine_uses_run_in_thread
+ERROR tests/test_ml.py
+ERROR tests/test_patterns.py
+ERROR tests/test_phase10_ml_rebuild.py - FileNotFoundError: [Errno 2] No such...
+ERROR tests/test_phase11_quant_institutional.py - FileNotFoundError: [Errno 2...
+ERROR tests/test_phase12_architecture.py - FileNotFoundError: [Errno 2] No su...
+ERROR tests/test_phase14_reporting.py - FileNotFoundError: [Errno 2] No such ...
+ERROR tests/test_phase1_backtest.py - FileNotFoundError: [Errno 2] No such fi...
+ERROR tests/test_phase2_risk.py - FileNotFoundError: [Errno 2] No such file o...
+ERROR tests/test_phase3_optimization.py - FileNotFoundError: [Errno 2] No suc...
+ERROR tests/test_phase6_launch.py - FileNotFoundError: [Errno 2] No such file...
+ERROR tests/test_smart_money.py
+ERROR tests/test_technical.py
+ERROR tests/test_phase7_followups.py::TestDSTHandling::test_eu_dst_in_summer
+ERROR tests/test_phase7_followups.py::TestDSTHandling::test_eu_dst_in_winter
+ERROR tests/test_phase7_followups.py::TestDSTHandling::test_us_dst_in_summer
+ERROR tests/test_phase7_followups.py::TestDSTHandling::test_london_session_shifts_with_dst
+ERROR tests/test_phase7_followups.py::TestDSTHandling::test_ny_session_shifts_with_dst
+ERROR tests/test_phase7_followups.py::TestHolidayCalendar::test_christmas_full_closure
+ERROR tests/test_phase7_followups.py::TestHolidayCalendar::test_new_year_full_closure
+ERROR tests/test_phase7_followups.py::TestHolidayCalendar::test_us_independence_partial
+ERROR tests/test_phase7_followups.py::TestHolidayCalendar::test_thanksgiving_2026
+ERROR tests/test_phase7_followups.py::TestHolidayCalendar::test_good_friday_2026
+ERROR tests/test_phase7_followups.py::TestHolidayCalendar::test_regular_day_returns_none
+ERROR tests/test_phase7_followups.py::TestHolidayCalendar::test_is_holiday_blackout_christmas
+ERROR tests/test_phase7_followups.py::TestHolidayCalendar::test_is_holiday_blackout_regular_day
+ERROR tests/test_phase7_followups.py::TestChandelierTrailing::test_chandelier_long
+ERROR tests/test_phase7_followups.py::TestChandelierTrailing::test_chandelier_short
+ERROR tests/test_phase7_followups.py::TestChandelierTrailing::test_chandelier_insufficient_data
+ERROR tests/test_phase7_followups.py::TestChandelierTrailing::test_trailing_moves_to_breakeven_after_tp1
+ERROR tests/test_phase7_followups.py::TestChandelierTrailing::test_trailing_locks_tp1_after_tp2
+ERROR tests/test_phase7_followups.py::TestChandelierTrailing::test_trailing_never_moves_backward
+ERROR tests/test_phase7_followups.py::TestRiskGuardWithNewFilters::test_christmas_blocks_signal
+======== 46 failed, 231 passed, 32 errors, 42 subtests passed in 11.84s ========

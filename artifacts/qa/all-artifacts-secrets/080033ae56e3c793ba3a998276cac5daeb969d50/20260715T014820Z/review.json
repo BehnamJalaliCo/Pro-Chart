@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "findingCount": 19,
+  "classifications": [
+    {
+      "classification": "PUBLIC_BASE_IMAGE_GPG_KEY_IDENTIFIER",
+      "count": 11,
+      "basis": "Each redacted match is the GPG_KEY environment identifier from Docker image metadata or history; no private-key block or credential is asserted by this review."
+    },
+    {
+      "classification": "LOCAL_DOCKER_IMAGE_TAG_HEURISTIC",
+      "count": 8,
+      "basis": "Each redacted match begins with the local prochart-api image repository prefix and occurs in build/image metadata; it is an image tag, not an authentication token."
+    }
+  ],
+  "unclassifiedCount": 0,
+  "allSecretFieldsRedacted": true,
+  "reviewDoesNotWaiveScannerFailure": true,
+  "reviewDoesNotClearRequirement": true
+}

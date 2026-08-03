@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "httpStatus": 200,
+  "h1": "بازارنما",
+  "h2": "ورود به حساب",
+  "rootChildren": 2,
+  "cspViolations": [],
+  "pageErrors": []
+}

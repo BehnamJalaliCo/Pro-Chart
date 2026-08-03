@@ -1,0 +1,35 @@
+Working tree: /home/bazaarnama/Pro-Chart/app
+Evidence root: /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z
+
+USER UNIT
+cd /home/bazaarnama/Pro-Chart/app/frontend/user
+set -o pipefail; npm run test:referrals 2>&1 | tee /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/user-unit-final.log
+
+MAIN UNIT
+cd /home/bazaarnama/Pro-Chart/app/frontend/prochart
+set -o pipefail; node --test test/*.test.mjs 2>&1 | tee /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/main-unit-final.log
+
+PANEL UNIT
+cd /home/bazaarnama/Pro-Chart/app/frontend/panel
+set -o pipefail; npm run test:navigation 2>&1 | tee /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/panel-unit-final.log
+
+USER REFERRAL PLAYWRIGHT (4 cases; desktop/mobile x LBank/OneRoyal)
+cd /home/bazaarnama/Pro-Chart/app
+set -o pipefail; docker run --rm --network host --ipc=host --user 1000:1000 --add-host user.prochart.local:127.0.0.1 -e HOME=/tmp -e CI=1 -e NO_PROXY=127.0.0.1,localhost,.prochart.local -e no_proxy=127.0.0.1,localhost,.prochart.local -e PROCHART_BASE_URL=http://user.prochart.local:18081 -e PLAYWRIGHT_ARTIFACT_ROOT=/work/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/user-referral-playwright-final -v /home/bazaarnama/Pro-Chart/app:/work -w /work/qa mcr.microsoft.com/playwright:v1.61.0-noble node_modules/.bin/playwright test tests/user-referral-compliance.spec.mjs 2>&1 | tee /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/user-referral-browser-final.log
+
+MAIN REFERRAL PLAYWRIGHT (4 cases; desktop/mobile x LBank/OneRoyal)
+cd /home/bazaarnama/Pro-Chart/app
+set -o pipefail; docker run --rm --network host --ipc=host --user 1000:1000 --add-host prochart.local:127.0.0.1 --add-host user.prochart.local:127.0.0.1 -e HOME=/tmp -e CI=1 -e NO_PROXY=127.0.0.1,localhost,.prochart.local -e no_proxy=127.0.0.1,localhost,.prochart.local -e PROCHART_BASE_URL=https://prochart.local:18443 -e PLAYWRIGHT_ARTIFACT_ROOT=/work/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/main-referral-playwright-final -v /home/bazaarnama/Pro-Chart/app:/work -w /work/qa mcr.microsoft.com/playwright:v1.61.0-noble node_modules/.bin/playwright test tests/referral-compliance.spec.mjs 2>&1 | tee /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/main-referral-browser-final.log
+
+PANEL NAVIGATION PLAYWRIGHT (1 desktop case)
+cd /home/bazaarnama/Pro-Chart/app
+set -o pipefail; docker run --rm --network host --ipc=host --user 1000:1000 --add-host panel.prochart.local:127.0.0.1 -e HOME=/tmp -e CI=1 -e NO_PROXY=127.0.0.1,localhost,.prochart.local -e no_proxy=127.0.0.1,localhost,.prochart.local -e PROCHART_BASE_URL=http://panel.prochart.local:18083 -e BASELINE_COMMIT=080033ae56e3c793ba3a998276cac5daeb969d50 -e PANEL_NAV_RUN_ID=20260715T041253Z-final -e PANEL_SOURCE_FINGERPRINT=eaeb57bcf61caf0625fb0312b0faca89e96eacded76a6ee9f4400e972bd0fbde -e PLAYWRIGHT_ARTIFACT_ROOT=/work/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/panel-navigation-playwright-final -v /home/bazaarnama/Pro-Chart/app:/work -v /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/panel-navigation-evidence-final:/work/artifacts/qa/panel-navigation/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z-final -w /work/qa mcr.microsoft.com/playwright:v1.61.0-noble node_modules/.bin/playwright test tests/panel-navigation.spec.mjs --project=chromium-desktop 2>&1 | tee /home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/panel-navigation-browser-final.log
+
+ENDPOINT CHECKS (read-only)
+curl -sS -o /dev/null -w 'user http://user.prochart.local:18081/connect status=%{http_code} remote=%{remote_ip}\n' --resolve user.prochart.local:18081:127.0.0.1 http://user.prochart.local:18081/connect
+curl -sS -o /dev/null -w 'main-http http://prochart.local:18082/ status=%{http_code} redirect=%{redirect_url} remote=%{remote_ip}\n' --resolve prochart.local:18082:127.0.0.1 http://prochart.local:18082/
+curl -ksS -o /dev/null -w 'main-https https://prochart.local:18443/ status=%{http_code} remote=%{remote_ip}\n' --resolve prochart.local:18443:127.0.0.1 https://prochart.local:18443/
+curl -sS -o /dev/null -w 'panel http://panel.prochart.local:18083/ status=%{http_code} remote=%{remote_ip}\n' --resolve panel.prochart.local:18083:127.0.0.1 http://panel.prochart.local:18083/
+
+CANDIDATE IDENTITY CHECK (read-only)
+docker inspect --format '{{.Name}}|id={{.Id}}|image={{.Config.Image}}|status={{.State.Status}}|started={{.State.StartedAt}}|restartCount={{.RestartCount}}|ports={{json .NetworkSettings.Ports}}' qa-user-supply-20260715T041253Z qa-main-supply-20260715T041253Z qa-panel-supply-20260715T041253Z

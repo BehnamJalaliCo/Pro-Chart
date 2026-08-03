@@ -1,0 +1,1 @@
+docker run --rm --network none --read-only --entrypoint sh prochart-api:qa-backend-080033ae56e3-20260715T011720Z -c <src manifest command>

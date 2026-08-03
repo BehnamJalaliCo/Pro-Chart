@@ -1,0 +1,39 @@
+
+> bazaarnama-user@1.0.0 test:referrals
+> node --test test/referrals.test.mjs
+
+TAP version 13
+# Subtest: account types map legacy forex to the broker referral boundary
+ok 1 - account types map legacy forex to the broker referral boundary
+  ---
+  duration_ms: 0.855111
+  ...
+# Subtest: referral paths are fixed and unapproved candidates fail to the allowlist path
+ok 2 - referral paths are fixed and unapproved candidates fail to the allowlist path
+  ---
+  duration_ms: 0.4607
+  ...
+# Subtest: departure component requires disclosure acknowledgement and a native GET form
+ok 3 - departure component requires disclosure acknowledgement and a native GET form
+  ---
+  duration_ms: 3.828339
+  ...
+# Subtest: real user portal has no MT5 client or raw referral anchors
+ok 4 - real user portal has no MT5 client or raw referral anchors
+  ---
+  duration_ms: 2.119321
+  ...
+# Subtest: edge and standalone user nginx expose only the two exact referral routes
+ok 5 - edge and standalone user nginx expose only the two exact referral routes
+  ---
+  duration_ms: 0.786839
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 56.846172

@@ -1,0 +1,56 @@
+{
+  "Id": "8b76d5c53b7e7e283e447c88b91f1135e45bfc0df9b4fc36ef59034f007578ed",
+  "Created": "2026-07-14T17:33:57.157877558Z",
+  "State": {
+    "Status": "running",
+    "StartedAt": "2026-07-14T17:34:08.618020915Z",
+    "Running": true
+  },
+  "Image": "sha256:d3e237880adcaa5cbcba2e3ef8ed9d46231cd655fbf378d948ad0e39218d9a20",
+  "Config": {
+    "Image": "prochart-frontend-prochart"
+  },
+  "HostConfig": {
+    "ReadonlyRootfs": false,
+    "PortBindings": {
+      "443/tcp": [
+        {
+          "HostIp": "",
+          "HostPort": "443"
+        }
+      ],
+      "80/tcp": [
+        {
+          "HostIp": "",
+          "HostPort": "80"
+        }
+      ]
+    }
+  },
+  "Mounts": [
+    {
+      "Source": "/etc/letsencrypt",
+      "Destination": "/etc/letsencrypt",
+      "Mode": "ro",
+      "RW": false
+    },
+    {
+      "Source": "/var/www/certbot",
+      "Destination": "/var/www/certbot",
+      "Mode": "ro",
+      "RW": false
+    },
+    {
+      "Source": "/home/bazaarnama/Pro-Chart/app/nginx/panel.conf",
+      "Destination": "/etc/nginx/conf.d/panel.conf",
+      "Mode": "ro",
+      "RW": false
+    },
+    {
+      "Source": "/home/bazaarnama/Pro-Chart/app/nginx/user-panel.conf",
+      "Destination": "/etc/nginx/conf.d/user-panel.conf",
+      "Mode": "ro",
+      "RW": false
+    }
+  ]
+}

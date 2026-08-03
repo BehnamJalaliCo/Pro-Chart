@@ -1,0 +1,24 @@
+Candidate classification: implemented isolated candidate; not deployed.
+
+1. frontend/prochart/Dockerfile explicitly contains `ENV NO_OBF=1`.
+   This evidence covers that canonical Docker-image build path and MUST NOT be
+   described as the separate shipping-obfuscated build.
+
+2. The current worktree is dirty and includes untracked modules required by the
+   candidate, including frontend/prochart/src/referrals.js,
+   frontend/prochart/src/components/ReferralDeparture.jsx, and
+   frontend/prochart/src/app/appEvents.js. `git ls-files --error-unmatch` did not
+   recognize these paths. A successful local-context Docker build therefore
+   does not establish clean-checkout or commit reproducibility.
+
+3. The isolated referral runtime used the exact current API-helper image
+   recorded in api-helper-identity.txt. The helper exposed only the two baked
+   GET routes and was not a live deployment.
+
+4. The production frontend container was observed read-only. It remained on
+   its pre-candidate image/start time, exposed zero tested security headers,
+   and returned the SPA document (HTTP 200) for both /go paths. Production is
+   therefore still pending deployment and PC-130 is not fully verified.
+
+5. ZAP, when present, is a passive unauthenticated baseline only. It is not an
+   active or authenticated penetration test.

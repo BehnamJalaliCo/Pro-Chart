@@ -1,0 +1,9 @@
+/* Ravagh Pro — فونتِ اختصاصیِ خریداری‌شدهٔ پرو‌چارت (لایسنس‌دار، اعداد لاتین). خودمیزبان، font-display: swap. */
+@font-face { font-family: 'Ravagh'; font-style: normal; font-weight: 200; font-display: swap; src: url('/fonts/ravagh/Ravagh-ExtraLight.woff2') format('woff2'), url('/fonts/ravagh/Ravagh-ExtraLight.woff') format('woff'); }
+@font-face { font-family: 'Ravagh'; font-style: normal; font-weight: 300; font-display: swap; src: url('/fonts/ravagh/Ravagh-Light.woff2') format('woff2'), url('/fonts/ravagh/Ravagh-Light.woff') format('woff'); }
+@font-face { font-family: 'Ravagh'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/ravagh/Ravagh-Regular.woff2') format('woff2'), url('/fonts/ravagh/Ravagh-Regular.woff') format('woff'); }
+@font-face { font-family: 'Ravagh'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/ravagh/Ravagh-Medium.woff2') format('woff2'), url('/fonts/ravagh/Ravagh-Medium.woff') format('woff'); }
+@font-face { font-family: 'Ravagh'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/ravagh/Ravagh-SemiBold.woff2') format('woff2'), url('/fonts/ravagh/Ravagh-SemiBold.woff') format('woff'); }
+@font-face { font-family: 'Ravagh'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/ravagh/Ravagh-Bold.woff2') format('woff2'), url('/fonts/ravagh/Ravagh-Bold.woff') format('woff'); }
+@font-face { font-family: 'Ravagh'; font-style: normal; font-weight: 800; font-display: swap; src: url('/fonts/ravagh/Ravagh-ExtraBold.woff2') format('woff2'), url('/fonts/ravagh/Ravagh-ExtraBold.woff') format('woff'); }
+@font-face { font-family: 'Ravagh'; font-style: normal; font-weight: 900; font-display: swap; src: url('/fonts/ravagh/Ravagh-Black.woff2') format('woff2'), url('/fonts/ravagh/Ravagh-Black.woff') format('woff'); }

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "phase": "phase1-frontend-production-image",
+  "result": "PASS",
+  "sourceFingerprint": "53db3b6ce1d8bfe57714763cba11dce22dba0945179a3717def50a2fe0a6603f",
+  "sourceFileCount": 818,
+  "imageId": "sha256:972fdb60d3a273748bf4b31e37f2071e64b2616d8168a96b4b63d98b23a45b1e",
+  "imageTag": "prochart-frontend-prochart:qa-phase1-node22-20260715T025137Z",
+  "build": {
+    "startedAtUtc": "2026-07-15T02:51:37Z",
+    "endedAtUtc": "2026-07-15T02:52:03Z",
+    "exitCode": 0,
+    "nodeBase": "node:22-alpine@sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2",
+    "runtimeBase": "nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10",
+    "transformedModules": 1786
+  },
+  "assetParity": "PASS",
+  "isolatedRuntimeSmoke": "PASS",
+  "releaseState": "READY_FOR_ROLLBACK_TAGGED_PRODUCTION_DEPLOY"
+}

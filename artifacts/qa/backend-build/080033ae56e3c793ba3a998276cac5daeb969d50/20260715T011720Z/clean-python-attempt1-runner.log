@@ -1,0 +1,21 @@
+[90m1:19AM[0m [32mINF[0m [1mscanned ~8787978 bytes (8.79 MB) in 640ms[0m
+[90m1:19AM[0m [32mINF[0m [1mno leaks found[0m
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 325B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/prochart-api@sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf
+#2 ERROR: pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+------
+ > [internal] load metadata for docker.io/library/prochart-api@sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf:
+------
+Dockerfile:2
+--------------------
+   1 |     ARG BASE_IMAGE=prochart-api:latest
+   2 | >>> FROM ${BASE_IMAGE}
+   3 |     
+   4 |     RUN python -m pip install --no-cache-dir \
+--------------------
+ERROR: failed to build: failed to solve: prochart-api@sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf: failed to resolve source metadata for docker.io/library/prochart-api@sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf: pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed

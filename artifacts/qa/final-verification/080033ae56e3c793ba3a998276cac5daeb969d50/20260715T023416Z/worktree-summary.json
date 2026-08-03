@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "porcelainEntries": 670,
+  "statusPairs": {
+    " D": 556,
+    " M": 79,
+    "??": 35
+  },
+  "dirty": true,
+  "stagedMutationPerformedByThisVerification": false,
+  "qualification": "Counts use normal untracked-directory collapsing and do not claim commit reproducibility."
+}

@@ -1,0 +1,2283 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "exchanges": [
+      "LBank"
+    ],
+    "brokers": [
+      "OneRoyal"
+    ],
+    "internalDeparturePaths": [
+      "/go/lbank",
+      "/go/oneroyal"
+    ],
+    "forbiddenProviderRuleCount": 55,
+    "blockingSurfaces": [
+      "bundle",
+      "edge",
+      "fixture",
+      "source"
+    ],
+    "nonBlockingSurfaces": [
+      "builder",
+      "legacy",
+      "qa",
+      "test"
+    ]
+  },
+  "composeFile": "docker-compose.prochart.yml",
+  "services": [
+    {
+      "service": "admin-frontend",
+      "context": "frontend/panel",
+      "dockerfile": "Dockerfile",
+      "gitIgnored": false,
+      "source": {
+        "kind": "source",
+        "result": "PASS",
+        "treeSha256": "d9e554665800c62516f87177771bdbb50c8e3e1b09aeddf20f94db724f01c907",
+        "filesScanned": 78,
+        "semanticFilesScanned": 68,
+        "semanticFilesSkipped": 10,
+        "bytesScanned": 1047653,
+        "skippedDirectories": [],
+        "surfaces": {
+          "source": {
+            "files": 77,
+            "bytes": 1043729,
+            "findings": 0
+          },
+          "fixture": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "bundle": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "edge": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "test": {
+            "files": 1,
+            "bytes": 3924,
+            "findings": 0
+          },
+          "qa": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "legacy": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "builder": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          }
+        },
+        "findings": [],
+        "nonBlockingFindings": []
+      },
+      "bundle": {
+        "kind": "bundle",
+        "result": "PASS",
+        "treeSha256": "ca87b67f97e9a83e7dea1a201e75274ff75ed6caad41d29b9c98e02d9e04fbaf",
+        "filesScanned": 70,
+        "semanticFilesScanned": 61,
+        "semanticFilesSkipped": 9,
+        "bytesScanned": 1569407,
+        "skippedDirectories": [],
+        "surfaces": {
+          "source": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "fixture": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "bundle": {
+            "files": 70,
+            "bytes": 1569407,
+            "findings": 0
+          },
+          "edge": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "test": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "qa": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "legacy": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "builder": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          }
+        },
+        "findings": [],
+        "nonBlockingFindings": []
+      },
+      "bundleRoot": "artifacts/qa/provider-exclusivity/worktree/20260715T082200Z/bundles-live/panel"
+    },
+    {
+      "service": "frontend-prochart",
+      "context": "frontend/prochart",
+      "dockerfile": "Dockerfile",
+      "gitIgnored": false,
+      "source": {
+        "kind": "source",
+        "result": "PASS",
+        "treeSha256": "d0c27d27e7de43dc8591b5fff098dd246b30d5a01a4dbb8fcb5bcfe9772bf178",
+        "filesScanned": 873,
+        "semanticFilesScanned": 797,
+        "semanticFilesSkipped": 76,
+        "bytesScanned": 11719815,
+        "skippedDirectories": [
+          "dist",
+          "node_modules"
+        ],
+        "surfaces": {
+          "source": {
+            "files": 743,
+            "bytes": 8942378,
+            "findings": 0
+          },
+          "fixture": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "bundle": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "edge": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "test": {
+            "files": 16,
+            "bytes": 271448,
+            "findings": 1
+          },
+          "qa": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "legacy": {
+            "files": 113,
+            "bytes": 2505246,
+            "findings": 2
+          },
+          "builder": {
+            "files": 1,
+            "bytes": 743,
+            "findings": 0
+          }
+        },
+        "findings": [],
+        "nonBlockingFindings": [
+          {
+            "provider": "TradeYar",
+            "category": "broker",
+            "matchKind": "content",
+            "surface": "legacy",
+            "relativePath": "src.bak/bazaarnama/Partners.jsx",
+            "line": 6,
+            "column": 57,
+            "match": "TRADEYAR",
+            "excerpt": "LBANK_URL = 'https://www.lbank.com/signup/a?icode=TRADEYAR'; const ONEROYAL_URL = 'https://vc.cabinet.oneroy",
+            "index": 331
+          },
+          {
+            "provider": "OneRoyal direct referral URL",
+            "category": "direct-referral",
+            "matchKind": "content",
+            "surface": "legacy",
+            "relativePath": "src.bak/bazaarnama/Partners.jsx",
+            "line": 7,
+            "column": 23,
+            "match": "https://vc.cabinet.oneroyal.com/",
+            "excerpt": "m/signup/a?icode=TRADEYAR'; const ONEROYAL_URL = 'https://vc.cabinet.oneroyal.com/fa/links/go/12412'; const PARTNERS = [ { id",
+            "index": 364
+          },
+          {
+            "provider": "TradeYar",
+            "category": "broker",
+            "matchKind": "content",
+            "surface": "test",
+            "relativePath": "test/referral-compliance.test.mjs",
+            "line": 70,
+            "column": 55,
+            "match": "TRADEYAR",
+            "excerpt": "sert.doesNotMatch(partners, /https?:\\/\\/|clearbit|TRADEYAR|رگوله‌شده|پاداش|کارمزدِ ویژه/); assert.match(pa",
+            "index": 3543
+          }
+        ]
+      },
+      "bundle": {
+        "kind": "bundle",
+        "result": "PASS",
+        "treeSha256": "999debc7dfad0c2f59696d41fe90810766f5fb09dc408d5e0e96f5853ad0267a",
+        "filesScanned": 534,
+        "semanticFilesScanned": 494,
+        "semanticFilesSkipped": 40,
+        "bytesScanned": 5806258,
+        "skippedDirectories": [],
+        "surfaces": {
+          "source": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "fixture": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "bundle": {
+            "files": 534,
+            "bytes": 5806258,
+            "findings": 0
+          },
+          "edge": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "test": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "qa": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "legacy": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "builder": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          }
+        },
+        "findings": [],
+        "nonBlockingFindings": []
+      },
+      "bundleRoot": "artifacts/qa/provider-exclusivity/worktree/20260715T082200Z/bundles-live/prochart"
+    },
+    {
+      "service": "user-frontend",
+      "context": "frontend/user",
+      "dockerfile": "Dockerfile",
+      "gitIgnored": true,
+      "source": {
+        "kind": "source",
+        "result": "PASS",
+        "treeSha256": "027e0d1f2dceaf4f148eee1ded041fb132f67687a8a46d1be62ee2800d926053",
+        "filesScanned": 39,
+        "semanticFilesScanned": 29,
+        "semanticFilesSkipped": 10,
+        "bytesScanned": 773860,
+        "skippedDirectories": [
+          "dist",
+          "node_modules"
+        ],
+        "surfaces": {
+          "source": {
+            "files": 38,
+            "bytes": 770277,
+            "findings": 0
+          },
+          "fixture": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "bundle": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "edge": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "test": {
+            "files": 1,
+            "bytes": 3583,
+            "findings": 0
+          },
+          "qa": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "legacy": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "builder": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          }
+        },
+        "findings": [],
+        "nonBlockingFindings": []
+      },
+      "bundle": {
+        "kind": "bundle",
+        "result": "PASS",
+        "treeSha256": "c7072ca5184dc04fda5b4a951bf611c3342057f48e19b8e632c0dfddddc94b1a",
+        "filesScanned": 13,
+        "semanticFilesScanned": 4,
+        "semanticFilesSkipped": 9,
+        "bytesScanned": 897944,
+        "skippedDirectories": [],
+        "surfaces": {
+          "source": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "fixture": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "bundle": {
+            "files": 13,
+            "bytes": 897944,
+            "findings": 0
+          },
+          "edge": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "test": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "qa": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "legacy": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          },
+          "builder": {
+            "files": 0,
+            "bytes": 0,
+            "findings": 0
+          }
+        },
+        "findings": [],
+        "nonBlockingFindings": []
+      },
+      "bundleRoot": "artifacts/qa/provider-exclusivity/worktree/20260715T082200Z/bundles-live/user"
+    }
+  ],
+  "edge": {
+    "kind": "edge",
+    "result": "PASS",
+    "treeSha256": "ca595338d899a81b682dfccd71d9643a26d58fb0ed483a2ce8c17fc66023b2b6",
+    "filesScanned": 12,
+    "semanticFilesScanned": 10,
+    "semanticFilesSkipped": 2,
+    "bytesScanned": 39260,
+    "skippedDirectories": [],
+    "surfaces": {
+      "source": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "fixture": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "bundle": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "edge": {
+        "files": 12,
+        "bytes": 39260,
+        "findings": 0
+      },
+      "test": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "qa": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "legacy": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "builder": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      }
+    },
+    "findings": [],
+    "nonBlockingFindings": []
+  },
+  "qa": {
+    "kind": "qa",
+    "result": "PASS",
+    "treeSha256": "72ce509c238a16f87593db5ce48edd437cc7c74eae0358718bf2275f6c872e39",
+    "filesScanned": 45,
+    "semanticFilesScanned": 29,
+    "semanticFilesSkipped": 16,
+    "bytesScanned": 567565,
+    "skippedDirectories": [
+      "artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results",
+      "node_modules"
+    ],
+    "surfaces": {
+      "source": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "fixture": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "bundle": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "edge": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "test": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "qa": {
+        "files": 45,
+        "bytes": 567565,
+        "findings": 68
+      },
+      "legacy": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      },
+      "builder": {
+        "files": 0,
+        "bytes": 0,
+        "findings": 0
+      }
+    },
+    "findings": [],
+    "nonBlockingFindings": [
+      {
+        "provider": "Binance",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 35,
+        "column": 5,
+        "match": "Binance",
+        "excerpt": "nd has an unambiguous boundary-safe spelling. ['Binance', 'exchange', '\\\\bbinance\\\\b', 'giu'], ['Coinba",
+        "index": 838
+      },
+      {
+        "provider": "Coinbase",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 36,
+        "column": 5,
+        "match": "Coinbase",
+        "excerpt": "inance', 'exchange', '\\\\bbinance\\\\b', 'giu'], ['Coinbase', 'exchange', '\\\\bcoinbase\\\\b', 'giu'], ['Krake",
+        "index": 889
+      },
+      {
+        "provider": "Kraken",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 37,
+        "column": 5,
+        "match": "Kraken",
+        "excerpt": "nbase', 'exchange', '\\\\bcoinbase\\\\b', 'giu'], ['Kraken', 'exchange', '\\\\bkraken\\\\b', 'giu'], ['Bybit',",
+        "index": 942
+      },
+      {
+        "provider": "Bybit",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 38,
+        "column": 5,
+        "match": "Bybit",
+        "excerpt": "'Kraken', 'exchange', '\\\\bkraken\\\\b', 'giu'], ['Bybit', 'exchange', '\\\\bbybit\\\\b', 'giu'], ['OKX', 'e",
+        "index": 991
+      },
+      {
+        "provider": "OKX",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 39,
+        "column": 5,
+        "match": "OKX",
+        "excerpt": "['Bybit', 'exchange', '\\\\bbybit\\\\b', 'giu'], ['OKX', 'exchange', '\\\\bokx\\\\b', 'giu'], ['KuCoin', '",
+        "index": 1038
+      },
+      {
+        "provider": "KuCoin",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 40,
+        "column": 5,
+        "match": "KuCoin",
+        "excerpt": "], ['OKX', 'exchange', '\\\\bokx\\\\b', 'giu'], ['KuCoin', 'exchange', '\\\\bkucoin\\\\b', 'giu'], ['MEXC',",
+        "index": 1081
+      },
+      {
+        "provider": "MEXC",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 41,
+        "column": 5,
+        "match": "MEXC",
+        "excerpt": "'KuCoin', 'exchange', '\\\\bkucoin\\\\b', 'giu'], ['MEXC', 'exchange', '\\\\bmexc\\\\b', 'giu'], ['Gate.io',",
+        "index": 1130
+      },
+      {
+        "provider": "Gate.io",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 42,
+        "column": 5,
+        "match": "Gate.io",
+        "excerpt": "['MEXC', 'exchange', '\\\\bmexc\\\\b', 'giu'], ['Gate.io', 'exchange', '\\\\bgate(?:\\\\s*\\\\.\\\\s*|\\\\s+)io\\\\b',",
+        "index": 1175
+      },
+      {
+        "provider": "Bitget",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 43,
+        "column": 5,
+        "match": "Bitget",
+        "excerpt": ", '\\\\bgate(?:\\\\s*\\\\.\\\\s*|\\\\s+)io\\\\b', 'giu'], ['Bitget', 'exchange', '\\\\bbitget\\\\b', 'giu'], ['BingX',",
+        "index": 1245
+      },
+      {
+        "provider": "BingX",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 44,
+        "column": 5,
+        "match": "BingX",
+        "excerpt": "'Bitget', 'exchange', '\\\\bbitget\\\\b', 'giu'], ['BingX', 'exchange', '\\\\bbingx\\\\b', 'giu'], ['Huobi',",
+        "index": 1294
+      },
+      {
+        "provider": "Huobi",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 45,
+        "column": 5,
+        "match": "Huobi",
+        "excerpt": "['BingX', 'exchange', '\\\\bbingx\\\\b', 'giu'], ['Huobi', 'exchange', '\\\\bhuobi\\\\b', 'giu'], ['HTX', 'e",
+        "index": 1341
+      },
+      {
+        "provider": "HTX",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 46,
+        "column": 5,
+        "match": "HTX",
+        "excerpt": "['Huobi', 'exchange', '\\\\bhuobi\\\\b', 'giu'], ['HTX', 'exchange', '\\\\bhtx\\\\b', 'giu'], ['Crypto.com",
+        "index": 1388
+      },
+      {
+        "provider": "Crypto.com",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 47,
+        "column": 5,
+        "match": "Crypto.com",
+        "excerpt": "], ['HTX', 'exchange', '\\\\bhtx\\\\b', 'giu'], ['Crypto.com', 'exchange', '\\\\bcrypto\\\\s*\\\\.\\\\s*com\\\\b', 'giu'",
+        "index": 1431
+      },
+      {
+        "provider": "Gemini",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 48,
+        "column": 5,
+        "match": "Gemini",
+        "excerpt": "hange', '\\\\bcrypto\\\\s*\\\\.\\\\s*com\\\\b', 'giu'], ['Gemini', 'exchange', '\\\\bgemini\\\\b', 'giu'], ['Bitfine",
+        "index": 1498
+      },
+      {
+        "provider": "Bitfinex",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 49,
+        "column": 5,
+        "match": "Bitfinex",
+        "excerpt": "'Gemini', 'exchange', '\\\\bgemini\\\\b', 'giu'], ['Bitfinex', 'exchange', '\\\\bbitfinex\\\\b', 'giu'], ['Bitst",
+        "index": 1547
+      },
+      {
+        "provider": "Bitstamp",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 50,
+        "column": 5,
+        "match": "Bitstamp",
+        "excerpt": "finex', 'exchange', '\\\\bbitfinex\\\\b', 'giu'], ['Bitstamp', 'exchange', '\\\\bbitstamp\\\\b', 'giu'], ['White",
+        "index": 1600
+      },
+      {
+        "provider": "WhiteBIT",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 51,
+        "column": 5,
+        "match": "WhiteBIT",
+        "excerpt": "stamp', 'exchange', '\\\\bbitstamp\\\\b', 'giu'], ['WhiteBIT', 'exchange', '\\\\bwhitebit\\\\b', 'giu'], ['CoinE",
+        "index": 1653
+      },
+      {
+        "provider": "CoinEx",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 52,
+        "column": 5,
+        "match": "CoinEx",
+        "excerpt": "teBIT', 'exchange', '\\\\bwhitebit\\\\b', 'giu'], ['CoinEx', 'exchange', '\\\\bcoinex\\\\b', 'giu'], ['BitMart",
+        "index": 1706
+      },
+      {
+        "provider": "BitMart",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 53,
+        "column": 5,
+        "match": "BitMart",
+        "excerpt": "'CoinEx', 'exchange', '\\\\bcoinex\\\\b', 'giu'], ['BitMart', 'exchange', '\\\\bbitmart\\\\b', 'giu'], ['Phemex",
+        "index": 1755
+      },
+      {
+        "provider": "Phemex",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 54,
+        "column": 5,
+        "match": "Phemex",
+        "excerpt": "itMart', 'exchange', '\\\\bbitmart\\\\b', 'giu'], ['Phemex', 'exchange', '\\\\bphemex\\\\b', 'giu'], ['Upbit',",
+        "index": 1806
+      },
+      {
+        "provider": "Upbit",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 55,
+        "column": 5,
+        "match": "Upbit",
+        "excerpt": "'Phemex', 'exchange', '\\\\bphemex\\\\b', 'giu'], ['Upbit', 'exchange', '\\\\bupbit\\\\b', 'giu'], ['Bithumb'",
+        "index": 1855
+      },
+      {
+        "provider": "Bithumb",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 56,
+        "column": 5,
+        "match": "Bithumb",
+        "excerpt": "['Upbit', 'exchange', '\\\\bupbit\\\\b', 'giu'], ['Bithumb', 'exchange', '\\\\bbithumb\\\\b', 'giu'], // Brok",
+        "index": 1902
+      },
+      {
+        "provider": "Exness",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 59,
+        "column": 5,
+        "match": "Exness",
+        "excerpt": "\\b', 'giu'], // Brokers and broker brands. ['Exness', 'broker', '\\\\bexness\\\\b', 'giu'], ['XM Global",
+        "index": 1986
+      },
+      {
+        "provider": "XM Global",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 60,
+        "column": 5,
+        "match": "XM Global",
+        "excerpt": "['Exness', 'broker', '\\\\bexness\\\\b', 'giu'], ['XM Global', 'broker', '\\\\bxm\\\\s+global\\\\b', 'giu'], ['Pep",
+        "index": 2033
+      },
+      {
+        "provider": "Pepperstone",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 61,
+        "column": 5,
+        "match": "Pepperstone",
+        "excerpt": "bal', 'broker', '\\\\bxm\\\\s+global\\\\b', 'giu'], ['Pepperstone', 'broker', '\\\\bpepperstone\\\\b', 'giu'], ['IC M",
+        "index": 2089
+      },
+      {
+        "provider": "IC Markets",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 62,
+        "column": 5,
+        "match": "IC Markets",
+        "excerpt": "tone', 'broker', '\\\\bpepperstone\\\\b', 'giu'], ['IC Markets', 'broker', '\\\\bic\\\\s+markets\\\\b', 'giu'], ['FX",
+        "index": 2146
+      },
+      {
+        "provider": "FXTM",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 63,
+        "column": 5,
+        "match": "FXTM",
+        "excerpt": "ts', 'broker', '\\\\bic\\\\s+markets\\\\b', 'giu'], ['FXTM', 'broker', '\\\\bfxtm\\\\b', 'giu'], ['HotForex',",
+        "index": 2204
+      },
+      {
+        "provider": "HotForex",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 64,
+        "column": 5,
+        "match": "HotForex",
+        "excerpt": "], ['FXTM', 'broker', '\\\\bfxtm\\\\b', 'giu'], ['HotForex', 'broker', '\\\\bhot\\\\s*forex\\\\b', 'giu'], ['Alp",
+        "index": 2247
+      },
+      {
+        "provider": "Alpari",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 65,
+        "column": 5,
+        "match": "Alpari",
+        "excerpt": "rex', 'broker', '\\\\bhot\\\\s*forex\\\\b', 'giu'], ['Alpari', 'broker', '\\\\balpari\\\\b', 'giu'], ['FXPro', '",
+        "index": 2302
+      },
+      {
+        "provider": "FXPro",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 66,
+        "column": 5,
+        "match": "FXPro",
+        "excerpt": "['Alpari', 'broker', '\\\\balpari\\\\b', 'giu'], ['FXPro', 'broker', '\\\\bfxpro\\\\b', 'giu'], ['RoboForex'",
+        "index": 2349
+      },
+      {
+        "provider": "RoboForex",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 67,
+        "column": 5,
+        "match": "RoboForex",
+        "excerpt": "['FXPro', 'broker', '\\\\bfxpro\\\\b', 'giu'], ['RoboForex', 'broker', '\\\\brobo\\\\s*forex\\\\b', 'giu'], ['Av",
+        "index": 2394
+      },
+      {
+        "provider": "AvaTrade",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 68,
+        "column": 5,
+        "match": "AvaTrade",
+        "excerpt": "ex', 'broker', '\\\\brobo\\\\s*forex\\\\b', 'giu'], ['AvaTrade', 'broker', '\\\\bava\\\\s*trade\\\\b', 'giu'], ['eTo",
+        "index": 2451
+      },
+      {
+        "provider": "eToro",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 69,
+        "column": 5,
+        "match": "eToro",
+        "excerpt": "ade', 'broker', '\\\\bava\\\\s*trade\\\\b', 'giu'], ['eToro', 'broker', '\\\\betoro\\\\b', 'giu'], ['OANDA', 'b",
+        "index": 2506
+      },
+      {
+        "provider": "OANDA",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 70,
+        "column": 5,
+        "match": "OANDA",
+        "excerpt": "['eToro', 'broker', '\\\\betoro\\\\b', 'giu'], ['OANDA', 'broker', '\\\\boanda\\\\b', 'giu'], ['Forex.com'",
+        "index": 2551
+      },
+      {
+        "provider": "Forex.com",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 71,
+        "column": 5,
+        "match": "Forex.com",
+        "excerpt": "['OANDA', 'broker', '\\\\boanda\\\\b', 'giu'], ['Forex.com', 'broker', '\\\\bforex\\\\s*\\\\.\\\\s*com\\\\b', 'giu'],",
+        "index": 2596
+      },
+      {
+        "provider": "Interactive Brokers",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 72,
+        "column": 5,
+        "match": "Interactive Brokers",
+        "excerpt": "broker', '\\\\bforex\\\\s*\\\\.\\\\s*com\\\\b', 'giu'], ['Interactive Brokers', 'broker', '\\\\binteractive\\\\s+brokers\\\\b', 'giu'",
+        "index": 2659
+      },
+      {
+        "provider": "FBS",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 73,
+        "column": 5,
+        "match": "FBS",
+        "excerpt": "ker', '\\\\binteractive\\\\s+brokers\\\\b', 'giu'], ['FBS', 'broker', '\\\\bfbs\\\\b', 'giu'], ['Octa', 'brok",
+        "index": 2735
+      },
+      {
+        "provider": "Octa",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 74,
+        "column": 5,
+        "match": "Octa",
+        "excerpt": "u'], ['FBS', 'broker', '\\\\bfbs\\\\b', 'giu'], ['Octa', 'broker', '\\\\bocta(?:fx)?\\\\b', 'giu'], ['Tick",
+        "index": 2776
+      },
+      {
+        "provider": "Tickmill",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 75,
+        "column": 5,
+        "match": "Tickmill",
+        "excerpt": "Octa', 'broker', '\\\\bocta(?:fx)?\\\\b', 'giu'], ['Tickmill', 'broker', '\\\\btickmill\\\\b', 'giu'], ['Admiral",
+        "index": 2826
+      },
+      {
+        "provider": "Admiral Markets",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 76,
+        "column": 5,
+        "match": "Admiral Markets",
+        "excerpt": "ickmill', 'broker', '\\\\btickmill\\\\b', 'giu'], ['Admiral Markets', 'broker', '\\\\badmiral\\\\s+markets\\\\b', 'giu'],",
+        "index": 2877
+      },
+      {
+        "provider": "Saxo",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 77,
+        "column": 5,
+        "match": "Saxo",
+        "excerpt": "'broker', '\\\\badmiral\\\\s+markets\\\\b', 'giu'], ['Saxo', 'broker', '\\\\bsaxo(?:\\\\s+bank)?\\\\b', 'giu'],",
+        "index": 2945
+      },
+      {
+        "provider": "CMC Markets",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 78,
+        "column": 5,
+        "match": "CMC Markets",
+        "excerpt": "'broker', '\\\\bsaxo(?:\\\\s+bank)?\\\\b', 'giu'], ['CMC Markets', 'broker', '\\\\bcmc\\\\s+markets\\\\b', 'giu'], ['I",
+        "index": 3001
+      },
+      {
+        "provider": "IG Markets",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 79,
+        "column": 5,
+        "match": "IG Markets",
+        "excerpt": "s', 'broker', '\\\\bcmc\\\\s+markets\\\\b', 'giu'], ['IG Markets', 'broker', '\\\\big\\\\s+markets\\\\b', 'giu'], ['XT",
+        "index": 3061
+      },
+      {
+        "provider": "XTB",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 80,
+        "column": 5,
+        "match": "XTB",
+        "excerpt": "ts', 'broker', '\\\\big\\\\s+markets\\\\b', 'giu'], ['XTB', 'broker', '\\\\bxtb\\\\b', 'giu'], ['Deriv', 'bro",
+        "index": 3119
+      },
+      {
+        "provider": "Deriv",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 81,
+        "column": 5,
+        "match": "Deriv",
+        "excerpt": "u'], ['XTB', 'broker', '\\\\bxtb\\\\b', 'giu'], ['Deriv', 'broker', '\\\\bderiv\\\\b', 'giu'], ['Windsor Br",
+        "index": 3160
+      },
+      {
+        "provider": "Windsor Brokers",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 82,
+        "column": 5,
+        "match": "Windsor Brokers",
+        "excerpt": "['Deriv', 'broker', '\\\\bderiv\\\\b', 'giu'], ['Windsor Brokers', 'broker', '\\\\bwindsor\\\\s+brokers\\\\b', 'giu'],",
+        "index": 3205
+      },
+      {
+        "provider": "Orbex",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 83,
+        "column": 5,
+        "match": "Orbex",
+        "excerpt": "'broker', '\\\\bwindsor\\\\s+brokers\\\\b', 'giu'], ['Orbex', 'broker', '\\\\borbex\\\\b', 'giu'], ['LiteFinanc",
+        "index": 3273
+      },
+      {
+        "provider": "LiteFinance",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 84,
+        "column": 5,
+        "match": "LiteFinance",
+        "excerpt": "['Orbex', 'broker', '\\\\borbex\\\\b', 'giu'], ['LiteFinance', 'broker', '\\\\blite\\\\s*finance\\\\b', 'giu'], ['",
+        "index": 3318
+      },
+      {
+        "provider": "AMarkets",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 85,
+        "column": 5,
+        "match": "AMarkets",
+        "excerpt": "', 'broker', '\\\\blite\\\\s*finance\\\\b', 'giu'], ['AMarkets', 'broker', '\\\\bamarkets\\\\b', 'giu'], ['NordFX'",
+        "index": 3379
+      },
+      {
+        "provider": "NordFX",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 86,
+        "column": 5,
+        "match": "NordFX",
+        "excerpt": "Markets', 'broker', '\\\\bamarkets\\\\b', 'giu'], ['NordFX', 'broker', '\\\\bnordfx\\\\b', 'giu'], ['Vantage',",
+        "index": 3430
+      },
+      {
+        "provider": "Vantage",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 87,
+        "column": 5,
+        "match": "Vantage",
+        "excerpt": "['NordFX', 'broker', '\\\\bnordfx\\\\b', 'giu'], ['Vantage', 'broker', '\\\\bvantage(?:\\\\s+markets)?\\\\b', 'giu",
+        "index": 3477
+      },
+      {
+        "provider": "ThinkMarkets",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 88,
+        "column": 5,
+        "match": "ThinkMarkets",
+        "excerpt": "er', '\\\\bvantage(?:\\\\s+markets)?\\\\b', 'giu'], ['ThinkMarkets', 'broker', '\\\\bthink\\\\s*markets\\\\b', 'giu'], [",
+        "index": 3542
+      },
+      {
+        "provider": "TradeYar",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "scripts/provider-exclusivity-scan.mjs",
+        "line": 89,
+        "column": 5,
+        "match": "TradeYar",
+        "excerpt": ", 'broker', '\\\\bthink\\\\s*markets\\\\b', 'giu'], ['TradeYar', 'broker', '\\\\btradeyar\\\\b', 'giu'], // Appro",
+        "index": 3605
+      },
+      {
+        "provider": "Binance",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 30,
+        "column": 9,
+        "match": "Binance",
+        "excerpt": "main visible', () => { const source = [ '// Binance is mentioned only in an engineering comment.',",
+        "index": 922
+      },
+      {
+        "provider": "Kraken",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 31,
+        "column": 9,
+        "match": "Kraken",
+        "excerpt": "ntioned only in an engineering comment.', '/* Kraken must also be ignored here. */', 'const approv",
+        "index": 985
+      },
+      {
+        "provider": "Bybit",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 33,
+        "column": 34,
+        "match": "Bybit",
+        "excerpt": "k و OneRoyal\";', 'const forbidden = \"اتصال به Bybit\";', ].join('\\n'); const stripped = stripNonSh",
+        "index": 1101
+      },
+      {
+        "provider": "Binance",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 36,
+        "column": 34,
+        "match": "Binance",
+        "excerpt": "source, '.jsx'); assert.doesNotMatch(stripped, /Binance|Kraken/); assert.match(stripped, /LBank و OneRo",
+        "index": 1221
+      },
+      {
+        "provider": "Kraken",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 36,
+        "column": 42,
+        "match": "Kraken",
+        "excerpt": "'.jsx'); assert.doesNotMatch(stripped, /Binance|Kraken/); assert.match(stripped, /LBank و OneRoyal/);",
+        "index": 1229
+      },
+      {
+        "provider": "Bybit",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 38,
+        "column": 27,
+        "match": "Bybit",
+        "excerpt": "d, /LBank و OneRoyal/); assert.match(stripped, /Bybit/); assert.deepEqual( findForbiddenProviders",
+        "index": 1311
+      },
+      {
+        "provider": "Bybit",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 42,
+        "column": 7,
+        "match": "Bybit",
+        "excerpt": "}) .map(({ provider }) => provider), ['Bybit'], ); }); test('source, fixtures, bundles, URL",
+        "index": 1475
+      },
+      {
+        "provider": "Binance",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 48,
+        "column": 72,
+        "match": "Binance",
+        "excerpt": "xport const providers = [\"LBank\", \"OneRoyal\"]; // Binance is non-shipping\\n', 'fixtures/provider.json':",
+        "index": 1674
+      },
+      {
+        "provider": "Exness",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 49,
+        "column": 43,
+        "match": "Exness",
+        "excerpt": "ing\\n', 'fixtures/provider.json': '{\"broker\":\"Exness\"}\\n', 'public/coinbase-logo.png': Buffer.from",
+        "index": 1744
+      },
+      {
+        "provider": "Coinbase",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 50,
+        "column": 13,
+        "match": "coinbase",
+        "excerpt": "vider.json': '{\"broker\":\"Exness\"}\\n', 'public/coinbase-logo.png': Buffer.from([0x89, 0x50, 0x4e, 0x47]),",
+        "index": 1769
+      },
+      {
+        "provider": "Binance",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 51,
+        "column": 51,
+        "match": "binance",
+        "excerpt": "'dist/assets/index.js': 'const x=\"https://www.binance.com/register\";const y=\"OneRoyal\";', }, async (r",
+        "index": 1878
+      },
+      {
+        "provider": "Exness",
+        "category": "broker",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 57,
+        "column": 11,
+        "match": "Exness",
+        "excerpt": "der, matchKind, relativePath]), [ ['Exness', 'content', 'fixtures/provider.json'], [",
+        "index": 2192
+      },
+      {
+        "provider": "Coinbase",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 58,
+        "column": 11,
+        "match": "Coinbase",
+        "excerpt": ", 'content', 'fixtures/provider.json'], ['Coinbase', 'path', 'public/coinbase-logo.png'], ],",
+        "index": 2249
+      },
+      {
+        "provider": "Coinbase",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 58,
+        "column": 38,
+        "match": "coinbase",
+        "excerpt": "ider.json'], ['Coinbase', 'path', 'public/coinbase-logo.png'], ], ); assert.equal(sour",
+        "index": 2276
+      },
+      {
+        "provider": "Binance",
+        "category": "exchange",
+        "matchKind": "content",
+        "surface": "qa",
+        "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+        "line": 64,
+        "column": 73,
+        "match": "Binance",
+        "excerpt": "undle.findings.map(({ provider }) => provider), ['Binance']); assert.equal(bundle.result, 'FAIL'); })",
+        "index": 2521
+      }
+    ]
+  },
+  "totals": {
+    "services": 3,
+    "sourceFiles": 990,
+    "bundleFiles": 617,
+    "edgeFiles": 12,
+    "qaFiles": 45,
+    "blockingFindings": 0,
+    "nonBlockingFindings": 71
+  },
+  "findings": [],
+  "nonBlockingFindings": [
+    {
+      "label": "frontend-prochart:source",
+      "provider": "TradeYar",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "legacy",
+      "relativePath": "src.bak/bazaarnama/Partners.jsx",
+      "line": 6,
+      "column": 57,
+      "match": "TRADEYAR",
+      "excerpt": "LBANK_URL = 'https://www.lbank.com/signup/a?icode=TRADEYAR'; const ONEROYAL_URL = 'https://vc.cabinet.oneroy",
+      "index": 331
+    },
+    {
+      "label": "frontend-prochart:source",
+      "provider": "OneRoyal direct referral URL",
+      "category": "direct-referral",
+      "matchKind": "content",
+      "surface": "legacy",
+      "relativePath": "src.bak/bazaarnama/Partners.jsx",
+      "line": 7,
+      "column": 23,
+      "match": "https://vc.cabinet.oneroyal.com/",
+      "excerpt": "m/signup/a?icode=TRADEYAR'; const ONEROYAL_URL = 'https://vc.cabinet.oneroyal.com/fa/links/go/12412'; const PARTNERS = [ { id",
+      "index": 364
+    },
+    {
+      "label": "frontend-prochart:source",
+      "provider": "TradeYar",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "test",
+      "relativePath": "test/referral-compliance.test.mjs",
+      "line": 70,
+      "column": 55,
+      "match": "TRADEYAR",
+      "excerpt": "sert.doesNotMatch(partners, /https?:\\/\\/|clearbit|TRADEYAR|رگوله‌شده|پاداش|کارمزدِ ویژه/); assert.match(pa",
+      "index": 3543
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Binance",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 35,
+      "column": 5,
+      "match": "Binance",
+      "excerpt": "nd has an unambiguous boundary-safe spelling. ['Binance', 'exchange', '\\\\bbinance\\\\b', 'giu'], ['Coinba",
+      "index": 838
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Coinbase",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 36,
+      "column": 5,
+      "match": "Coinbase",
+      "excerpt": "inance', 'exchange', '\\\\bbinance\\\\b', 'giu'], ['Coinbase', 'exchange', '\\\\bcoinbase\\\\b', 'giu'], ['Krake",
+      "index": 889
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Kraken",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 37,
+      "column": 5,
+      "match": "Kraken",
+      "excerpt": "nbase', 'exchange', '\\\\bcoinbase\\\\b', 'giu'], ['Kraken', 'exchange', '\\\\bkraken\\\\b', 'giu'], ['Bybit',",
+      "index": 942
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Bybit",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 38,
+      "column": 5,
+      "match": "Bybit",
+      "excerpt": "'Kraken', 'exchange', '\\\\bkraken\\\\b', 'giu'], ['Bybit', 'exchange', '\\\\bbybit\\\\b', 'giu'], ['OKX', 'e",
+      "index": 991
+    },
+    {
+      "label": "qa-internal",
+      "provider": "OKX",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 39,
+      "column": 5,
+      "match": "OKX",
+      "excerpt": "['Bybit', 'exchange', '\\\\bbybit\\\\b', 'giu'], ['OKX', 'exchange', '\\\\bokx\\\\b', 'giu'], ['KuCoin', '",
+      "index": 1038
+    },
+    {
+      "label": "qa-internal",
+      "provider": "KuCoin",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 40,
+      "column": 5,
+      "match": "KuCoin",
+      "excerpt": "], ['OKX', 'exchange', '\\\\bokx\\\\b', 'giu'], ['KuCoin', 'exchange', '\\\\bkucoin\\\\b', 'giu'], ['MEXC',",
+      "index": 1081
+    },
+    {
+      "label": "qa-internal",
+      "provider": "MEXC",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 41,
+      "column": 5,
+      "match": "MEXC",
+      "excerpt": "'KuCoin', 'exchange', '\\\\bkucoin\\\\b', 'giu'], ['MEXC', 'exchange', '\\\\bmexc\\\\b', 'giu'], ['Gate.io',",
+      "index": 1130
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Gate.io",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 42,
+      "column": 5,
+      "match": "Gate.io",
+      "excerpt": "['MEXC', 'exchange', '\\\\bmexc\\\\b', 'giu'], ['Gate.io', 'exchange', '\\\\bgate(?:\\\\s*\\\\.\\\\s*|\\\\s+)io\\\\b',",
+      "index": 1175
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Bitget",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 43,
+      "column": 5,
+      "match": "Bitget",
+      "excerpt": ", '\\\\bgate(?:\\\\s*\\\\.\\\\s*|\\\\s+)io\\\\b', 'giu'], ['Bitget', 'exchange', '\\\\bbitget\\\\b', 'giu'], ['BingX',",
+      "index": 1245
+    },
+    {
+      "label": "qa-internal",
+      "provider": "BingX",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 44,
+      "column": 5,
+      "match": "BingX",
+      "excerpt": "'Bitget', 'exchange', '\\\\bbitget\\\\b', 'giu'], ['BingX', 'exchange', '\\\\bbingx\\\\b', 'giu'], ['Huobi',",
+      "index": 1294
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Huobi",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 45,
+      "column": 5,
+      "match": "Huobi",
+      "excerpt": "['BingX', 'exchange', '\\\\bbingx\\\\b', 'giu'], ['Huobi', 'exchange', '\\\\bhuobi\\\\b', 'giu'], ['HTX', 'e",
+      "index": 1341
+    },
+    {
+      "label": "qa-internal",
+      "provider": "HTX",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 46,
+      "column": 5,
+      "match": "HTX",
+      "excerpt": "['Huobi', 'exchange', '\\\\bhuobi\\\\b', 'giu'], ['HTX', 'exchange', '\\\\bhtx\\\\b', 'giu'], ['Crypto.com",
+      "index": 1388
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Crypto.com",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 47,
+      "column": 5,
+      "match": "Crypto.com",
+      "excerpt": "], ['HTX', 'exchange', '\\\\bhtx\\\\b', 'giu'], ['Crypto.com', 'exchange', '\\\\bcrypto\\\\s*\\\\.\\\\s*com\\\\b', 'giu'",
+      "index": 1431
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Gemini",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 48,
+      "column": 5,
+      "match": "Gemini",
+      "excerpt": "hange', '\\\\bcrypto\\\\s*\\\\.\\\\s*com\\\\b', 'giu'], ['Gemini', 'exchange', '\\\\bgemini\\\\b', 'giu'], ['Bitfine",
+      "index": 1498
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Bitfinex",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 49,
+      "column": 5,
+      "match": "Bitfinex",
+      "excerpt": "'Gemini', 'exchange', '\\\\bgemini\\\\b', 'giu'], ['Bitfinex', 'exchange', '\\\\bbitfinex\\\\b', 'giu'], ['Bitst",
+      "index": 1547
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Bitstamp",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 50,
+      "column": 5,
+      "match": "Bitstamp",
+      "excerpt": "finex', 'exchange', '\\\\bbitfinex\\\\b', 'giu'], ['Bitstamp', 'exchange', '\\\\bbitstamp\\\\b', 'giu'], ['White",
+      "index": 1600
+    },
+    {
+      "label": "qa-internal",
+      "provider": "WhiteBIT",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 51,
+      "column": 5,
+      "match": "WhiteBIT",
+      "excerpt": "stamp', 'exchange', '\\\\bbitstamp\\\\b', 'giu'], ['WhiteBIT', 'exchange', '\\\\bwhitebit\\\\b', 'giu'], ['CoinE",
+      "index": 1653
+    },
+    {
+      "label": "qa-internal",
+      "provider": "CoinEx",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 52,
+      "column": 5,
+      "match": "CoinEx",
+      "excerpt": "teBIT', 'exchange', '\\\\bwhitebit\\\\b', 'giu'], ['CoinEx', 'exchange', '\\\\bcoinex\\\\b', 'giu'], ['BitMart",
+      "index": 1706
+    },
+    {
+      "label": "qa-internal",
+      "provider": "BitMart",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 53,
+      "column": 5,
+      "match": "BitMart",
+      "excerpt": "'CoinEx', 'exchange', '\\\\bcoinex\\\\b', 'giu'], ['BitMart', 'exchange', '\\\\bbitmart\\\\b', 'giu'], ['Phemex",
+      "index": 1755
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Phemex",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 54,
+      "column": 5,
+      "match": "Phemex",
+      "excerpt": "itMart', 'exchange', '\\\\bbitmart\\\\b', 'giu'], ['Phemex', 'exchange', '\\\\bphemex\\\\b', 'giu'], ['Upbit',",
+      "index": 1806
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Upbit",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 55,
+      "column": 5,
+      "match": "Upbit",
+      "excerpt": "'Phemex', 'exchange', '\\\\bphemex\\\\b', 'giu'], ['Upbit', 'exchange', '\\\\bupbit\\\\b', 'giu'], ['Bithumb'",
+      "index": 1855
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Bithumb",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 56,
+      "column": 5,
+      "match": "Bithumb",
+      "excerpt": "['Upbit', 'exchange', '\\\\bupbit\\\\b', 'giu'], ['Bithumb', 'exchange', '\\\\bbithumb\\\\b', 'giu'], // Brok",
+      "index": 1902
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Exness",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 59,
+      "column": 5,
+      "match": "Exness",
+      "excerpt": "\\b', 'giu'], // Brokers and broker brands. ['Exness', 'broker', '\\\\bexness\\\\b', 'giu'], ['XM Global",
+      "index": 1986
+    },
+    {
+      "label": "qa-internal",
+      "provider": "XM Global",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 60,
+      "column": 5,
+      "match": "XM Global",
+      "excerpt": "['Exness', 'broker', '\\\\bexness\\\\b', 'giu'], ['XM Global', 'broker', '\\\\bxm\\\\s+global\\\\b', 'giu'], ['Pep",
+      "index": 2033
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Pepperstone",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 61,
+      "column": 5,
+      "match": "Pepperstone",
+      "excerpt": "bal', 'broker', '\\\\bxm\\\\s+global\\\\b', 'giu'], ['Pepperstone', 'broker', '\\\\bpepperstone\\\\b', 'giu'], ['IC M",
+      "index": 2089
+    },
+    {
+      "label": "qa-internal",
+      "provider": "IC Markets",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 62,
+      "column": 5,
+      "match": "IC Markets",
+      "excerpt": "tone', 'broker', '\\\\bpepperstone\\\\b', 'giu'], ['IC Markets', 'broker', '\\\\bic\\\\s+markets\\\\b', 'giu'], ['FX",
+      "index": 2146
+    },
+    {
+      "label": "qa-internal",
+      "provider": "FXTM",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 63,
+      "column": 5,
+      "match": "FXTM",
+      "excerpt": "ts', 'broker', '\\\\bic\\\\s+markets\\\\b', 'giu'], ['FXTM', 'broker', '\\\\bfxtm\\\\b', 'giu'], ['HotForex',",
+      "index": 2204
+    },
+    {
+      "label": "qa-internal",
+      "provider": "HotForex",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 64,
+      "column": 5,
+      "match": "HotForex",
+      "excerpt": "], ['FXTM', 'broker', '\\\\bfxtm\\\\b', 'giu'], ['HotForex', 'broker', '\\\\bhot\\\\s*forex\\\\b', 'giu'], ['Alp",
+      "index": 2247
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Alpari",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 65,
+      "column": 5,
+      "match": "Alpari",
+      "excerpt": "rex', 'broker', '\\\\bhot\\\\s*forex\\\\b', 'giu'], ['Alpari', 'broker', '\\\\balpari\\\\b', 'giu'], ['FXPro', '",
+      "index": 2302
+    },
+    {
+      "label": "qa-internal",
+      "provider": "FXPro",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 66,
+      "column": 5,
+      "match": "FXPro",
+      "excerpt": "['Alpari', 'broker', '\\\\balpari\\\\b', 'giu'], ['FXPro', 'broker', '\\\\bfxpro\\\\b', 'giu'], ['RoboForex'",
+      "index": 2349
+    },
+    {
+      "label": "qa-internal",
+      "provider": "RoboForex",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 67,
+      "column": 5,
+      "match": "RoboForex",
+      "excerpt": "['FXPro', 'broker', '\\\\bfxpro\\\\b', 'giu'], ['RoboForex', 'broker', '\\\\brobo\\\\s*forex\\\\b', 'giu'], ['Av",
+      "index": 2394
+    },
+    {
+      "label": "qa-internal",
+      "provider": "AvaTrade",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 68,
+      "column": 5,
+      "match": "AvaTrade",
+      "excerpt": "ex', 'broker', '\\\\brobo\\\\s*forex\\\\b', 'giu'], ['AvaTrade', 'broker', '\\\\bava\\\\s*trade\\\\b', 'giu'], ['eTo",
+      "index": 2451
+    },
+    {
+      "label": "qa-internal",
+      "provider": "eToro",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 69,
+      "column": 5,
+      "match": "eToro",
+      "excerpt": "ade', 'broker', '\\\\bava\\\\s*trade\\\\b', 'giu'], ['eToro', 'broker', '\\\\betoro\\\\b', 'giu'], ['OANDA', 'b",
+      "index": 2506
+    },
+    {
+      "label": "qa-internal",
+      "provider": "OANDA",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 70,
+      "column": 5,
+      "match": "OANDA",
+      "excerpt": "['eToro', 'broker', '\\\\betoro\\\\b', 'giu'], ['OANDA', 'broker', '\\\\boanda\\\\b', 'giu'], ['Forex.com'",
+      "index": 2551
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Forex.com",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 71,
+      "column": 5,
+      "match": "Forex.com",
+      "excerpt": "['OANDA', 'broker', '\\\\boanda\\\\b', 'giu'], ['Forex.com', 'broker', '\\\\bforex\\\\s*\\\\.\\\\s*com\\\\b', 'giu'],",
+      "index": 2596
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Interactive Brokers",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 72,
+      "column": 5,
+      "match": "Interactive Brokers",
+      "excerpt": "broker', '\\\\bforex\\\\s*\\\\.\\\\s*com\\\\b', 'giu'], ['Interactive Brokers', 'broker', '\\\\binteractive\\\\s+brokers\\\\b', 'giu'",
+      "index": 2659
+    },
+    {
+      "label": "qa-internal",
+      "provider": "FBS",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 73,
+      "column": 5,
+      "match": "FBS",
+      "excerpt": "ker', '\\\\binteractive\\\\s+brokers\\\\b', 'giu'], ['FBS', 'broker', '\\\\bfbs\\\\b', 'giu'], ['Octa', 'brok",
+      "index": 2735
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Octa",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 74,
+      "column": 5,
+      "match": "Octa",
+      "excerpt": "u'], ['FBS', 'broker', '\\\\bfbs\\\\b', 'giu'], ['Octa', 'broker', '\\\\bocta(?:fx)?\\\\b', 'giu'], ['Tick",
+      "index": 2776
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Tickmill",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 75,
+      "column": 5,
+      "match": "Tickmill",
+      "excerpt": "Octa', 'broker', '\\\\bocta(?:fx)?\\\\b', 'giu'], ['Tickmill', 'broker', '\\\\btickmill\\\\b', 'giu'], ['Admiral",
+      "index": 2826
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Admiral Markets",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 76,
+      "column": 5,
+      "match": "Admiral Markets",
+      "excerpt": "ickmill', 'broker', '\\\\btickmill\\\\b', 'giu'], ['Admiral Markets', 'broker', '\\\\badmiral\\\\s+markets\\\\b', 'giu'],",
+      "index": 2877
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Saxo",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 77,
+      "column": 5,
+      "match": "Saxo",
+      "excerpt": "'broker', '\\\\badmiral\\\\s+markets\\\\b', 'giu'], ['Saxo', 'broker', '\\\\bsaxo(?:\\\\s+bank)?\\\\b', 'giu'],",
+      "index": 2945
+    },
+    {
+      "label": "qa-internal",
+      "provider": "CMC Markets",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 78,
+      "column": 5,
+      "match": "CMC Markets",
+      "excerpt": "'broker', '\\\\bsaxo(?:\\\\s+bank)?\\\\b', 'giu'], ['CMC Markets', 'broker', '\\\\bcmc\\\\s+markets\\\\b', 'giu'], ['I",
+      "index": 3001
+    },
+    {
+      "label": "qa-internal",
+      "provider": "IG Markets",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 79,
+      "column": 5,
+      "match": "IG Markets",
+      "excerpt": "s', 'broker', '\\\\bcmc\\\\s+markets\\\\b', 'giu'], ['IG Markets', 'broker', '\\\\big\\\\s+markets\\\\b', 'giu'], ['XT",
+      "index": 3061
+    },
+    {
+      "label": "qa-internal",
+      "provider": "XTB",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 80,
+      "column": 5,
+      "match": "XTB",
+      "excerpt": "ts', 'broker', '\\\\big\\\\s+markets\\\\b', 'giu'], ['XTB', 'broker', '\\\\bxtb\\\\b', 'giu'], ['Deriv', 'bro",
+      "index": 3119
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Deriv",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 81,
+      "column": 5,
+      "match": "Deriv",
+      "excerpt": "u'], ['XTB', 'broker', '\\\\bxtb\\\\b', 'giu'], ['Deriv', 'broker', '\\\\bderiv\\\\b', 'giu'], ['Windsor Br",
+      "index": 3160
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Windsor Brokers",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 82,
+      "column": 5,
+      "match": "Windsor Brokers",
+      "excerpt": "['Deriv', 'broker', '\\\\bderiv\\\\b', 'giu'], ['Windsor Brokers', 'broker', '\\\\bwindsor\\\\s+brokers\\\\b', 'giu'],",
+      "index": 3205
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Orbex",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 83,
+      "column": 5,
+      "match": "Orbex",
+      "excerpt": "'broker', '\\\\bwindsor\\\\s+brokers\\\\b', 'giu'], ['Orbex', 'broker', '\\\\borbex\\\\b', 'giu'], ['LiteFinanc",
+      "index": 3273
+    },
+    {
+      "label": "qa-internal",
+      "provider": "LiteFinance",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 84,
+      "column": 5,
+      "match": "LiteFinance",
+      "excerpt": "['Orbex', 'broker', '\\\\borbex\\\\b', 'giu'], ['LiteFinance', 'broker', '\\\\blite\\\\s*finance\\\\b', 'giu'], ['",
+      "index": 3318
+    },
+    {
+      "label": "qa-internal",
+      "provider": "AMarkets",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 85,
+      "column": 5,
+      "match": "AMarkets",
+      "excerpt": "', 'broker', '\\\\blite\\\\s*finance\\\\b', 'giu'], ['AMarkets', 'broker', '\\\\bamarkets\\\\b', 'giu'], ['NordFX'",
+      "index": 3379
+    },
+    {
+      "label": "qa-internal",
+      "provider": "NordFX",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 86,
+      "column": 5,
+      "match": "NordFX",
+      "excerpt": "Markets', 'broker', '\\\\bamarkets\\\\b', 'giu'], ['NordFX', 'broker', '\\\\bnordfx\\\\b', 'giu'], ['Vantage',",
+      "index": 3430
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Vantage",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 87,
+      "column": 5,
+      "match": "Vantage",
+      "excerpt": "['NordFX', 'broker', '\\\\bnordfx\\\\b', 'giu'], ['Vantage', 'broker', '\\\\bvantage(?:\\\\s+markets)?\\\\b', 'giu",
+      "index": 3477
+    },
+    {
+      "label": "qa-internal",
+      "provider": "ThinkMarkets",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 88,
+      "column": 5,
+      "match": "ThinkMarkets",
+      "excerpt": "er', '\\\\bvantage(?:\\\\s+markets)?\\\\b', 'giu'], ['ThinkMarkets', 'broker', '\\\\bthink\\\\s*markets\\\\b', 'giu'], [",
+      "index": 3542
+    },
+    {
+      "label": "qa-internal",
+      "provider": "TradeYar",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "scripts/provider-exclusivity-scan.mjs",
+      "line": 89,
+      "column": 5,
+      "match": "TradeYar",
+      "excerpt": ", 'broker', '\\\\bthink\\\\s*markets\\\\b', 'giu'], ['TradeYar', 'broker', '\\\\btradeyar\\\\b', 'giu'], // Appro",
+      "index": 3605
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Binance",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 30,
+      "column": 9,
+      "match": "Binance",
+      "excerpt": "main visible', () => { const source = [ '// Binance is mentioned only in an engineering comment.',",
+      "index": 922
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Kraken",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 31,
+      "column": 9,
+      "match": "Kraken",
+      "excerpt": "ntioned only in an engineering comment.', '/* Kraken must also be ignored here. */', 'const approv",
+      "index": 985
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Bybit",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 33,
+      "column": 34,
+      "match": "Bybit",
+      "excerpt": "k و OneRoyal\";', 'const forbidden = \"اتصال به Bybit\";', ].join('\\n'); const stripped = stripNonSh",
+      "index": 1101
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Binance",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 36,
+      "column": 34,
+      "match": "Binance",
+      "excerpt": "source, '.jsx'); assert.doesNotMatch(stripped, /Binance|Kraken/); assert.match(stripped, /LBank و OneRo",
+      "index": 1221
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Kraken",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 36,
+      "column": 42,
+      "match": "Kraken",
+      "excerpt": "'.jsx'); assert.doesNotMatch(stripped, /Binance|Kraken/); assert.match(stripped, /LBank و OneRoyal/);",
+      "index": 1229
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Bybit",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 38,
+      "column": 27,
+      "match": "Bybit",
+      "excerpt": "d, /LBank و OneRoyal/); assert.match(stripped, /Bybit/); assert.deepEqual( findForbiddenProviders",
+      "index": 1311
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Bybit",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 42,
+      "column": 7,
+      "match": "Bybit",
+      "excerpt": "}) .map(({ provider }) => provider), ['Bybit'], ); }); test('source, fixtures, bundles, URL",
+      "index": 1475
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Binance",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 48,
+      "column": 72,
+      "match": "Binance",
+      "excerpt": "xport const providers = [\"LBank\", \"OneRoyal\"]; // Binance is non-shipping\\n', 'fixtures/provider.json':",
+      "index": 1674
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Exness",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 49,
+      "column": 43,
+      "match": "Exness",
+      "excerpt": "ing\\n', 'fixtures/provider.json': '{\"broker\":\"Exness\"}\\n', 'public/coinbase-logo.png': Buffer.from",
+      "index": 1744
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Coinbase",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 50,
+      "column": 13,
+      "match": "coinbase",
+      "excerpt": "vider.json': '{\"broker\":\"Exness\"}\\n', 'public/coinbase-logo.png': Buffer.from([0x89, 0x50, 0x4e, 0x47]),",
+      "index": 1769
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Binance",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 51,
+      "column": 51,
+      "match": "binance",
+      "excerpt": "'dist/assets/index.js': 'const x=\"https://www.binance.com/register\";const y=\"OneRoyal\";', }, async (r",
+      "index": 1878
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Exness",
+      "category": "broker",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 57,
+      "column": 11,
+      "match": "Exness",
+      "excerpt": "der, matchKind, relativePath]), [ ['Exness', 'content', 'fixtures/provider.json'], [",
+      "index": 2192
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Coinbase",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 58,
+      "column": 11,
+      "match": "Coinbase",
+      "excerpt": ", 'content', 'fixtures/provider.json'], ['Coinbase', 'path', 'public/coinbase-logo.png'], ],",
+      "index": 2249
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Coinbase",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 58,
+      "column": 38,
+      "match": "coinbase",
+      "excerpt": "ider.json'], ['Coinbase', 'path', 'public/coinbase-logo.png'], ], ); assert.equal(sour",
+      "index": 2276
+    },
+    {
+      "label": "qa-internal",
+      "provider": "Binance",
+      "category": "exchange",
+      "matchKind": "content",
+      "surface": "qa",
+      "relativePath": "tests/provider-exclusivity-scan.test.mjs",
+      "line": 64,
+      "column": 73,
+      "match": "Binance",
+      "excerpt": "undle.findings.map(({ provider }) => provider), ['Binance']); assert.equal(bundle.result, 'FAIL'); })",
+      "index": 2521
+    }
+  ],
+  "result": "PASS"
+}

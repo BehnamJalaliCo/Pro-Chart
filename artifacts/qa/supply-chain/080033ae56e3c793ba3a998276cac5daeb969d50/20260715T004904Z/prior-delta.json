@@ -1,0 +1,68 @@
+{
+  "prior": {
+    "applicable": 817,
+    "suppressed": 344,
+    "applicableUniqueIds": 242,
+    "suppressedUniqueIds": 344,
+    "fixedCandidateRecords": 78,
+    "severity": {
+      "Critical": 29,
+      "High": 73,
+      "Medium": 97,
+      "Low": 32,
+      "Negligible": 538,
+      "Unknown": 48
+    }
+  },
+  "current": {
+    "applicable": 817,
+    "suppressed": 344,
+    "applicableUniqueIds": 242,
+    "suppressedUniqueIds": 344,
+    "fixedCandidateRecords": 78,
+    "severity": {
+      "Critical": 29,
+      "High": 73,
+      "Medium": 97,
+      "Low": 32,
+      "Negligible": 538,
+      "Unknown": 48
+    }
+  },
+  "delta": {
+    "applicable": 0,
+    "suppressed": 0,
+    "applicableUniqueIds": 0,
+    "suppressedUniqueIds": 0,
+    "fixedCandidateRecords": 0,
+    "severity": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 0,
+      "Low": 0,
+      "Negligible": 0,
+      "Unknown": 0
+    }
+  },
+  "sbomComponents": {
+    "prior": 8971,
+    "current": 8971,
+    "delta": 0
+  },
+  "imageDigest": {
+    "prior": "768613b6398c2ef089e0c8b73ac03ceddb6e9b1dac94d32a2b54c893dab1efdb",
+    "current": "62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337"
+  },
+  "canonicalContentHashes": {
+    "matchesAndIgnored": {
+      "priorSha256": "f8bddea11d679534659737d6928bf6846ea808dda62af562d222a86f2c997eb9",
+      "currentSha256": "f8bddea11d679534659737d6928bf6846ea808dda62af562d222a86f2c997eb9",
+      "identical": true
+    },
+    "sbomComponents": {
+      "priorSha256": "163307860c7fdbaafcf4205831e322aa4f5cf3877a60092b093e1d4dd4cdf510",
+      "currentSha256": "163307860c7fdbaafcf4205831e322aa4f5cf3877a60092b093e1d4dd4cdf510",
+      "identical": true
+    }
+  }
+}

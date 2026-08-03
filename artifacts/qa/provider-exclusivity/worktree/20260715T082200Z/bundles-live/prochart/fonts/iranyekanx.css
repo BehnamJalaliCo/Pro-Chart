@@ -1,0 +1,17 @@
+/* IRANYekanX (Eco) — فونتِ اصلیِ خریداری‌شدهٔ مالک (لایسنس‌دار). خودمیزبان، font-display: swap. عددِ لاتین (مناسبِ قیمت/چارت). */
+@font-face {
+  font-family: 'IRANYekanX';
+  font-style: normal;
+  font-weight: 100 500;
+  font-display: swap;
+  src: url('/fonts/iranyekanx/IRANYekanX-Regular.woff2') format('woff2'),
+       url('/fonts/iranyekanx/IRANYekanX-Regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'IRANYekanX';
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+  src: url('/fonts/iranyekanx/IRANYekanX-Bold.woff2') format('woff2'),
+       url('/fonts/iranyekanx/IRANYekanX-Bold.woff') format('woff');
+}

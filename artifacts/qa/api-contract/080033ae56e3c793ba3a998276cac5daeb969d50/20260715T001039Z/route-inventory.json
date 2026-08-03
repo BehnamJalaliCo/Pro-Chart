@@ -1,0 +1,385 @@
+{
+  "routeObjects": 487,
+  "httpMethodPaths": 486,
+  "duplicateHttpMethodPaths": [],
+  "mountedEaMethodPaths": [],
+  "remainingUnmountedDecoratorCount": 60,
+  "remainingUnmountedModules": {
+    "admin_instagram.py": 44,
+    "ea.py": 9,
+    "trade_history.py": 7
+  },
+  "modules": {
+    "admin_instagram.py": {
+      "prefix": "/admin/instagram",
+      "classification": "intentionally dormant legacy admin surface after canonical service/frontend removal",
+      "auth": "all 44 handlers depend on require_role('admin'); stateful operations also use get_db where needed",
+      "consumer": "no tracked canonical frontend or machine consumer; frontend/admin and frontend/ig were deleted in e5ae2d2 and are ignored today",
+      "historicalEvidence": "admin client existed in f5a43bc, but admin_instagram.router was not mounted there; e5ae2d2 later deleted both legacy admin and IG frontends",
+      "hypotheticalMethodPathCollisions": [],
+      "decoratorCount": 44,
+      "routes": [
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts",
+          "handler": "list_accounts"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/accounts/sync",
+          "handler": "sync_accounts"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/accounts/{account_id}/smart-toggle",
+          "handler": "smart_toggle"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/media",
+          "handler": "account_media"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/live",
+          "handler": "account_live"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/dashboard",
+          "handler": "dashboard"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/messages",
+          "handler": "list_messages"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/messages",
+          "handler": "create_message"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/messages/{mid}",
+          "handler": "update_message"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/messages/{mid}",
+          "handler": "delete_message"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/auto-replies",
+          "handler": "list_rules"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/auto-replies",
+          "handler": "create_rule"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/auto-replies/{rid}",
+          "handler": "update_rule"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/auto-replies/{rid}/toggle",
+          "handler": "toggle_rule"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/auto-replies/{rid}",
+          "handler": "delete_rule"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/poll-now",
+          "handler": "poll_now"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/settings",
+          "handler": "get_settings"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/settings",
+          "handler": "set_settings"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/inbox",
+          "handler": "inbox"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/forms",
+          "handler": "list_forms"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/forms",
+          "handler": "create_form"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/forms/{fid}",
+          "handler": "update_form"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/contents",
+          "handler": "list_contents"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/contents",
+          "handler": "create_content"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/contents/{cid}/generate-video",
+          "handler": "generate_content_video"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/contents/{cid}",
+          "handler": "update_content"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/contents/{cid}/publish",
+          "handler": "publish_content_now"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/contents/{cid}",
+          "handler": "delete_content"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/upload",
+          "handler": "upload_media"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/ai/caption",
+          "handler": "ai_caption"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/ai/cover",
+          "handler": "ai_cover"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/cover/fonts",
+          "handler": "cover_fonts"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/cover/search",
+          "handler": "cover_search"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/cover/render",
+          "handler": "cover_render"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/ai/full-content",
+          "handler": "ai_full_content"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/ai/suggest-topics",
+          "handler": "ai_suggest_topics"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/autopilots",
+          "handler": "list_autopilots"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/autopilots",
+          "handler": "create_autopilot"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/autopilots/{aid}",
+          "handler": "update_autopilot"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/autopilots/{aid}/toggle",
+          "handler": "toggle_autopilot"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/autopilots/{aid}/run-now",
+          "handler": "run_autopilot_now"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/autopilots/{aid}",
+          "handler": "delete_autopilot"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/forms/{fid}/toggle",
+          "handler": "toggle_form"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/forms/{fid}",
+          "handler": "delete_form"
+        }
+      ]
+    },
+    "ea.py": {
+      "prefix": "/ea",
+      "classification": "intentionally unmounted legacy coinepro-fx machine surface; no tracked canonical Pro-Chart client/service remains",
+      "auth": "all 9 handlers use an EA_TOKEN query parameter and inline constant-time _ea_token_ok; query-string credentials are exposed in request targets and standard access logs",
+      "consumer": "no tracked canonical consumer; deploy/windows, media/mt5, and docker-compose.yml are ignored/untracked local residue; canonical docker-compose.prochart.yml has no EA/MT5 service",
+      "historicalEvidence": "mounted in f5a43bc; e5ae2d2 explicitly removed deploy/windows, docker-compose.yml, and old coinepro-fx services, then ignored those paths",
+      "methodPathCollisions": [],
+      "consumerContractRisk": "resolved: media/mt5/user_manager.py now includes uid on signals, config, and heartbeat requests",
+      "decoratorCount": 9,
+      "routes": [
+        {
+          "method": "GET",
+          "path": "/ea/signals",
+          "handler": "ea_signals"
+        },
+        {
+          "method": "GET",
+          "path": "/ea/config",
+          "handler": "ea_config"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/heartbeat",
+          "handler": "ea_heartbeat"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/diag",
+          "handler": "ea_diag"
+        },
+        {
+          "method": "GET",
+          "path": "/ea/master-account",
+          "handler": "ea_master_account"
+        },
+        {
+          "method": "GET",
+          "path": "/ea/users",
+          "handler": "ea_users"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/deals",
+          "handler": "ea_deals"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/symbols",
+          "handler": "ea_symbols"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/specs",
+          "handler": "ea_specs"
+        }
+      ],
+      "consumerFix": {
+        "file": "media/mt5/user_manager.py",
+        "behavior": "signals request carries the bridge uid, preserving per-user dismissal namespace",
+        "fallback": "requests that omit uid still receive FastAPI default uid=0, the master namespace"
+      },
+      "hypotheticalMethodPathCollisions": [],
+      "publicExposure": "frontend/prochart/nginx.conf and nginx/panel.conf proxy all /api paths; nginx/nginx.conf main access format includes $request, so /api/ea/*?token=... would be public and logged",
+      "localDiagnostic": {
+        "file": "media/mt5/user_manager.py",
+        "gitStatus": "ignored/untracked; not deliverable",
+        "correction": "signals now carries uid consistently with config/heartbeat",
+        "fallback": "omitted uid maps to FastAPI default uid=0 (master namespace)"
+      },
+      "adrOptions": [
+        "keep /ea unmounted and remove/split stale router code after confirming shared helper consumers",
+        "revive only with a tracked canonical service/client, canonical compose wiring, header-based or mTLS auth, token rotation, an explicit Nginx exposure policy, and contract tests"
+      ]
+    },
+    "trade_history.py": {
+      "prefix": "/admin/trade-history",
+      "classification": "dormant admin router; helper functions remain imported by mounted user_panel routes",
+      "auth": "all 7 admin handlers depend on get_current_admin; the destructive DELETE has no explicit require_role('admin') gate; query helpers are called under current_user in user_panel.py",
+      "consumer": "no tracked canonical admin client; old frontend/admin was deleted in e5ae2d2; query_list/query_daily/query_stats remain code-level helper consumers in user_panel.py",
+      "historicalEvidence": "mounted and consumed by old frontend/admin in f5a43bc; e5ae2d2 deleted that frontend and current main leaves the admin router unmounted",
+      "hypotheticalMethodPathCollisions": [],
+      "decoratorCount": 7,
+      "routes": [
+        {
+          "method": "GET",
+          "path": "/admin/trade-history",
+          "handler": "list_history"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/daily",
+          "handler": "daily_summary"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/stats",
+          "handler": "history_stats"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/trade-history",
+          "handler": "clear_history"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/export",
+          "handler": "export_csv"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/performance",
+          "handler": "performance"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/validation",
+          "handler": "validation"
+        }
+      ]
+    }
+  },
+  "additionalConsumerGap": {
+    "path": "POST /ea/manual-open",
+    "consumer": "src/api/routes/bazaarnama.py forwards owner/live commands to BN_MAIN_API (default external fx.trade-future.ir)",
+    "finding": "this is an external legacy service contract, not a local router consumer; no local handler exists and revival requires an ADR"
+  },
+  "canonicalConsumerAudit": {
+    "removalCommit": "e5ae2d2",
+    "canonicalCompose": "docker-compose.prochart.yml contains no MT5 or EA service",
+    "ignoredPaths": [
+      "deploy/",
+      "media/",
+      "docker-compose.yml",
+      "frontend/admin/",
+      "frontend/ig/",
+      "frontend/user/",
+      "frontend/website/"
+    ],
+    "trackedDirectEaHttpConsumers": [],
+    "nginxPublicApiProxy": true
+  }
+}

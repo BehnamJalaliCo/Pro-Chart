@@ -1,0 +1,818 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/performance-baseline.spec.mjs",
+      "--repeat-each=3"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results",
+        "repeatEach": 3,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results",
+        "repeatEach": 3,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "performance-baseline.spec.mjs",
+      "file": "performance-baseline.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10518,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                      "column": 49,
+                      "line": 689
+                    },
+                    "snippet": "  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "column": 49,
+                        "line": 689
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n\n  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:19:42.206Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "column": 49,
+                    "line": 689
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-bf0738c9e34edc89ded6",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 91,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:19:53.421Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-01433e06e4badac3b2a8",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10471,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                      "column": 49,
+                      "line": 689
+                    },
+                    "snippet": "  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "column": 49,
+                        "line": 689
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n\n  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:19:54.238Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat1/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "column": 49,
+                    "line": 689
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-35915efd927af966ac2b",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 61,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:20:05.334Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-4d7cc39f55017eca266c",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10415,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                      "column": 49,
+                      "line": 689
+                    },
+                    "snippet": "  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "column": 49,
+                        "line": 689
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n\n  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:20:06.019Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat2/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "column": 49,
+                    "line": 689
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-a1cad8b98c49fce2a144",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-mobile",
+                  "location": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 66,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:20:17.020Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-mobile",
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-a94d4fc7b2d5b8c8e331",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 73,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:20:17.673Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-8ad7621dc134b8faaac3",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10374,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                      "column": 49,
+                      "line": 689
+                    },
+                    "snippet": "  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "column": 49,
+                        "line": 689
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n\n  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:20:17.846Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "column": 49,
+                    "line": 689
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-357dd4b286910aa3ebe1",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 75,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:20:28.708Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-1265e06b5dd42f436b68",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10387,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                      "column": 49,
+                      "line": 689
+                    },
+                    "snippet": "  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "column": 49,
+                        "line": 689
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n\n  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:20:28.891Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat1/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "column": 49,
+                    "line": 689
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-b6b625100c4881dedb9b",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: desktop-chart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "scenario belongs to chromium-desktop",
+                  "location": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "line": 653,
+                    "column": 10
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 76,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:20:39.815Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "scenario belongs to chromium-desktop",
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "line": 653,
+                        "column": 10
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-dc8648492df7df4a638e",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        },
+        {
+          "title": "PERF-BASELINE: mobile-chart",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10424,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                      "column": 49,
+                      "line": 689
+                    },
+                    "snippet": "  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                        "column": 49,
+                        "line": 689
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.pc-approot')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.pc-approot')\u001b[22m\n\n\n  687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());\n  688 |\n> 689 |       await expect(page.locator('.pc-approot')).toBeVisible();\n      |                                                 ^\n  690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());\n  691 |\n  692 |       await expect(page.locator('canvas').first()).toBeVisible();\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T04:20:40.013Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat2/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs",
+                    "column": 49,
+                    "line": 689
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d9d47d043d799ace8a0a-ef29c4c0964068f968e8",
+          "file": "performance-baseline.spec.mjs",
+          "line": 652,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T04:19:41.699Z",
+    "duration": 68811.378,
+    "expected": 0,
+    "skipped": 6,
+    "unexpected": 6,
+    "flaky": 0
+  }
+}

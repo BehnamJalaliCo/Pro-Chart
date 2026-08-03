@@ -1,0 +1,45 @@
+{
+  "id": "sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+  "repoDigests": [
+    "prochart-api@sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337"
+  ],
+  "created": "2026-07-15T00:40:06.601143292Z",
+  "platform": "linux/amd64",
+  "os": "linux",
+  "architecture": "amd64",
+  "sizeBytes": 3582634578,
+  "rootFsLayerDigests": [
+    "sha256:f2ec4de84f559f5c7be4233b589cdbdbb5507807e05621b77320edd55a1f2a0f",
+    "sha256:ccbaccfc0388284959cf106031557105fad2067d6c4435937b3414ce90760167",
+    "sha256:83fdf57f71f28b640f11d5072c284c81eadefc5ea538050fedcedba6149879bd",
+    "sha256:b80f3ed1ee6de85c788d9ae7203207c44724eab4baac8697390ca1412954ad2f",
+    "sha256:88d837fe5b41f60caac110baf5ebc509487e4699fa94f7ed57762ed1b3a2e643",
+    "sha256:0bfe96a212a8b40969d0a48e79f14e92faf28a363e584d4953566186d1f8842b",
+    "sha256:3dc500c07b824e852d02e44abebdcf63f59a9637614916a94c8a2eaa069f8c0c",
+    "sha256:5923b21dc3e8c43bfecc43d0d21f5a7311b28c309f7eb3847b5368d92eb78f47",
+    "sha256:16885cb3a9b7455b80f2e74926976898faef88406c712962470fbcb65b6628e0",
+    "sha256:ce93af4efa47e174792ea77715bae38fda54e729369d12d066f7b00f355ddfd3",
+    "sha256:e4a1f9c4ca8a0eb3c3d89feeaf3dd709990f4dd61b3348663dd8c074e416f1cf",
+    "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+    "sha256:7cf27f7565941d48f044ccd0e27d45818aa34cff077195e602e2df4a15901b90",
+    "sha256:1e7d8ab28263c9bb6fef21ddf1b0f7aceae5781dd5ff2659614c2e9b6d58f105",
+    "sha256:a1758d2650a80bbbd3bd42d095cdaddfab8765a89f3319868eed19bed8356d12",
+    "sha256:d7b36e4c96d3b77d4c9b7c9bf3cc028888926fc5c48d7b6461bf6b87db0e5a59",
+    "sha256:b8d9418bc1f1fe0cdd23acaf10d20f261c7e8d695cd80da45340eb16b208d173",
+    "sha256:fe510ba003fcf0d7ab558ed779d21aefc85f59a2fdb3f59997099351affac27d"
+  ],
+  "config": {
+    "user": "",
+    "workingDir": "/app",
+    "entrypoint": null,
+    "cmd": [
+      "uvicorn",
+      "src.api.main:app",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8000"
+    ],
+    "labels": {}
+  }
+}

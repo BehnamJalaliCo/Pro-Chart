@@ -1,0 +1,179 @@
+{
+  "attemptAccounting": {
+    "cleanHarnessSetupFailures": 1,
+    "cleanSuiteCanonicalAttempt": 2,
+    "cleanSuiteCanonicalRetryCount": 0,
+    "cleanSuiteHarnessAttempts": 2,
+    "contractCanonicalAttempt": 3,
+    "contractCanonicalRetryCount": 0,
+    "contractHarnessSetupFailures": 2,
+    "contractInvocationAttempts": 3,
+    "focusedAttempts": 1,
+    "focusedRetryCount": 0,
+    "notes": [
+      "contract attempt 1 lacked PYTHONPATH=/app and stopped before import",
+      "contract attempt 2 lacked synthetic security settings and stopped at the baked fail-closed validator",
+      "clean attempt 1 stopped before test-image build because BuildKit attempted remote resolution of a local digest name",
+      "all setup failures are preserved; canonical contract/focused results use the unchanged image ID"
+    ]
+  },
+  "backendContract": {
+    "applicationLifespanStarted": false,
+    "checks": {
+      "coreAuthContract": true,
+      "duplicateMethodPathsAbsent": true,
+      "httpMethodPathCount": true,
+      "liveAdminProtection": true,
+      "liveAdminRouteCount": true,
+      "liveHttpContract": true,
+      "protectedCoreAuth": true,
+      "referralHttpContract": true,
+      "referralRoutesPublic": true,
+      "routeObjectCount": true,
+      "securityHeadersMiddlewareConfigured": true,
+      "topLevelEaRoutesAbsent": true,
+      "websocketContract": true
+    },
+    "duplicateMethodPaths": [],
+    "exitCode": 0,
+    "flakyCount": 0,
+    "httpMethodPathCount": 488,
+    "liveServicesOrDataUsed": false,
+    "network": "none",
+    "referralHttpMethodPaths": [
+      {
+        "method": "GET",
+        "path": "/go/lbank"
+      },
+      {
+        "method": "GET",
+        "path": "/go/oneroyal"
+      }
+    ],
+    "retryCount": 0,
+    "routeObjectCount": 489,
+    "skippedCount": 0,
+    "status": "pass",
+    "uniqueHttpMethodPathCount": 488
+  },
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "branch": "claude/pro-chart-tradingview-parity-ewbpoy",
+  "candidateImage": {
+    "architecture": "amd64",
+    "buildExitCode": 0,
+    "created": "2026-07-15T01:17:40.604854676Z",
+    "id": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+    "localOnly": true,
+    "os": "linux",
+    "registryPublishedOrSigned": false,
+    "repoDigests": [
+      "prochart-api@sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf"
+    ],
+    "sizeBytes": 3582640780,
+    "tag": "prochart-api:qa-backend-080033ae56e3-20260715T011720Z"
+  },
+  "caveats": [
+    "the repo digest is local Docker metadata; this candidate was not pushed, signed, deployed, or used to restart a live service",
+    "the clean legacy Python suite is failing and prevents an overall PASS",
+    "frontend runtime security-header behavior is outside this backend network-none artifact",
+    "the baseline commit identifies the starting revision; backend-git-status.txt records current modified/untracked candidate inputs"
+  ],
+  "cleanPythonSuite": {
+    "apiSecurityHeaderRegressionExitCode": 0,
+    "errors": 32,
+    "exitCode": 1,
+    "failures": 54,
+    "flakyCount": 0,
+    "liveServicesOrDataUsed": false,
+    "network": "none",
+    "passed": 255,
+    "pipCheckExitCode": 0,
+    "pytestSummaryErrors": 32,
+    "pytestSummaryFailures": 54,
+    "pytestSummaryPassed": 216,
+    "pytestSummarySubtestsPassed": 39,
+    "resultInterpretation": "legacy suite failed; raw failures/errors are retained in clean-python/full.log and results.xml",
+    "retryCount": 0,
+    "runtimeHeaderBehaviorExclusion": "requires a served HTTPS frontend and is outside this network-none backend run",
+    "runtimeHeaderBehaviorExecuted": false,
+    "runtimeHeaderCliSmokeExitCode": 0,
+    "skipped": 0,
+    "tests": 341,
+    "timeSeconds": 11.099
+  },
+  "derivedTestImage": {
+    "addsOnlyPinnedTestHarness": "pytest==9.1.1 and pytest-asyncio==1.4.0 per qa/python/Dockerfile",
+    "bakedSrcEqualsCandidateCmpExitCode": 0,
+    "baseImageIdVerifiedBeforeBuild": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+    "baseImageTag": "prochart-api:qa-backend-080033ae56e3-20260715T011720Z",
+    "id": "sha256:1114e52506a897786e7813b5668dca01d85acc3f344ea0c53a8d65418f903668",
+    "repoDigests": [
+      "prochart-qa-pytest@sha256:1114e52506a897786e7813b5668dca01d85acc3f344ea0c53a8d65418f903668"
+    ],
+    "tag": "prochart-qa-pytest:backend-080033ae56e3-20260715T011720Z"
+  },
+  "finishedUtc": "2026-07-15T01:22:52Z",
+  "focusedReferralAndBotSuite": {
+    "errors": 0,
+    "exitCode": 0,
+    "failures": 0,
+    "flakyCount": 0,
+    "network": "none",
+    "passed": 13,
+    "retryCount": 0,
+    "skipped": 0,
+    "sourceUnderTest": "exact derived-image /app/src; manifest equals candidate /app/src and frozen worktree",
+    "tests": 13,
+    "timeSeconds": 3.441
+  },
+  "liveContainerNoninterference": {
+    "allRunningContainersAfterCount": 13,
+    "allRunningContainersBeforeCount": 12,
+    "concurrencyNote": "parallel QA replaced prochart-qa-preview and started a Playwright container; neither is a live product service and neither action came from this backend refresh",
+    "concurrentQaAdded": [
+      "friendly_ellis"
+    ],
+    "concurrentQaChanged": [
+      "prochart-qa-preview"
+    ],
+    "concurrentQaRemoved": [],
+    "deployOrRestartPerformedByBackendRefresh": false,
+    "productAdded": [],
+    "productAfterCount": 11,
+    "productBeforeCount": 11,
+    "productChanged": [],
+    "productNamesIdsAndImagesStable": true,
+    "productRemoved": []
+  },
+  "overallStatus": "fail",
+  "overallStatusReason": "candidate build, baked-source parity, route contract, security probes, focused referrals/bot suite, pip check, and secret scans passed; the clean legacy Python suite retained 54 failures and 32 errors",
+  "productionImagePytestProbe": {
+    "exitCode": 1,
+    "expectedAbsence": true,
+    "interpretation": "production image does not include pytest; tests use the pinned derived image with independently verified /app/src equality"
+  },
+  "runId": "20260715T011720Z",
+  "schemaVersion": 1,
+  "secretScanning": {
+    "backendAndQaScopedExitCode": 0,
+    "backendAndQaScopedFindings": 0,
+    "backendAndQaScopedGitleaksVersion": "v8.30.1",
+    "cleanSnapshotExitCode": 0,
+    "cleanSnapshotFindings": 0,
+    "redactionPercent": 100
+  },
+  "sourceBinding": {
+    "allBuildInputsStableThroughTestsCmpExitCode": 0,
+    "backendBuildInputFileCount": 270,
+    "backendBuildInputFingerprint": "ed148f670371f311664027a667d9f7d560f7d1aed983cd0e54b41c2549888787",
+    "bakedSrcFileCount": 177,
+    "bakedSrcManifestFingerprint": "2525ece68233049732530995d6460cb7a93632e511bec2722f42c118a6cc7666",
+    "match": true,
+    "srcFileCount": 177,
+    "worktreeEqualsBakedCmpExitCode": 0,
+    "worktreeSrcManifestFingerprint": "2525ece68233049732530995d6460cb7a93632e511bec2722f42c118a6cc7666",
+    "worktreeStableAcrossBuildCmpExitCode": 0,
+    "worktreeStableThroughTestsCmpExitCode": 0
+  },
+  "startedUtc": "2026-07-15T01:17:38Z"
+}

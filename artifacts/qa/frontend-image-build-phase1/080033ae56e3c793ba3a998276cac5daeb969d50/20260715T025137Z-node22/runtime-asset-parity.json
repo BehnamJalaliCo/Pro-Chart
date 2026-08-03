@@ -1,0 +1,20 @@
+{
+  "imageId": "sha256:972fdb60d3a273748bf4b31e37f2071e64b2616d8168a96b4b63d98b23a45b1e",
+  "assets": {
+    "javascript": {
+      "path": "assets/index-DE77rbAv.js",
+      "sha256": "75cf695f0e25cc58628b6bc51eec3d814161f0e7dd8ccf97a11dbe4212042a34",
+      "bytes": 2399398,
+      "expectedSha256": "75cf695f0e25cc58628b6bc51eec3d814161f0e7dd8ccf97a11dbe4212042a34",
+      "expectedBytes": 2399398
+    },
+    "css": {
+      "path": "assets/index-BDC3pT6H.css",
+      "sha256": "b2b331f330e02008d07f4a01d954dba672225c75866fa2300799118833435c3e",
+      "bytes": 79848,
+      "expectedSha256": "b2b331f330e02008d07f4a01d954dba672225c75866fa2300799118833435c3e",
+      "expectedBytes": 79848
+    }
+  },
+  "result": "PASS"
+}

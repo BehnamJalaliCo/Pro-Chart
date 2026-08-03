@@ -1,0 +1,13 @@
+{
+  "runId": "20260714T233200Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "command": "node --test frontend/prochart/test/*.test.mjs",
+  "node": "v20.20.2",
+  "files": 8,
+  "assertions": 128,
+  "nodeTestSubtests": 9,
+  "passed": 9,
+  "failed": 0,
+  "result": "PASS",
+  "note": "Three numerical suites consume existing bundles; exact bundle/source equivalence remains a separate gate."
+}

@@ -1,0 +1,9 @@
+{
+  "healthHttpStatus": 200,
+  "rootHttpsStatus": 200,
+  "assetHttpsStatus": 200,
+  "servedJavascriptSha256": "75cf695f0e25cc58628b6bc51eec3d814161f0e7dd8ccf97a11dbe4212042a34",
+  "containerState": "running",
+  "securityHeaderCount": 6,
+  "result": "PASS"
+}

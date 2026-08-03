@@ -1,0 +1,18 @@
+{
+  "Id": "sha256:7be597caae5f57abb1b9a6d319e793ed69fc825642879c0c3d2e86024936d0a6",
+  "RepoTags": [
+    "prochart-frontend:qa-pc130-20260715T002005Z"
+  ],
+  "RepoDigests": [
+    "prochart-frontend@sha256:7be597caae5f57abb1b9a6d319e793ed69fc825642879c0c3d2e86024936d0a6"
+  ],
+  "Created": "2026-07-15T00:20:26.986535068Z",
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 24466505,
+  "Config": {
+    "Labels": {
+      "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>"
+    }
+  }
+}

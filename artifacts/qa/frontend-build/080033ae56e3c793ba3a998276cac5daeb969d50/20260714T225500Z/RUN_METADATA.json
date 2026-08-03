@@ -1,0 +1,87 @@
+{
+  "runId": "20260714T225500Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "isolation": "fresh /tmp copies; repository source not written; node_modules and dist excluded from copy",
+  "node": "20.20.2",
+  "npm": "10.8.2",
+  "builds": {
+    "academy": {
+      "sourceFingerprint": "cf01f79631d57ad0c435a2f997df95367adee787ee13eabadcbd278da9ee1972",
+      "lockfile": false,
+      "vite": "6.4.3",
+      "status": "PASS",
+      "outputBytes": 3453368,
+      "outputFiles": 17,
+      "largestJsKb": 2880.45,
+      "largestJsGzipKb": 898.88
+    },
+    "ig": {
+      "sourceFingerprint": "69a3dbc1d5ea25be1bc5c821b49291033ad73871e9ca8a55018076e1858c69d3",
+      "lockfile": false,
+      "vite": "6.4.3",
+      "status": "PASS",
+      "outputBytes": 898501,
+      "outputFiles": 13,
+      "largestJsKb": 402.39,
+      "largestJsGzipKb": 120.41
+    },
+    "panel": {
+      "sourceFingerprint": "40fd7db1ddca7c1395c9645fef13bc6d1f4b0c1ec5929bcdf656b1ee01c26010",
+      "lockfile": false,
+      "vite": "6.4.3",
+      "status": "PASS",
+      "outputBytes": 1567827,
+      "outputFiles": 70,
+      "largestJsKb": 384.29,
+      "largestJsGzipKb": 106.11
+    },
+    "prochart": {
+      "sourceFingerprint": "754358097499c3d6146e5f41e3932916da6763a7f3b9bbd8ad02c5092a2a9428",
+      "lockfile": true,
+      "vite": "6.4.3",
+      "defaultBuildStatus": "PASS",
+      "defaultOutputBytes": 7100739,
+      "defaultOutputFiles": 534,
+      "webNoObfuscationBuildStatus": "PASS",
+      "webOutputBytes": 5532537,
+      "webOutputFiles": 534,
+      "webLargestJsKb": 2128.67,
+      "webLargestJsGzipKb": 584.49
+    },
+    "user": {
+      "sourceFingerprint": "a94a6ed03aee1cc345b1bf8303e5a0446d065fd1421ee5971e6a30dffa6e6b93",
+      "lockfile": false,
+      "vite": "6.4.3",
+      "status": "PASS",
+      "outputBytes": 899380,
+      "outputFiles": 13,
+      "largestJsKb": 413.22,
+      "largestJsGzipKb": 118.93
+    },
+    "website": {
+      "sourceFingerprint": "ba247495b78f16058e4c97f28c5d930f6f5e61da9f7f59a2b2e65fa6af59ac15",
+      "lockfile": true,
+      "vite": "5.4.21",
+      "status": "PASS",
+      "outputBytes": 1717531,
+      "outputFiles": 45,
+      "largestJsKb": 394.29,
+      "largestJsGzipKb": 107.17
+    }
+  },
+  "javascriptSyntaxChecks": {
+    "files": 90,
+    "failed": 0
+  },
+  "audit": {
+    "prochartAll": { "moderate": 2, "high": 6, "critical": 0, "total": 8 },
+    "prochartProduction": { "moderate": 0, "high": 0, "critical": 0, "total": 0 },
+    "websiteAll": { "moderate": 1, "high": 2, "critical": 0, "total": 3 },
+    "websiteProduction": { "moderate": 0, "high": 1, "critical": 0, "total": 1 }
+  },
+  "evidenceSecretScan": {
+    "tool": "gitleaks 8.30.1",
+    "redactionPercent": 100,
+    "findings": 0
+  }
+}

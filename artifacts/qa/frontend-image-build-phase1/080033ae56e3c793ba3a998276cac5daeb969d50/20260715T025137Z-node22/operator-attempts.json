@@ -1,0 +1,14 @@
+{
+  "attempts": [
+    {
+      "id": 1,
+      "result": "FAIL_HARNESS",
+      "diagnosis": "HTTP correctly redirected the asset to HTTPS; the first harness hashed the redirect body."
+    },
+    {
+      "id": 2,
+      "result": "PASS",
+      "canonical": true
+    }
+  ]
+}

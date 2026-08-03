@@ -1,0 +1,6 @@
+OWASP ASVS v5.0.0 official tag: https://github.com/OWASP/ASVS/tree/v5.0.0
+Mapped candidate controls: v5.0.0-3.4.1, v5.0.0-3.4.3,
+v5.0.0-3.4.4, v5.0.0-3.4.5, v5.0.0-3.4.6
+Unimplemented Level 3 controls: v5.0.0-3.4.7 CSP violation report
+location; v5.0.0-3.4.8 Cross-Origin-Opener-Policy
+Not assessed by this header-only refresh: v5.0.0-3.4.2 CORS allowlist behavior

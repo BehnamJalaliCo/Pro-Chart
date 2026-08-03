@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "scope": "six-frontend-static-source-inventory",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T004249Z",
+  "generator": {
+    "path": "qa/scripts/frontend-source-inventory.py",
+    "sha256": "baabe1d6ad97ac68cec261ed90c436c3dfbfcae63934996bad91efbe298f6a1f",
+    "ignoredByGit": false
+  },
+  "inventory": {
+    "path": "inventory.json",
+    "sha256": "d57f0d4ab59b658b63d3d72ca7cd47934231e2927bf6ca6cf0811b64a5648c4e",
+    "schemaVersion": "1.0.0",
+    "canonicalSourceFingerprint": "bd0496e9a29b435bdf36b15fc7a38818c83b29920137544b149b55a87bf6ea50"
+  },
+  "validation": {
+    "pythonCompile": "PASS",
+    "jsonParse": "PASS",
+    "schemaContract": "PASS",
+    "byteIdenticalRepeat": "PASS"
+  },
+  "execution": {
+    "kind": "static-only",
+    "browser": false,
+    "applicationRuntime": false,
+    "networkProvidersContacted": false
+  }
+}

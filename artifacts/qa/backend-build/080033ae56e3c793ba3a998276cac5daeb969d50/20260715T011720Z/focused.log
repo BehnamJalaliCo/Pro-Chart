@@ -1,0 +1,29 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+rootdir: /qa
+plugins: asyncio-1.4.0, anyio-4.14.2, typeguard-4.5.2
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 13 items
+
+../qa/referral_redirects_regression.py::test_redirect_is_exact_uncached_and_ignores_query_override[/go/lbank-https://www.lbank.com/ref/PROCHART] PASSED [  7%]
+../qa/referral_redirects_regression.py::test_redirect_is_exact_uncached_and_ignores_query_override[/go/oneroyal-https://vc.cabinet.oneroyal.com/fa/links/go/12412] PASSED [ 15%]
+../qa/referral_redirects_regression.py::test_router_exposes_only_two_explicit_get_routes PASSED [ 23%]
+../qa/referral_redirects_regression.py::test_redirect_module_does_not_consume_or_log_request_data PASSED [ 30%]
+../qa/referral_redirects_regression.py::test_product_api_payloads_expose_internal_paths_only PASSED [ 38%]
+../qa/referral_redirects_regression.py::test_legacy_api_fields_keep_names_but_return_internal_paths PASSED [ 46%]
+../qa/referral_redirects_regression.py::test_bot_departure_uses_notice_gate_and_absolute_internal_route PASSED [ 53%]
+../qa/test_bot_v2_referral.py::test_generate_default_length_and_charset PASSED [ 61%]
+../qa/test_bot_v2_referral.py::test_generate_custom_length PASSED        [ 69%]
+../qa/test_bot_v2_referral.py::test_generate_unique_enough PASSED        [ 76%]
+../qa/test_bot_v2_referral.py::test_is_valid_accepts_generated PASSED    [ 84%]
+../qa/test_bot_v2_referral.py::test_is_valid_rejects_bad PASSED          [ 92%]
+../qa/test_bot_v2_referral.py::test_normalize_uppercases_and_strips PASSED [100%]
+
+=============================== warnings summary ===============================
+referral_redirects_regression.py::test_product_api_payloads_expose_internal_paths_only
+  /usr/local/lib/python3.12/site-packages/passlib/utils/__init__.py:854: DeprecationWarning: 'crypt' is deprecated and slated for removal in Python 3.13
+    from crypt import crypt as _crypt
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+-------------- generated xml file: /evidence/focused-results.xml ---------------
+======================== 13 passed, 1 warning in 3.44s =========================

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "detectedAtUtc": "2026-07-15T01:46:35Z",
+  "classification": "POST_SEAL_SECURITY_CORRECTION",
+  "reason": "The raw Docker container Command field captured a live credential in two JSONL inventory files. The credential value is intentionally absent from this notice.",
+  "affectedFiles": [
+    "live-containers-before.jsonl",
+    "live-containers-after.jsonl"
+  ],
+  "correction": {
+    "field": "Command",
+    "action": "Replaced the field in every container record with an explicit redaction marker",
+    "rawCredentialRetainedInCorrectedBundle": false,
+    "sourceCodeOrTestResultsChanged": false,
+    "previousRootManifestSha256": "071ed0379d7e4ca0eb12de05b56e4ad73ed0125241fe7090a4101c3703edd700",
+    "previousSealSuperseded": true
+  },
+  "postCorrectionScan": {
+    "tool": "Gitleaks 8.30.1",
+    "network": "none",
+    "redactionPercent": 100,
+    "exitCode": 1,
+    "findingCount": 3,
+    "classification": "PUBLIC_BASE_IMAGE_GPG_KEY_IDENTIFIERS",
+    "files": [
+      "image-inspect.json",
+      "test-image-inspect.json",
+      "test-image-history.jsonl"
+    ],
+    "scannerFailurePreserved": true,
+    "releasePassGranted": false
+  },
+  "requiredFollowUp": [
+    "Rotate and revoke the exposed live credential through the authorized deployment workflow",
+    "Re-run dependent service checks after rotation",
+    "Keep raw container command and environment fields out of future evidence captures"
+  ],
+  "requirementImpact": {
+    "PC-132": "FAIL"
+  }
+}

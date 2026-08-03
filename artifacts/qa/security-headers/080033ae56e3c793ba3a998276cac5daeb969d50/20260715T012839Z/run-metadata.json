@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 2,
+  "requirementId": "PC-130",
+  "scope": "current-candidate frontend security headers, fixed referral edge locations, and API security-header middleware",
+  "runId": "20260715T012839Z",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "branch": "claude/pro-chart-tradingview-parity-ewbpoy",
+  "frontendSourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "securityScopeFingerprint": "564229171b8d7bef257fd9d908be114280a5fce4cb548e31df82e88a8a7d9c79",
+  "sourceStableThroughRun": true,
+  "result": "IMPLEMENTED_CANDIDATE_RUNTIME_PASS_DEPLOYMENT_PENDING",
+  "fullyVerified": false,
+  "reasonNotFullyVerified": "The isolated current candidate passed syntax, runtime, browser, middleware, referral, and passive-DAST checks, but production was intentionally not deployed or restarted. The live container still serves zero tested security headers and returns its SPA document for both /go paths.",
+  "canonicalPath": {
+    "composeService": "frontend-prochart",
+    "build": "frontend/prochart/Dockerfile",
+    "edgeConfig": "frontend/prochart/nginx.conf",
+    "sharedPolicy": "frontend/prochart/security-headers.conf",
+    "apiMiddleware": "src/api/middleware/security_headers.py",
+    "referralRouter": "src/api/routes/referrals.py",
+    "ignoredLegacyRootNginxUsed": false
+  },
+  "buildClassification": {
+    "dockerfileNoObf": "1",
+    "shippingObfuscated": false,
+    "label": "canonical Docker-image path with obfuscation disabled",
+    "imageId": "sha256:018cf92e3b491615a9ca8abb5ff14b1326b31a19e8873144f0d27e0a10492456",
+    "imageRepoDigest": "prochart-frontend@sha256:018cf92e3b491615a9ca8abb5ff14b1326b31a19e8873144f0d27e0a10492456",
+    "imageBuiltFromCurrentWorktree": true,
+    "nginxSourceMatchesBakedConfig": true,
+    "securityHeaderSourceMatchesBakedConfig": true,
+    "cleanCheckoutReproducible": false,
+    "reproducibilityReason": "The dirty worktree includes untracked candidate modules required by the build; a successful local-context image build does not prove clean-checkout or commit reproducibility."
+  },
+  "nginxValidation": {
+    "syntax": "PASS",
+    "effectiveConfigCaptured": true,
+    "exactReferralLocations": 2,
+    "referralLocationsWithAccessLogOff": 2,
+    "sourceToImageConfigMatch": true
+  },
+  "candidateRuntime": {
+    "container": "pcsec-front-20260715t012839z",
+    "removedAfterEvidence": true,
+    "readOnlyRootFilesystem": true,
+    "noNewPrivileges": true,
+    "certificateMountReadOnly": true,
+    "publishedAddress": "127.0.0.1:18446",
+    "network": "pcsec-20260715t012839z",
+    "networkRemovedAfterEvidence": true,
+    "apiHelperImageId": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+    "responseCasesPassed": 10,
+    "responseCasesFailed": 0,
+    "routesAndMethods": [
+      "GET /",
+      "GET /assets/<built-js>",
+      "GET /assets/does-not-exist-pc130.js => 404",
+      "OPTIONS / => 405",
+      "GET /health",
+      "GET /manifest.webmanifest",
+      "GET /sw.js",
+      "GET /go/lbank => 302",
+      "GET /go/oneroyal => 302",
+      "OPTIONS /go/lbank => 405"
+    ],
+    "singleSecurityHeaderPolicyOnAllCases": true,
+    "inlineJsonLdSha256": "sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=",
+    "duplicateUpstreamSecurityHeadersSuppressed": true,
+    "referrals": {
+      "exactGetRoutes": 2,
+      "exactDestinationsPassed": true,
+      "queryOverrideIgnored": true,
+      "cacheControl": "no-store",
+      "pragma": "no-cache",
+      "frontendAccessLogEntries": 0,
+      "apiDestinationMapImmutable": true,
+      "zappedSeparately": false,
+      "zappedSeparatelyReason": "The passive root crawl did not exercise departure routes; exact redirect behavior is covered by runtime-headers.json and api-referral-middleware-regression.log."
+    },
+    "observedResiduals": [
+      "GET /health carries nginx's default application/octet-stream Content-Type plus the configured application/json Content-Type; the seven tested security policy fields remain single-valued.",
+      "Static assets carry both expires-generated max-age and the explicit public, immutable Cache-Control field."
+    ]
+  },
+  "browserTests": {
+    "testFile": "qa/tests/security-headers.spec.mjs",
+    "finalPassed": 1,
+    "finalFailed": 0,
+    "finalSkipped": 0,
+    "finalFlaky": 0,
+    "configuredRetries": 0,
+    "requiredBlobWorkerAndEvalWorked": true,
+    "unlistedExternalScriptBlockedByCsp": true,
+    "preservedHarnessFailures": 1,
+    "harnessFailureReason": "The initial IPv4 base URL activated the product's public-origin canonicalization; final accepted evidence uses localhost."
+  },
+  "apiRegressions": {
+    "middlewareResult": "PASS",
+    "middlewareAssertions": 11,
+    "middlewareBranches": [
+      "HSTS enabled",
+      "HSTS disabled",
+      "custom CSP"
+    ],
+    "referralResult": "PASS",
+    "referralAssertions": 23,
+    "preservedHarnessFailures": 1,
+    "harnessFailureReason": "The first mounted CLI omitted PYTHONPATH=/app and failed before assertions."
+  },
+  "passiveDast": {
+    "tool": "OWASP ZAP 2.17.0 baseline with alpha passive rules enabled",
+    "imageDigest": "sha256:8d387b1a63e3425beef4846e39719f5af2a787753af2d8b6558c6257d7a577a2",
+    "urlsObserved": 13,
+    "exitCode": 2,
+    "exitInterpretation": "warnings present; zero FAIL-NEW and zero FAIL-INPROG",
+    "failNew": 0,
+    "failInProgress": 0,
+    "warnNew": 7,
+    "highRiskInstances": 0,
+    "mediumRiskInstances": 3,
+    "lowRiskInstances": 11,
+    "informationalInstances": 29,
+    "mediumResiduals": [
+      "CSP permits HTTPS images broadly",
+      "CSP script-src retains unsafe-eval for worker-isolated NamaScript compatibility",
+      "CSP style-src retains unsafe-inline for the current React/chart inline-style surface"
+    ],
+    "limitation": "Passive unauthenticated baseline only; not an active or authenticated penetration test."
+  },
+  "liveDeployment": {
+    "container": "prochart-frontend-prochart-1",
+    "containerId": "8b76d5c53b7e7e283e447c88b91f1135e45bfc0df9b4fc36ef59034f007578ed",
+    "imageId": "sha256:d3e237880adcaa5cbcba2e3ef8ed9d46231cd655fbf378d948ad0e39218d9a20",
+    "startedAt": "2026-07-14T17:34:08.618020915Z",
+    "stateUnchangedAcrossRun": true,
+    "observedRootStatus": 200,
+    "observedSecurityHeaders": 0,
+    "observedReferralStatuses": {
+      "/go/lbank": 200,
+      "/go/oneroyal": 200
+    },
+    "candidateDeployed": false,
+    "deploymentActionTaken": false,
+    "sharedQaPreviewReplacedOrRestarted": false
+  },
+  "evidenceSecurity": {
+    "gitleaksVersion": "8.30.1",
+    "redacted": true,
+    "finalFindings": 0,
+    "reviewedPreservedFalsePositives": 3,
+    "falsePositiveClassification": "two public base-image GPG_KEY metadata matches in over-broad Docker inspect artifacts plus one heuristic match on a cleanup metadata field/container name; final inspect artifacts are field-minimized and the neutral cleanup field was rescanned"
+  },
+  "integrityManifest": "SHA256SUMS"
+}

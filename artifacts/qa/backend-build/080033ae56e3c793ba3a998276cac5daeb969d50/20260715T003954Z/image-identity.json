@@ -1,0 +1,12 @@
+{
+  "tag": "prochart-api:qa-current-20260715",
+  "imageId": "sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+  "repoDigest": "prochart-api@sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+  "created": "2026-07-15T00:40:06.601143292Z",
+  "platform": "linux/amd64",
+  "manifestListSha256": "62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+  "imageManifestSha256": "99973bf1f87760712cc75b887daa15d9575111345c5c6b6b571a832948a42899",
+  "configSha256": "bd9d02b15a429bb8e20d73fe62b2901d0ef6b0c5c4b66977b2c9498afc3644f2",
+  "attestationManifestSha256": "ae087a32ffb710b9b9b37ec1cb8a3fee81ae314f6774a9c3b5c42dbe69514824",
+  "baseImage": "python:3.12-slim@sha256:c3d81d25b3154142b0b42eb1e61300024426268edeb5b5a26dd7ddf64d9daf28"
+}

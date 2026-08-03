@@ -1,0 +1,1 @@
+docker run --rm --network none --read-only --tmpfs /tmp ... -e PYTHONPATH=/app -e <synthetic QA security settings> -v qa/scripts/backend-image-contract.py:/qa/backend-image-contract.py:ro --entrypoint python prochart-api:qa-backend-080033ae56e3-20260715T011720Z /qa/backend-image-contract.py

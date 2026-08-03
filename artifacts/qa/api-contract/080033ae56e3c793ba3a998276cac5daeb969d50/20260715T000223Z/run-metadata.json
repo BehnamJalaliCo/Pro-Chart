@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "runId": "20260715T000223Z",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "scope": "unmounted-route-audit-and-ea-runtime-contract-restoration",
+  "requirementIds": ["PC-002", "PC-005", "PC-132", "PC-156", "PC-159"],
+  "sourceSetFingerprint": "cb7f9612854d501e01f7ca1307ca00c0cc1a6a6f6cb4cdfb235045257775283a",
+  "sourceSnapshot": "current worktree mounted read-only",
+  "applicationImage": {
+    "name": "prochart-api:qa-current-20260714",
+    "id": "sha256:768613b6398c2ef089e0c8b73ac03ceddb6e9b1dac94d32a2b54c893dab1efdb",
+    "use": "dependency/runtime base with current worktree mounted read-only"
+  },
+  "testImage": "prochart-qa-pytest:deps-20260714",
+  "testNetwork": "none",
+  "liveServicesOrDataUsed": false,
+  "pytest": {
+    "tests": 5,
+    "passed": 5,
+    "subtestsPassed": 24,
+    "failed": 0,
+    "errors": 0,
+    "exitCode": 0
+  },
+  "registration": {
+    "routeObjects": 496,
+    "httpMethodPaths": 495,
+    "duplicateHttpMethodPaths": 0,
+    "eaHttpMethodPaths": 9,
+    "remainingUnmountedDecoratorCount": 51,
+    "remainingUnmountedDecoratorCounts": {
+      "admin_instagram.py": 44,
+      "trade_history.py": 7
+    }
+  },
+  "decision": {
+    "ea.py": "MOUNTED: all nine token-guarded endpoints have current in-repository machine clients and no route collision",
+    "admin_instagram.py": "NOT MOUNTED: no current consumer; legacy admin UI was replaced and /ig is a tenant-scoped fork, not an authorization-equivalent substitute",
+    "trade_history.py": "NOT MOUNTED: no current admin consumer; shared query helpers remain active through mounted user routes; destructive DELETE lacks an explicit admin-role dependency",
+    "manualOpenGap": "OPEN: BazaarNama references POST /ea/manual-open but no handler exists; requires a separate authenticated command-contract decision"
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "findings": 0,
+    "redaction": "100%"
+  }
+}

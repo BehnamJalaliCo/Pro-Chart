@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "currentProductCount": 11,
+  "evidenceProductCount": 11,
+  "namesIdsStable": true,
+  "allCurrentRunning": true,
+  "qaPreviewRemoved": true,
+  "deployOrRestartPerformed": false,
+  "result": "PASS"
+}

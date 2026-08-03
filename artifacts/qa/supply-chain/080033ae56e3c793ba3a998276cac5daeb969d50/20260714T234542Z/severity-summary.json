@@ -1,0 +1,210 @@
+{
+  "applicableMatches": 817,
+  "defaultSuppressedMatches": 344,
+  "totalRetainedMatchRecords": 1161,
+  "applicableBySeverity": [
+    {
+      "severity": "Critical",
+      "count": 29
+    },
+    {
+      "severity": "High",
+      "count": 73
+    },
+    {
+      "severity": "Low",
+      "count": 32
+    },
+    {
+      "severity": "Medium",
+      "count": 97
+    },
+    {
+      "severity": "Negligible",
+      "count": 538
+    },
+    {
+      "severity": "Unknown",
+      "count": 48
+    }
+  ],
+  "defaultSuppressedBySeverity": [
+    {
+      "severity": "Critical",
+      "count": 11
+    },
+    {
+      "severity": "High",
+      "count": 67
+    },
+    {
+      "severity": "Low",
+      "count": 1
+    },
+    {
+      "severity": "Medium",
+      "count": 154
+    },
+    {
+      "severity": "Negligible",
+      "count": 58
+    },
+    {
+      "severity": "Unknown",
+      "count": 53
+    }
+  ],
+  "combinedBySeverity": [
+    {
+      "severity": "Critical",
+      "count": 40
+    },
+    {
+      "severity": "High",
+      "count": 140
+    },
+    {
+      "severity": "Low",
+      "count": 33
+    },
+    {
+      "severity": "Medium",
+      "count": 251
+    },
+    {
+      "severity": "Negligible",
+      "count": 596
+    },
+    {
+      "severity": "Unknown",
+      "count": 101
+    }
+  ],
+  "applicableBySeverityAndFixState": [
+    {
+      "severity": "Critical",
+      "fixState": "fixed",
+      "count": 1
+    },
+    {
+      "severity": "Critical",
+      "fixState": "not-fixed",
+      "count": 4
+    },
+    {
+      "severity": "Critical",
+      "fixState": "wont-fix",
+      "count": 24
+    },
+    {
+      "severity": "High",
+      "fixState": "",
+      "count": 2
+    },
+    {
+      "severity": "High",
+      "fixState": "fixed",
+      "count": 15
+    },
+    {
+      "severity": "High",
+      "fixState": "not-fixed",
+      "count": 17
+    },
+    {
+      "severity": "High",
+      "fixState": "wont-fix",
+      "count": 39
+    },
+    {
+      "severity": "Low",
+      "fixState": "fixed",
+      "count": 25
+    },
+    {
+      "severity": "Low",
+      "fixState": "not-fixed",
+      "count": 3
+    },
+    {
+      "severity": "Low",
+      "fixState": "wont-fix",
+      "count": 4
+    },
+    {
+      "severity": "Medium",
+      "fixState": "",
+      "count": 2
+    },
+    {
+      "severity": "Medium",
+      "fixState": "fixed",
+      "count": 36
+    },
+    {
+      "severity": "Medium",
+      "fixState": "not-fixed",
+      "count": 18
+    },
+    {
+      "severity": "Medium",
+      "fixState": "wont-fix",
+      "count": 41
+    },
+    {
+      "severity": "Negligible",
+      "fixState": "fixed",
+      "count": 1
+    },
+    {
+      "severity": "Negligible",
+      "fixState": "not-fixed",
+      "count": 537
+    },
+    {
+      "severity": "Unknown",
+      "fixState": "not-fixed",
+      "count": 48
+    }
+  ],
+  "defaultSuppressedBySeverityAndFixState": [
+    {
+      "severity": "Critical",
+      "fixState": "not-fixed",
+      "count": 11
+    },
+    {
+      "severity": "High",
+      "fixState": "not-fixed",
+      "count": 67
+    },
+    {
+      "severity": "Low",
+      "fixState": "not-fixed",
+      "count": 1
+    },
+    {
+      "severity": "Medium",
+      "fixState": "not-fixed",
+      "count": 153
+    },
+    {
+      "severity": "Medium",
+      "fixState": "wont-fix",
+      "count": 1
+    },
+    {
+      "severity": "Negligible",
+      "fixState": "not-fixed",
+      "count": 58
+    },
+    {
+      "severity": "Unknown",
+      "fixState": "not-fixed",
+      "count": 53
+    }
+  ],
+  "applicableUniqueVulnerabilityIds": 242,
+  "defaultSuppressedUniqueVulnerabilityIds": 344,
+  "note": "Counts are match records, not deduplicated risk decisions. ignoredMatches are Grype built-in default suppressions retained in the raw JSON."
+}

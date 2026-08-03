@@ -1,0 +1,45 @@
+
+> prochart-quality-harness@0.1.0 test:security-headers
+> playwright test tests/security-headers.spec.mjs --project=chromium-desktop
+
+
+Running 1 test using 1 worker
+
+[1/1] [chromium-desktop] › tests/security-headers.spec.mjs:4:3 › PC-130 runtime CSP behavior › the production policy permits required workers and blocks an unlisted script origin
+  1) [chromium-desktop] › tests/security-headers.spec.mjs:4:3 › PC-130 runtime CSP behavior › the production policy permits required workers and blocks an unlisted script origin 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    Expected: ObjectContaining {"blockedURI": "https://example.invalid/prochart-pc130-probe.js", "directive": "script-src-elem"}
+    Received: null
+
+      56 |     violations.push(...await page.evaluate(() => window.__pc130Violations));
+      57 |
+    > 58 |     expect(blockedProbe).toEqual(expect.objectContaining({
+         |                          ^
+      59 |       directive: 'script-src-elem',
+      60 |       blockedURI: 'https://example.invalid/prochart-pc130-probe.js',
+      61 |     }));
+        at /home/bazaarnama/Pro-Chart/app/qa/tests/security-headers.spec.mjs:58:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/security-headers/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001723Z/playwright/test-results/security-headers-PC-130-ru-45a90-s-an-unlisted-script-origin-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/security-headers/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001723Z/playwright/test-results/security-headers-PC-130-ru-45a90-s-an-unlisted-script-origin-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/security-headers/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001723Z/playwright/test-results/security-headers-PC-130-ru-45a90-s-an-unlisted-script-origin-chromium-desktop/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/security-headers/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001723Z/playwright/test-results/security-headers-PC-130-ru-45a90-s-an-unlisted-script-origin-chromium-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/security-headers/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T001723Z/playwright/test-results/security-headers-PC-130-ru-45a90-s-an-unlisted-script-origin-chromium-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [chromium-desktop] › tests/security-headers.spec.mjs:4:3 › PC-130 runtime CSP behavior › the production policy permits required workers and blocks an unlisted script origin 

@@ -1,0 +1,13 @@
+{
+  "runId": "20260714T230500Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "2f82ca68dc023e02077373206ca224eda281b7912891958ebc98eaf8363c94ea",
+  "baseImage": "prochart-api:latest",
+  "testImage": "prochart-qa-pytest:9.1.1",
+  "repositorySnapshot": "sanitized worktree copy mounted read-only",
+  "testNetwork": "none",
+  "liveServicesOrDataUsed": false,
+  "pythonDontWriteBytecode": true,
+  "pytestCacheDisabled": true,
+  "exitCode": 2
+}

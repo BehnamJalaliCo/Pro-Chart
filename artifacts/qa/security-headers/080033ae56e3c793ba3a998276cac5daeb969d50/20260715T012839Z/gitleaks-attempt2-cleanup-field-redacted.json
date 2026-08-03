@@ -1,0 +1,22 @@
+[
+ {
+  "RuleID": "generic-api-key",
+  "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+  "StartLine": 4,
+  "EndLine": 4,
+  "StartColumn": 5,
+  "EndColumn": 61,
+  "Match": "removedDisposableApiHelper\": \"REDACTED\"",
+  "Secret": "REDACTED",
+  "File": "/evidence/cleanup-summary.json",
+  "SymlinkFile": "",
+  "Commit": "",
+  "Entropy": 4.0269866,
+  "Author": "",
+  "Email": "",
+  "Date": "",
+  "Message": "",
+  "Tags": [],
+  "Fingerprint": "/evidence/cleanup-summary.json:generic-api-key:4"
+ }
+]

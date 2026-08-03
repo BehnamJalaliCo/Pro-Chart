@@ -1,0 +1,50 @@
+### Effective CSP source
+507336a8cdcad7744e5c1f572a5d52a1286955b1c6271948e6d3799d218f938c  frontend/prochart/security-headers.conf
+6:add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+7:add_header X-Frame-Options "DENY" always;
+8:add_header X-Content-Type-Options "nosniff" always;
+9:add_header X-XSS-Protection "0" always;
+10:add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+11:add_header Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)" always;
+21:add_header Content-Security-Policy "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests" always;
+
+### Dynamic-evaluation / Worker compatibility sources
+frontend/prochart/src/bazaarnama/namascript.js:190:    var f = new Function('ta','math','input','plot','plotshape','plotchar','plotarrow','plotcandle','plotbar','hline','bgcolor','fill','riskreward','barcolor','label','alertcondition','alert','line','box','table','strategy','study','indicator','crossover','crossunder','cross','nz','na','iff','ref','security','request','int','float','bool','add','sub','mul','div','gt','lt','ge','le','and','or','color','shape','open','high','low','close','volume','time','hl2','hlc3','ohlc4','hlcc4','bar_index','last_bar_index','barstate','str','S', __SRC);
+frontend/prochart/src/bazaarnama/namascript.js:225:function workerUrl() { if (!_url) _url = URL.createObjectURL(new Blob([WORKER_SRC], { type: 'application/javascript' })); return _url; }
+frontend/prochart/src/bazaarnama/namascript.js:230:    const w = new Worker(workerUrl());
+frontend/prochart/src/bazaarnama/RightPanel.jsx:701:                  const blob = new Blob(["﻿" + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+frontend/prochart/src/bazaarnama/RightPanel.jsx:702:                  const url = URL.createObjectURL(blob);
+frontend/prochart/src/bazaarnama/namascript_bar.js:337:    var body = new Function(
+frontend/prochart/src/bazaarnama/namascript_bar.js:403:function workerUrl() { if (!_url) _url = URL.createObjectURL(new Blob([WORKER_SRC], { type: 'application/javascript' })); return _url; }
+frontend/prochart/src/bazaarnama/namascript_bar.js:410:    const w = new Worker(workerUrl());
+frontend/prochart/src/bazaarnama/ScreenshotMenu.jsx:37:      const blob = await canvasToBlob(cv, 'png');
+frontend/prochart/src/bazaarnama/ScreenshotMenu.jsx:40:      if (!ok && blob) downloadBlob(blob, `${(getCapture(opts)?.name) || 'chart'}.png`);
+frontend/prochart/src/bazaarnama/ScreenshotMenu.jsx:48:      const blob = await canvasToBlob(cv, opts.format, 0.92);
+frontend/prochart/src/bazaarnama/ScreenshotMenu.jsx:49:      downloadBlob(blob, `${(getCapture(opts)?.name) || 'chart'}.${opts.format}`);
+frontend/prochart/src/bazaarnama/ScreenshotMenu.jsx:58:      const blob = await canvasToBlob(cv, 'png');
+frontend/prochart/src/bazaarnama/ScreenshotMenu.jsx:69:      if (!ok && blob) downloadBlob(blob, `${(getCapture(opts)?.name) || 'chart'}.png`);
+frontend/prochart/src/bazaarnama/screenshot.js:110:export function canvasToBlob(cv, format = 'png', quality = 0.92) {
+frontend/prochart/src/bazaarnama/screenshot.js:113:    try { cv.toBlob((b) => resolve(b), mime, format === 'jpg' ? quality : undefined); }
+frontend/prochart/src/bazaarnama/screenshot.js:119:export function downloadBlob(blob, filename) {
+frontend/prochart/src/bazaarnama/screenshot.js:121:  const url = URL.createObjectURL(blob);
+frontend/prochart/src/bazaarnama/panels/Screener.jsx:264:      const blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+frontend/prochart/src/bazaarnama/panels/Screener.jsx:265:      const url = URL.createObjectURL(blob);
+frontend/prochart/src/pages/Journal.jsx:194:    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'journal.csv'; a.click();
+frontend/prochart/src/pages/BazaarNama.jsx:1555:      const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+frontend/prochart/src/pages/BazaarNama.jsx:1556:      const url = URL.createObjectURL(blob);
+frontend/prochart/src/pages/BazaarNama.jsx:2227:    const blob = await canvasToBlob(cv, 'png');
+frontend/prochart/src/pages/BazaarNama.jsx:2229:    if (!ok && blob) downloadBlob(blob, `${cap.name}.png`);
+
+### WebSocket constructors
+frontend/prochart/src/pages/BazaarNama.jsx:2023:      ws = new WebSocket(`${proto}://${window.location.host}/ws/prices`);
+
+### Inline-style inventory
+stylePropOccurrences=1370
+filesWithStyleProps=54
+
+### External runtime script/frame origins
+frontend/prochart/index.html:26:    <script type="application/ld+json">
+frontend/prochart/index.html:79:    <script type="module" src="/src/main.jsx"></script>
+frontend/prochart/src/components/TelegramLogin.jsx:9:    const s = document.createElement('script');
+frontend/prochart/src/components/TelegramLogin.jsx:10:    s.src = 'https://telegram.org/js/telegram-widget.js?22';
+frontend/prochart/src/bazaarnama/screenshot.js:12:    img.src = src; // import محلی → بدونِ CORS taint

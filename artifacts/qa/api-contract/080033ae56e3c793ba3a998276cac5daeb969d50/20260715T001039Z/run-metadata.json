@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "runId": "20260715T001039Z",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "scope": "canonical-unmounted-route-consumer-and-exposure-audit",
+  "requirementIds": ["PC-002", "PC-005", "PC-132", "PC-156", "PC-159"],
+  "sourceSetFingerprint": "3abff5cbd76f47cfd1908025e050a1d27274f3cc5072bf4156987abcac8e053d",
+  "sourceSnapshot": "current canonical worktree plus separately identified ignored local diagnostic",
+  "supersedesTransientRuns": ["20260715T000223Z", "20260715T000634Z"],
+  "bakedBackendImage": {
+    "name": "prochart-api:qa-current-20260714",
+    "id": "sha256:768613b6398c2ef089e0c8b73ac03ceddb6e9b1dac94d32a2b54c893dab1efdb",
+    "verificationNetwork": "none"
+  },
+  "testImage": "prochart-qa-pytest:deps-20260714",
+  "testNetwork": "none",
+  "liveServicesOrDataUsed": false,
+  "pytest": {
+    "tests": 2,
+    "passed": 2,
+    "subtestsPassed": 15,
+    "failed": 0,
+    "errors": 0,
+    "exitCode": 0
+  },
+  "registration": {
+    "routeObjects": 487,
+    "httpMethodPaths": 486,
+    "duplicateHttpMethodPaths": 0,
+    "eaHttpMethodPaths": 0,
+    "liveHttpMethodPaths": 17,
+    "remainingUnmountedDecoratorCount": 60,
+    "remainingUnmountedDecoratorCounts": {
+      "admin_instagram.py": 44,
+      "ea.py": 9,
+      "trade_history.py": 7
+    }
+  },
+  "canonicalDecision": {
+    "ea.py": "KEEP UNMOUNTED: commit e5ae2d2 intentionally removed all tracked EA clients/services; canonical compose has none; generic public API proxies plus query-token auth would expose the credential in URLs/access logs",
+    "admin_instagram.py": "KEEP UNMOUNTED: no tracked canonical consumer; legacy admin and IG frontends were removed",
+    "trade_history.py": "KEEP ADMIN ROUTER UNMOUNTED: no tracked canonical admin consumer; only shared helper functions remain referenced, and destructive DELETE lacks an explicit admin-role dependency"
+  },
+  "ignoredLocalDiagnostic": {
+    "file": "media/mt5/user_manager.py",
+    "gitStatus": "ignored and never tracked; not deliverable through the current repository",
+    "localCorrection": "signals request now carries uid consistently with config and heartbeat",
+    "missingUidFallback": "uid=0, the master namespace",
+    "executedEvidenceRun": "20260715T000634Z",
+    "executedResult": "2 focused tests passed with 2 subtests under network=none before the canonical mount decision was reversed",
+    "adrOptions": [
+      "precisely unignore and security-review the required media/mt5 source/build context without unignoring the whole media tree",
+      "relocate the runtime client into a tracked deploy tree and wire it through a canonical tracked compose manifest"
+    ]
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "findings": 0,
+    "redaction": "100%"
+  }
+}

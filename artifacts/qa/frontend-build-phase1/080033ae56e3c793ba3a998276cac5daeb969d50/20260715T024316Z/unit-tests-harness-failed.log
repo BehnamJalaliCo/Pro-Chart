@@ -1,0 +1,243 @@
+TAP version 13
+# PASS avgRange recent-14 == 12.5 (got 12.5)
+# PASS avgRange(<p bars) works
+# PASS renko up: 3 bricks (got 3)
+# PASS renko up: each brick exactly 1 tall & up
+# PASS renko down: 2 bricks (got 2)
+# PASS renko down: each 1 tall & down
+# PASS renko: times strictly increasing
+# PASS rangeBars: produced bars
+# PASS rangeBars: all h>=l
+# PASS rangeBars: each bar range >= rng (approx)
+# PASS lineBreak: produced lines
+# PASS lineBreak: all h>=l
+# PASS lineBreak: times strictly increasing
+# PASS kagi: 2 points (up-extreme then reversal) got 2
+# PASS kagi: up-extreme=105 (small pullback 103 ignored)
+# PASS kagi: reversal point=98 (moved >=reversal down)
+# PASS kagi: times strictly increasing
+# PASS avgRange empty=1
+# PASS renko empty=[]
+# === ALL PASS ===
+# Subtest: /tmp/prochart-phase1-build.2cbxx4qW/source/test/chartbuilders.test.mjs
+ok 1 - /tmp/prochart-phase1-build.2cbxx4qW/source/test/chartbuilders.test.mjs
+  ---
+  duration_ms: 51.868365
+  ...
+# Subtest: one watchlist search activation dispatches one bn:openSearch event
+ok 2 - one watchlist search activation dispatches one bn:openSearch event
+  ---
+  duration_ms: 1.49428
+  ...
+# Subtest: open-search dispatch fails closed when the browser event API is unavailable or throws
+ok 3 - open-search dispatch fails closed when the browser event API is unavailable or throws
+  ---
+  duration_ms: 0.222041
+  ...
+# Subtest: coming-soon password inputs and their eye toggles have native disabled semantics
+ok 4 - coming-soon password inputs and their eye toggles have native disabled semantics
+  ---
+  duration_ms: 0.588019
+  ...
+# Subtest: compact LegendRow returns before the normal-mode More control
+ok 5 - compact LegendRow returns before the normal-mode More control
+  ---
+  duration_ms: 0.286539
+  ...
+# Subtest: Space remains native when focus is inside a button
+ok 6 - Space remains native when focus is inside a button
+  ---
+  duration_ms: 1.279058
+  ...
+# Subtest: Space still activates replay away from native controls
+ok 7 - Space still activates replay away from native controls
+  ---
+  duration_ms: 0.32645
+  ...
+# PASS ulcer == independent reference (elementwise)
+# PASS ulcer >= 0
+# PASS ulcer = 0 on monotonic rise
+# PASS chandelier long = HH(close) - mult*ATR
+# PASS chandelier green below close (uptrend)
+# PASS chandelier red null (uptrend)
+# PASS chandelier finite
+# PASS chandelier flips to red-above on crash
+# === 8 passed, 0 failed ===
+# Subtest: /tmp/prochart-phase1-build.2cbxx4qW/source/test/indicators.test.mjs
+ok 4 - /tmp/prochart-phase1-build.2cbxx4qW/source/test/indicators.test.mjs
+  ---
+  duration_ms: 59.884142
+  ...
+# Subtest: settled live price stays idle without another apply
+ok 9 - settled live price stays idle without another apply
+  ---
+  duration_ms: 0.928608
+  ...
+# Subtest: live price converges monotonically and snaps to the real target in bounded frames
+ok 10 - live price converges monotonically and snaps to the real target in bounded frames
+  ---
+  duration_ms: 0.31577
+  ...
+# node:internal/fs/promises:637
+#   return new FileHandle(await PromisePrototypeThen(
+#                         ^
+# Error: ENOENT: no such file or directory, open '/tmp/src/api/routes/referrals.py'
+#     at async open (node:internal/fs/promises:637:25)
+#     at async readFile (node:internal/fs/promises:1249:14)
+#     at async Promise.all (index 5)
+#     at async file:///tmp/prochart-phase1-build.2cbxx4qW/source/test/referral-compliance.test.mjs:13:75 {
+#   errno: -2,
+#   code: 'ENOENT',
+#   syscall: 'open',
+#   path: '/tmp/src/api/routes/referrals.py'
+# }
+# Node.js v20.20.2
+# Subtest: /tmp/prochart-phase1-build.2cbxx4qW/source/test/referral-compliance.test.mjs
+not ok 6 - /tmp/prochart-phase1-build.2cbxx4qW/source/test/referral-compliance.test.mjs
+  ---
+  duration_ms: 58.961892
+  location: '/tmp/prochart-phase1-build.2cbxx4qW/source/test/referral-compliance.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# PASS H2 all aligned to even 2h boundary (t%7200==0)
+# PASS H2 count (5 == 5)
+# PASS H2 16:00 exists
+# PASS H2 16:00 open = h1[1].o (11 == 11)
+# PASS H2 16:00 close = h1[2].c (17 == 17)
+# PASS H2 16:00 high = max(h1[1..2].h) (22 == 22)
+# PASS H2 16:00 low = min(h1[1..2].l) (6 == 6)
+# PASS H2 16:00 vol = sum(h1[1..2].v) (5 == 5)
+# PASS H2 14:00 (partial) open = h1[0].o (10 == 10)
+# PASS H2 14:00 (partial) close = h1[0].c (15 == 15)
+# PASS M30 aligned to 30-min boundary (t%1800==0)
+# PASS W1 count (10 daily / 5) = 2 (2 == 2)
+# PASS W1[0] open = d1[0].o (count-based first) (0 == 0)
+# PASS W1[0] close = d1[4].c (count-based 5th) (5 == 5)
+# PASS W1[0] high = max(d1[0..4].h) (9 == 9)
+# PASS W1[1] open = d1[5].o (5 == 5)
+# PASS all resampled h>=l
+# PASS factor 1 = passthrough
+# === ALL PASS ===
+# Subtest: /tmp/prochart-phase1-build.2cbxx4qW/source/test/resample.test.mjs
+ok 7 - /tmp/prochart-phase1-build.2cbxx4qW/source/test/resample.test.mjs
+  ---
+  duration_ms: 71.623389
+  ...
+# PASS resolveSrc('close') == reference
+# PASS resolveSrc('open') == reference
+# PASS resolveSrc('high') == reference
+# PASS resolveSrc('low') == reference
+# PASS resolveSrc('hl2') == reference
+# PASS resolveSrc('hlc3') == reference
+# PASS resolveSrc('ohlc4') == reference
+# PASS resolveSrc('hlcc4') == reference
+# PASS hlcc4[0] exact = 10.30
+# PASS hlcc4 != ohlc4 when open!=close
+# PASS unknown source -> close fallback
+# PASS SOURCE_OPTS has hlcc4
+# PASS adxDI.adx == adx() elementwise
+# PASS adxDI: +DI > -DI on uptrend end
+# PASS adxDI short input -> null
+# 15 passed, 0 failed
+# Subtest: /tmp/prochart-phase1-build.2cbxx4qW/source/test/source.test.mjs
+ok 8 - /tmp/prochart-phase1-build.2cbxx4qW/source/test/source.test.mjs
+  ---
+  duration_ms: 48.660236
+  ...
+# PASS plain symbol isExpr=false
+# PASS ratio parse
+# PASS ratio eval
+# PASS mult eval
+# PASS sub eval
+# PASS precedence A+B*C=7
+# PASS A*B+C=5
+# PASS (A+B)*C=9
+# PASS (A+B)/2=5
+# PASS unary -A+B=3
+# PASS 2*-3=-6
+# PASS div0 → null
+# PASS missing sym → null
+# PASS trailing op A/ → null
+# PASS two syms no op → null
+# PASS unbalanced ( → null
+# PASS empty → null
+# PASS bad char → null
+# PASS spread aligns to common times
+# PASS spread t1 close=2.5
+# PASS spread t1 high=2.5 low=1.25
+# PASS spread t2 close=3
+# PASS spread h>=l always
+# === 23 passed, 0 failed ===
+# Subtest: /tmp/prochart-phase1-build.2cbxx4qW/source/test/symbolExpr.test.mjs
+ok 9 - /tmp/prochart-phase1-build.2cbxx4qW/source/test/symbolExpr.test.mjs
+  ---
+  duration_ms: 34.750788
+  ...
+# PASS returns object
+# PASS has all fields
+# PASS maTot == 14 without volume (VWMA skipped) (got 14)
+# PASS maTot == 15 with volume (VWMA counted) (got 15)
+# PASS uptrend+volume: VWMA rated Buy so maBuy 14->15 (14->15)
+# PASS all-zero volume: maTot == 14 (VWMA null-skipped) (got 14)
+# PASS oscTot == 11 (got 11)
+# PASS adx: +DI crosses ABOVE -DI, ADX>20 -> +1
+# PASS adx: +DI crosses BELOW -DI, ADX>20 -> -1
+# PASS adx: +DI already above (no cross) -> 0
+# PASS adx: crossover but ADX<=20 -> 0
+# PASS adx: non-finite -> 0
+# PASS bbp: bear<0 rising & bull rising -> +1
+# PASS bbp: bull>0 falling & bear falling -> -1
+# PASS bbp: flat (no rise/fall) -> 0
+# PASS bbp: bear<0 rising but bull NOT rising -> 0
+# PASS bbp: non-finite -> 0
+# PASS momentum rising -> +1
+# PASS momentum falling -> -1
+# PASS momentum flat (linear) -> 0
+# PASS neg-but-rising MOM -> +1 (MOM=-13.250<0, rising vs -14.750)
+# PASS momentum short data -> 0
+# PASS uptrend: maBuy==maTot (14/14), maScore=1.00
+# PASS overall = (ma+osc)/2
+# PASS label = ratingLabel(overall)
+# PASS all counts non-negative
+# PASS all scores finite
+# PASS downtrend: maScore strongly negative (-0.86), maSell>=tot-1 (13/14)
+# PASS ratingLabel thresholds
+# PASS null for <60 candles
+# === ALL PASS ===
+# Subtest: /tmp/prochart-phase1-build.2cbxx4qW/source/test/techrating.test.mjs
+ok 10 - /tmp/prochart-phase1-build.2cbxx4qW/source/test/techrating.test.mjs
+  ---
+  duration_ms: 56.043973
+  ...
+# PASS returns 10 buckets
+# PASS total volume preserved == 30 (got 30.000)
+# PASS bucket[0] distributed >0 (got 1.000)
+# PASS bucket[0] == 1 (A spread evenly: 10/10)
+# PASS POC in overlap region 4..6 (poc idx=4)
+# PASS exactly one POC
+# PASS VA non-empty
+# PASS VA contiguous
+# PASS VA includes POC
+# PASS VA covers >=70% (got 76.7%)
+# PASS no-volume: total == candle count 3 (got 3.00)
+# PASS empty → null
+# PASS null → null
+# === ALL PASS ===
+# Subtest: /tmp/prochart-phase1-build.2cbxx4qW/source/test/volumeProfile.test.mjs
+ok 11 - /tmp/prochart-phase1-build.2cbxx4qW/source/test/volumeProfile.test.mjs
+  ---
+  duration_ms: 40.209258
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 15
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 131.10239

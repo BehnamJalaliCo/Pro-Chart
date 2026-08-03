@@ -1,0 +1,259 @@
+{
+  "matches": 171,
+  "ignored": 0,
+  "bySeverity": [
+    {
+      "severity": "Critical",
+      "count": 5
+    },
+    {
+      "severity": "High",
+      "count": 23
+    },
+    {
+      "severity": "Low",
+      "count": 5
+    },
+    {
+      "severity": "Medium",
+      "count": 49
+    },
+    {
+      "severity": "Negligible",
+      "count": 50
+    },
+    {
+      "severity": "Unknown",
+      "count": 39
+    }
+  ],
+  "fixed": 6,
+  "highCritical": [
+    {
+      "id": "CVE-2026-11940",
+      "severity": "High",
+      "package": "python",
+      "version": "3.13.14",
+      "type": "binary",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-15308",
+      "severity": "High",
+      "package": "python",
+      "version": "3.13.14",
+      "type": "binary",
+      "fix": [
+        "3.15.0"
+      ]
+    },
+    {
+      "id": "CVE-2026-5450",
+      "severity": "Critical",
+      "package": "libc-bin",
+      "version": "2.41-12+deb13u3",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-5450",
+      "severity": "Critical",
+      "package": "libc6",
+      "version": "2.41-12+deb13u3",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-42496",
+      "severity": "Critical",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-8376",
+      "severity": "Critical",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-12087",
+      "severity": "Critical",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-11972",
+      "severity": "High",
+      "package": "python",
+      "version": "3.13.14",
+      "type": "binary",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-9538",
+      "severity": "High",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2025-69720",
+      "severity": "High",
+      "package": "libncursesw6",
+      "version": "6.5+20250216-2",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2025-69720",
+      "severity": "High",
+      "package": "libtinfo6",
+      "version": "6.5+20250216-2",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2025-69720",
+      "severity": "High",
+      "package": "ncurses-base",
+      "version": "6.5+20250216-2",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2025-69720",
+      "severity": "High",
+      "package": "ncurses-bin",
+      "version": "6.5+20250216-2",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-42497",
+      "severity": "High",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-48959",
+      "severity": "High",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-5928",
+      "severity": "High",
+      "package": "libc-bin",
+      "version": "2.41-12+deb13u3",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-5928",
+      "severity": "High",
+      "package": "libc6",
+      "version": "2.41-12+deb13u3",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-48962",
+      "severity": "High",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-41992",
+      "severity": "High",
+      "package": "gzip",
+      "version": "1.13-1",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-48961",
+      "severity": "High",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-7017",
+      "severity": "High",
+      "package": "perl-base",
+      "version": "5.40.1-6",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-5435",
+      "severity": "High",
+      "package": "libc-bin",
+      "version": "2.41-12+deb13u3",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-5435",
+      "severity": "High",
+      "package": "libc6",
+      "version": "2.41-12+deb13u3",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-11822",
+      "severity": "High",
+      "package": "libsqlite3-0",
+      "version": "3.46.1-7+deb13u1",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-11824",
+      "severity": "High",
+      "package": "libsqlite3-0",
+      "version": "3.46.1-7+deb13u1",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-54369",
+      "severity": "High",
+      "package": "libacl1",
+      "version": "2.3.2-2+b1",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-54371",
+      "severity": "High",
+      "package": "libattr1",
+      "version": "1:2.5.2-3",
+      "type": "deb",
+      "fix": []
+    },
+    {
+      "id": "CVE-2026-54370",
+      "severity": "High",
+      "package": "libacl1",
+      "version": "2.3.2-2+b1",
+      "type": "deb",
+      "fix": []
+    }
+  ]
+}

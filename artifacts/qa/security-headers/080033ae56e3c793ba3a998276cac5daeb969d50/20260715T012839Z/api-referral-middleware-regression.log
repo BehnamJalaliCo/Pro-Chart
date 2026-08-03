@@ -1,0 +1,30 @@
+{
+  "result": "PASS",
+  "assertions": 23,
+  "exactRoutes": {
+    "/go/lbank": [
+      "GET"
+    ],
+    "/go/oneroyal": [
+      "GET"
+    ]
+  },
+  "immutableDestinationMap": true,
+  "queryOverrideIgnored": true,
+  "responses": [
+    {
+      "path": "/go/lbank",
+      "status": 302,
+      "location": "https://www.lbank.com/ref/PROCHART",
+      "cacheControl": "no-store",
+      "pragma": "no-cache"
+    },
+    {
+      "path": "/go/oneroyal",
+      "status": 302,
+      "location": "https://vc.cabinet.oneroyal.com/fa/links/go/12412",
+      "cacheControl": "no-store",
+      "pragma": "no-cache"
+    }
+  ]
+}

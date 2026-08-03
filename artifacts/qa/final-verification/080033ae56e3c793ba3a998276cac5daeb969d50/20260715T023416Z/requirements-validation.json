@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "rows": 162,
+  "fields": 19,
+  "idStart": "PC-001",
+  "idEnd": "PC-162",
+  "priorities": {
+    "P0": 85,
+    "P1": 77
+  },
+  "statuses": {
+    "NOT_STARTED": 129,
+    "IN_PROGRESS": 33
+  },
+  "gates": {
+    "NOT_ASSESSED": 124,
+    "PARTIAL": 30,
+    "FAIL": 7,
+    "PASS_BASELINE": 1
+  },
+  "verifiedOrCompleteStatuses": 0,
+  "missingArtifactPaths": [],
+  "trailingWhitespace": [],
+  "result": "PASS"
+}

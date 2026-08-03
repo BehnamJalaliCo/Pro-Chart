@@ -1,0 +1,1472 @@
+{
+  "schema_version": "1.0",
+  "source": "ProChart_Requirements_Matrix_FA.docx",
+  "source_sha256": "cd2ecdbffab59af6b4d1993a3898337d37ec3472326d40ee05a50d1dcf9804b7",
+  "generated_at": "2026-07-15T04:31:00Z",
+  "counts": {
+    "total": 162,
+    "P0": 85,
+    "P1": 77,
+    "P2": 0
+  },
+  "requirements": [
+    {
+      "id": "PC-001",
+      "area": "محصول",
+      "priority": "P0",
+      "requirement": "هدف محصول در تمام تصمیم‌ها اولویت داشته باشد",
+      "acceptance_criteria": "تصمیم‌های اصلی به هدف «بهترین تجربه برای فارسی‌زبانان» و ADR متصل باشند",
+      "required_evidence": "ADR + بازبینی محصول",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-002",
+      "area": "محصول",
+      "priority": "P0",
+      "requirement": "هیچ قابلیت موجود بدون مجوز حذف نشود",
+      "acceptance_criteria": "Inventory و Characterization test ثابت کند همه مسیرهای Baseline باقی مانده‌اند",
+      "required_evidence": "Baseline diff + E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-003",
+      "area": "محصول",
+      "priority": "P0",
+      "requirement": "هیچ CTA یا کنترل مرده وجود نداشته باشد",
+      "acceptance_criteria": "Crawl همه کنترل‌ها؛ صفر Handler خالی، Placeholder دائمی یا Fake success",
+      "required_evidence": "Static scan + E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-004",
+      "area": "محصول",
+      "priority": "P0",
+      "requirement": "تعریف ۱۰۰٪ بر اساس Gateها اعمال شود",
+      "acceptance_criteria": "COMPLETE فقط پس از همه معیارهای توقف و سه Clean run ثبت شود",
+      "required_evidence": "Execution state + CI artifacts",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-005",
+      "area": "محصول",
+      "priority": "P0",
+      "requirement": "Routeهای قدیمی سازگار بمانند",
+      "acceptance_criteria": "هر Route تغییرکرده Redirect یا Compatibility test داشته باشد",
+      "required_evidence": "Route contract test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-006",
+      "area": "محصول",
+      "priority": "P1",
+      "requirement": "Featureها به صورت افزایشی منتشر شوند",
+      "acceptance_criteria": "قابلیت‌های پرریسک Feature Flag، Canary و Rollback داشته باشند",
+      "required_evidence": "Flag registry + release report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-007",
+      "area": "محصول",
+      "priority": "P1",
+      "requirement": "محدوده P0/P1/P2 شفاف باشد",
+      "acceptance_criteria": "هر Requirement Owner، وضعیت و Evidence داشته باشد",
+      "required_evidence": "Matrix audit",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-008",
+      "area": "محصول",
+      "priority": "P1",
+      "requirement": "هیچ متن خارج از هویت محصول نمایش داده نشود",
+      "acceptance_criteria": "Scan متن‌های عمومی فقط واژگان برند و محصول را بیابد",
+      "required_evidence": "Content scan",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-009",
+      "area": "زبان و RTL",
+      "priority": "P0",
+      "requirement": "ریشه رابط فارسی و RTL باشد",
+      "acceptance_criteria": "lang=fa و dir=rtl در همه Routeهای عمومی",
+      "required_evidence": "DOM assertion",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-010",
+      "area": "زبان و RTL",
+      "priority": "P0",
+      "requirement": "تمام رشته‌ها از i18n بیایند",
+      "acceptance_criteria": "صفر متن Hard-coded عمومی در Componentها",
+      "required_evidence": "i18n static scan",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-011",
+      "area": "زبان و RTL",
+      "priority": "P0",
+      "requirement": "انگلیسی خارج Whitelist صفر باشد",
+      "acceptance_criteria": "Scanner در DOM و Bundle هیچ رشته غیرمجاز نیابد",
+      "required_evidence": "Language gate",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-012",
+      "area": "زبان و RTL",
+      "priority": "P0",
+      "requirement": "توکن‌های LTR ایزوله شوند",
+      "acceptance_criteria": "Symbol، قیمت، Formula و Code در Span جهت‌دار درست نمایش یابند",
+      "required_evidence": "Visual + DOM test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-013",
+      "area": "زبان و RTL",
+      "priority": "P0",
+      "requirement": "تقویم جلالی و میلادی پشتیبانی شود",
+      "acceptance_criteria": "تبدیل بدون تغییر Timestamp و آزمون مرزی سال/ماه/DST",
+      "required_evidence": "Unit + E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-014",
+      "area": "زبان و RTL",
+      "priority": "P0",
+      "requirement": "اعداد فارسی/لاتین قابل انتخاب باشند",
+      "acceptance_criteria": "تنظیم کاربر در همه نمایش‌ها جز کد/نماد اعمال و ذخیره شود",
+      "required_evidence": "E2E + snapshot",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-015",
+      "area": "زبان و RTL",
+      "priority": "P1",
+      "requirement": "جست‌وجو Normalize فارسی داشته باشد",
+      "acceptance_criteria": "ی/ک عربی، نیم‌فاصله و Transliteration نتایج درست بدهند",
+      "required_evidence": "Search golden suite",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-016",
+      "area": "زبان و RTL",
+      "priority": "P1",
+      "requirement": "واژه‌نامه فنی ثابت باشد",
+      "acceptance_criteria": "اصطلاح‌های مصوب در UI و راهنما یکسان باشند",
+      "required_evidence": "Content lint",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-017",
+      "area": "زبان و RTL",
+      "priority": "P1",
+      "requirement": "پیام خطا راه‌حل‌محور باشد",
+      "acceptance_criteria": "هر خطای P0 شامل علت قابل‌فهم و اقدام بعدی باشد",
+      "required_evidence": "UX review + E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-018",
+      "area": "زبان و RTL",
+      "priority": "P1",
+      "requirement": "Typography فارسی بدون clipping باشد",
+      "acceptance_criteria": "تمام Viewportها و Zoom 200% بدون بریدگی و overlap",
+      "required_evidence": "Visual matrix",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-019",
+      "area": "Design System",
+      "priority": "P0",
+      "requirement": "Tokenهای رنگ، فاصله، تایپوگرافی و لایه واحد باشند",
+      "acceptance_criteria": "صفر مقدار پراکنده خارج Allowlist در Production CSS",
+      "required_evidence": "Token lint",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-020",
+      "area": "Design System",
+      "priority": "P0",
+      "requirement": "Theme تیره و روشن کامل باشند",
+      "acceptance_criteria": "تمام Componentها و چارت در دو Theme بدون Contrast defect",
+      "required_evidence": "Visual + a11y",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-021",
+      "area": "Design System",
+      "priority": "P1",
+      "requirement": "Theme کنتراست بالا موجود باشد",
+      "acceptance_criteria": "مسیرهای P0 در High-contrast خوانا و قابل استفاده باشند",
+      "required_evidence": "Manual a11y",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-022",
+      "area": "Design System",
+      "priority": "P0",
+      "requirement": "Componentهای پایه همه Stateها را داشته باشند",
+      "acceptance_criteria": "default/hover/focus/active/disabled/loading/error پوشش داده شود",
+      "required_evidence": "Story/Component tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-023",
+      "area": "Design System",
+      "priority": "P0",
+      "requirement": "Icon set مستقل و منسجم باشد",
+      "acceptance_criteria": "Grid، Stroke، نام معنایی و Accessible name برای همه آیکون‌ها",
+      "required_evidence": "Icon audit + snapshots",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-024",
+      "area": "Design System",
+      "priority": "P0",
+      "requirement": "Asset شخص ثالث از منبع غیرمجاز وارد نشود",
+      "acceptance_criteria": "Asset registry برای همه لوگوها/فونت‌ها منبع و مجوز ثبت کند",
+      "required_evidence": "Asset/license audit",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-025",
+      "area": "Design System",
+      "priority": "P0",
+      "requirement": "Touch target حداقل ۴۴ پیکسل باشد",
+      "acceptance_criteria": "تمام کنترل‌های لمسی P0 حداقل Hit area را پاس کنند",
+      "required_evidence": "Automated layout test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-026",
+      "area": "Design System",
+      "priority": "P1",
+      "requirement": "Component catalog مستند باشد",
+      "acceptance_criteria": "هر Component API، State، نمونه RTL و دسترس‌پذیری داشته باشد",
+      "required_evidence": "Catalog review",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-027",
+      "area": "Design System",
+      "priority": "P1",
+      "requirement": "Responsive behavior تعریف‌شده باشد",
+      "acceptance_criteria": "هیچ breakpoint تصادفی؛ رفتار در Viewport matrix تأیید شود",
+      "required_evidence": "Visual matrix",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-028",
+      "area": "حرکت و تعامل",
+      "priority": "P0",
+      "requirement": "بازخورد ورودی سریع باشد",
+      "acceptance_criteria": "Pointer/keyboard action در کمتر از ۱۰۰ms بازخورد بصری دهد",
+      "required_evidence": "Performance trace",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-029",
+      "area": "حرکت و تعامل",
+      "priority": "P0",
+      "requirement": "Gestureهای چارت کامل باشند",
+      "acceptance_criteria": "Pan، Zoom، Pinch، long-press و scale drag طبق spec کار کنند",
+      "required_evidence": "E2E gesture tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-030",
+      "area": "حرکت و تعامل",
+      "priority": "P0",
+      "requirement": "Undo/Redo پایدار باشد",
+      "acceptance_criteria": "حداقل ۵۰ Command متوالی بدون corruption قابل بازگشت/اعاده باشد",
+      "required_evidence": "Property + E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-031",
+      "area": "حرکت و تعامل",
+      "priority": "P0",
+      "requirement": "Keyboard shortcuts کامل باشند",
+      "acceptance_criteria": "تمام عملیات P0 مسیر Keyboard و Help قابل‌مشاهده داشته باشند",
+      "required_evidence": "Keyboard matrix",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-032",
+      "area": "حرکت و تعامل",
+      "priority": "P1",
+      "requirement": "Motion tokenها رعایت شوند",
+      "acceptance_criteria": "مدت و easing خارج Token صفر باشد",
+      "required_evidence": "Motion lint + trace",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-033",
+      "area": "حرکت و تعامل",
+      "priority": "P1",
+      "requirement": "Reduced motion پشتیبانی شود",
+      "acceptance_criteria": "انیمیشن غیرضروری حذف و کارکرد حفظ شود",
+      "required_evidence": "E2E reduced-motion",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-034",
+      "area": "حرکت و تعامل",
+      "priority": "P1",
+      "requirement": "Motion regression ثبت شود",
+      "acceptance_criteria": "مسیرهای حیاتی Frame/Event trace و threshold داشته باشند",
+      "required_evidence": "Motion artifacts",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-035",
+      "area": "موتور چارت",
+      "priority": "P0",
+      "requirement": "چارت شمعی دقیق باشد",
+      "acceptance_criteria": "OHLC، wick، body، precision و session با Fixture مرجع منطبق باشد",
+      "required_evidence": "Golden render + unit",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-036",
+      "area": "موتور چارت",
+      "priority": "P0",
+      "requirement": "انواع P0 چارت کامل باشند",
+      "acceptance_criteria": "۱۲ نوع P0 در data/state/view matrix پاس شوند",
+      "required_evidence": "E2E + visual",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-037",
+      "area": "موتور چارت",
+      "priority": "P1",
+      "requirement": "انواع P1 غیرزمانی دقیق باشند",
+      "acceptance_criteria": "Renko/Kagi/P&F/Line Break/Range قرارداد و عدم look-ahead داشته باشند",
+      "required_evidence": "Golden vectors",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-038",
+      "area": "موتور چارت",
+      "priority": "P1",
+      "requirement": "Profile و Footprint پشتیبانی شود",
+      "acceptance_criteria": "محاسبات حجم و aggregation با Dataset مرجع پاس شوند",
+      "required_evidence": "Unit + visual",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-039",
+      "area": "موتور چارت",
+      "priority": "P0",
+      "requirement": "Scaleهای Linear/Log/Percent/Indexed کار کنند",
+      "acceptance_criteria": "تبدیل و inverse mapping در دامنه‌ها و extreme values دقیق باشد",
+      "required_evidence": "Property tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-040",
+      "area": "موتور چارت",
+      "priority": "P0",
+      "requirement": "Pan/Zoom Anchor پایدار باشد",
+      "acceptance_criteria": "نقطه زیر Pointer پس از Zoom در tolerance تعریف‌شده بماند",
+      "required_evidence": "Interaction test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-041",
+      "area": "موتور چارت",
+      "priority": "P0",
+      "requirement": "Multi-pane و resize کامل باشد",
+      "acceptance_criteria": "Paneها اضافه/حذف/resize/save/restore بدون drift",
+      "required_evidence": "E2E + serialization",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-042",
+      "area": "موتور چارت",
+      "priority": "P1",
+      "requirement": "Multi-chart تا ۱۶ پنل کار کند",
+      "acceptance_criteria": "Layoutهای تعریف‌شده، sync انتخابی و محدودیت منابع پاس شوند",
+      "required_evidence": "E2E + performance",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-043",
+      "area": "موتور چارت",
+      "priority": "P0",
+      "requirement": "Crosshair داده درست نشان دهد",
+      "acceptance_criteria": "زمان، OHLCV و مقادیر indicator برای Bar منتخب دقیق باشد",
+      "required_evidence": "Unit + E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-044",
+      "area": "موتور چارت",
+      "priority": "P0",
+      "requirement": "Serialization نسخه‌دار باشد",
+      "acceptance_criteria": "Layout قدیمی migrate و round-trip بدون از دست رفتن State",
+      "required_evidence": "Migration fixtures",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-045",
+      "area": "موتور چارت",
+      "priority": "P0",
+      "requirement": "Export تصویر امن و دقیق باشد",
+      "acceptance_criteria": "PNG/WebP در Scaleهای هدف بدون PII و clipping",
+      "required_evidence": "Export tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-046",
+      "area": "موتور چارت",
+      "priority": "P1",
+      "requirement": "Accessibility overlay چارت موجود باشد",
+      "acceptance_criteria": "OHLCV و عملیات اصلی از Keyboard/Screen reader قابل دسترس",
+      "required_evidence": "Manual + automated a11y",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-047",
+      "area": "موتور چارت",
+      "priority": "P1",
+      "requirement": "Object selection قابل پیش‌بینی باشد",
+      "acceptance_criteria": "Hit testing در Zoom/DPRهای مختلف مطابق tolerance",
+      "required_evidence": "Geometry tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-048",
+      "area": "موتور چارت",
+      "priority": "P1",
+      "requirement": "LOD و downsampling کیفیت را حفظ کند",
+      "acceptance_criteria": "داده بزرگ روان و extremeها حفظ شوند",
+      "required_evidence": "Benchmark + visual",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-049",
+      "area": "داده بازار",
+      "priority": "P0",
+      "requirement": "Provider interface مستقل باشد",
+      "acceptance_criteria": "هیچ UI Component مستقیماً Schema Provider را مصرف نکند",
+      "required_evidence": "Architecture test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-050",
+      "area": "داده بازار",
+      "priority": "P0",
+      "requirement": "Symbol master نسخه‌دار باشد",
+      "acceptance_criteria": "Instrument metadata کامل و تغییرات قابل مهاجرت باشد",
+      "required_evidence": "Schema + contract",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-051",
+      "area": "داده بازار",
+      "priority": "P0",
+      "requirement": "OHLCV normalized و deterministic باشد",
+      "acceptance_criteria": "UTC، ترتیب، duplicate، gap و correction طبق قرارداد",
+      "required_evidence": "Property/contract tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-052",
+      "area": "داده بازار",
+      "priority": "P0",
+      "requirement": "WebSocket reconnect امن باشد",
+      "acceptance_criteria": "Heartbeat، backoff، resume/reconcile و dedupe پاس شود",
+      "required_evidence": "Fault-injection test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-053",
+      "area": "داده بازار",
+      "priority": "P0",
+      "requirement": "وضعیت freshness در UI دیده شود",
+      "acceptance_criteria": "live/delayed/reconnecting/offline درست و بدون Quote کهنه پنهان",
+      "required_evidence": "E2E states",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-054",
+      "area": "داده بازار",
+      "priority": "P0",
+      "requirement": "Cache entitlement را رعایت کند",
+      "acceptance_criteria": "داده خارج مجوز cache یا export نشود",
+      "required_evidence": "Security/contract tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-055",
+      "area": "داده بازار",
+      "priority": "P1",
+      "requirement": "Cache چندلایه و سالم باشد",
+      "acceptance_criteria": "Checksum، TTL، LRU و recovery در corruption پاس شود",
+      "required_evidence": "Integration tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-056",
+      "area": "داده بازار",
+      "priority": "P0",
+      "requirement": "Timezone/Session/DST صحیح باشد",
+      "acceptance_criteria": "مرز Session و DST روی Datasetهای مرجع بدون جابه‌جایی",
+      "required_evidence": "Golden suite",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-057",
+      "area": "داده بازار",
+      "priority": "P1",
+      "requirement": "Data quality dashboard موجود باشد",
+      "acceptance_criteria": "latency/gap/duplicate/correction/provider health قابل مشاهده",
+      "required_evidence": "Dashboard evidence",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-058",
+      "area": "داده بازار",
+      "priority": "P1",
+      "requirement": "Lineage هر Bar ثبت شود",
+      "acceptance_criteria": "Provider، sequence و quality flag قابل ردیابی باشد",
+      "required_evidence": "Trace audit",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-059",
+      "area": "ابزار ترسیم",
+      "priority": "P0",
+      "requirement": "خانواده ابزارهای اولویت‌دار کامل باشند",
+      "acceptance_criteria": "Trend/Fib/Geometry/Annotation P0 با create/edit/delete/save پاس شوند",
+      "required_evidence": "E2E + visual",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-060",
+      "area": "ابزار ترسیم",
+      "priority": "P1",
+      "requirement": "مجموعه کامل بیش از ۱۱۰ ابزار برنامه‌ریزی/پیاده شود",
+      "acceptance_criteria": "هر ابزار Requirement و test vectors مستقل داشته باشد",
+      "required_evidence": "Matrix + coverage",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-061",
+      "area": "ابزار ترسیم",
+      "priority": "P0",
+      "requirement": "Snap و Magnet درست باشد",
+      "acceptance_criteria": "OHLC/indicator snap در tolerance و toggleها کار کنند",
+      "required_evidence": "Geometry tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-062",
+      "area": "ابزار ترسیم",
+      "priority": "P0",
+      "requirement": "Lock/Hide/Group/Order کار کند",
+      "acceptance_criteria": "State از Canvas و Object Tree دوطرفه و persist شود",
+      "required_evidence": "E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-063",
+      "area": "ابزار ترسیم",
+      "priority": "P0",
+      "requirement": "Drawing alert قابل ساخت باشد",
+      "acceptance_criteria": "عبور/ورود/خروج با Clock سروری و dedupe درست",
+      "required_evidence": "Integration tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-064",
+      "area": "ابزار ترسیم",
+      "priority": "P1",
+      "requirement": "Style template و visibility interval باشد",
+      "acceptance_criteria": "Template round-trip و نمایش بر تایم‌فریم طبق rule",
+      "required_evidence": "E2E + serialization",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-065",
+      "area": "ابزار ترسیم",
+      "priority": "P1",
+      "requirement": "Anchor drift صفر عملی باشد",
+      "acceptance_criteria": "پس از Save/Load/Zoom جابه‌جایی کمتر از tolerance",
+      "required_evidence": "Geometry golden",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-066",
+      "area": "اندیکاتورها",
+      "priority": "P0",
+      "requirement": "کتابخانه P0 کامل باشد",
+      "acceptance_criteria": "تمام اندیکاتورهای فهرست‌شده با input/style/alert ارائه شوند",
+      "required_evidence": "Catalog + tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-067",
+      "area": "اندیکاتورها",
+      "priority": "P0",
+      "requirement": "محاسبات Golden داشته باشند",
+      "acceptance_criteria": "هر اندیکاتور روی داده مرجع و edge cases پاس شود",
+      "required_evidence": "Golden vectors",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-068",
+      "area": "اندیکاتورها",
+      "priority": "P0",
+      "requirement": "عدم Look-ahead تضمین شود",
+      "acceptance_criteria": "Historical result با اضافه‌شدن داده آینده تغییر غیرمجاز نکند",
+      "required_evidence": "Property tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-069",
+      "area": "اندیکاتورها",
+      "priority": "P0",
+      "requirement": "Streaming correction درست باشد",
+      "acceptance_criteria": "Bar جاری/اصلاح‌شده خروجی قابل بازتولید دهد",
+      "required_evidence": "Stream tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-070",
+      "area": "اندیکاتورها",
+      "priority": "P1",
+      "requirement": "Multi-timeframe semantics روشن باشد",
+      "acceptance_criteria": "Merge/gap/lookahead rule مستند و تست‌شده",
+      "required_evidence": "Contract tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-071",
+      "area": "اندیکاتورها",
+      "priority": "P0",
+      "requirement": "Indicator manager فارسی کامل باشد",
+      "acceptance_criteria": "Search/category/favorite/recent/settings/remove/move کار کند",
+      "required_evidence": "E2E + visual",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-072",
+      "area": "اندیکاتورها",
+      "priority": "P1",
+      "requirement": "Template و Instance ID پایدار باشد",
+      "acceptance_criteria": "چند Instance و Save/Load بدون collision",
+      "required_evidence": "Serialization tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-073",
+      "area": "اندیکاتورها",
+      "priority": "P1",
+      "requirement": "هشدار Performance Script داده شود",
+      "acceptance_criteria": "کار سنگین شناسایی و بدون Freeze توضیح داده شود",
+      "required_evidence": "Benchmark + UX test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-074",
+      "area": "Workspace",
+      "priority": "P0",
+      "requirement": "Auto-save قابل اعتماد باشد",
+      "acceptance_criteria": "debounce، status، retry و conflict بدون از دست‌رفتن داده",
+      "required_evidence": "Integration/E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-075",
+      "area": "Workspace",
+      "priority": "P0",
+      "requirement": "Layoutهای قدیمی migrate شوند",
+      "acceptance_criteria": "Fixture همه نسخه‌های شناخته‌شده restore شود",
+      "required_evidence": "Migration suite",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-076",
+      "area": "Workspace",
+      "priority": "P1",
+      "requirement": "Version history و restore باشد",
+      "acceptance_criteria": "نسخه‌ها قابل مشاهده و بازیابی بدون overwrite ناخواسته",
+      "required_evidence": "E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-077",
+      "area": "Workspace",
+      "priority": "P0",
+      "requirement": "Watchlist چندگانه کامل باشد",
+      "acceptance_criteria": "create/rename/reorder/import/export/columns/filter پاس شود",
+      "required_evidence": "E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-078",
+      "area": "Workspace",
+      "priority": "P0",
+      "requirement": "Watchlist stream virtualized باشد",
+      "acceptance_criteria": "۱۰هزار ردیف بدون jank و با quotes درست",
+      "required_evidence": "Performance + E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-079",
+      "area": "Workspace",
+      "priority": "P0",
+      "requirement": "Object Tree دوطرفه باشد",
+      "acceptance_criteria": "Selection/visibility/lock/order/group با Canvas sync",
+      "required_evidence": "E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-080",
+      "area": "Workspace",
+      "priority": "P1",
+      "requirement": "Offline queue و conflict حل شود",
+      "acceptance_criteria": "تغییرات آفلاین پس از اتصال با policy روشن merge شوند",
+      "required_evidence": "Fault test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-081",
+      "area": "هشدار",
+      "priority": "P0",
+      "requirement": "هشدار قیمت سروری باشد",
+      "acceptance_criteria": "پس از بستن مرورگر Trigger و Delivery log ایجاد شود",
+      "required_evidence": "Integration/E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-082",
+      "area": "هشدار",
+      "priority": "P0",
+      "requirement": "هشدار اندیکاتور و Drawing باشد",
+      "acceptance_criteria": "conditionها با Bar clock و dedupe درست عمل کنند",
+      "required_evidence": "Golden + integration",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-083",
+      "area": "هشدار",
+      "priority": "P1",
+      "requirement": "هشدار چندشرطی باشد",
+      "acceptance_criteria": "AND/OR و grouping UI/runtime مطابق AST",
+      "required_evidence": "Unit + E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-084",
+      "area": "هشدار",
+      "priority": "P1",
+      "requirement": "Webhook امن باشد",
+      "acceptance_criteria": "HMAC، replay protection، retry، SSRF control پاس شود",
+      "required_evidence": "Security tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-085",
+      "area": "هشدار",
+      "priority": "P0",
+      "requirement": "مدیریت Pause/Resume/Clone/Expiry باشد",
+      "acceptance_criteria": "تمام lifecycleها و permissionها کار کنند",
+      "required_evidence": "E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-086",
+      "area": "هشدار",
+      "priority": "P0",
+      "requirement": "Delivery دقیق و قابل ممیزی باشد",
+      "acceptance_criteria": "هر تلاش status، timestamp، channel و علت خطا داشته باشد",
+      "required_evidence": "Audit report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-087",
+      "area": "Replay و Backtest",
+      "priority": "P1",
+      "requirement": "Replay Clock مجازی داشته باشد",
+      "acceptance_criteria": "هیچ مسیر Replay به Date.now وابسته نباشد",
+      "required_evidence": "Static + deterministic tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-088",
+      "area": "Replay و Backtest",
+      "priority": "P1",
+      "requirement": "Replay step/speed/pause/reset کامل باشد",
+      "acceptance_criteria": "همه کنترل‌ها و state persistence پاس شوند",
+      "required_evidence": "E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-089",
+      "area": "Replay و Backtest",
+      "priority": "P1",
+      "requirement": "Replay آینده را افشا نکند",
+      "acceptance_criteria": "Network/UI/indicator فقط داده تا Clock مجازی ببیند",
+      "required_evidence": "Security/property test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-090",
+      "area": "Replay و Backtest",
+      "priority": "P1",
+      "requirement": "Backtest deterministic باشد",
+      "acceptance_criteria": "همان hash تنظیمات سه اجرای برابر بدهد",
+      "required_evidence": "Golden run",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-091",
+      "area": "Replay و Backtest",
+      "priority": "P1",
+      "requirement": "Commission/slippage/margin اعمال شود",
+      "acceptance_criteria": "Trade list و summary با سناریوی دستی منطبق",
+      "required_evidence": "Unit + report test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-092",
+      "area": "Replay و Backtest",
+      "priority": "P1",
+      "requirement": "گزارش کامل Strategy باشد",
+      "acceptance_criteria": "equity/drawdown/trades/metrics/export ارائه شود",
+      "required_evidence": "Visual + data test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-093",
+      "area": "Replay و Backtest",
+      "priority": "P1",
+      "requirement": "Paper Trading واضح و ایمن باشد",
+      "acceptance_criteria": "برچسب آزمایشی، order lifecycle، reset و audit کامل",
+      "required_evidence": "E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-094",
+      "area": "Replay و Backtest",
+      "priority": "P1",
+      "requirement": "Double-submit سفارش غیرممکن باشد",
+      "acceptance_criteria": "Idempotency و disabled state در latency/timeout پاس شود",
+      "required_evidence": "Fault test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-095",
+      "area": "NamaScript",
+      "priority": "P1",
+      "requirement": "Grammar نسخه‌دار باشد",
+      "acceptance_criteria": "Parser fixture نسخه‌ها و خطاهای پایدار داشته باشد",
+      "required_evidence": "Parser tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-096",
+      "area": "NamaScript",
+      "priority": "P1",
+      "requirement": "Type checker کامل باشد",
+      "acceptance_criteria": "Type errors با code/location/message فارسی دقیق",
+      "required_evidence": "Golden diagnostics",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-097",
+      "area": "NamaScript",
+      "priority": "P1",
+      "requirement": "Runtime sandbox باشد",
+      "acceptance_criteria": "بدون network/DOM/file و با CPU/memory/time quota",
+      "required_evidence": "Security/fuzz tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-098",
+      "area": "NamaScript",
+      "priority": "P1",
+      "requirement": "Standard library فنی کافی باشد",
+      "acceptance_criteria": "توابع P1 با test vectors و docs پوشش داده شوند",
+      "required_evidence": "Coverage + docs",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-099",
+      "area": "NamaScript",
+      "priority": "P1",
+      "requirement": "Editor حرفه‌ای باشد",
+      "acceptance_criteria": "highlight/autocomplete/hover/problems/format/diff کار کند",
+      "required_evidence": "E2E + visual",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-100",
+      "area": "NamaScript",
+      "priority": "P1",
+      "requirement": "Debugger و Profiler باشد",
+      "acceptance_criteria": "breakpoint/step/watch/trace/perf report قابل استفاده",
+      "required_evidence": "E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-101",
+      "area": "NamaScript",
+      "priority": "P1",
+      "requirement": "Strategy/Alert API باشد",
+      "acceptance_criteria": "Script بتواند بدون look-ahead شرط و strategy بسازد",
+      "required_evidence": "Golden suite",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-102",
+      "area": "NamaScript",
+      "priority": "P1",
+      "requirement": "انتشار و Versioning امن باشد",
+      "acceptance_criteria": "private/public/protected/invite و license/attribution ثبت شود",
+      "required_evidence": "Permission tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-103",
+      "area": "NamaScript",
+      "priority": "P1",
+      "requirement": "Draft بازیابی شود",
+      "acceptance_criteria": "autosave/crash restore/conflict بدون از دست رفتن کد",
+      "required_evidence": "E2E fault test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-104",
+      "area": "کشف بازار",
+      "priority": "P1",
+      "requirement": "Symbol search رتبه‌بندی دقیق داشته باشد",
+      "acceptance_criteria": "exact/alias/fa/en/transliteration/typo/entitlement پاس شود",
+      "required_evidence": "Search golden suite",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-105",
+      "area": "کشف بازار",
+      "priority": "P1",
+      "requirement": "Screener فیلتر و Sort کامل داشته باشد",
+      "acceptance_criteria": "فیلترهای P1، multi-timeframe و saved preset کار کنند",
+      "required_evidence": "E2E + contract",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-106",
+      "area": "کشف بازار",
+      "priority": "P1",
+      "requirement": "Screener حجم بالا را تحمل کند",
+      "acceptance_criteria": "Query cancel، pagination و virtualization بدون jank",
+      "required_evidence": "Load + performance",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-107",
+      "area": "کشف بازار",
+      "priority": "P1",
+      "requirement": "Heatmap تعاملی و Accessible باشد",
+      "acceptance_criteria": "drill-down/tooltip/filter و table alternative پاس شود",
+      "required_evidence": "E2E + a11y",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-108",
+      "area": "محتوا",
+      "priority": "P1",
+      "requirement": "Calendar جلالی/Timezone صحیح باشد",
+      "acceptance_criteria": "رویداد، revision و marker چارت بدون duplicate",
+      "required_evidence": "Contract + E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-109",
+      "area": "محتوا",
+      "priority": "P1",
+      "requirement": "News attribution و مجوز را رعایت کند",
+      "acceptance_criteria": "Source/time/link موجود و متن کامل غیرمجاز نمایش داده نشود",
+      "required_evidence": "Content audit",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-110",
+      "area": "محتوا",
+      "priority": "P1",
+      "requirement": "محتوای خارجی AI را آلوده نکند",
+      "acceptance_criteria": "Prompt injection از خبر نتواند Tool action اجرا کند",
+      "required_evidence": "Security eval",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-111",
+      "area": "هوش مصنوعی",
+      "priority": "P1",
+      "requirement": "دستیار پاسخ فارسی و Context محدود بدهد",
+      "acceptance_criteria": "پاسخ فقط از Context مجاز و با منبع/عدم قطعیت باشد",
+      "required_evidence": "Eval suite",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-112",
+      "area": "هوش مصنوعی",
+      "priority": "P1",
+      "requirement": "Actionها Preview و Confirm داشته باشند",
+      "acceptance_criteria": "هیچ تغییر حساس مستقیم اجرا نشود",
+      "required_evidence": "E2E safety",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-113",
+      "area": "هوش مصنوعی",
+      "priority": "P1",
+      "requirement": "Draft NamaScript/Alert قابل بررسی باشد",
+      "acceptance_criteria": "خروجی Validate و تا تأیید کاربر اجرا نشود",
+      "required_evidence": "Integration eval",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-114",
+      "area": "هوش مصنوعی",
+      "priority": "P1",
+      "requirement": "فرمان صوتی فارسی باشد",
+      "acceptance_criteria": "STT/TTS، transcript، confidence و cancel کار کند",
+      "required_evidence": "Voice eval",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-115",
+      "area": "هوش مصنوعی",
+      "priority": "P1",
+      "requirement": "فرمان حساس تأیید دو مرحله‌ای باشد",
+      "acceptance_criteria": "اتصال/سفارش/حذف گسترده بدون تأیید ممکن نباشد",
+      "required_evidence": "Safety E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-116",
+      "area": "هوش مصنوعی",
+      "priority": "P1",
+      "requirement": "PII و Secret وارد مدل نشود",
+      "acceptance_criteria": "Redaction و tool allowlist با تست نشت پاس شود",
+      "required_evidence": "Security eval",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-117",
+      "area": "هوش مصنوعی",
+      "priority": "P1",
+      "requirement": "کیفیت با Dataset فارسی سنجیده شود",
+      "acceptance_criteria": "intent/parameter/safety/hallucination/latency گزارش شود",
+      "required_evidence": "Eval report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-118",
+      "area": "اتصال‌ها",
+      "priority": "P0",
+      "requirement": "تنها LBank به عنوان صرافی نمایش یابد",
+      "acceptance_criteria": "Scan UI/Bundle/fixtures نام صرافی دیگری نیابد",
+      "required_evidence": "Content + code scan",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-119",
+      "area": "اتصال‌ها",
+      "priority": "P0",
+      "requirement": "لینک LBank دقیق باشد",
+      "acceptance_criteria": "Redirect داخلی مقصد دقیق و status مناسب داشته باشد",
+      "required_evidence": "Redirect contract test",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-120",
+      "area": "اتصال‌ها",
+      "priority": "P0",
+      "requirement": "تنها OneRoyal به عنوان بروکر نمایش یابد",
+      "acceptance_criteria": "Scan UI/Bundle/fixtures نام بروکر دیگری نیابد",
+      "required_evidence": "Content + code scan",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-121",
+      "area": "اتصال‌ها",
+      "priority": "P0",
+      "requirement": "لینک OneRoyal دقیق باشد",
+      "acceptance_criteria": "Redirect داخلی مقصد دقیق و status مناسب داشته باشد",
+      "required_evidence": "Redirect contract test",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-122",
+      "area": "اتصال‌ها",
+      "priority": "P0",
+      "requirement": "Disclosure لینک معرفی نمایش یابد",
+      "acceptance_criteria": "قبل از خروج، متن شفاف و قابل‌دسترسی وجود داشته باشد",
+      "required_evidence": "E2E + a11y",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-123",
+      "area": "اتصال‌ها",
+      "priority": "P0",
+      "requirement": "Eligibility gate وجود داشته باشد",
+      "acceptance_criteria": "UI خدمت را برای محل نامجاز قطعی معرفی نکند",
+      "required_evidence": "Policy E2E",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-124",
+      "area": "اتصال‌ها",
+      "priority": "P1",
+      "requirement": "LBank public API با Adapter رسمی باشد",
+      "acceptance_criteria": "REST/WS، rate limit، time sync، reconnect و mapping پاس شود",
+      "required_evidence": "Provider contract suite",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-125",
+      "area": "اتصال‌ها",
+      "priority": "P1",
+      "requirement": "کلید LBank فقط Server-side باشد",
+      "acceptance_criteria": "Secret vault، no-withdrawal، rotation و revoke پاس شود",
+      "required_evidence": "Security audit",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-126",
+      "area": "اتصال‌ها",
+      "priority": "P1",
+      "requirement": "OneRoyal تا API رسمی Referral-only بماند",
+      "acceptance_criteria": "هیچ fake connection/order UI فعال نباشد",
+      "required_evidence": "E2E + code audit",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-127",
+      "area": "اتصال‌ها",
+      "priority": "P1",
+      "requirement": "Broker adapter مستقل آماده باشد",
+      "acceptance_criteria": "Interface و test double بدون scraping پیاده شود",
+      "required_evidence": "Architecture/contract tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-128",
+      "area": "امنیت",
+      "priority": "P0",
+      "requirement": "Threat model کامل باشد",
+      "acceptance_criteria": "Auth/Data/Script/AI/Webhook/Trading پوشش و Owner داشته باشد",
+      "required_evidence": "Threat model review",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-129",
+      "area": "امنیت",
+      "priority": "P0",
+      "requirement": "2FA و Session controls باشد",
+      "acceptance_criteria": "TOTP/backup/recovery/device logout و rotation پاس شود",
+      "required_evidence": "Security E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-130",
+      "area": "امنیت",
+      "priority": "P0",
+      "requirement": "CSP و Headerهای امن اعمال شوند",
+      "acceptance_criteria": "Scanner هیچ High finding نداشته باشد",
+      "required_evidence": "DAST/header scan",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-131",
+      "area": "امنیت",
+      "priority": "P0",
+      "requirement": "Permission سمت سرور enforce شود",
+      "acceptance_criteria": "تغییر Client نتواند Entitlement/RBAC را دور بزند",
+      "required_evidence": "Authorization tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-132",
+      "area": "امنیت",
+      "priority": "P0",
+      "requirement": "Secret scan صفر باشد",
+      "acceptance_criteria": "Git history/current build/log artifact Secret نداشته باشد",
+      "required_evidence": "Secret scan",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-133",
+      "area": "امنیت",
+      "priority": "P0",
+      "requirement": "Dependency/SBOM کنترل شود",
+      "acceptance_criteria": "صفر Critical/High حل‌نشده و SBOM امضا شده",
+      "required_evidence": "SCA report",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-134",
+      "area": "امنیت",
+      "priority": "P0",
+      "requirement": "Audit log عملیات حساس باشد",
+      "acceptance_criteria": "اتصال، Alert، Webhook، سفارش و تنظیم امنیت ثبت شوند",
+      "required_evidence": "Audit tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-135",
+      "area": "امنیت",
+      "priority": "P0",
+      "requirement": "Backup/restore آزموده باشد",
+      "acceptance_criteria": "Restore در محیط Clean با RPO/RTO هدف موفق شود",
+      "required_evidence": "Drill report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-136",
+      "area": "امنیت",
+      "priority": "P1",
+      "requirement": "Webhook SSRF-safe باشد",
+      "acceptance_criteria": "Private ranges/DNS rebinding/redirect abuse مسدود شود",
+      "required_evidence": "Security tests",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-137",
+      "area": "امنیت",
+      "priority": "P1",
+      "requirement": "AI tool permission محدود باشد",
+      "acceptance_criteria": "Prompt خارجی یا کاربر بدون مجوز Action نگیرد",
+      "required_evidence": "Adversarial eval",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-138",
+      "area": "کارایی",
+      "priority": "P0",
+      "requirement": "LCP صدک ۷۵ حداکثر ۲.۵s باشد",
+      "acceptance_criteria": "RUM و lab در Routeهای هدف پاس شوند",
+      "required_evidence": "Web Vitals report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-139",
+      "area": "کارایی",
+      "priority": "P0",
+      "requirement": "INP صدک ۷۵ حداکثر ۲۰۰ms باشد",
+      "acceptance_criteria": "تعامل‌های P0 در RUM/lab پاس شوند",
+      "required_evidence": "Web Vitals report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-140",
+      "area": "کارایی",
+      "priority": "P0",
+      "requirement": "CLS حداکثر ۰.۱ باشد",
+      "acceptance_criteria": "Routeها و Lazy content بدون shift غیرمجاز",
+      "required_evidence": "Web Vitals report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-141",
+      "area": "کارایی",
+      "priority": "P0",
+      "requirement": "چارت هدف ۶۰fps داشته باشد",
+      "acceptance_criteria": "p95 frame زیر ۲۰ms در دستگاه مرجع",
+      "required_evidence": "Performance trace",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-142",
+      "area": "کارایی",
+      "priority": "P0",
+      "requirement": "Memory leak در Soak صفر عملی باشد",
+      "acceptance_criteria": "جلسه طولانی رشد کنترل‌نشده نداشته باشد",
+      "required_evidence": "Soak report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-143",
+      "area": "کارایی",
+      "priority": "P1",
+      "requirement": "Indicator ۱۰هزار Bar زیر Budget باشد",
+      "acceptance_criteria": "P0 indicatorها در Worker/benchmark هدف پاس شوند",
+      "required_evidence": "Benchmark",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-144",
+      "area": "کارایی",
+      "priority": "P1",
+      "requirement": "Bundle budget enforce شود",
+      "acceptance_criteria": "افزایش خارج Budget CI را fail کند",
+      "required_evidence": "CI artifact",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-145",
+      "area": "کارایی",
+      "priority": "P1",
+      "requirement": "Stream fan-out و Alert load پاس شود",
+      "acceptance_criteria": "ظرفیت هدف با error/latency در SLA",
+      "required_evidence": "Load report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-146",
+      "area": "دسترس‌پذیری",
+      "priority": "P0",
+      "requirement": "WCAG 2.2 AA مسیرهای P0 هدف باشد",
+      "acceptance_criteria": "Audit خودکار و دستی بدون Critical/Serious",
+      "required_evidence": "A11y report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-147",
+      "area": "دسترس‌پذیری",
+      "priority": "P0",
+      "requirement": "Keyboard کامل باشد",
+      "acceptance_criteria": "تمام P0 بدون Pointer قابل انجام و focus قابل مشاهده",
+      "required_evidence": "Keyboard walkthrough",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-148",
+      "area": "دسترس‌پذیری",
+      "priority": "P0",
+      "requirement": "Dialog focus درست باشد",
+      "acceptance_criteria": "trap، initial focus، escape و restore پاس شود",
+      "required_evidence": "Component/E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-149",
+      "area": "دسترس‌پذیری",
+      "priority": "P0",
+      "requirement": "Contrast و عدم اتکا به رنگ رعایت شود",
+      "acceptance_criteria": "Themeها و stateها معیار را پاس کنند",
+      "required_evidence": "Contrast audit",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-150",
+      "area": "دسترس‌پذیری",
+      "priority": "P1",
+      "requirement": "Zoom/Reflow 200% باشد",
+      "acceptance_criteria": "بدون loss of content/function در Viewport هدف",
+      "required_evidence": "Manual visual",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-151",
+      "area": "دسترس‌پذیری",
+      "priority": "P1",
+      "requirement": "Screen reader announcements باشد",
+      "acceptance_criteria": "Stream/Alert/order/error تغییرها به‌درستی اعلام شوند",
+      "required_evidence": "Manual SR test",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-152",
+      "area": "دسترس‌پذیری",
+      "priority": "P1",
+      "requirement": "جایگزین Canvas موجود باشد",
+      "acceptance_criteria": "جدول OHLCV و عملیات جایگزین Drawing/selection کار کند",
+      "required_evidence": "A11y E2E",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-153",
+      "area": "QA و تحویل",
+      "priority": "P0",
+      "requirement": "محیط Visual قفل‌شده باشد",
+      "acceptance_criteria": "browser/font/timezone/clock/data/DPR ثابت و versioned",
+      "required_evidence": "Harness audit",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-154",
+      "area": "QA و تحویل",
+      "priority": "P0",
+      "requirement": "تمام صفحات/Stateها Screenshot داشته باشند",
+      "acceptance_criteria": "Visual matrix هیچ خانه P0/P1 بدون artifact نداشته باشد",
+      "required_evidence": "Evidence index",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-155",
+      "area": "QA و تحویل",
+      "priority": "P0",
+      "requirement": "Diff خارج Threshold صفر باشد",
+      "acceptance_criteria": "Expected/Actual/Diff و review برای همه تغییرها",
+      "required_evidence": "Visual report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-156",
+      "area": "QA و تحویل",
+      "priority": "P0",
+      "requirement": "سه Clean run متوالی باشد",
+      "acceptance_criteria": "سه اجرای Full suite روی Commit تحویلی سبز باشد",
+      "required_evidence": "CI run links",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-157",
+      "area": "QA و تحویل",
+      "priority": "P0",
+      "requirement": "Flake P0 صفر باشد",
+      "acceptance_criteria": "هیچ Retry پنهان‌کننده و test flaky در P0",
+      "required_evidence": "Flake report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-158",
+      "area": "QA و تحویل",
+      "priority": "P0",
+      "requirement": "Migration و Rollback پاس شود",
+      "acceptance_criteria": "dry-run و rollback/forward-fix در staging موفق",
+      "required_evidence": "Release report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-159",
+      "area": "QA و تحویل",
+      "priority": "P0",
+      "requirement": "Evidence قابل ردیابی باشد",
+      "acceptance_criteria": "هر Requirement به test/artifact/commit پیوند داشته باشد",
+      "required_evidence": "Traceability audit",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-160",
+      "area": "QA و تحویل",
+      "priority": "P0",
+      "requirement": "Execution state همیشه قابل Resume باشد",
+      "acceptance_criteria": "فاز، مانع، action بعدی و فرمان Resume به‌روز باشد",
+      "required_evidence": "State audit",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": "PC-161",
+      "area": "QA و تحویل",
+      "priority": "P1",
+      "requirement": "Cross-browser/device matrix پاس شود",
+      "acceptance_criteria": "Browserهای هدف و Viewportها بدون defect زیاد",
+      "required_evidence": "Compatibility report",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "PC-162",
+      "area": "QA و تحویل",
+      "priority": "P1",
+      "requirement": "Release artifact امضا و دارای SBOM باشد",
+      "acceptance_criteria": "provenance/hash/SBOM قابل تأیید",
+      "required_evidence": "Supply-chain report",
+      "status": "IN_PROGRESS"
+    }
+  ]
+}

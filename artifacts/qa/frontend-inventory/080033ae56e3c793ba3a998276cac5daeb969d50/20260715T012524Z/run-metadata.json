@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "scope": "deterministic tracked baseline plus separate current-candidate frontend source inventory",
+  "evidenceStatus": "CURRENT_CANDIDATE",
+  "result": "PASS_WITH_REPRODUCIBILITY_GAPS",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T012524Z",
+  "canonicalSourceFingerprint": "98c3aed3d4ebf2d450d2e82d2e28b32252e653e5f05f72735509588629e95396",
+  "candidateSourceFingerprint": "b0033d215c22709233dd03697f904366c3cd317f3aa9e05fa0050c05e7886adb",
+  "serializedInventorySha256": "14cdffdb75430ca2ed2f0b4cbe5a2b707870331758648ff8b71e452010a0e191",
+  "byteDeterministicTwoRuns": true,
+  "regressionTests": {
+    "expected": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "retries": 0
+  },
+  "candidateCounts": {
+    "applicationsAnalyzed": 2,
+    "sourceFiles": 197,
+    "trackedSourceFiles": 188,
+    "untrackedSourceFiles": 9,
+    "reachableSourceFiles": 145,
+    "reachableUntrackedSourceFiles": 8,
+    "declaredNonWildcardRoutes": 15,
+    "navigationTargets": 35,
+    "nonActionableCommandMetadata": 9,
+    "unmatchedNavigationTargets": 0,
+    "staticResolutionIssues": 0,
+    "wildcardFallbacksNotCountedAsSupport": 1,
+    "highSeverityReproducibilityGaps": 4
+  },
+  "qualification": "Static reachability and literal route resolution are conservative evidence, not runtime support or a complete dead-control proof.",
+  "sealedAtUtc": "2026-07-15T01:28:45Z"
+}

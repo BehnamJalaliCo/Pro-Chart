@@ -1,0 +1,279 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/keyboard-shortcuts.spec.mjs",
+      "tests/rtl-route-matrix.spec.mjs",
+      "--project=chromium-desktop",
+      "--grep",
+      "PC-031|persisted English"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "keyboard-shortcuts.spec.mjs",
+      "file": "keyboard-shortcuts.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PC-031: Help-visible shortcuts use one dispatcher and execute once",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 11157,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('canvas.absolute.inset-0.z-10')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('canvas.absolute.inset-0.z-10')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('canvas.absolute.inset-0.z-10')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('canvas.absolute.inset-0.z-10')\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/keyboard-shortcuts.spec.mjs:64:25",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/keyboard-shortcuts.spec.mjs",
+                      "column": 25,
+                      "line": 64
+                    },
+                    "snippet": "  62 |   await waitForFinalFonts(page);\n  63 |   const overlay = page.locator('canvas.absolute.inset-0.z-10');\n> 64 |   await expect(overlay).toBeVisible();\n     |                         ^\n  65 |\n  66 |   // The same declarative registry drives both dispatch and the visible Help.\n  67 |   // Playwright requires the shifted key value (`?`) explicitly; `Shift+/`"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/keyboard-shortcuts.spec.mjs",
+                        "column": 25,
+                        "line": 64
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('canvas.absolute.inset-0.z-10')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('canvas.absolute.inset-0.z-10')\u001b[22m\n\n\n  62 |   await waitForFinalFonts(page);\n  63 |   const overlay = page.locator('canvas.absolute.inset-0.z-10');\n> 64 |   await expect(overlay).toBeVisible();\n     |                         ^\n  65 |\n  66 |   // The same declarative registry drives both dispatch and the visible Help.\n  67 |   // Playwright requires the shifted key value (`?`) explicitly; `Shift+/`\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/keyboard-shortcuts.spec.mjs:64:25"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:24:34.353Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results/keyboard-shortcuts-PC-031--e6b8e-dispatcher-and-execute-once-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results/keyboard-shortcuts-PC-031--e6b8e-dispatcher-and-execute-once-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results/keyboard-shortcuts-PC-031--e6b8e-dispatcher-and-execute-once-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results/keyboard-shortcuts-PC-031--e6b8e-dispatcher-and-execute-once-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/keyboard-shortcuts.spec.mjs",
+                    "column": 25,
+                    "line": 64
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "0b78dca6e1060a25b585-c5eb2e094f76209f02fc",
+          "file": "keyboard-shortcuts.spec.mjs",
+          "line": 20,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "rtl-route-matrix.spec.mjs",
+      "file": "rtl-route-matrix.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PC-009: persisted English stays inside the Main app while the public document root remains Persian RTL",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 11225,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoBeEmpty\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#root')\nExpected: not empty\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"not toBeEmpty\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('#root')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoBeEmpty\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#root')\nExpected: not empty\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"not toBeEmpty\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('#root')\u001b[22m\n\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/rtl-route-matrix.spec.mjs:80:43",
+                    "location": {
+                      "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/rtl-route-matrix.spec.mjs",
+                      "column": 43,
+                      "line": 80
+                    },
+                    "snippet": "  78 |   const initialResponse = await page.goto('/', { waitUntil: 'domcontentloaded' });\n  79 |   expect(initialResponse?.status()).toBe(200);\n> 80 |   await expect(page.locator('#root')).not.toBeEmpty();\n     |                                           ^\n  81 |\n  82 |   await page.evaluate(() => {\n  83 |     const current = JSON.parse(localStorage.getItem('pc_app_v1') || '{}');"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/rtl-route-matrix.spec.mjs",
+                        "column": 43,
+                        "line": 80
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoBeEmpty\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#root')\nExpected: not empty\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"not toBeEmpty\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('#root')\u001b[22m\n\n\n  78 |   const initialResponse = await page.goto('/', { waitUntil: 'domcontentloaded' });\n  79 |   expect(initialResponse?.status()).toBe(200);\n> 80 |   await expect(page.locator('#root')).not.toBeEmpty();\n     |                                           ^\n  81 |\n  82 |   await page.evaluate(() => {\n  83 |     const current = JSON.parse(localStorage.getItem('pc_app_v1') || '{}');\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/rtl-route-matrix.spec.mjs:80:43"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:24:46.230Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092433Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-desktop/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/rtl-route-matrix.spec.mjs",
+                    "column": 43,
+                    "line": 80
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "7ee54f7aae6be8d3832c-cf1764cf74d3d83ee248",
+          "file": "rtl-route-matrix.spec.mjs",
+          "line": 68,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T09:24:33.870Z",
+    "duration": 23848.48,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

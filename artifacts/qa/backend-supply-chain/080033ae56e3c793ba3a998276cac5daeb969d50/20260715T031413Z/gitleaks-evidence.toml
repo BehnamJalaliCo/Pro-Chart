@@ -1,0 +1,15 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Public Docker/Python provenance identifiers used as QA evidence"
+condition = "AND"
+regexTarget = "match"
+paths = [
+  '''(?:image-inspect\.json|build\.log|base-(?:trixie|bookworm)\.grype\.json|prior-live-image-current-db\.grype\.json|prior-images\.tsv)$''',
+]
+regexes = [
+  '''sha256:[0-9a-f]{64}''',
+  '''GPG_KEY=[0-9A-F]{40}''',
+  '''prochart-(?:api|data-feed|crypto-ws|finnhub-ws|news-worker):(?:qa|rollback)-[0-9A-Za-z.-]+''',
+]

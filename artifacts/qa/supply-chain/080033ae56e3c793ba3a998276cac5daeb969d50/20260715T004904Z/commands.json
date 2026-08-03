@@ -1,0 +1,82 @@
+{
+  "commands": [
+    {
+      "step": "enumerate-image",
+      "networkMode": "host Docker Engine metadata only; no external network",
+      "readOnly": true,
+      "command": "docker image inspect prochart-api@sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337"
+    },
+    {
+      "step": "syft-version",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none anchore/syft@sha256:86fde6445b483d902fe011dd9f68c4987dd94e07da1e9edc004e3c2422650de6 version -o json"
+    },
+    {
+      "step": "generate-cyclonedx-sbom",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none -v /var/run/docker.sock:/var/run/docker.sock:ro anchore/syft@sha256:86fde6445b483d902fe011dd9f68c4987dd94e07da1e9edc004e3c2422650de6 scan docker:sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337 --scope squashed -o cyclonedx-json"
+    },
+    {
+      "step": "grype-version",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d version -o json"
+    },
+    {
+      "step": "populate-ephemeral-grype-db-cache",
+      "networkMode": "bridge (only network-enabled scanner step; database download only)",
+      "readOnlyTargetImage": true,
+      "command": "docker run --rm --network bridge -e GRYPE_DB_CACHE_DIR=/cache -e GRYPE_CHECK_FOR_APP_UPDATE=false -v /tmp/prochart-grype-db-20260715T004904Z:/cache anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d db update"
+    },
+    {
+      "step": "grype-db-status",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none -e GRYPE_DB_CACHE_DIR=/cache -e GRYPE_CHECK_FOR_APP_UPDATE=false -e GRYPE_DB_AUTO_UPDATE=false -v /tmp/prochart-grype-db-20260715T004904Z:/cache:ro anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d db status -o json"
+    },
+    {
+      "step": "hash-extracted-grype-db",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none --entrypoint python -v /tmp/prochart-grype-db-20260715T004904Z:/cache:ro prochart-api@sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337 -c <streaming SHA-256 of /cache/6/vulnerability.db>"
+    },
+    {
+      "step": "grype-sbom-scan",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "docker run --rm --network none -e GRYPE_DB_CACHE_DIR=/cache -e GRYPE_CHECK_FOR_APP_UPDATE=false -e GRYPE_DB_AUTO_UPDATE=false -v /tmp/prochart-grype-db-20260715T004904Z:/cache:ro -v artifacts/qa/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T004904Z:/evidence:ro anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d sbom:/evidence/sbom.cyclonedx.json -o json"
+    },
+    {
+      "step": "compute-summary",
+      "networkMode": "none",
+      "readOnlyInput": true,
+      "command": "jq deterministic aggregation over vulnerabilities.grype.json -> severity-summary.json"
+    },
+    {
+      "step": "inspect-local-signing-evidence",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "Inspect image labels/local RepoDigest and CycloneDX root signature field; do not create or attach signatures/attestations"
+    },
+    {
+      "step": "redacted-secret-scan",
+      "networkMode": "none",
+      "readOnlyInput": true,
+      "command": "docker run --rm --network none -v artifacts/qa/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T004904Z:/scan:ro -v /tmp/prochart-gitleaks-20260715T004904Z:/report zricethezav/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f dir /scan --no-banner --no-color --redact=100 --report-format json --report-path /report/gitleaks.json"
+    },
+    {
+      "step": "seal-and-verify",
+      "networkMode": "none",
+      "readOnlyInputs": true,
+      "command": "sha256sum all evidence files -> SHA256SUMS; sha256sum -c SHA256SUMS"
+    },
+    {
+      "step": "compare-to-prior-canonical-scan",
+      "networkMode": "none",
+      "readOnly": true,
+      "command": "Deterministic jq counts and canonical SHA-256 over prior/current matches, ignoredMatches, and SBOM components -> prior-delta.json"
+    }
+  ]
+}

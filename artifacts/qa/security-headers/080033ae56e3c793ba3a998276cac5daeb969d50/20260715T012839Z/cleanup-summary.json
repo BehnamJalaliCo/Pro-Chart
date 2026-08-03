@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "removedDisposableFrontend": "pcsec-front-20260715t012839z",
+  "removedDisposableBackendHelper": "pcsec-api-20260715t012839z",
+  "removedDisposableNetwork": "pcsec-20260715t012839z",
+  "remainingRunScopedContainers": 0,
+  "liveFrontendStillRunning": true,
+  "sharedPreviewStillRunning": true,
+  "result": "PASS"
+}

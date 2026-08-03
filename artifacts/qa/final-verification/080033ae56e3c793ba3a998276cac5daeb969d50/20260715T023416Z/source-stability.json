@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "prochart": {
+    "fingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+    "manifestFileSha256": "4c9d2b98773370242b655b7b860ae5192419909e19e8b5b1fbcffa602e38f2c5",
+    "fileCount": 815,
+    "expectedMatch": true,
+    "buildRun": "20260715T011751Z",
+    "shippingObfuscated": true
+  },
+  "panel": {
+    "fingerprint": "eaeb57bcf61caf0625fb0312b0faca89e96eacded76a6ee9f4400e972bd0fbde",
+    "expectedMatch": true,
+    "buildRun": "20260715T010846Z"
+  },
+  "backend": {
+    "srcManifestFingerprint": "2525ece68233049732530995d6460cb7a93632e511bec2722f42c118a6cc7666",
+    "expectedMatch": true,
+    "buildRun": "20260715T011720Z"
+  },
+  "sourceChangedAfterCanonicalBuilds": false,
+  "result": "PASS"
+}

@@ -1,0 +1,102 @@
+
+Running 4 tests using 1 worker
+
+[1/4] [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin
+  1) [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'اتصالِ حساب', exact: true })
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for getByRole('heading', { name: 'اتصالِ حساب', exact: true })
+
+
+      158 |   expect(response?.status(), 'desktop UserPanel document status').toBe(200);
+      159 |   await expect.poll(() => new URL(page.url()).hash).toBe('#/connect');
+    > 160 |   await expect(page.getByRole('heading', { name: 'اتصالِ حساب', exact: true })).toBeVisible();
+          |                                                                                 ^
+      161 |
+      162 |   return {
+      163 |     state,
+        at openDesktopUserPanel (/work/qa/tests/referral-compliance.spec.mjs:160:81)
+        at /work/qa/tests/referral-compliance.spec.mjs:319:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[2/4] [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin
+  2) [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'اتصالِ حساب', exact: true })
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for getByRole('heading', { name: 'اتصالِ حساب', exact: true })
+
+
+      158 |   expect(response?.status(), 'desktop UserPanel document status').toBe(200);
+      159 |   await expect.poll(() => new URL(page.url()).hash).toBe('#/connect');
+    > 160 |   await expect(page.getByRole('heading', { name: 'اتصالِ حساب', exact: true })).toBeVisible();
+          |                                                                                 ^
+      161 |
+      162 |   return {
+      163 |     state,
+        at openDesktopUserPanel (/work/qa/tests/referral-compliance.spec.mjs:160:81)
+        at /work/qa/tests/referral-compliance.spec.mjs:319:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/qa/portal-security/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T034003Z-predeploy/referral-playwright/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[3/4] [chromium-mobile] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin
+[4/4] [chromium-mobile] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin
+  2 failed
+    [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin 
+    [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin 
+  2 passed (34.0s)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

@@ -1,0 +1,14 @@
+
+> prochart-quality-harness@0.1.0 test:security-headers
+> playwright test tests/security-headers.spec.mjs --project=chromium-desktop
+
+
+Running 1 test using 1 worker
+
+[1/1] [chromium-desktop] › tests/security-headers.spec.mjs:4:3 › PC-130 runtime CSP behavior › the production policy permits required workers and blocks an unlisted script origin
+  1 passed (1.5s)
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report ../artifacts/qa/security-headers/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T012839Z/playwright-final/html[39m
+[36m[39m

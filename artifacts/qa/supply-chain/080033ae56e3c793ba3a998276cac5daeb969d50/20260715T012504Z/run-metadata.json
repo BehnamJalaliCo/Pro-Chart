@@ -1,0 +1,837 @@
+{
+  "canonicalStatus": "CANONICAL_EXACT_SEALED_BACKEND_IMAGE_SUPPLY_CHAIN_SCAN",
+  "runId": "20260715T012504Z",
+  "startedAt": "2026-07-15T01:25:04Z",
+  "metadataGeneratedAt": "2026-07-15T01:36:38Z",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "target": {
+    "requestedTag": "prochart-api:qa-backend-080033ae56e3-20260715T011720Z",
+    "requestedImageId": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+    "id": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+    "idMatchesRequested": true,
+    "repoTags": [
+      "prochart-api:qa-backend-080033ae56e3-20260715T011720Z"
+    ],
+    "dockerEngineLocalRepoDigests": [
+      "prochart-api@sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf"
+    ],
+    "repoDigestScope": "Values returned by this local Docker Engine only; no registry lookup, pull, push, or remote manifest verification was performed. These are not evidence of a published registry digest.",
+    "registryPublishedDigest": null,
+    "registryResolutionPerformed": false,
+    "created": "2026-07-15T01:17:40.604854676Z",
+    "platform": "linux/amd64",
+    "os": "linux",
+    "architecture": "amd64",
+    "sizeBytes": 3582640780,
+    "rootFsLayerDigests": [
+      "sha256:f2ec4de84f559f5c7be4233b589cdbdbb5507807e05621b77320edd55a1f2a0f",
+      "sha256:ccbaccfc0388284959cf106031557105fad2067d6c4435937b3414ce90760167",
+      "sha256:83fdf57f71f28b640f11d5072c284c81eadefc5ea538050fedcedba6149879bd",
+      "sha256:b80f3ed1ee6de85c788d9ae7203207c44724eab4baac8697390ca1412954ad2f",
+      "sha256:88d837fe5b41f60caac110baf5ebc509487e4699fa94f7ed57762ed1b3a2e643",
+      "sha256:0bfe96a212a8b40969d0a48e79f14e92faf28a363e584d4953566186d1f8842b",
+      "sha256:3dc500c07b824e852d02e44abebdcf63f59a9637614916a94c8a2eaa069f8c0c",
+      "sha256:5923b21dc3e8c43bfecc43d0d21f5a7311b28c309f7eb3847b5368d92eb78f47",
+      "sha256:16885cb3a9b7455b80f2e74926976898faef88406c712962470fbcb65b6628e0",
+      "sha256:ce93af4efa47e174792ea77715bae38fda54e729369d12d066f7b00f355ddfd3",
+      "sha256:e4a1f9c4ca8a0eb3c3d89feeaf3dd709990f4dd61b3348663dd8c074e416f1cf",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:cc727a749320a17d0b7acd960465e6d8ae5f268e4574e92ef85b6a0ac60ddadb",
+      "sha256:88fb0adb5fa45fd50c52da542651037c12cb63f0bfd640d246e9a65e0718a954",
+      "sha256:ac30064794531a7f085225833f599e6ab0e466b3c95eb7f177c61517ffd032e2",
+      "sha256:61375905ad7bce43e273cfb7aa307a84740ca8b0fdab84af865e7c7cceb1f08a",
+      "sha256:633b23e83cb53f8c0d525d1439097b5fefe8942adb2cebd1a1f2838e3eee6a77",
+      "sha256:e6c2fe425d51e0d0c1235e53bd2b63261d9b8687ecd5cc4144e8dccc8358d67d"
+    ],
+    "config": {
+      "user": "",
+      "workingDir": "/app",
+      "entrypoint": null,
+      "cmd": [
+        "uvicorn",
+        "src.api.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ],
+      "labels": {}
+    }
+  },
+  "sboms": {
+    "cyclonedx": {
+      "format": "CycloneDX JSON",
+      "specVersion": "1.6",
+      "serialNumber": "urn:uuid:13fbfb23-75b4-4dcf-a817-2c9b094176f3",
+      "generatedAt": "2026-07-15T01:28:15Z",
+      "componentCount": 8971,
+      "source": "docker:sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+      "scope": "squashed",
+      "output": "sbom.cyclonedx.json",
+      "structuralAssertionsPassed": true,
+      "formalSchemaValidationPerformed": false
+    },
+    "spdx": {
+      "format": "SPDX JSON",
+      "specVersion": "SPDX-2.3",
+      "documentNamespace": "https://anchore.com/syft/image/sha256-c4040a1e-5dab-40a2-b622-9a4bcd81cc8a",
+      "generatedAt": "2026-07-15T01:30:54Z",
+      "packageCount": 346,
+      "fileCount": 9075,
+      "source": "docker:sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+      "scope": "squashed",
+      "output": "sbom.spdx.json",
+      "structuralAssertionsPassed": true,
+      "formalSchemaValidationPerformed": false
+    },
+    "exactTargetIdentityVerifiedInBoth": true
+  },
+  "tools": {
+    "syft": {
+      "version": "1.44.0",
+      "gitCommit": "8cb78ce40ced6a731fb83f2a491a67444f541bf1",
+      "platform": "linux/amd64",
+      "image": "anchore/syft@sha256:86fde6445b483d902fe011dd9f68c4987dd94e07da1e9edc004e3c2422650de6"
+    },
+    "grype": {
+      "version": "0.112.0",
+      "gitCommit": "244f2a10a5668078fcf771454bbd832b3a5b9e8a",
+      "platform": "linux/amd64",
+      "supportedDbSchema": 6,
+      "image": "anchore/grype@sha256:391bfda62888fb4e98ff5c4c81598f7431a3c1eac3f8519d69d1ff00df247c1d"
+    },
+    "gitleaks": {
+      "version": "8.30.1",
+      "image": "zricethezav/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f"
+    }
+  },
+  "vulnerabilityDatabase": {
+    "schemaVersion": "v6.1.7",
+    "built": "2026-07-14T06:57:40Z",
+    "ageSecondsAtScan": 66859,
+    "valid": true,
+    "source": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.7_2026-07-14T00:35:10Z_1784012260.tar.zst?checksum=sha256%3Ad6b2d86a1b51a849f17ea4aeea2f86af158523de3139209a4865934e9e403333",
+    "sourceArchiveAdvertisedChecksum": "sha256:d6b2d86a1b51a849f17ea4aeea2f86af158523de3139209a4865934e9e403333",
+    "extractedDatabaseSha256": "7859d1a0e0a28bce313e8067683463e4f3590f5a312e11f00efa343b9203ef35",
+    "extractedDatabaseSizeBytes": 1757487104,
+    "cache": "ephemeral /tmp cache, not sealed",
+    "cachePopulationNetworkMode": "bridge",
+    "canonicalStatusAndScanNetworkMode": "none"
+  },
+  "scan": {
+    "timestamp": "2026-07-15T01:31:59.177443713Z",
+    "commandInput": "sbom:/evidence/sbom.cyclonedx.json",
+    "rawDescriptorSource": {
+      "type": "image",
+      "target": {
+        "userInput": "sha256",
+        "imageID": "78ca7a091e20f049",
+        "manifestDigest": "20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+        "mediaType": "",
+        "tags": [],
+        "imageSize": 0,
+        "layers": null,
+        "manifest": null,
+        "config": null,
+        "repoDigests": [],
+        "architecture": "",
+        "os": ""
+      }
+    },
+    "rawOutput": "vulnerabilities.grype.json",
+    "normalizedOutput": "vulnerabilities.normalized.jsonl",
+    "normalizedRecordCount": 1161,
+    "networkMode": "none",
+    "scannerExitCode": 0,
+    "failOnSeverityConfigured": false,
+    "rawJsonRetainsMatchesAndIgnoredMatches": true,
+    "summary": {
+      "applicableMatchRecords": 817,
+      "defaultSuppressedMatchRecords": 344,
+      "totalRetainedMatchRecords": 1161,
+      "applicableBySeverity": [
+        {
+          "severity": "Critical",
+          "count": 29
+        },
+        {
+          "severity": "High",
+          "count": 73
+        },
+        {
+          "severity": "Medium",
+          "count": 97
+        },
+        {
+          "severity": "Low",
+          "count": 32
+        },
+        {
+          "severity": "Negligible",
+          "count": 538
+        },
+        {
+          "severity": "Unknown",
+          "count": 48
+        }
+      ],
+      "defaultSuppressedBySeverity": [
+        {
+          "severity": "Critical",
+          "count": 11
+        },
+        {
+          "severity": "High",
+          "count": 67
+        },
+        {
+          "severity": "Medium",
+          "count": 154
+        },
+        {
+          "severity": "Low",
+          "count": 1
+        },
+        {
+          "severity": "Negligible",
+          "count": 58
+        },
+        {
+          "severity": "Unknown",
+          "count": 53
+        }
+      ],
+      "applicableByFixState": [
+        {
+          "fixState": "fixed",
+          "count": 78
+        },
+        {
+          "fixState": "not-fixed",
+          "count": 627
+        },
+        {
+          "fixState": "wont-fix",
+          "count": 108
+        }
+      ],
+      "defaultSuppressedByFixState": [
+        {
+          "fixState": "not-fixed",
+          "count": 343
+        },
+        {
+          "fixState": "wont-fix",
+          "count": 1
+        }
+      ],
+      "applicableUniqueVulnerabilityIds": 242,
+      "defaultSuppressedUniqueVulnerabilityIds": 344,
+      "combinedUniqueVulnerabilityIds": 586,
+      "fixedVersionCandidates": {
+        "applicableMatchRecords": 78,
+        "applicableUniqueVulnerabilityIds": 78,
+        "uniqueVulnerabilityPackageInstalledVersionFixedVersionTuples": 116,
+        "bySeverity": [
+          {
+            "severity": "Critical",
+            "count": 1
+          },
+          {
+            "severity": "High",
+            "count": 15
+          },
+          {
+            "severity": "Medium",
+            "count": 36
+          },
+          {
+            "severity": "Low",
+            "count": 25
+          },
+          {
+            "severity": "Negligible",
+            "count": 1
+          },
+          {
+            "severity": "Unknown",
+            "count": 0
+          }
+        ],
+        "suppressedMatchRecords": 0,
+        "suppressedUniqueVulnerabilityIds": 0,
+        "definition": "A candidate is a Grype match record with at least one non-empty vulnerability.fix.versions entry; this is upgrade/remediation metadata, not proof that an upgrade is compatible or that a match is exploitable."
+      },
+      "defaultSuppressionRulesApplied": [
+        {
+          "rule": {
+            "namespace": "",
+            "matchType": "exact-indirect-match",
+            "packageName": "linux-libc-dev",
+            "packageType": "deb",
+            "upstreamName": "linux"
+          },
+          "records": 344
+        }
+      ],
+      "applicablePackageTypes": [
+        {
+          "packageType": "binary",
+          "count": 27
+        },
+        {
+          "packageType": "deb",
+          "count": 730
+        },
+        {
+          "packageType": "python",
+          "count": 60
+        }
+      ],
+      "defaultSuppressedPackageTypes": [
+        {
+          "packageType": "deb",
+          "count": 344
+        }
+      ],
+      "interpretation": {
+        "applicableDefinition": "Records in Grype matches after its built-in/default ignore rules.",
+        "defaultSuppressedDefinition": "Records preserved in Grype ignoredMatches with appliedIgnoreRules; they were excluded from matches by Grype defaults, not manually removed from this evidence.",
+        "fixedCandidateDefinition": "At least one non-empty Grype fix.versions value is present.",
+        "matchRecordsAreNotExploitabilityFindings": true,
+        "reachabilityAnalysisPerformed": false,
+        "exploitabilityAnalysisPerformed": false,
+        "vexApplied": false,
+        "note": "Counts are package-to-advisory match records from a point-in-time Grype database. They can include duplicates, disputed or unreachable findings, distro-qualified decisions, and false positives; package-owner triage is required."
+      }
+    },
+    "note": "Grype reconstructs image source identity from the CycloneDX metadata; the recorded command input was the read-only SBOM path."
+  },
+  "licenses": {
+    "generatedFrom": [
+      "sbom.cyclonedx.json",
+      "sbom.spdx.json"
+    ],
+    "cyclonedx": {
+      "specVersion": "1.6",
+      "componentCount": 8971,
+      "componentTypes": [
+        {
+          "type": "application",
+          "count": 15,
+          "withLicenseEvidence": 0,
+          "withHashes": 0
+        },
+        {
+          "type": "file",
+          "count": 8625,
+          "withLicenseEvidence": 0,
+          "withHashes": 8625
+        },
+        {
+          "type": "library",
+          "count": 330,
+          "withLicenseEvidence": 321,
+          "withHashes": 0
+        },
+        {
+          "type": "operating-system",
+          "count": 1,
+          "withLicenseEvidence": 0,
+          "withHashes": 0
+        }
+      ],
+      "componentsWithLicenseEvidence": 321,
+      "componentsWithoutLicenseEvidence": 8650,
+      "licenseEntryCount": 1306,
+      "licenseIdEntryCount": 832,
+      "distinctLicenseIds": 53,
+      "licenseNameEntryCount": 468,
+      "distinctLicenseNames": 138,
+      "licenseExpressionEntryCount": 6,
+      "distinctLicenseExpressions": 6,
+      "topDetectedLicenseIds": [
+        {
+          "value": "GPL-2.0-only",
+          "count": 91
+        },
+        {
+          "value": "BSD-3-Clause",
+          "count": 69
+        },
+        {
+          "value": "GPL-2.0-or-later",
+          "count": 69
+        },
+        {
+          "value": "GPL-3.0-only",
+          "count": 69
+        },
+        {
+          "value": "MIT",
+          "count": 60
+        },
+        {
+          "value": "GPL-3.0-or-later",
+          "count": 45
+        },
+        {
+          "value": "LGPL-2.1-only",
+          "count": 39
+        },
+        {
+          "value": "BSD-2-Clause",
+          "count": 31
+        },
+        {
+          "value": "LGPL-2.1-or-later",
+          "count": 28
+        },
+        {
+          "value": "LGPL-2.0-only",
+          "count": 26
+        },
+        {
+          "value": "LGPL-2.0-or-later",
+          "count": 26
+        },
+        {
+          "value": "Apache-2.0",
+          "count": 25
+        },
+        {
+          "value": "ISC",
+          "count": 25
+        },
+        {
+          "value": "GFDL-1.2-only",
+          "count": 22
+        },
+        {
+          "value": "LGPL-3.0-only",
+          "count": 22
+        },
+        {
+          "value": "LGPL-3.0-or-later",
+          "count": 21
+        },
+        {
+          "value": "GPL-1.0-only",
+          "count": 18
+        },
+        {
+          "value": "X11",
+          "count": 15
+        },
+        {
+          "value": "FSFAP",
+          "count": 13
+        },
+        {
+          "value": "FSFULLR",
+          "count": 11
+        }
+      ],
+      "topDetectedLicenseNames": [
+        {
+          "value": "LGPL",
+          "count": 43
+        },
+        {
+          "value": "GPL",
+          "count": 39
+        },
+        {
+          "value": "public-domain",
+          "count": 34
+        },
+        {
+          "value": "Artistic",
+          "count": 32
+        },
+        {
+          "value": "Expat",
+          "count": 28
+        },
+        {
+          "value": "NVIDIA Proprietary Software",
+          "count": 12
+        },
+        {
+          "value": "BSD",
+          "count": 10
+        },
+        {
+          "value": "GFDL",
+          "count": 10
+        },
+        {
+          "value": "BSLA",
+          "count": 9
+        },
+        {
+          "value": "GFDL-NIV-1.3+",
+          "count": 6
+        },
+        {
+          "value": "Unicode",
+          "count": 5
+        },
+        {
+          "value": "BSD-3-clause-Berkeley",
+          "count": 4
+        },
+        {
+          "value": "BSD-3-clause-Carnegie",
+          "count": 4
+        },
+        {
+          "value": "BSD-3-clause-GENERIC",
+          "count": 4
+        },
+        {
+          "value": "BSD-3-clause-Oracle",
+          "count": 4
+        },
+        {
+          "value": "BSD-3-clause-WIDE",
+          "count": 4
+        },
+        {
+          "value": "BSD-3-clause-with-weird-numbering",
+          "count": 4
+        },
+        {
+          "value": "BSD-4-clause-POWERDOG",
+          "count": 4
+        },
+        {
+          "value": "BSD-like-Spencer",
+          "count": 4
+        },
+        {
+          "value": "BSD-tcp_wrappers",
+          "count": 4
+        }
+      ],
+      "componentsWithHashes": 8625,
+      "rootEmbeddedSignaturePresent": false
+    },
+    "spdx": {
+      "specVersion": "SPDX-2.3",
+      "dataLicense": "CC0-1.0",
+      "licenseListVersion": "3.28",
+      "packageCount": 346,
+      "fileCount": 9075,
+      "relationshipCount": 10156,
+      "packagesWithDeclaredLicenseAssertion": 314,
+      "packagesWithDeclaredLicenseNoAssertion": 32,
+      "packagesWithConcludedLicenseAssertion": 7,
+      "packagesWithConcludedLicenseNoAssertion": 339,
+      "filesWithConcludedLicenseAssertion": 0,
+      "filesWithConcludedLicenseNoAssertion": 9075,
+      "packageDeclaredLicenseExpressionCount": 112,
+      "topPackageDeclaredLicenseExpressions": [
+        {
+          "value": "MIT",
+          "count": 52
+        },
+        {
+          "value": "NOASSERTION",
+          "count": 32
+        },
+        {
+          "value": "BSD-3-Clause",
+          "count": 22
+        },
+        {
+          "value": "LicenseRef-Artistic AND GFDL-1.2-only AND LicenseRef-GPL AND GPL-3.0-only AND LicenseRef-LGPL",
+          "count": 21
+        },
+        {
+          "value": "Apache-2.0",
+          "count": 17
+        },
+        {
+          "value": "GPL-2.0-only",
+          "count": 12
+        },
+        {
+          "value": "LicenseRef-NVIDIA-Proprietary-Software",
+          "count": 12
+        },
+        {
+          "value": "LicenseRef-BSD",
+          "count": 10
+        },
+        {
+          "value": "BSD-2-Clause AND BSD-3-Clause AND BSD-4-Clause AND LicenseRef-BSLA AND LicenseRef-Expat AND GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND GPL-3.0-or-later AND ISC AND LicenseRef-LGPL AND LGPL-2.0-only AND LGPL-2.0-or-later AND LGPL-2.1-only AND LGPL-2.1-or-later AND LGPL-3.0-only AND LGPL-3.0-or-later AND LicenseRef-public-domain",
+          "count": 9
+        },
+        {
+          "value": "LicenseRef-GFDL AND LicenseRef-GPL AND LicenseRef-LGPL",
+          "count": 8
+        },
+        {
+          "value": "Apache-2.0 AND LicenseRef-Artistic AND GPL-1.0-only AND GPL-1.0-or-later",
+          "count": 4
+        },
+        {
+          "value": "BSD-2-Clause",
+          "count": 4
+        },
+        {
+          "value": "BSD-2-Clause AND LicenseRef-BSD-3-clause-Berkeley AND LicenseRef-BSD-3-clause-Carnegie AND LicenseRef-BSD-3-clause-Oracle AND LicenseRef-BSD-3-clause-WIDE AND LicenseRef-BSD-like-Spencer AND BSL-1.0 AND LicenseRef-CORE-MATH AND LicenseRef-Carnegie AND LicenseRef-DEC AND FSFAP AND GPL-2.0-only AND GPL-2.0-or-later AND LicenseRef-GPL-2--with-link-exception AND GPL-3.0-only AND GPL-3.0-or-later AND LicenseRef-IBM AND ISC AND LicenseRef-Inner-Net AND LGPL-2.0-only AND LGPL-2.0-or-later AND LGPL-2.1-only AND LGPL-2.1-or-later AND LicenseRef-LGPL-2.1--with-link-exception AND LGPL-3.0-only AND LGPL-3.0-or-later AND LicenseRef-MIT-like-Lord AND LicenseRef-PCRE AND SunPro AND Unicode-DFS-2016 AND LicenseRef-Univ-Coimbra AND LicenseRef-public-domain",
+          "count": 4
+        },
+        {
+          "value": "BSD-3-Clause AND LicenseRef-BSD-tcp-wrappers AND Beerware AND GPL-1.0-only AND GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND GPL-3.0-or-later AND LGPL-2.0-only AND LGPL-2.0-or-later AND LicenseRef-public-domain",
+          "count": 4
+        },
+        {
+          "value": "BSD-3-Clause AND LicenseRef-MIT-X11 AND X11",
+          "count": 4
+        },
+        {
+          "value": "LicenseRef-Artistic AND Artistic-2.0 AND Artistic-dist AND BSD-3-Clause AND LicenseRef-BSD-3-clause-GENERIC AND LicenseRef-BSD-3-clause-with-weird-numbering AND LicenseRef-BSD-4-clause-POWERDOG AND LicenseRef-BZIP AND LicenseRef-DONT-CHANGE-THE-GPL AND LicenseRef-Expat AND FSFAP AND GPL-1.0-only AND GPL-1.0-or-later AND GPL-2.0-only AND GPL-2.0-or-later AND LicenseRef-GPL-3--WITH-BISON-EXCEPTION AND LGPL-2.1-only AND LicenseRef-REGCOMP AND LicenseRef-REGCOMP- AND LicenseRef-SDBM-PUBLIC-DOMAIN AND LicenseRef-TEXT-TABS AND LicenseRef-Unicode AND Zlib",
+          "count": 4
+        },
+        {
+          "value": "LicenseRef-MIT-License",
+          "count": 4
+        },
+        {
+          "value": "GPL-2.0-only AND GPL-2.0-or-later AND LicenseRef-public-domain-s-s-d",
+          "count": 3
+        },
+        {
+          "value": "GPL-3.0-only AND GPL-3.0-or-later",
+          "count": 3
+        },
+        {
+          "value": "0BSD AND FSFUL AND FSFULLR AND GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND LicenseRef-GPL-3.0-or-later-WITH-Autoconf-exception-macro AND LGPL-2.1-only AND LGPL-2.1-or-later AND LicenseRef-PD AND LicenseRef-PD-debian AND LicenseRef-noderivs AND LicenseRef-permissive-nowarranty",
+          "count": 2
+        }
+      ],
+      "packagesWithChecksums": 1,
+      "filesWithChecksums": 9075
+    },
+    "interpretation": {
+      "licenseEvidenceIsScannerDetectedMetadata": true,
+      "legalOrPolicyComplianceDeterminationPerformed": false,
+      "packageOwnerReviewPerformed": false,
+      "note": "Detected identifiers, names, and expressions are inventory metadata. NOASSERTION and missing license evidence are preserved. This report is not a legal opinion or proof of redistribution compatibility; counsel/package-owner review and policy evaluation remain required. SPDX dataLicense applies to the SPDX document, not automatically to its inventoried packages."
+    }
+  },
+  "provenance": {
+    "image": {
+      "signed": false,
+      "attested": false,
+      "status": "NO_LOCAL_OR_REGISTRY_VERIFIED_SIGNATURE_OR_ATTESTATION_EVIDENCE",
+      "registryLookupPerformed": false,
+      "registryPublishedDigest": null,
+      "scope": "The exact image was inspected only in the local Docker Engine. Its local RepoDigest was not resolved against a registry, and no registry reference, signature bundle, or provenance attestation was supplied. Absence of local evidence cannot prove that no signature exists in an unknown external registry."
+    },
+    "sboms": {
+      "cyclonedx": {
+        "signed": false,
+        "attested": false,
+        "embeddedSignaturePresent": false,
+        "detachedSignaturePresent": false,
+        "status": "PLAIN_UNSIGNED_CYCLONEDX_JSON"
+      },
+      "spdx": {
+        "signed": false,
+        "attested": false,
+        "embeddedSignaturePresent": false,
+        "detachedSignaturePresent": false,
+        "status": "PLAIN_UNSIGNED_SPDX_JSON"
+      },
+      "scope": "SHA-256 checksum sealing provides local file-integrity evidence only; it is not a digital signature, registry attestation, or SLSA provenance statement."
+    },
+    "signaturesCreated": false,
+    "attestationsCreated": false,
+    "signingAttempted": false
+  },
+  "integrity": {
+    "exactTarget": {
+      "requestedImageId": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+      "dockerInspectId": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+      "identityMatch": true,
+      "imageInspectFileSha256": "fd25fe5627f78ed633db134393560768901866b2e22aa30739625a5dbdabfe68"
+    },
+    "cyclonedx": {
+      "file": "sbom.cyclonedx.json",
+      "fileSha256": "fcc141783e9f1397aba150e45c8c8c2c149a299e53237e60c3dd1da09fc26907",
+      "bomFormat": "CycloneDX",
+      "specVersion": "1.6",
+      "serialNumber": "urn:uuid:13fbfb23-75b4-4dcf-a817-2c9b094176f3",
+      "generatedAt": "2026-07-15T01:28:15Z",
+      "componentCount": 8971,
+      "rootComponent": {
+        "bomRef": "78ca7a091e20f049",
+        "type": "container",
+        "name": "sha256",
+        "version": "20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf"
+      },
+      "rootVersionMatchesRequestedImageId": true,
+      "embeddedSignaturePresent": false
+    },
+    "spdx": {
+      "file": "sbom.spdx.json",
+      "fileSha256": "b9373b7f0d37ba4d041355eabe9349386e1c2e1b277e6972717cc887f5d57eb8",
+      "spdxVersion": "SPDX-2.3",
+      "documentNamespace": "https://anchore.com/syft/image/sha256-c4040a1e-5dab-40a2-b622-9a4bcd81cc8a",
+      "generatedAt": "2026-07-15T01:30:54Z",
+      "packageCount": 346,
+      "fileCount": 9075,
+      "documentRoot": {
+        "spdxId": "SPDXRef-DocumentRoot-Image-sha256",
+        "name": "sha256",
+        "versionInfo": "20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+        "checksums": [
+          {
+            "algorithm": "SHA256",
+            "checksumValue": "529b6e78f6dfc53137a1c9b00277a9664cf0d6f48f9a2c56d9d3ec3e7afe29f7"
+          }
+        ],
+        "externalRefs": [
+          {
+            "referenceCategory": "PACKAGE-MANAGER",
+            "referenceType": "purl",
+            "referenceLocator": "pkg:oci/sha256@sha256%3A529b6e78f6dfc53137a1c9b00277a9664cf0d6f48f9a2c56d9d3ec3e7afe29f7?arch=amd64&tag=20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf"
+          }
+        ]
+      },
+      "rootVersionMatchesRequestedImageId": true,
+      "note": "The root package checksum/external OCI reference is Syft-emitted inventory metadata and was not resolved against a remote registry; it is not evidence of publication or a registry-verified manifest."
+    },
+    "vulnerabilityScan": {
+      "rawFile": "vulnerabilities.grype.json",
+      "rawFileSha256": "ed6e4d90e8c880b1d3c92f6f35df1bb1dcef8a2fa005be5d2d6bcd8cef28605f",
+      "normalizedFile": "vulnerabilities.normalized.jsonl",
+      "normalizedFileSha256": "7ec9be9075d326355f76fb01901966437411a9ec0c450e58bd66cdcbeba48f82",
+      "normalizedRecordCount": 1161
+    },
+    "vulnerabilityDatabase": {
+      "path": "/cache/6/vulnerability.db",
+      "sha256": "7859d1a0e0a28bce313e8067683463e4f3590f5a312e11f00efa343b9203ef35",
+      "sizeBytes": 1757487104
+    },
+    "finalSeal": {
+      "algorithm": "SHA-256",
+      "manifest": "SHA256SUMS",
+      "verificationOutput": "SHA256SUMS.verify.txt",
+      "coverage": "Every regular evidence file present at seal time except SHA256SUMS and SHA256SUMS.verify.txt",
+      "status": "SEALED_AND_VERIFIED_BY_SHA256SUM_C"
+    },
+    "caveat": "File hashes and the final SHA256SUMS manifest provide local integrity detection only. They do not establish publisher identity, registry publication, a digital signature, an attestation, or SLSA provenance."
+  },
+  "redactedSecretScan": {
+    "scope": "this evidence directory only",
+    "networkMode": "none",
+    "redaction": "100 percent",
+    "output": "gitleaks.json",
+    "exitCodeOutput": "gitleaks.exit-code.txt",
+    "note": "The Gitleaks result is generated after this metadata file, then included in the final SHA-256 seal.",
+    "scannerExitCode": 1,
+    "findingCount": 3,
+    "status": "FAIL_FINDINGS_PRESERVED",
+    "review": "gitleaks-review.json",
+    "reviewClassification": "PUBLIC_GPG_KEY_IDENTIFIER_NOT_PRIVATE_KEY_MATERIAL",
+    "scannerFailurePreserved": true
+  },
+  "releaseCriteria": {
+    "PC133": {
+      "status": "FAIL",
+      "reason": "29 Critical and 73 High applicable Grype match records remain; the zero-Critical/High threshold is not met, and the inventory is unsigned."
+    },
+    "PC162": {
+      "status": "FAIL",
+      "reason": "Neither the exact local image nor either SBOM has registry-verified signing or attestation evidence."
+    }
+  },
+  "comparisonToPriorCanonicalScan": {
+    "priorArtifact": "artifacts/qa/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T004904Z",
+    "imageIds": {
+      "prior": "sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+      "current": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf"
+    },
+    "prior": {
+      "applicable": 817,
+      "suppressed": 344,
+      "applicableUniqueIds": 242,
+      "suppressedUniqueIds": 344,
+      "fixedCandidateRecords": 78,
+      "severity": {
+        "Critical": 29,
+        "High": 73,
+        "Medium": 97,
+        "Low": 32,
+        "Negligible": 538,
+        "Unknown": 48
+      }
+    },
+    "current": {
+      "applicable": 817,
+      "suppressed": 344,
+      "applicableUniqueIds": 242,
+      "suppressedUniqueIds": 344,
+      "fixedCandidateRecords": 78,
+      "severity": {
+        "Critical": 29,
+        "High": 73,
+        "Medium": 97,
+        "Low": 32,
+        "Negligible": 538,
+        "Unknown": 48
+      }
+    },
+    "delta": {
+      "applicable": 0,
+      "suppressed": 0,
+      "applicableUniqueIds": 0,
+      "suppressedUniqueIds": 0,
+      "fixedCandidateRecords": 0,
+      "severity": {
+        "Critical": 0,
+        "High": 0,
+        "Low": 0,
+        "Medium": 0,
+        "Negligible": 0,
+        "Unknown": 0
+      }
+    },
+    "cyclonedxComponents": {
+      "prior": 8971,
+      "current": 8971,
+      "delta": 0
+    },
+    "canonicalContentHashes": {
+      "matchesAndIgnored": {
+        "priorSha256": "f8bddea11d679534659737d6928bf6846ea808dda62af562d222a86f2c997eb9",
+        "currentSha256": "f8bddea11d679534659737d6928bf6846ea808dda62af562d222a86f2c997eb9",
+        "identical": true
+      },
+      "cyclonedxComponents": {
+        "priorSha256": "163307860c7fdbaafcf4205831e322aa4f5cf3877a60092b093e1d4dd4cdf510",
+        "currentSha256": "163307860c7fdbaafcf4205831e322aa4f5cf3877a60092b093e1d4dd4cdf510",
+        "identical": true
+      }
+    }
+  },
+  "liveServicesOrDataUsed": false,
+  "productSourceOrDocsModified": false,
+  "imagePushed": false,
+  "imageSigned": false,
+  "sbomSigned": false,
+  "limitations": [
+    "Package-to-advisory match records are not equivalent to confirmed exploitability or reachability.",
+    "No VEX, exploitability, reachability, runtime-exposure, or package-owner adjudication was applied.",
+    "The vulnerability database is point-in-time; later refreshes can change results.",
+    "Grype built-in/default ignore rules were active; all suppressed records are preserved in ignoredMatches.",
+    "License values are scanner-detected inventory metadata, not a legal or policy-compliance conclusion.",
+    "No registry lookup was performed. Docker Engine-local RepoDigest values are not proof of a pushed registry digest.",
+    "No signature or attestation was created; SHA-256 sealing establishes local file-integrity detection, not authenticity or provenance."
+  ]
+}

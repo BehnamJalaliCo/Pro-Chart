@@ -1,0 +1,13 @@
+
+Running 4 tests using 1 worker
+
+[1/4] [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin
+[2/4] [chromium-desktop] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin
+[3/4] [chromium-mobile] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin
+[4/4] [chromium-mobile] › tests/referral-compliance.spec.mjs:315:3 › REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin
+  4 passed (35.6s)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice

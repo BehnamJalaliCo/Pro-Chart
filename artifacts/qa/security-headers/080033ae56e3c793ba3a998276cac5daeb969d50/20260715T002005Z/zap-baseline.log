@@ -1,0 +1,143 @@
+2026-07-15 00:22:58,936 Trigger hook: cli_opts, args: 1
+2026-07-15 00:22:58,936 Using port: 46973
+2026-07-15 00:22:58,939 Starting ZAP
+2026-07-15 00:22:58,939 Params: ['/zap/zap-x.sh', '-cmd', '-port', '46973', '-host', '0.0.0.0', '-config', 'database.recoverylog=false', '-config', 'api.disablekey=true', '-config', 'api.addrs.addr.name=.*', '-config', 'api.addrs.addr.regex=true', '-addonupdate', '-addoninstall', 'pscanrulesBeta']
+2026-07-15 00:23:19,235 Starting ZAP
+2026-07-15 00:23:19,235 Params: ['/zap/zap-x.sh', '-cmd', '-port', '46973', '-host', '0.0.0.0', '-config', 'database.recoverylog=false', '-config', 'api.disablekey=true', '-config', 'api.addrs.addr.name=.*', '-config', 'api.addrs.addr.regex=true', '-autorun', '/home/zap/zap.yaml', '-config', 'stats.pkg.baseline-af=1']
+Using the Automation Framework
+Job passiveScan-config set enableTags = false
+Job passiveScan-config set maxAlertsPerRule = 10
+Job spider set maxDuration = 1
+Job spider set url = https://prochart-pc130-final-20260715T002005Z
+Job passiveScan-wait set maxDuration = 0
+Job outputSummary set format = LONG
+Job outputSummary set summaryFile = /home/zap/zap_out.json
+Job report set reportDescription = 
+Job report set reportDir = /zap/wrk/
+Job report set reportFile = zap-report.html
+Job report set reportTitle = ZAP Scanning Report
+Job report set template = traditional-html
+Job report set reportDescription = 
+Job report set reportDir = /zap/wrk/
+Job report set reportFile = zap-report.md
+Job report set reportTitle = ZAP Scanning Report
+Job report set template = traditional-md
+Job report set reportDescription = 
+Job report set reportDir = /zap/wrk/
+Job report set reportFile = zap-report.json
+Job report set reportTitle = ZAP Scanning Report
+Job report set template = traditional-json
+Job passiveScan-config started
+Job passiveScan-config finished, time taken: 00:00:00
+Job spider started
+Job spider requesting URL https://prochart-pc130-final-20260715T002005Z
+Job spider found 34 URLs
+Job spider finished, time taken: 00:00:00
+Job passiveScan-wait started
+Job passiveScan-wait finished, time taken: 00:00:15
+Job outputSummary started
+Total of 20 URLs
+PASS: Vulnerable JS Library (Powered by Retire.js) [10003]
+PASS: In Page Banner Information Leak [10009]
+PASS: Cookie No HttpOnly Flag [10010]
+PASS: Cookie Without Secure Flag [10011]
+PASS: Cross-Domain JavaScript Source File Inclusion [10017]
+PASS: Content-Type Header Missing [10019]
+PASS: Anti-clickjacking Header [10020]
+PASS: X-Content-Type-Options Header Missing [10021]
+PASS: Information Disclosure - Debug Error Messages [10023]
+PASS: Information Disclosure - Sensitive Information in URL [10024]
+PASS: Information Disclosure - Sensitive Information in HTTP Referrer Header [10025]
+PASS: HTTP Parameter Override [10026]
+PASS: Information Disclosure - Suspicious Comments [10027]
+PASS: Off-site Redirect [10028]
+PASS: Cookie Poisoning [10029]
+PASS: User Controllable Charset [10030]
+PASS: User Controllable HTML Element Attribute (Potential XSS) [10031]
+PASS: Viewstate [10032]
+PASS: Directory Browsing [10033]
+PASS: Heartbleed OpenSSL Vulnerability (Indicative) [10034]
+PASS: Strict-Transport-Security Header [10035]
+PASS: Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s) [10037]
+PASS: Content Security Policy (CSP) Header Not Set [10038]
+PASS: X-Backend-Server Header Information Leak [10039]
+PASS: Secure Pages Include Mixed Content [10040]
+PASS: HTTP to HTTPS Insecure Transition in Form Post [10041]
+PASS: HTTPS to HTTP Insecure Transition in Form Post [10042]
+PASS: User Controllable JavaScript Event (XSS) [10043]
+PASS: Big Redirect Detected (Potential Sensitive Information Leak) [10044]
+PASS: Retrieved from Cache [10050]
+PASS: X-ChromeLogger-Data (XCOLD) Header Information Leak [10052]
+PASS: Cookie without SameSite Attribute [10054]
+PASS: X-Debug-Token Information Leak [10056]
+PASS: Username Hash Found [10057]
+PASS: X-AspNet-Version Response Header [10061]
+PASS: PII Disclosure [10062]
+PASS: Permissions Policy Header Not Set [10063]
+PASS: Timestamp Disclosure [10096]
+PASS: Hash Disclosure [10097]
+PASS: Cross-Domain Misconfiguration [10098]
+PASS: Source Code Disclosure [10099]
+PASS: Weak Authentication Method [10105]
+PASS: Reverse Tabnabbing [10108]
+PASS: Dangerous JS Functions [10110]
+PASS: Authentication Request Identified [10111]
+PASS: Session Management Response Identified [10112]
+PASS: Verification Request Identified [10113]
+PASS: Script Served From Malicious Domain (polyfill) [10115]
+PASS: ZAP is Out of Date [10116]
+PASS: Absence of Anti-CSRF Tokens [10202]
+PASS: Private IP Disclosure [2]
+PASS: Session ID in URL Rewrite [3]
+PASS: Script Passive Scan Rules [50001]
+PASS: Stats Passive Scan Rule [50003]
+PASS: Insecure JSF ViewState [90001]
+PASS: Java Serialization Object [90002]
+PASS: Sub Resource Integrity Attribute Missing [90003]
+PASS: Charset Mismatch [90011]
+PASS: Application Error Disclosure [90022]
+PASS: WSDL File Detection [90030]
+PASS: Loosely Scoped Cookie [90033]
+WARN-NEW: Re-examine Cache-control Directives [10015] x 2 
+	https://prochart-pc130-final-20260715T002005Z/robots.txt (200 OK)
+	https://prochart-pc130-final-20260715T002005Z/sitemap.xml (200 OK)
+WARN-NEW: Server Leaks Version Information via "Server" HTTP Response Header Field [10036] x 8 
+	https://prochart-pc130-final-20260715T002005Z (200 OK)
+	https://prochart-pc130-final-20260715T002005Z/robots.txt (200 OK)
+	https://prochart-pc130-final-20260715T002005Z/sitemap.xml (200 OK)
+	https://prochart-pc130-final-20260715t002005z/ (200 OK)
+	https://prochart-pc130-final-20260715t002005z/api/ (404 Not Found)
+WARN-NEW: Non-Storable Content [10049] x 10 
+	https://prochart-pc130-final-20260715t002005z/*?a (200 OK)
+	https://prochart-pc130-final-20260715t002005z/live/ (200 OK)
+	https://prochart-pc130-final-20260715t002005z/manifest.webmanifest (200 OK)
+	https://prochart-pc130-final-20260715T002005Z/robots.txt (200 OK)
+	https://prochart-pc130-final-20260715T002005Z/sitemap.xml (200 OK)
+WARN-NEW: CSP: Wildcard Directive [10055] x 9 
+	https://prochart-pc130-final-20260715T002005Z (200 OK)
+	https://prochart-pc130-final-20260715t002005z/ (200 OK)
+	https://prochart-pc130-final-20260715t002005z/live/ (200 OK)
+	https://prochart-pc130-final-20260715T002005Z (200 OK)
+	https://prochart-pc130-final-20260715t002005z/ (200 OK)
+WARN-NEW: Modern Web Application [10109] x 4 
+	https://prochart-pc130-final-20260715T002005Z (200 OK)
+	https://prochart-pc130-final-20260715t002005z/ (200 OK)
+	https://prochart-pc130-final-20260715t002005z/*?a (200 OK)
+	https://prochart-pc130-final-20260715t002005z/live/ (200 OK)
+WARN-NEW: Cross-Origin-Embedder-Policy Header Missing or Invalid [90004] x 11 
+	https://prochart-pc130-final-20260715T002005Z/sitemap.xml (200 OK)
+	https://prochart-pc130-final-20260715t002005z/*?a (200 OK)
+	https://prochart-pc130-final-20260715T002005Z/sitemap.xml (200 OK)
+	https://prochart-pc130-final-20260715t002005z/*?a (200 OK)
+	https://prochart-pc130-final-20260715T002005Z/robots.txt (200 OK)
+FAIL-NEW: 0	FAIL-INPROG: 0	WARN-NEW: 6	WARN-INPROG: 0	INFO: 0	IGNORE: 0	PASS: 61
+Job outputSummary finished, time taken: 00:00:00
+Job report started
+Job report generated report /zap/wrk/zap-report.html
+Job report finished, time taken: 00:00:00
+Job report started
+Job report generated report /zap/wrk/zap-report.md
+Job report finished, time taken: 00:00:00
+Job report started
+Job report generated report /zap/wrk/zap-report.json
+Job report finished, time taken: 00:00:00

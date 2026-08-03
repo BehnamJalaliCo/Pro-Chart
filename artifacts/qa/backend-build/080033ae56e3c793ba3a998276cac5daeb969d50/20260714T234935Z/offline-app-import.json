@@ -1,0 +1,2 @@
+2026-07-14 23:50:06 [info     ] cors_configured                debug=False origins=['https://FX.trade-future.ir', 'https://Panel.FX.trade-future.ir', 'https://api.FX.trade-future.ir', 'https://coinepro.com', 'https://www.coinepro.com', 'https://panel.coinepro.com', 'https://localhost'] source=production_defaults
+{"http_method_paths": 486, "live_admin_all_protected": true, "live_admin_routes": 15, "live_http_method_paths": 17, "route_objects": 487, "websocket_paths": ["/live/ws/chat", "/ws/prices"]}

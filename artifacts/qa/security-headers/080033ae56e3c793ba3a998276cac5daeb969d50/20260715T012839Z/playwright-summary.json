@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "testFile": "qa/tests/security-headers.spec.mjs",
+  "configuredRetries": 0,
+  "attempts": [
+    {
+      "classification": "PRESERVED_HARNESS_FAIL",
+      "baseUrl": "https://127.0.0.1:18446",
+      "passed": 0,
+      "unexpected": 1,
+      "skipped": 0,
+      "flaky": 0,
+      "evidence": "playwright-attempt1-ip-canonicalization/report.json"
+    },
+    {
+      "classification": "FINAL_PASS",
+      "baseUrl": "https://localhost:18446",
+      "passed": 1,
+      "unexpected": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "requiredBlobWorkerAndEvalWorked": true,
+      "unlistedExternalScriptBlockedByCsp": true,
+      "evidence": "playwright-final/report.json"
+    }
+  ],
+  "acceptedResult": "PASS",
+  "acceptedPassed": 1,
+  "acceptedFailed": 0,
+  "acceptedSkipped": 0,
+  "acceptedFlaky": 0
+}

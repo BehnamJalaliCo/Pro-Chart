@@ -1,0 +1,56 @@
+{
+  "Id": "af232788e06b22cc1be9b23c950ab6118ddfaffed3dc1017e4ae046c435ffa93",
+  "Created": "2026-07-15T01:29:56.703787384Z",
+  "State": {
+    "Status": "running",
+    "StartedAt": "2026-07-15T01:29:56.751120821Z",
+    "Running": true
+  },
+  "Image": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf",
+  "Config": {
+    "Image": "prochart-api:qa-backend-080033ae56e3-20260715T011720Z"
+  },
+  "HostConfig": {
+    "ReadonlyRootfs": true,
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "PidsLimit": 256,
+    "PortBindings": {},
+    "NetworkMode": "pcsec-20260715t012839z",
+    "Tmpfs": {
+      "/tmp": "rw,noexec,nosuid,size=32m"
+    }
+  },
+  "Mounts": [],
+  "NetworkSettings": {
+    "Ports": {
+      "8000/tcp": null
+    },
+    "Networks": {
+      "pcsec-20260715t012839z": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": [
+          "api"
+        ],
+        "DriverOpts": null,
+        "GwPriority": 0,
+        "NetworkID": "4e8cf1576a9addea95e1a41015da5926b4dc1851451800dcc2900dcbc57b64d5",
+        "EndpointID": "3f5643cfc80a31b1a9f30268f3e2a8bdaa2cb619020a82b10263a02c4adb6f5a",
+        "Gateway": "172.19.0.1",
+        "IPAddress": "172.19.0.2",
+        "MacAddress": "ca:6a:d9:da:40:26",
+        "IPPrefixLen": 16,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "DNSNames": [
+          "pcsec-api-20260715t012839z",
+          "api",
+          "af232788e06b"
+        ]
+      }
+    }
+  }
+}

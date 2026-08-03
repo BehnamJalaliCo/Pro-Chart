@@ -1,0 +1,7 @@
+findings-redacted.json: OK
+gitleaks-exit-code.txt: OK
+gitleaks-redacted.json: OK
+gitleaks.log: OK
+review.json: OK
+run-metadata.json: OK
+scanner-image-repodigests.json: OK

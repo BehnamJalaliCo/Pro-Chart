@@ -1,0 +1,161 @@
+{
+  "applicationLifespanStarted": false,
+  "authHttpMethodPaths": [
+    {
+      "method": "GET",
+      "path": "/auth/available"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/check-email"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/forgot"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/refresh"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register/resend"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register/verify"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/reset"
+    }
+  ],
+  "checks": {
+    "coreAuthContract": true,
+    "duplicateMethodPathsAbsent": true,
+    "httpMethodPathCount": false,
+    "liveAdminProtection": true,
+    "liveAdminRouteCount": true,
+    "liveHttpContract": true,
+    "protectedCoreAuth": true,
+    "referralHttpContract": true,
+    "referralRoutesPublic": true,
+    "routeObjectCount": false,
+    "securityHeadersMiddlewareConfigured": true,
+    "topLevelEaRoutesAbsent": true,
+    "websocketContract": true
+  },
+  "duplicateMethodPaths": [],
+  "httpMethodPathCount": 494,
+  "liveAdminRouteCount": 15,
+  "liveHttpMethodPaths": [
+    {
+      "method": "DELETE",
+      "path": "/live/admin/message/{msg_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/live/admin/publish-info"
+    },
+    {
+      "method": "GET",
+      "path": "/live/admin/state"
+    },
+    {
+      "method": "GET",
+      "path": "/live/config"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/ban"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/chat-toggle"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/clear"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/mode"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/mute"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/pin"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/slowmode"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/start"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/stop"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/title"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/unban"
+    },
+    {
+      "method": "POST",
+      "path": "/live/admin/unmute"
+    },
+    {
+      "method": "POST",
+      "path": "/live/auth/telegram"
+    }
+  ],
+  "liveServicesOrDataUsed": false,
+  "middleware": [
+    "BaseHTTPMiddleware",
+    "CORSMiddleware",
+    "RateLimitMiddleware",
+    "SecurityHeadersMiddleware"
+  ],
+  "referralHttpMethodPaths": [
+    {
+      "method": "GET",
+      "path": "/go/lbank"
+    },
+    {
+      "method": "GET",
+      "path": "/go/oneroyal"
+    }
+  ],
+  "routeObjectCount": 492,
+  "status": "fail",
+  "uniqueHttpMethodPathCount": 494,
+  "websocketPaths": [
+    "/live/ws/chat",
+    "/ws/prices"
+  ]
+}

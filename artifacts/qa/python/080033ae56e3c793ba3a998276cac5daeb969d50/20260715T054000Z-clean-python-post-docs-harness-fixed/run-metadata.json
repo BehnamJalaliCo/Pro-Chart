@@ -1,0 +1,26 @@
+{
+  "runId": "20260715T054000Z-clean-python-post-docs-harness-fixed",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "2d3e2cf0b251f3e32c713f9a0e0eb6a692ee72a18e815afc468e56608705dd9e",
+  "baseImage": "prochart-api:deploy-referral-20260715T042151Z",
+  "testImage": "prochart-qa-pytest:20260715T054000Z-clean-python-post-docs-harness-fixed",
+  "repositorySnapshot": "sanitized worktree copy mounted read-only",
+  "testNetwork": "none",
+  "testTargets": [
+    "tests/",
+    "qa/python/security_regressions.py",
+    "qa/python/referral_redirects_regression.py",
+    "qa/python/security_headers_api_regression.py",
+    "qa/python/security_headers_runtime.py --help"
+  ],
+  "liveServicesOrDataUsed": false,
+  "pythonDontWriteBytecode": true,
+  "pytestCacheDisabled": true,
+  "pytestExitCode": 1,
+  "apiHeaderRegressionExitCode": 0,
+  "runtimeHeaderHarnessSmokeExitCode": 0,
+  "runtimeHeaderBehaviorExecuted": false,
+  "runtimeHeaderBehaviorExclusion": "requires a served HTTPS frontend image; incompatible with this network-none backend suite",
+  "pipCheckExitCode": 0,
+  "exitCode": 1
+}

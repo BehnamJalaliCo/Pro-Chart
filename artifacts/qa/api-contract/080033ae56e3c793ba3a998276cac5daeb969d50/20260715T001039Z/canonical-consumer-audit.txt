@@ -1,0 +1,16 @@
+.gitignore:28:media/	media/mt5/user_manager.py
+.gitignore:50:deploy/	deploy/windows/coinepro_agent.py
+.gitignore:63:docker-compose.yml	docker-compose.yml
+.gitignore:43:frontend/ig/	frontend/ig/src/App.jsx
+.gitignore:45:frontend/user/	frontend/user/src/App.jsx
+100644 d588d62eb79527cab31989a4fcf4352492874211 0	docker-compose.prochart.yml
+100644 5acfe93dba614dc6e061724137c19fbffdbb203c 0	frontend/panel/src/App.jsx
+100644 7ad4a9cb77887cde1231e25594619ee40cbc1014 0	src/api/routes/admin_instagram.py
+100644 a93a7364c908201ec27f7ff6c47cacc3717cfd7f 0	src/api/routes/ea.py
+100644 9efa231f8a5d23a2cb7d39a27f4cb674424d4a8d 0	src/api/routes/trade_history.py
+tracked-direct-ea-consumers
+HEAD:docs/api.md:377:The `/ea` router (`ea.py`) is the contract between the server and the MetaTrader 5 Expert Advisor. It authenticates with the static `EA_TOKEN` (const-time, §9.6) rather than a JWT, because the EA is a long-running native robot, not a session-based user. Endpoints: `GET /ea/signals` (active live signals in EA-friendly shape), `GET /ea/config` (risk/lot/trailing settings, sourced from Redis key `ea:settings`, admin-tunable from the panel), `POST /ea/heartbeat`, `POST /ea/deals` (real fills → P&L history), `POST /ea/specs` and `POST /ea/symbols` (broker instrument metadata). It carries the **highest rate-limit zone** (600/min) because it polls aggressively.
+HEAD:docs/api.md:702:روترِ `/ea` (`ea.py`) قراردادِ بینِ سرور و Expert Advisorِ متاتریدر ۵ است. با `EA_TOKEN`ِ ثابت (ثابت‌زمان، §۹.۶) احراز می‌کند نه با JWT، چون EA یک رباتِ بومیِ بلندمدت است نه کاربرِ مبتنی‌بر-سشن. اندپوینت‌ها: `GET /ea/signals` (سیگنال‌های فعالِ live به شکلِ EA-پسند)، `GET /ea/config` (تنظیماتِ ریسک/لات/trailing از کلیدِ Redisِ `ea:settings` که از پنل قابلِ تنظیم است)، `POST /ea/heartbeat`، `POST /ea/deals` (fillهای واقعی ← تاریخچهٔ P&L)، `POST /ea/specs` و `POST /ea/symbols` (متادیتای ابزارِ بروکر). بالاترین zoneِ محدودیتِ نرخ (۶۰۰/دقیقه) را حمل می‌کند چون پُرتکرار poll می‌کند.
+HEAD:docs/telegram-bot.md:208:6. On success, store `signal:posted:{id}` and `signal:msg:{id}` (the message id) with a **14-day TTL** matched to `signal:active`, because `/ea/signals` only hands *posted* signals to the EA — the flag must outlive the signal.
+HEAD:docs/telegram-bot.md:507:6. در موفقیت، `signal:posted:{id}` و `signal:msg:{id}` با **TTLِ ۱۴روزه** (هم‌اندازه‌ی `signal:active`) ذخیره می‌شوند، چون `/ea/signals` فقط سیگنالِ *posted* را به EA می‌دهد.
+HEAD:src/bot/services/signal_publisher.py:229:                    # فلگِ posted نمنقضی شود — /ea/signals فقط سیگنالِ posted را به EA

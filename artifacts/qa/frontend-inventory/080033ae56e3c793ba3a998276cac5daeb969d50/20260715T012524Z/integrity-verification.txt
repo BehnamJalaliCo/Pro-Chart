@@ -1,0 +1,12 @@
+./artifact-inventory.txt: OK
+./determinism.log: OK
+./gitleaks-exit-code.txt: OK
+./gitleaks-run.log: OK
+./gitleaks-scan-manifest.sha256: OK
+./gitleaks-version.txt: OK
+./gitleaks.json: OK
+./inventory-a.json: OK
+./inventory-b.json: OK
+./inventory-digests.txt: OK
+./regression-tests.log: OK
+./run-metadata.json: OK

@@ -1,0 +1,1 @@
+[0000] ERROR failed to fetch latest version: Get "https://toolbox-data.anchore.io/syft/releases/latest/VERSION": dial tcp: lookup toolbox-data.anchore.io on 185.12.64.1:53: dial udp 185.12.64.1:53: connect: network is unreachable

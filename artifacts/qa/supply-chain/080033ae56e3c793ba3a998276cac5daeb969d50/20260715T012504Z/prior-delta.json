@@ -1,0 +1,69 @@
+{
+  "priorArtifact": "artifacts/qa/supply-chain/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T004904Z",
+  "imageIds": {
+    "prior": "sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+    "current": "sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf"
+  },
+  "prior": {
+    "applicable": 817,
+    "suppressed": 344,
+    "applicableUniqueIds": 242,
+    "suppressedUniqueIds": 344,
+    "fixedCandidateRecords": 78,
+    "severity": {
+      "Critical": 29,
+      "High": 73,
+      "Medium": 97,
+      "Low": 32,
+      "Negligible": 538,
+      "Unknown": 48
+    }
+  },
+  "current": {
+    "applicable": 817,
+    "suppressed": 344,
+    "applicableUniqueIds": 242,
+    "suppressedUniqueIds": 344,
+    "fixedCandidateRecords": 78,
+    "severity": {
+      "Critical": 29,
+      "High": 73,
+      "Medium": 97,
+      "Low": 32,
+      "Negligible": 538,
+      "Unknown": 48
+    }
+  },
+  "delta": {
+    "applicable": 0,
+    "suppressed": 0,
+    "applicableUniqueIds": 0,
+    "suppressedUniqueIds": 0,
+    "fixedCandidateRecords": 0,
+    "severity": {
+      "Critical": 0,
+      "High": 0,
+      "Low": 0,
+      "Medium": 0,
+      "Negligible": 0,
+      "Unknown": 0
+    }
+  },
+  "cyclonedxComponents": {
+    "prior": 8971,
+    "current": 8971,
+    "delta": 0
+  },
+  "canonicalContentHashes": {
+    "matchesAndIgnored": {
+      "priorSha256": "f8bddea11d679534659737d6928bf6846ea808dda62af562d222a86f2c997eb9",
+      "currentSha256": "f8bddea11d679534659737d6928bf6846ea808dda62af562d222a86f2c997eb9",
+      "identical": true
+    },
+    "cyclonedxComponents": {
+      "priorSha256": "163307860c7fdbaafcf4205831e322aa4f5cf3877a60092b093e1d4dd4cdf510",
+      "currentSha256": "163307860c7fdbaafcf4205831e322aa4f5cf3877a60092b093e1d4dd4cdf510",
+      "identical": true
+    }
+  }
+}

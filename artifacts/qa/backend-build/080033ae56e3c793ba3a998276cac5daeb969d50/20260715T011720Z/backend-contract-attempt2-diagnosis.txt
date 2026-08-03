@@ -1,0 +1,1 @@
+attempt2 reached baked settings validation and failed because required security fields were deliberately absent; image/source unchanged; attempt3 uses synthetic network-none QA values

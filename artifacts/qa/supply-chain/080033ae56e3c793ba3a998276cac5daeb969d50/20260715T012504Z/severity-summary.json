@@ -1,0 +1,160 @@
+{
+  "applicableMatchRecords": 817,
+  "defaultSuppressedMatchRecords": 344,
+  "totalRetainedMatchRecords": 1161,
+  "applicableBySeverity": [
+    {
+      "severity": "Critical",
+      "count": 29
+    },
+    {
+      "severity": "High",
+      "count": 73
+    },
+    {
+      "severity": "Medium",
+      "count": 97
+    },
+    {
+      "severity": "Low",
+      "count": 32
+    },
+    {
+      "severity": "Negligible",
+      "count": 538
+    },
+    {
+      "severity": "Unknown",
+      "count": 48
+    }
+  ],
+  "defaultSuppressedBySeverity": [
+    {
+      "severity": "Critical",
+      "count": 11
+    },
+    {
+      "severity": "High",
+      "count": 67
+    },
+    {
+      "severity": "Medium",
+      "count": 154
+    },
+    {
+      "severity": "Low",
+      "count": 1
+    },
+    {
+      "severity": "Negligible",
+      "count": 58
+    },
+    {
+      "severity": "Unknown",
+      "count": 53
+    }
+  ],
+  "applicableByFixState": [
+    {
+      "fixState": "fixed",
+      "count": 78
+    },
+    {
+      "fixState": "not-fixed",
+      "count": 627
+    },
+    {
+      "fixState": "wont-fix",
+      "count": 108
+    }
+  ],
+  "defaultSuppressedByFixState": [
+    {
+      "fixState": "not-fixed",
+      "count": 343
+    },
+    {
+      "fixState": "wont-fix",
+      "count": 1
+    }
+  ],
+  "applicableUniqueVulnerabilityIds": 242,
+  "defaultSuppressedUniqueVulnerabilityIds": 344,
+  "combinedUniqueVulnerabilityIds": 586,
+  "fixedVersionCandidates": {
+    "applicableMatchRecords": 78,
+    "applicableUniqueVulnerabilityIds": 78,
+    "uniqueVulnerabilityPackageInstalledVersionFixedVersionTuples": 116,
+    "bySeverity": [
+      {
+        "severity": "Critical",
+        "count": 1
+      },
+      {
+        "severity": "High",
+        "count": 15
+      },
+      {
+        "severity": "Medium",
+        "count": 36
+      },
+      {
+        "severity": "Low",
+        "count": 25
+      },
+      {
+        "severity": "Negligible",
+        "count": 1
+      },
+      {
+        "severity": "Unknown",
+        "count": 0
+      }
+    ],
+    "suppressedMatchRecords": 0,
+    "suppressedUniqueVulnerabilityIds": 0,
+    "definition": "A candidate is a Grype match record with at least one non-empty vulnerability.fix.versions entry; this is upgrade/remediation metadata, not proof that an upgrade is compatible or that a match is exploitable."
+  },
+  "defaultSuppressionRulesApplied": [
+    {
+      "rule": {
+        "namespace": "",
+        "matchType": "exact-indirect-match",
+        "packageName": "linux-libc-dev",
+        "packageType": "deb",
+        "upstreamName": "linux"
+      },
+      "records": 344
+    }
+  ],
+  "applicablePackageTypes": [
+    {
+      "packageType": "binary",
+      "count": 27
+    },
+    {
+      "packageType": "deb",
+      "count": 730
+    },
+    {
+      "packageType": "python",
+      "count": 60
+    }
+  ],
+  "defaultSuppressedPackageTypes": [
+    {
+      "packageType": "deb",
+      "count": 344
+    }
+  ],
+  "interpretation": {
+    "applicableDefinition": "Records in Grype matches after its built-in/default ignore rules.",
+    "defaultSuppressedDefinition": "Records preserved in Grype ignoredMatches with appliedIgnoreRules; they were excluded from matches by Grype defaults, not manually removed from this evidence.",
+    "fixedCandidateDefinition": "At least one non-empty Grype fix.versions value is present.",
+    "matchRecordsAreNotExploitabilityFindings": true,
+    "reachabilityAnalysisPerformed": false,
+    "exploitabilityAnalysisPerformed": false,
+    "vexApplied": false,
+    "note": "Counts are package-to-advisory match records from a point-in-time Grype database. They can include duplicates, disputed or unreachable findings, distro-qualified decisions, and false positives; package-owner triage is required."
+  }
+}

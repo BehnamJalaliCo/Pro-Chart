@@ -1,0 +1,22 @@
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started parent process [1]
+2026-07-15 03:22:05 [info     ] cors_configured                debug=False origins=['https://pro-chart.com', 'https://Panel.FX.trade-future.ir', 'https://api.FX.trade-future.ir', 'https://coinepro.com', 'https://www.coinepro.com', 'https://panel.coinepro.com', 'https://localhost'] source=production_defaults
+INFO:     Started server process [9]
+INFO:     Waiting for application startup.
+2026-07-15 03:22:05 [info     ] در حال راه‌اندازی اپلیکیشن...
+2026-07-15 03:22:05 [info     ] redis_connected                host=redis max_connections=150
+2026-07-15 03:22:05 [info     ] اتصال به ردیس با موفقیت برقرار شد.
+2026-07-15 03:22:05 [info     ] cors_configured                debug=False origins=['https://pro-chart.com', 'https://Panel.FX.trade-future.ir', 'https://api.FX.trade-future.ir', 'https://coinepro.com', 'https://www.coinepro.com', 'https://panel.coinepro.com', 'https://localhost'] source=production_defaults
+INFO:     Started server process [10]
+INFO:     Waiting for application startup.
+2026-07-15 03:22:05 [info     ] در حال راه‌اندازی اپلیکیشن...
+2026-07-15 03:22:05 [info     ] redis_connected                host=redis max_connections=150
+2026-07-15 03:22:05 [info     ] اتصال به ردیس با موفقیت برقرار شد.
+2026-07-15 03:22:05 [info     ] اتصال به دیتابیس با موفقیت برقرار شد.
+2026-07-15 03:22:05 [info     ] اپلیکیشن با موفقیت راه‌اندازی شد.
+INFO:     Application startup complete.
+2026-07-15 03:22:05 [info     ] اتصال به دیتابیس با موفقیت برقرار شد.
+2026-07-15 03:22:05 [info     ] اپلیکیشن با موفقیت راه‌اندازی شد.
+INFO:     Application startup complete.
+INFO:     172.18.0.1:49638 - "GET /health HTTP/1.1" 200 OK
+INFO:     172.18.0.1:49642 - "GET /openapi.json HTTP/1.1" 200 OK

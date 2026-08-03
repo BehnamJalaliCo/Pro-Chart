@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "tool": "OWASP ZAP baseline passive scan",
+  "toolVersion": "2.17.0",
+  "imageDigest": "sha256:8d387b1a63e3425beef4846e39719f5af2a787753af2d8b6558c6257d7a577a2",
+  "target": "isolated current-candidate frontend container over HTTPS",
+  "baselineUrlsObserved": 13,
+  "alertInstanceUniqueUrls": 9,
+  "exitCode": 2,
+  "exitMeaning": "warnings present; no FAIL-NEW or FAIL-INPROG",
+  "failNew": 0,
+  "failInProgress": 0,
+  "warnNew": 7,
+  "passRules": 63,
+  "highRisk": {
+    "riskCode": "3",
+    "alertRecords": 0,
+    "instances": 0
+  },
+  "mediumRisk": {
+    "riskCode": "2",
+    "alertRecords": 3,
+    "instances": 3,
+    "uniqueNames": [
+      "CSP: Wildcard Directive",
+      "CSP: script-src unsafe-eval",
+      "CSP: style-src unsafe-inline"
+    ]
+  },
+  "lowRisk": {
+    "riskCode": "1",
+    "alertRecords": 4,
+    "instances": 11,
+    "uniqueNames": [
+      "Cross-Origin-Embedder-Policy Header Missing or Invalid",
+      "Cross-Origin-Opener-Policy Header Missing or Invalid",
+      "Cross-Origin-Resource-Policy Header Missing or Invalid",
+      "Server Leaks Version Information via Server HTTP Response Header Field"
+    ]
+  },
+  "informational": {
+    "riskCode": "0",
+    "alertRecords": 8,
+    "instances": 29
+  },
+  "result": "PASS_NO_HIGH_WITH_MEDIUM_RESIDUALS",
+  "qualification": "Risk is keyed by ZAP riskcode. This was a passive unauthenticated baseline, not an active or authenticated penetration test; the exact referral redirects were verified separately by the runtime and API middleware contracts."
+}

@@ -1,0 +1,282 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/referral-compliance.spec.mjs",
+      "--project=chromium-desktop"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "referral-compliance.spec.mjs",
+      "file": "referral-compliance.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "REFERRAL-COMPLIANCE: LBank gate is disclosed, acknowledged, and same-origin",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 61786,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs",
+                        "column": 25,
+                        "line": 432
+                      },
+                      "message": "Error: locator.focus: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'معرفی', exact: true })\u001b[22m\n\n\n  430 |     if (testInfo.project.name === 'chromium-desktop') {\n  431 |       const referralTab = page.getByRole('button', { name: 'معرفی', exact: true });\n> 432 |       await referralTab.focus();\n      |                         ^\n  433 |       await expect(referralTab).toBeFocused();\n  434 |       await referralTab.press('Enter');\n  435 |       await expect.poll(() => new URL(page.url()).hash).toBe('#/referral');\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs:432:25"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:33:15.804Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/video-2.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/video-1.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/video-3.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-19f47-cknowledged-and-same-origin-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c5871b8167204d4e6a9f-87db357db2acd5d31312",
+          "file": "referral-compliance.spec.mjs",
+          "line": 412,
+          "column": 3
+        },
+        {
+          "title": "REFERRAL-COMPLIANCE: OneRoyal gate is disclosed, acknowledged, and same-origin",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 61903,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs",
+                        "column": 25,
+                        "line": 432
+                      },
+                      "message": "Error: locator.focus: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'معرفی', exact: true })\u001b[22m\n\n\n  430 |     if (testInfo.project.name === 'chromium-desktop') {\n  431 |       const referralTab = page.getByRole('button', { name: 'معرفی', exact: true });\n> 432 |       await referralTab.focus();\n      |                         ^\n  433 |       await expect(referralTab).toBeFocused();\n  434 |       await referralTab.press('Enter');\n  435 |       await expect.poll(() => new URL(page.url()).hash).toBe('#/referral');\n    at /home/bazaarnama/Pro-Chart/app/qa/tests/referral-compliance.spec.mjs:432:25"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:34:19.396Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/video-2.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/video-1.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/video-3.webm"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-referral/worktree/20260715T093314Z/test-results/referral-compliance-REFERR-f8c95-cknowledged-and-same-origin-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c5871b8167204d4e6a9f-38e0dea7ff83099a09e9",
+          "file": "referral-compliance.spec.mjs",
+          "line": 412,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T09:33:14.909Z",
+    "duration": 127539.841,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

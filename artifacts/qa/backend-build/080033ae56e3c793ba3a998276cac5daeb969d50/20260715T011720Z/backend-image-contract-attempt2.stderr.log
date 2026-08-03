@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/qa/backend-image-contract.py", line 12, in <module>
+    from src.api.deps import get_current_admin
+  File "/app/src/api/deps.py", line 16, in <module>
+    from src.core.config import settings
+  File "/app/src/core/config.py", line 492, in <module>
+    settings = Settings()
+               ^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pydantic_settings/main.py", line 167, in __init__
+    super().__init__(
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Settings
+  Value error, ❌ تنظیمات امنیتی ناامن: DB_PASSWORD, REDIS_PASSWORD, ADMIN_PASSWORD, GRAFANA_PASSWORD, JWT_SECRET_KEY مقدار پیش‌فرض دارند یا بسیار کوتاه هستند. لطفاً .env را با مقادیر تصادفی قوی پر کنید (برای JWT_SECRET_KEY حداقل ۳۲ کاراکتر؛ می‌توانید با `openssl rand -hex 32` تولید کنید). [type=value_error, input_value={}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/value_error

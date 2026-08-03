@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/tmp/backend-image-contract.py", line 12, in <module>
+    from src.api.deps import get_current_admin
+ModuleNotFoundError: No module named 'src'

@@ -1,0 +1,30 @@
+{
+  "image": {
+    "signed": false,
+    "attested": false,
+    "status": "NO_LOCAL_OR_REGISTRY_VERIFIED_SIGNATURE_OR_ATTESTATION_EVIDENCE",
+    "registryLookupPerformed": false,
+    "registryPublishedDigest": null,
+    "scope": "The exact image was inspected only in the local Docker Engine. Its local RepoDigest was not resolved against a registry, and no registry reference, signature bundle, or provenance attestation was supplied. Absence of local evidence cannot prove that no signature exists in an unknown external registry."
+  },
+  "sboms": {
+    "cyclonedx": {
+      "signed": false,
+      "attested": false,
+      "embeddedSignaturePresent": false,
+      "detachedSignaturePresent": false,
+      "status": "PLAIN_UNSIGNED_CYCLONEDX_JSON"
+    },
+    "spdx": {
+      "signed": false,
+      "attested": false,
+      "embeddedSignaturePresent": false,
+      "detachedSignaturePresent": false,
+      "status": "PLAIN_UNSIGNED_SPDX_JSON"
+    },
+    "scope": "SHA-256 checksum sealing provides local file-integrity evidence only; it is not a digital signature, registry attestation, or SLSA provenance statement."
+  },
+  "signaturesCreated": false,
+  "attestationsCreated": false,
+  "signingAttempted": false
+}

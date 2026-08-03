@@ -1,0 +1,8 @@
+{
+  "image": "zricethezav/gitleaks:v8.30.1",
+  "scope": "sanitized backend build inputs plus qa/python harness; credentials, runtime data, artifacts, backups, frontend, docs, and generated caches were never staged",
+  "redactionPercent": 100,
+  "exitCode": 0,
+  "findings": 0,
+  "status": "pass"
+}

@@ -1,0 +1,29 @@
+Final frontend validation: PASS
+
+Candidate endpoints:
+- qa-user-supply-20260715T041253Z: http://user.prochart.local:18081
+- qa-main-supply-20260715T041253Z: https://prochart.local:18443 (HTTP listener: 18082); desktop user surface uses user.prochart.local on the same port.
+- qa-panel-supply-20260715T041253Z: http://panel.prochart.local:18083
+
+Unit results:
+- user: 5 passed, 0 failed
+- main: 20 passed, 0 failed
+- panel: 5 passed, 0 failed
+
+Playwright results:
+- real user referral: 4 passed, 0 failed (desktop/mobile x LBank/OneRoyal)
+- main referral: 4 passed, 0 failed (desktop/mobile x LBank/OneRoyal)
+- panel navigation: 1 passed, 0 failed (chromium-desktop)
+- total Playwright: 9 passed, 0 failed, 0 skipped, 0 flaky
+
+Panel evidence:
+- /signals -> /ai-signals: HTTP 200
+- /visitors -> /analytics: HTTP 200
+- unexpected external requests: 0
+- page errors: 0
+
+Scope:
+- no product source files changed
+- no candidate or production container changed/restarted
+- no deployment performed
+- no container logs read or changed

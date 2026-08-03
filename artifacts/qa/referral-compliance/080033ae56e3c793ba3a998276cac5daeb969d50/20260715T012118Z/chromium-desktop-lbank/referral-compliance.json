@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "scope": "approved-provider-referral-departure-gate",
+  "project": "chromium-desktop",
+  "surface": "desktop-user-panel-connect",
+  "provider": "LBank",
+  "accountType": "crypto",
+  "expectedOrigin": "http://user.prochart.local:4173",
+  "approvedPath": "/go/lbank",
+  "gates": {
+    "connectOrProfile": {
+      "disclosure": "لینک معرفی: با استفاده از این لینک ممکن است Pro Chart اعتبار معرفی دریافت کند.",
+      "eligibility": "ارائه این خدمت به محل اقامت و شرایط ارائه‌دهنده بستگی دارد.",
+      "rawAction": "/go/lbank",
+      "resolvedAction": "http://user.prochart.local:4173/go/lbank",
+      "method": "get",
+      "target": "_blank",
+      "relTokens": [
+        "noopener",
+        "noreferrer",
+        "sponsored"
+      ],
+      "disclosureOrder": {
+        "disclosureBeforeEligibility": true,
+        "disclosureBeforeForm": true,
+        "eligibilityBeforeForm": true
+      },
+      "nativeSubmit": true,
+      "initiallyDisabled": true,
+      "keyboardAcknowledgementEnabledSubmit": true,
+      "directProviderLinks": [],
+      "windowOpenCalls": []
+    },
+    "referralTab": {
+      "disclosure": "لینک معرفی: با استفاده از این لینک ممکن است Pro Chart اعتبار معرفی دریافت کند.",
+      "eligibility": "ارائه این خدمت به محل اقامت و شرایط ارائه‌دهنده بستگی دارد.",
+      "rawAction": "/go/lbank",
+      "resolvedAction": "http://user.prochart.local:4173/go/lbank",
+      "method": "get",
+      "target": "_blank",
+      "relTokens": [
+        "noopener",
+        "noreferrer",
+        "sponsored"
+      ],
+      "disclosureOrder": {
+        "disclosureBeforeEligibility": true,
+        "disclosureBeforeForm": true,
+        "eligibilityBeforeForm": true
+      },
+      "nativeSubmit": true,
+      "initiallyDisabled": true,
+      "keyboardAcknowledgementEnabledSubmit": true,
+      "directProviderLinks": [],
+      "windowOpenCalls": []
+    }
+  },
+  "oneRoyalReferralOnly": false,
+  "network": {
+    "apiRequests": [
+      "GET /api/academy/bn/referral-link",
+      "GET /api/academy/bn/connect/status",
+      "GET /api/academy/bn/alerts",
+      "GET /api/academy/me",
+      "GET /api/academy/bn/referral-link"
+    ],
+    "mocked": [
+      "GET /api/academy/bn/referral-link",
+      "GET /api/academy/bn/connect/status",
+      "GET /api/academy/bn/alerts",
+      "GET /api/academy/me",
+      "GET /api/academy/bn/referral-link"
+    ],
+    "unstubbed": [],
+    "unexpectedExternal": [],
+    "pageErrors": [],
+    "requestFailures": []
+  }
+}

@@ -1,0 +1,42 @@
+[
+ {
+  "RuleID": "generic-api-key",
+  "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+  "StartLine": 9,
+  "EndLine": 9,
+  "StartColumn": 14,
+  "EndColumn": 80,
+  "Match": "CF_API_TOKEN=REDACTED\"",
+  "Secret": "REDACTED",
+  "File": "/scan/security-report/gitleaks-20260715-070828.json",
+  "SymlinkFile": "",
+  "Commit": "",
+  "Entropy": 4.8407593,
+  "Author": "",
+  "Email": "",
+  "Date": "",
+  "Message": "",
+  "Tags": [],
+  "Fingerprint": "/scan/security-report/gitleaks-20260715-070828.json:generic-api-key:9"
+ },
+ {
+  "RuleID": "generic-api-key",
+  "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+  "StartLine": 10,
+  "EndLine": 10,
+  "StartColumn": 5,
+  "EndColumn": 68,
+  "Match": "Secret\": \"REDACTED\"",
+  "Secret": "REDACTED",
+  "File": "/scan/security-report/gitleaks-20260715-070828.json",
+  "SymlinkFile": "",
+  "Commit": "",
+  "Entropy": 4.8407593,
+  "Author": "",
+  "Email": "",
+  "Date": "",
+  "Message": "",
+  "Tags": [],
+  "Fingerprint": "/scan/security-report/gitleaks-20260715-070828.json:generic-api-key:10"
+ }
+]

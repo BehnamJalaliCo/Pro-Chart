@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "health": {
+    "status": "healthy",
+    "database": "connected",
+    "redis": "connected"
+  },
+  "openapiPaths": 421
+}

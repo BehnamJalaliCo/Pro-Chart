@@ -1,0 +1,8 @@
+
+Running 4 tests using 1 worker
+
+[1/4] [chromium-desktop] › tests/user-referral-compliance.spec.mjs:270:3 › USER-REFERRAL: real /connect keeps LBank referral departure gated
+[2/4] [chromium-desktop] › tests/user-referral-compliance.spec.mjs:270:3 › USER-REFERRAL: real /connect keeps OneRoyal referral departure gated
+[3/4] [chromium-mobile] › tests/user-referral-compliance.spec.mjs:270:3 › USER-REFERRAL: real /connect keeps LBank referral departure gated
+[4/4] [chromium-mobile] › tests/user-referral-compliance.spec.mjs:270:3 › USER-REFERRAL: real /connect keeps OneRoyal referral departure gated
+  4 passed (4.9s)

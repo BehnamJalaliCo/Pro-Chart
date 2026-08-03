@@ -1,0 +1,7 @@
+9bdd3a069557cdd98173caba60768bb7c37b69a5af35e6df262f87aadb9bb31f  /etc/nginx/conf.d/default.conf
+507336a8cdcad7744e5c1f572a5d52a1286955b1c6271948e6d3799d218f938c  /etc/nginx/prochart-security-headers.conf
+38178ba8df8a4d8eee8f349b922fee7e51e48cd56ef2d7e24579340c23f83d8b  /usr/share/nginx/html/index.html
+85c0a1531824dbe69905d6b1d8f7330cb989fe79086158f358bfa5b7348e1eea  /usr/share/nginx/html/assets/index-Bg4x9Xx_.js
+b2b331f330e02008d07f4a01d954dba672225c75866fa2300799118833435c3e  /usr/share/nginx/html/assets/index-BDC3pT6H.css
+sourceNginx=9bdd3a069557cdd98173caba60768bb7c37b69a5af35e6df262f87aadb9bb31f
+sourceSecurityHeaders=507336a8cdcad7744e5c1f572a5d52a1286955b1c6271948e6d3799d218f938c

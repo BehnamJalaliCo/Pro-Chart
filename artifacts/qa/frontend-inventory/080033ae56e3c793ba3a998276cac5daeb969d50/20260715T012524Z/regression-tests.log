@@ -1,0 +1,9 @@
+test_candidate_provenance_reachability_and_exclusions (qa.python.frontend_source_inventory_regression.FrontendSourceInventoryCandidateTests.test_candidate_provenance_reachability_and_exclusions) ... ok
+test_registry_routes_commands_and_wildcard_are_conservative (qa.python.frontend_source_inventory_regression.FrontendSourceInventoryCandidateTests.test_registry_routes_commands_and_wildcard_are_conservative) ... ok
+test_serialized_output_is_byte_deterministic (qa.python.frontend_source_inventory_regression.FrontendSourceInventoryCandidateTests.test_serialized_output_is_byte_deterministic) ... ok
+test_untracked_bytes_change_only_the_candidate_projection (qa.python.frontend_source_inventory_regression.FrontendSourceInventoryCandidateTests.test_untracked_bytes_change_only_the_candidate_projection) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.240s
+
+OK

@@ -1,0 +1,141 @@
+NamaScript dynamic-code and blob-worker call sites:
+frontend/prochart/src/bazaarnama/namascript_bar.js-335-    var taW={}; for(var tn in ta){ taW[tn]=siteWrap(ta[tn]); }
+frontend/prochart/src/bazaarnama/namascript_bar.js-336-
+frontend/prochart/src/bazaarnama/namascript_bar.js:337:    var body = new Function(
+frontend/prochart/src/bazaarnama/namascript_bar.js-338-      'ta','math','input','plot','plotshape','plotchar','plotarrow','plotcandle','hline','bgcolor','fill','riskreward','barcolor','label','alertcondition','alert','line','box','table','strategy','study','indicator','runtime_error',
+frontend/prochart/src/bazaarnama/namascript_bar.js-339-      'crossover','crossunder','cross','nz','na','iff','request','int','float','bool','color','shape','str','__h','__setinit','__ctx',
+--
+frontend/prochart/src/bazaarnama/namascript_bar.js-401-
+frontend/prochart/src/bazaarnama/namascript_bar.js-402-let _url = null;
+frontend/prochart/src/bazaarnama/namascript_bar.js:403:function workerUrl() { if (!_url) _url = URL.createObjectURL(new Blob([WORKER_SRC], { type: 'application/javascript' })); return _url; }
+frontend/prochart/src/bazaarnama/namascript_bar.js-404-
+frontend/prochart/src/bazaarnama/namascript_bar.js-405-// runScriptBar — جایگزینِ drop-in برای runScript با اجرای کندل‌به‌کندل (Pine bar-by-bar).
+--
+frontend/prochart/src/bazaarnama/namascript_bar.js-408-  return new Promise((resolve) => {
+frontend/prochart/src/bazaarnama/namascript_bar.js-409-    let done = false;
+frontend/prochart/src/bazaarnama/namascript_bar.js:410:    const w = new Worker(workerUrl());
+frontend/prochart/src/bazaarnama/namascript_bar.js-411-    const to = setTimeout(() => { if (done) return; done = true; w.terminate(); resolve({ ok: false, error: 'اجرای اسکریپت بیش از حد طول کشید (حلقهٔ بی‌نهایت؟).' }); }, timeoutMs);
+frontend/prochart/src/bazaarnama/namascript_bar.js-412-    w.onmessage = (e) => { if (done) return; done = true; clearTimeout(to); w.terminate(); resolve(e.data); };
+--
+frontend/prochart/src/bazaarnama/namascript.js-188-    }
+frontend/prochart/src/bazaarnama/namascript.js-189-    var __SRC = preprocess(d.source);
+frontend/prochart/src/bazaarnama/namascript.js:190:    var f = new Function('ta','math','input','plot','plotshape','plotchar','plotarrow','plotcandle','plotbar','hline','bgcolor','fill','riskreward','barcolor','label','alertcondition','alert','line','box','table','strategy','study','indicator','crossover','crossunder','cross','nz','na','iff','ref','security','request','int','float','bool','add','sub','mul','div','gt','lt','ge','le','and','or','color','shape','open','high','low','close','volume','time','hl2','hlc3','ohlc4','hlcc4','bar_index','last_bar_index','barstate','str','S', __SRC);
+frontend/prochart/src/bazaarnama/namascript.js-191-    f(ta,math,input,plot,plotshape,plotchar,plotarrow,plotcandle,plotbar,hline,bgcolor,fill,riskreward,barcolor,label,alertcondition,alert,line,box,table,strategy,study,indicator,crossover,crossunder,cross,nz,naf,iff,ref,security,request,toint,tofloat,tobool,add,sub,mul,div,gt,lt,ge,le,and,or,color,shape,open,high,low,close,volume,time,hl2,hlc3,ohlc4,hlcc4,bar_index,last_bar_index,barstate,str,S);
+frontend/prochart/src/bazaarnama/namascript.js-192-
+--
+frontend/prochart/src/bazaarnama/namascript.js-223-
+frontend/prochart/src/bazaarnama/namascript.js-224-let _url = null;
+frontend/prochart/src/bazaarnama/namascript.js:225:function workerUrl() { if (!_url) _url = URL.createObjectURL(new Blob([WORKER_SRC], { type: 'application/javascript' })); return _url; }
+frontend/prochart/src/bazaarnama/namascript.js-226-
+frontend/prochart/src/bazaarnama/namascript.js-227-export function runScript(source, candles, inputs = {}, timeoutMs = 5000) {
+frontend/prochart/src/bazaarnama/namascript.js-228-  return new Promise((resolve) => {
+frontend/prochart/src/bazaarnama/namascript.js-229-    let done = false;
+frontend/prochart/src/bazaarnama/namascript.js:230:    const w = new Worker(workerUrl());
+frontend/prochart/src/bazaarnama/namascript.js-231-    const to = setTimeout(() => { if (done) return; done = true; w.terminate(); resolve({ ok: false, error: 'اجرای اسکریپت بیش از حد طول کشید (حلقهٔ بی‌نهایت؟).' }); }, timeoutMs);
+frontend/prochart/src/bazaarnama/namascript.js-232-    w.onmessage = (e) => { if (done) return; done = true; clearTimeout(to); w.terminate(); resolve(e.data); };
+Telegram script/frame source:
+8-    window.onTelegramAuth = (user) => { try { onAuth?.(user); } catch { /* noop */ } };
+9-    const s = document.createElement('script');
+10:    s.src = 'https://telegram.org/js/telegram-widget.js?22';
+11-    s.async = true;
+12:    s.setAttribute('data-telegram-login', botUsername);
+13-    s.setAttribute('data-size', 'large');
+14-    s.setAttribute('data-radius', '12');
+External and API-managed image/media source:
+src/api/routes/academy.py-611-        AcademyVideo.lesson_id == l.id, AcademyVideo.status == "ready")
+src/api/routes/academy.py-612-        .order_by(AcademyVideo.id.desc()))).scalars().first()
+src/api/routes/academy.py:613:    video_url = None
+src/api/routes/academy.py-614-    if vid:
+src/api/routes/academy.py-615-        # لینکِ خامِ ویدیو لو نمی‌رود: توکنِ کوتاهِ بسته به دانش‌آموز
+src/api/routes/academy.py-616-        vt = create_access_token({"scope": "academy_video", "sid": st.id, "vid": vid.id},
+src/api/routes/academy.py-617-                                 expires_delta=timedelta(hours=3))
+src/api/routes/academy.py:618:        video_url = f"/api/academy/video/{vid.id}?t={vt}"
+src/api/routes/academy.py-619-    reading_time_min = max(1, round(len(_strip_html(l.content_fa or "")) / 900))
+src/api/routes/academy.py-620-    return {"slug": l.slug, "level": l.level, "title": l.title_fa, "summary": l.summary_fa,
+src/api/routes/academy.py-621-            "content": l.content_fa, "diagram_image": l.diagram_image, "tier": l.min_tier,
+src/api/routes/academy.py:622:            "video_url": video_url,
+src/api/routes/academy.py-623-            "video_duration": vid.duration_sec if vid else None,
+src/api/routes/academy.py-624-            "reading_time_min": reading_time_min,
+--
+src/api/routes/academy.py-1124-            "note": j.note, "lesson_learned": j.lesson_learned,
+src/api/routes/academy.py-1125-            "tags": j.tags if isinstance(j.tags, list) else [],
+src/api/routes/academy.py:1126:            "screenshot_url": j.screenshot_url, "ai_review": j.ai_review,
+src/api/routes/academy.py-1127-            "created_at": j.created_at.isoformat() if j.created_at else None}
+src/api/routes/academy.py-1128-
+--
+src/api/routes/academy.py-1142-    emotion: str = Body("", embed=True), note: str = Body("", embed=True),
+src/api/routes/academy.py-1143-    lesson_learned: str = Body("", embed=True),
+src/api/routes/academy.py:1144:    tags: list | None = Body(None, embed=True), screenshot_url: str = Body("", embed=True),
+src/api/routes/academy.py-1145-    st: AcademyStudent = Depends(require_vip), db: AsyncSession = Depends(get_db),
+src/api/routes/academy.py-1146-):
+--
+src/api/routes/academy.py-1150-                            emotion=(emotion or None), note=(note or None), lesson_learned=(lesson_learned or None),
+src/api/routes/academy.py-1151-                            tags=(clean_tags or None),
+src/api/routes/academy.py:1152:                            screenshot_url=((screenshot_url or "").strip()[:1000] or None))
+src/api/routes/academy.py-1153-    db.add(j)
+src/api/routes/academy.py-1154-    await db.commit()
+--
+frontend/prochart/src/pages/Lesson.jsx-361-          )}
+frontend/prochart/src/pages/Lesson.jsx-362-        </div>
+frontend/prochart/src/pages/Lesson.jsx:363:        {data.video_url && <VideoPlayer src={data.video_url} />}
+frontend/prochart/src/pages/Lesson.jsx-364-        {img && <img src={img} alt={data.title} loading="lazy"
+frontend/prochart/src/pages/Lesson.jsx-365-          className="rounded-xl w-full mb-5 border border-surface-border"
+--
+frontend/prochart/src/pages/Journal.jsx-46-
+frontend/prochart/src/pages/Journal.jsx-47-function AddModal({ onClose, onSaved }) {
+frontend/prochart/src/pages/Journal.jsx:48:  const [f, setF] = useState({ symbol: '', direction: 'buy', entry: '', exit: '', size: '', pnl: '', emotion: '', note: '', lesson_learned: '', screenshot_url: '' });
+frontend/prochart/src/pages/Journal.jsx-49-  const [tags, setTags] = useState([]);
+frontend/prochart/src/pages/Journal.jsx-50-  const [busy, setBusy] = useState(false);
+frontend/prochart/src/pages/Journal.jsx-51-  const up = (k, v) => setF((s) => ({ ...s, [k]: v }));
+frontend/prochart/src/pages/Journal.jsx-52-  const num = (v) => (v === '' ? null : parseFloat(v));
+frontend/prochart/src/pages/Journal.jsx:53:  const save = async () => { setBusy(true); try { await api.journalAdd({ ...f, entry: num(f.entry), exit: num(f.exit), size: num(f.size), pnl: num(f.pnl), tags, screenshot_url: f.screenshot_url.trim() || null }); onSaved(); } catch { /* */ } finally { setBusy(false); } };
+frontend/prochart/src/pages/Journal.jsx-54-  return (
+frontend/prochart/src/pages/Journal.jsx-55-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={onClose}>
+--
+frontend/prochart/src/pages/Journal.jsx-81-          <div>
+frontend/prochart/src/pages/Journal.jsx-82-            <label className="text-xs text-text-muted flex items-center gap-1"><Image size={12} /> لینکِ اسکرین‌شاتِ معامله (اختیاری)</label>
+frontend/prochart/src/pages/Journal.jsx:83:            <input className="jinp mt-1" dir="ltr" placeholder="https://…" value={f.screenshot_url} onChange={(e) => up('screenshot_url', e.target.value)} />
+frontend/prochart/src/pages/Journal.jsx-84-          </div>
+frontend/prochart/src/pages/Journal.jsx-85-          <button onClick={save} disabled={busy} className="btn-success w-full disabled:opacity-50">{busy ? 'در حال ذخیره…' : 'ذخیره'}</button>
+--
+frontend/prochart/src/pages/Journal.jsx-137-      )}
+frontend/prochart/src/pages/Journal.jsx-138-      {(j.note || j.lesson_learned) && <div className="text-xs text-text-secondary mt-1.5 leading-6">{j.note && <div>📝 {j.note}</div>}{j.lesson_learned && <div className="text-brand-green">💡 {j.lesson_learned}</div>}</div>}
+frontend/prochart/src/pages/Journal.jsx:139:      {j.screenshot_url && (
+frontend/prochart/src/pages/Journal.jsx:140:        <a href={j.screenshot_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-xs text-brand-green hover:underline">
+frontend/prochart/src/pages/Journal.jsx:141:          <img src={j.screenshot_url} alt="screenshot" className="w-12 h-12 object-cover rounded-lg border border-surface-border" onError={(e) => { e.target.style.display = 'none'; }} />
+frontend/prochart/src/pages/Journal.jsx-142-          <span className="flex items-center gap-1"><Image size={12} /> اسکرین‌شات</span>
+frontend/prochart/src/pages/Journal.jsx-143-        </a>
+--
+frontend/prochart/src/bazaarnama/Partners.jsx-12-    name: 'LBank',
+frontend/prochart/src/bazaarnama/Partners.jsx-13-    logo: '/partners/lbank.svg',
+frontend/prochart/src/bazaarnama/Partners.jsx:14:    logoRemote: 'https://logo.clearbit.com/lbank.com',
+frontend/prochart/src/bazaarnama/Partners.jsx-15-    kind: 'صرافیِ ارز دیجیتال',
+frontend/prochart/src/bazaarnama/Partners.jsx-16-    badge: 'پیشنهادِ ویژهٔ کریپتو',
+--
+frontend/prochart/src/bazaarnama/Partners.jsx-33-    name: 'One Royal',
+frontend/prochart/src/bazaarnama/Partners.jsx-34-    logo: '/partners/oneroyal.svg',
+frontend/prochart/src/bazaarnama/Partners.jsx:35:    logoRemote: 'https://logo.clearbit.com/oneroyal.com',
+frontend/prochart/src/bazaarnama/Partners.jsx-36-    kind: 'بروکرِ فارکس',
+frontend/prochart/src/bazaarnama/Partners.jsx-37-    badge: 'بروکرِ رگوله‌شده',
+--
+frontend/prochart/src/bazaarnama/Partners.jsx-70-        {/* لوگو روی زمینهٔ روشن تا در هر تم خوانا باشد */}
+frontend/prochart/src/bazaarnama/Partners.jsx-71-        <div className="rounded-xl px-4 py-4 flex items-center justify-center" style={{ background: '#ffffff', border: `1px solid ${TH.border}`, boxShadow: 'inset 0 0 0 1px rgba(255,255,255,.5)' }}>
+frontend/prochart/src/bazaarnama/Partners.jsx:72:          <img src={p.logoRemote || p.logo} alt={p.name} className="h-9 w-auto max-w-[160px] object-contain" loading="lazy"
+frontend/prochart/src/bazaarnama/Partners.jsx-73-            onError={(e) => { if (p.logo && e.currentTarget.src !== window.location.origin + p.logo) { e.currentTarget.onerror = null; e.currentTarget.src = p.logo; } }} />
+frontend/prochart/src/bazaarnama/Partners.jsx-74-        </div>
+--
+frontend/prochart/src/AuthMenu.jsx-439-
+frontend/prochart/src/AuthMenu.jsx-440-  if (!ad) return null;  // نبودِ تبلیغ ⇒ فضای خالی اشغال نمی‌شود
+frontend/prochart/src/AuthMenu.jsx:441:  const logo = ad.logo_url || ad.logo_path;
+frontend/prochart/src/AuthMenu.jsx-442-  const onLight = !!ad.bg_color; // اگر رنگِ سفارشی داشت، متن/CTA روی پس‌زمینهٔ پررنگ
+frontend/prochart/src/AuthMenu.jsx-443-  return (
+WebSocket host construction:
+2020-    let ws, alive = true;
+2021-    try {
+2022-      const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
+2023:      ws = new WebSocket(`${proto}://${window.location.host}/ws/prices`);
+2024-      ws.onmessage = (ev) => { if (!alive) return; try { const msg = JSON.parse(ev.data); const prices = msg.prices || msg || {}; const p = prices[symbol]; if (p) { const mid = p.mid != null ? p.mid : ((Number(p.bid) + Number(p.ask)) / 2); if (Number.isFinite(mid)) applyTick(mid); } } catch (e) {} };
+2025-      ws.onerror = () => { try { ws.close(); } catch (e) {} };
+2026-    } catch (e) {}
+active_jsx_inline_style_occurrences=1359
+active_jsx_files_with_inline_styles=53

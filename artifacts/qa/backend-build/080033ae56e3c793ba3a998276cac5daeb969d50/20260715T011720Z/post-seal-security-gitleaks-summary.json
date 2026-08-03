@@ -1,0 +1,29 @@
+[
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/image-inspect.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/image-inspect.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/test-image-inspect.json",
+    "StartLine": 19,
+    "EndLine": 19,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/test-image-inspect.json:generic-api-key:19"
+  },
+  {
+    "RuleID": "generic-api-key",
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "/scan/test-image-history.jsonl",
+    "StartLine": 27,
+    "EndLine": 27,
+    "Secret": "REDACTED",
+    "Fingerprint": "/scan/test-image-history.jsonl:generic-api-key:27"
+  }
+]

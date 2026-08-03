@@ -1,0 +1,4 @@
+user http://user.prochart.local:18081/connect status=200 remote=127.0.0.1
+main-http http://prochart.local:18082/ status=301 redirect=https://prochart.local/ remote=127.0.0.1
+main-https https://prochart.local:18443/ status=200 remote=127.0.0.1
+panel http://panel.prochart.local:18083/ status=200 remote=127.0.0.1

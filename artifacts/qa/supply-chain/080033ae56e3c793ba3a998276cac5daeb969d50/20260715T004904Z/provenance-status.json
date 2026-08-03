@@ -1,0 +1,19 @@
+{
+  "image": {
+    "signed": false,
+    "attested": false,
+    "status": "NO_LOCAL_SIGNATURE_OR_ATTESTATION_EVIDENCE",
+    "scope": "The exact image exists only as a local Docker Engine RepoDigest; no registry-backed signature/attestation reference or release provenance was supplied, so no cryptographic verification was possible.",
+    "labels": {}
+  },
+  "sbom": {
+    "signed": false,
+    "attested": false,
+    "embeddedCycloneDxSignature": false,
+    "detachedSignaturePresent": false,
+    "status": "PLAIN_UNSIGNED_CYCLONEDX_JSON",
+    "scope": "SHA-256 sealing below provides file integrity only and is not a digital signature or attestation."
+  },
+  "signaturesCreated": false,
+  "attestationsCreated": false
+}

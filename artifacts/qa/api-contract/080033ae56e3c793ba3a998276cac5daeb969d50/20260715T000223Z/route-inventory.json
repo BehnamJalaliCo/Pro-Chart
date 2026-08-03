@@ -1,0 +1,389 @@
+{
+  "routeObjects": 496,
+  "httpMethodPaths": 495,
+  "duplicateHttpMethodPaths": [],
+  "mountedEaMethodPaths": [
+    {
+      "method": "GET",
+      "path": "/ea/config"
+    },
+    {
+      "method": "POST",
+      "path": "/ea/deals"
+    },
+    {
+      "method": "POST",
+      "path": "/ea/diag"
+    },
+    {
+      "method": "POST",
+      "path": "/ea/heartbeat"
+    },
+    {
+      "method": "GET",
+      "path": "/ea/master-account"
+    },
+    {
+      "method": "GET",
+      "path": "/ea/signals"
+    },
+    {
+      "method": "POST",
+      "path": "/ea/specs"
+    },
+    {
+      "method": "POST",
+      "path": "/ea/symbols"
+    },
+    {
+      "method": "GET",
+      "path": "/ea/users"
+    }
+  ],
+  "remainingUnmountedDecoratorCount": 51,
+  "remainingUnmountedModules": {
+    "admin_instagram.py": 44,
+    "trade_history.py": 7
+  },
+  "modules": {
+    "admin_instagram.py": {
+      "prefix": "/admin/instagram",
+      "classification": "dormant legacy admin surface; original frontend/admin consumer was replaced; current /ig router is a tenant-scoped fork, not an authorization-equivalent replacement",
+      "auth": "all 44 handlers depend on require_role('admin'); stateful operations also use get_db where needed",
+      "consumer": "no current frontend, nginx-specific, worker, or server caller found; current frontend/panel has no Instagram route or API client",
+      "historicalEvidence": "introduced with the old frontend/admin client in f5a43bc but not included by main.py there; the replacement frontend/panel contains neither route nor client",
+      "hypotheticalMethodPathCollisions": [],
+      "decoratorCount": 44,
+      "routes": [
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts",
+          "handler": "list_accounts"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/accounts/sync",
+          "handler": "sync_accounts"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/accounts/{account_id}/smart-toggle",
+          "handler": "smart_toggle"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/media",
+          "handler": "account_media"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/live",
+          "handler": "account_live"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/dashboard",
+          "handler": "dashboard"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/messages",
+          "handler": "list_messages"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/messages",
+          "handler": "create_message"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/messages/{mid}",
+          "handler": "update_message"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/messages/{mid}",
+          "handler": "delete_message"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/auto-replies",
+          "handler": "list_rules"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/auto-replies",
+          "handler": "create_rule"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/auto-replies/{rid}",
+          "handler": "update_rule"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/auto-replies/{rid}/toggle",
+          "handler": "toggle_rule"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/auto-replies/{rid}",
+          "handler": "delete_rule"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/poll-now",
+          "handler": "poll_now"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/settings",
+          "handler": "get_settings"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/settings",
+          "handler": "set_settings"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/inbox",
+          "handler": "inbox"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/accounts/{account_id}/forms",
+          "handler": "list_forms"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/forms",
+          "handler": "create_form"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/forms/{fid}",
+          "handler": "update_form"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/contents",
+          "handler": "list_contents"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/contents",
+          "handler": "create_content"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/contents/{cid}/generate-video",
+          "handler": "generate_content_video"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/contents/{cid}",
+          "handler": "update_content"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/contents/{cid}/publish",
+          "handler": "publish_content_now"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/contents/{cid}",
+          "handler": "delete_content"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/upload",
+          "handler": "upload_media"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/ai/caption",
+          "handler": "ai_caption"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/ai/cover",
+          "handler": "ai_cover"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/cover/fonts",
+          "handler": "cover_fonts"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/cover/search",
+          "handler": "cover_search"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/cover/render",
+          "handler": "cover_render"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/ai/full-content",
+          "handler": "ai_full_content"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/ai/suggest-topics",
+          "handler": "ai_suggest_topics"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/instagram/autopilots",
+          "handler": "list_autopilots"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/autopilots",
+          "handler": "create_autopilot"
+        },
+        {
+          "method": "PUT",
+          "path": "/admin/instagram/autopilots/{aid}",
+          "handler": "update_autopilot"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/autopilots/{aid}/toggle",
+          "handler": "toggle_autopilot"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/autopilots/{aid}/run-now",
+          "handler": "run_autopilot_now"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/autopilots/{aid}",
+          "handler": "delete_autopilot"
+        },
+        {
+          "method": "POST",
+          "path": "/admin/instagram/forms/{fid}/toggle",
+          "handler": "toggle_form"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/instagram/forms/{fid}",
+          "handler": "delete_form"
+        }
+      ]
+    },
+    "ea.py": {
+      "prefix": "/ea",
+      "classification": "mounted: active machine-to-machine runtime contract",
+      "auth": "all 9 handlers require a query token and call constant-time _ea_token_ok before protected work",
+      "consumer": "docker-compose mt5; media/mt5/mt5-app.sh; media/mt5/user_manager.py; deploy/windows/coinepro_agent.py",
+      "historicalEvidence": "mounted under /ea in f5a43bc; the mount disappeared in the c4bb119 stack snapshot while the machine clients remained",
+      "methodPathCollisions": [],
+      "consumerContractRisk": "media/mt5/user_manager.py omits uid only on its signals request, unlike its config and heartbeat requests; no change was made in this route-mount audit",
+      "decoratorCount": 9,
+      "routes": [
+        {
+          "method": "GET",
+          "path": "/ea/signals",
+          "handler": "ea_signals"
+        },
+        {
+          "method": "GET",
+          "path": "/ea/config",
+          "handler": "ea_config"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/heartbeat",
+          "handler": "ea_heartbeat"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/diag",
+          "handler": "ea_diag"
+        },
+        {
+          "method": "GET",
+          "path": "/ea/master-account",
+          "handler": "ea_master_account"
+        },
+        {
+          "method": "GET",
+          "path": "/ea/users",
+          "handler": "ea_users"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/deals",
+          "handler": "ea_deals"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/symbols",
+          "handler": "ea_symbols"
+        },
+        {
+          "method": "POST",
+          "path": "/ea/specs",
+          "handler": "ea_specs"
+        }
+      ]
+    },
+    "trade_history.py": {
+      "prefix": "/admin/trade-history",
+      "classification": "router remains dormant; module query helpers remain active through mounted /user/trade-history routes",
+      "auth": "all 7 admin handlers depend on get_current_admin; the destructive DELETE has no explicit require_role('admin') gate; query helpers are called under current_user in user_panel.py",
+      "consumer": "no current frontend/panel admin client; query_list/query_daily/query_stats are imported by src/api/routes/user_panel.py",
+      "historicalEvidence": "mounted and consumed by the old frontend/admin in f5a43bc; both admin mount and client disappeared in the c4bb119 stack replacement while helper imports remained",
+      "hypotheticalMethodPathCollisions": [],
+      "decoratorCount": 7,
+      "routes": [
+        {
+          "method": "GET",
+          "path": "/admin/trade-history",
+          "handler": "list_history"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/daily",
+          "handler": "daily_summary"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/stats",
+          "handler": "history_stats"
+        },
+        {
+          "method": "DELETE",
+          "path": "/admin/trade-history",
+          "handler": "clear_history"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/export",
+          "handler": "export_csv"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/performance",
+          "handler": "performance"
+        },
+        {
+          "method": "GET",
+          "path": "/admin/trade-history/validation",
+          "handler": "validation"
+        }
+      ]
+    }
+  },
+  "additionalConsumerGap": {
+    "path": "POST /ea/manual-open",
+    "consumer": "src/api/routes/bazaarnama.py owner/live forwarding branch",
+    "finding": "no handler exists in ea.py or any mounted router; not repaired because it is outside the audited decorator set and requires a request/auth/data-contract design decision"
+  }
+}

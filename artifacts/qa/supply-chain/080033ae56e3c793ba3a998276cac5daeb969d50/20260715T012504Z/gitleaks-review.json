@@ -1,0 +1,39 @@
+{
+  "scanner": "gitleaks 8.30.1",
+  "scope": "this evidence directory only",
+  "scannerExitCode": 1,
+  "findingCount": 3,
+  "reportRedactionPercent": 100,
+  "reportSecretsAllRedacted": true,
+  "findings": [
+    {
+      "ruleId": "generic-api-key",
+      "file": "image-inspect.raw.json",
+      "line": 19,
+      "environmentKey": "GPG_KEY",
+      "secretValueStoredInReview": false
+    },
+    {
+      "ruleId": "generic-api-key",
+      "file": "image-inspect-by-id.raw.json",
+      "line": 19,
+      "environmentKey": "GPG_KEY",
+      "secretValueStoredInReview": false
+    },
+    {
+      "ruleId": "generic-api-key",
+      "file": "image-inspect-by-repodigest.raw.json",
+      "line": 19,
+      "environmentKey": "GPG_KEY",
+      "secretValueStoredInReview": false
+    }
+  ],
+  "review": {
+    "classification": "PUBLIC_GPG_KEY_IDENTIFIER_NOT_PRIVATE_KEY_MATERIAL",
+    "duplicateCause": "The same exact local image config was intentionally inspected by tag, image ID, and local RepoDigest, producing three equivalent raw files.",
+    "basis": "The matched field is the base-image GPG_KEY environment identifier. A public key identifier is verification metadata; no private key block, private key file, credential, or token is asserted by this classification.",
+    "scannerFailurePreserved": true,
+    "releasePassGranted": false,
+    "note": "This bounded review does not waive other secret scans and does not change Gitleaks exit code 1."
+  }
+}

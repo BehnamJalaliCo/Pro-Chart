@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/bazaarnama/Pro-Chart/app/qa/python/security_headers_runtime.py", line 198, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/bazaarnama/Pro-Chart/app/qa/python/security_headers_runtime.py", line 179, in main
+    results.append(check_security_headers(path, fetch(base + path, args.host)))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bazaarnama/Pro-Chart/app/qa/python/security_headers_runtime.py", line 117, in check_security_headers
+    actual = one_header(response, name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bazaarnama/Pro-Chart/app/qa/python/security_headers_runtime.py", line 99, in one_header
+    raise AssertionError(f"expected exactly one {name} header, got {values!r}")
+AssertionError: expected exactly one strict-transport-security header, got ['max-age=31536000; includeSubDomains', 'max-age=31536000; includeSubDomains']

@@ -1,0 +1,18 @@
+{
+  "runId": "20260714T233035Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceFingerprint": "e7e854d3179b52584316217f33ff0fe232be59e1a2b4c28a513a8829714285d3",
+  "baseUrl": "http://prochart.local:4173",
+  "runner": "mcr.microsoft.com/playwright:v1.61.0-noble",
+  "project": "chromium-mobile",
+  "testFile": "qa/tests/a11y-states.spec.mjs",
+  "state": "mobile chart with onboarding already completed",
+  "expected": 1,
+  "unexpected": 0,
+  "skipped": 0,
+  "durationMs": 5419.365,
+  "targetRules": ["landmark-one-main", "page-has-heading-one", "region"],
+  "axeViolations": 0,
+  "unexpectedMutatingRequests": 0,
+  "result": "PASS"
+}

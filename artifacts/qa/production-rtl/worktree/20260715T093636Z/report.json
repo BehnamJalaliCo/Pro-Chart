@@ -1,0 +1,399 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/rtl-route-matrix.spec.mjs"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "rtl-route-matrix.spec.mjs",
+      "file": "rtl-route-matrix.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PC-009: persisted English stays inside the Main app while the public document root remains Persian RTL",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1986,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:36:38.253Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7ee54f7aae6be8d3832c-cf1764cf74d3d83ee248",
+          "file": "rtl-route-matrix.spec.mjs",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "PC-009: every audited User route keeps a Persian RTL document root",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1024,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:36:40.503Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-route-status.json",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi8iLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL21hcmtldCIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvc2lnbmFscyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvdHJhZGUiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL2Nvbm5lY3QiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL3N1YnNjcmlwdGlvbiIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvcHJvZmlsZSIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfQpdCg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-ev-d514e-a-Persian-RTL-document-root-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-ev-d514e-a-Persian-RTL-document-root-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7ee54f7aae6be8d3832c-dcf6fb59bc1d0ed4e3d0",
+          "file": "rtl-route-matrix.spec.mjs",
+          "line": 118,
+          "column": 1
+        },
+        {
+          "title": "PC-009: every audited Panel route and legacy alias keeps a Persian RTL document root",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1581,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:36:41.567Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "panel-route-status.json",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9kYXNoYm9hcmQiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi91c2VycyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL3N1YnNjcmlwdGlvbnMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9vcmRlcnMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9leGNoYW5nZSIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL2FpLXNpZ25hbHMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9jaGFydHMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9hZHMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9uZXdzIiwKICAgICJkb2N1bWVudFN0YXR1cyI6IDIwMCwKICAgICJmaW5hbE9yaWdpbiI6ICJodHRwczovL3BhbmVsLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvYnJvYWRjYXN0cyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL2FuYWx5dGljcyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL3NldHRpbmdzIiwKICAgICJkb2N1bWVudFN0YXR1cyI6IDIwMCwKICAgICJmaW5hbE9yaWdpbiI6ICJodHRwczovL3BhbmVsLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvc2lnbmFscyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL3Zpc2l0b3JzIiwKICAgICJkb2N1bWVudFN0YXR1cyI6IDIwMCwKICAgICJmaW5hbE9yaWdpbiI6ICJodHRwczovL3BhbmVsLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfQpdCg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-ev-2e1e6-a-Persian-RTL-document-root-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-ev-2e1e6-a-Persian-RTL-document-root-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7ee54f7aae6be8d3832c-b0fbac41ad5e891f5fc9",
+          "file": "rtl-route-matrix.spec.mjs",
+          "line": 141,
+          "column": 1
+        },
+        {
+          "title": "PC-009: persisted English stays inside the Main app while the public document root remains Persian RTL",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1902,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:36:43.788Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7ee54f7aae6be8d3832c-1a654eb91dcb955d8a52",
+          "file": "rtl-route-matrix.spec.mjs",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "PC-009: every audited User route keeps a Persian RTL document root",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1125,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:36:45.960Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "user-route-status.json",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi8iLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL21hcmtldCIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvc2lnbmFscyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvdHJhZGUiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL2Nvbm5lY3QiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vdXNlci5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL3N1YnNjcmlwdGlvbiIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvcHJvZmlsZSIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly91c2VyLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfQpdCg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-ev-d514e-a-Persian-RTL-document-root-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-ev-d514e-a-Persian-RTL-document-root-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7ee54f7aae6be8d3832c-760bafa3a7e1657652e6",
+          "file": "rtl-route-matrix.spec.mjs",
+          "line": 118,
+          "column": 1
+        },
+        {
+          "title": "PC-009: every audited Panel route and legacy alias keeps a Persian RTL document root",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1534,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:36:47.135Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "panel-route-status.json",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9kYXNoYm9hcmQiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi91c2VycyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL3N1YnNjcmlwdGlvbnMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9vcmRlcnMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9leGNoYW5nZSIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL2FpLXNpZ25hbHMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9jaGFydHMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9hZHMiLAogICAgImRvY3VtZW50U3RhdHVzIjogMjAwLAogICAgImZpbmFsT3JpZ2luIjogImh0dHBzOi8vcGFuZWwucHJvLWNoYXJ0LmNvbSIsCiAgICAiZmluYWxQYXRoIjogIi9sb2dpbiIsCiAgICAibGFuZyI6ICJmYSIsCiAgICAiZGlyIjogInJ0bCIKICB9LAogIHsKICAgICJyZXF1ZXN0ZWRQYXRoIjogIi9uZXdzIiwKICAgICJkb2N1bWVudFN0YXR1cyI6IDIwMCwKICAgICJmaW5hbE9yaWdpbiI6ICJodHRwczovL3BhbmVsLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvYnJvYWRjYXN0cyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL2FuYWx5dGljcyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL3NldHRpbmdzIiwKICAgICJkb2N1bWVudFN0YXR1cyI6IDIwMCwKICAgICJmaW5hbE9yaWdpbiI6ICJodHRwczovL3BhbmVsLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfSwKICB7CiAgICAicmVxdWVzdGVkUGF0aCI6ICIvc2lnbmFscyIsCiAgICAiZG9jdW1lbnRTdGF0dXMiOiAyMDAsCiAgICAiZmluYWxPcmlnaW4iOiAiaHR0cHM6Ly9wYW5lbC5wcm8tY2hhcnQuY29tIiwKICAgICJmaW5hbFBhdGgiOiAiL2xvZ2luIiwKICAgICJsYW5nIjogImZhIiwKICAgICJkaXIiOiAicnRsIgogIH0sCiAgewogICAgInJlcXVlc3RlZFBhdGgiOiAiL3Zpc2l0b3JzIiwKICAgICJkb2N1bWVudFN0YXR1cyI6IDIwMCwKICAgICJmaW5hbE9yaWdpbiI6ICJodHRwczovL3BhbmVsLnByby1jaGFydC5jb20iLAogICAgImZpbmFsUGF0aCI6ICIvbG9naW4iLAogICAgImxhbmciOiAiZmEiLAogICAgImRpciI6ICJydGwiCiAgfQpdCg=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-ev-2e1e6-a-Persian-RTL-document-root-chromium-mobile/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/production-rtl/worktree/20260715T093636Z/test-results/rtl-route-matrix-PC-009-ev-2e1e6-a-Persian-RTL-document-root-chromium-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7ee54f7aae6be8d3832c-a1586316bd970cee31cd",
+          "file": "rtl-route-matrix.spec.mjs",
+          "line": 141,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T09:36:37.687Z",
+    "duration": 11175.885999999999,
+    "expected": 6,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

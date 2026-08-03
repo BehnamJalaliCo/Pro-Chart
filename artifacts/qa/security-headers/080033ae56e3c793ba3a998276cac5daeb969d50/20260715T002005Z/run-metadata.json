@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "requirementId": "PC-130",
+  "scope": "canonical frontend-prochart production image and API security-header middleware",
+  "runId": "20260715T002005Z",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "frontendSourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+  "securityScopeFingerprint": "31a6a10bda798e343d40b5b313f7d41d6bbb66614631cc55c5f70d8f273d0d7d",
+  "result": "IMPLEMENTED_CANDIDATE_RUNTIME_PASS_DEPLOYMENT_PENDING",
+  "fullyVerified": false,
+  "reasonNotFullyVerified": "The isolated image built from current source passed runtime and passive DAST gates, but the currently running canonical container still serves no security headers and was intentionally not restarted or redeployed by this task.",
+  "canonicalPath": {
+    "compose": "docker-compose.prochart.yml service frontend-prochart",
+    "build": "frontend/prochart/Dockerfile",
+    "edgeConfig": "frontend/prochart/nginx.conf",
+    "sharedPolicy": "frontend/prochart/security-headers.conf",
+    "apiMiddleware": "src/api/middleware/security_headers.py",
+    "ignoredLegacyRootNginxUsed": false
+  },
+  "candidateRuntime": {
+    "imageDigest": "sha256:7be597caae5f57abb1b9a6d319e793ed69fc825642879c0c3d2e86024936d0a6",
+    "imageBuiltFromCurrentWorktree": true,
+    "readOnlyRootFilesystem": true,
+    "tlsCertificateMountReadOnly": true,
+    "network": "prochart_default",
+    "runtimeHeaderRoutesPassed": 8,
+    "routes": [
+      "/index.html",
+      "/",
+      "/does-not-exist-pc130",
+      "/assets/<built-js>",
+      "/manifest.webmanifest",
+      "/sw.js",
+      "/health",
+      "/api/health"
+    ],
+    "duplicateUpstreamSecurityHeadersSuppressed": true,
+    "browserTests": {
+      "passed": 1,
+      "failed": 0,
+      "requiredBlobWorkerAndEvalWorked": true,
+      "unlistedExternalScriptBlocked": true
+    },
+    "inlineJsonLdSha256": "sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c="
+  },
+  "apiMiddlewareRegression": {
+    "result": "PASS",
+    "assertions": 11,
+    "runtime": "dependency-compatible existing API image with the exact current middleware file bind-mounted read-only",
+    "baseImage": "sha256:768613b6398c2ef089e0c8b73ac03ceddb6e9b1dac94d32a2b54c893dab1efdb",
+    "canonicalRebuiltApiImageTested": false,
+    "branches": [
+      "HSTS enabled",
+      "HSTS disabled",
+      "custom CSP"
+    ],
+    "defaultCspIncludes": [
+      "default-src none",
+      "object-src none",
+      "frame-ancestors none",
+      "base-uri none",
+      "form-action none"
+    ]
+  },
+  "passiveDast": {
+    "tool": "ZAP 2.17.0 baseline",
+    "imageDigest": "sha256:8d387b1a63e3425beef4846e39719f5af2a787753af2d8b6558c6257d7a577a2",
+    "urlsObserved": 20,
+    "highRiskInstances": 0,
+    "mediumRiskInstances": 9,
+    "lowRiskInstances": 19,
+    "informationalInstances": 16,
+    "exitCode": 2,
+    "exitInterpretation": "warnings present; zero FAIL-NEW and zero FAIL-INPROG",
+    "limitation": "Passive unauthenticated baseline scan only; not an active or authenticated penetration test."
+  },
+  "compatibilityResiduals": [
+    {
+      "directive": "script-src unsafe-eval",
+      "necessity": "Two tracked NamaScript engines compile user formulas with new Function inside time-limited blob Workers.",
+      "exposure": "unsafe-eval applies to the document CSP inherited by the blob Worker; an injected allowed script could also compile strings.",
+      "evidence": [
+        "compatibility-source-evidence.txt",
+        "playwright.log",
+        "zap-summary.json"
+      ],
+      "zapRisk": "Medium"
+    },
+    {
+      "directive": "style-src unsafe-inline",
+      "necessity": "The active React tree contains 1359 inline-style occurrences across 53 files for chart and theme data.",
+      "exposure": "CSP cannot reject injected inline style attributes.",
+      "evidence": [
+        "compatibility-source-evidence.txt",
+        "zap-summary.json"
+      ],
+      "zapRisk": "Medium"
+    },
+    {
+      "directive": "img-src https:",
+      "necessity": "Tracked partner logos plus API-managed ad logos and user-supplied journal screenshot URLs are HTTPS image inputs without a closed host allowlist.",
+      "exposure": "Images can be requested from any HTTPS origin and may disclose request timing/referrer subject to the strict-origin-when-cross-origin referrer policy.",
+      "evidence": [
+        "compatibility-source-evidence.txt",
+        "zap-summary.json"
+      ],
+      "zapRisk": "Medium (reported as CSP Wildcard Directive)"
+    }
+  ],
+  "narrowedSources": {
+    "websocketDiscovery": "The only active WebSocket constructor targets window.location.host /ws/prices.",
+    "connectSrc": [
+      "self",
+      "wss://pro-chart.ir",
+      "wss://pro-chart.com"
+    ],
+    "broadWssSchemeAllowed": false,
+    "mediaSrc": [
+      "self",
+      "blob"
+    ],
+    "scriptOrigins": [
+      "self",
+      "https://telegram.org"
+    ],
+    "frameOrigins": [
+      "https://oauth.telegram.org"
+    ]
+  },
+  "asvs500": {
+    "source": "https://github.com/OWASP/ASVS/tree/v5.0.0",
+    "coveredByCandidate": [
+      "v5.0.0-3.4.1",
+      "v5.0.0-3.4.3",
+      "v5.0.0-3.4.4",
+      "v5.0.0-3.4.5",
+      "v5.0.0-3.4.6"
+    ],
+    "notImplementedLevel3": [
+      "v5.0.0-3.4.7 CSP violation report location",
+      "v5.0.0-3.4.8 Cross-Origin-Opener-Policy"
+    ],
+    "notAssessedHere": [
+      "v5.0.0-3.4.2 CORS allowlist behavior"
+    ]
+  },
+  "liveDeployment": {
+    "container": "prochart-frontend-prochart-1",
+    "imageDigest": "sha256:d3e237880adcaa5cbcba2e3ef8ed9d46231cd655fbf378d948ad0e39218d9a20",
+    "startedAt": "2026-07-14T17:34:08.618020915Z",
+    "observedStatus": 200,
+    "observedSecurityHeaders": 0,
+    "evidence": "live-deployment-headers.txt"
+  },
+  "evidenceSecurity": {
+    "gitleaksVersion": "8.30.1",
+    "redacted": true,
+    "findings": 0
+  },
+  "integrityManifest": "SHA256SUMS"
+}

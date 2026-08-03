@@ -1,0 +1,4 @@
+NO_OBF=unset via env -u NO_OBF
+node=v20.20.2
+npm=10.8.2
+vite=6.4.3

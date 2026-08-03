@@ -1,0 +1,535 @@
+{
+  "schemaVersion": 1,
+  "result": "PASS",
+  "baseUrl": "https://127.0.0.1:18446",
+  "requestHost": "pro-chart.ir",
+  "assertionGroups": {
+    "responseCases": 10,
+    "exactSingleSecurityHeadersPerCase": 7,
+    "rootNoCache": true,
+    "staticImmutable": true,
+    "missingStatic404": true,
+    "options405": true,
+    "exactReferralAllowlist": true,
+    "queryOverrideIgnored": true,
+    "referralNoStoreNoCache": true,
+    "inlineScriptCspHashes": 1
+  },
+  "inlineScriptHashes": [
+    "sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c="
+  ],
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-type": [
+          "text/html"
+        ],
+        "content-length": [
+          "5590"
+        ],
+        "last-modified": [
+          "Wed, 15 Jul 2026 01:29:24 GMT"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "etag": [
+          "\"6a56e274-15d6\""
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ],
+        "cache-control": [
+          "no-cache, no-store, must-revalidate"
+        ],
+        "accept-ranges": [
+          "bytes"
+        ]
+      },
+      "bodyBytes": 5590
+    },
+    {
+      "method": "GET",
+      "path": "/assets/index-Bg4x9Xx_.js",
+      "status": 200,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-type": [
+          "application/javascript"
+        ],
+        "content-length": [
+          "2133594"
+        ],
+        "last-modified": [
+          "Wed, 15 Jul 2026 01:29:24 GMT"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "etag": [
+          "\"6a56e274-208e5a\""
+        ],
+        "expires": [
+          "Thu, 15 Jul 2027 01:30:40 GMT"
+        ],
+        "cache-control": [
+          "max-age=31536000",
+          "public, immutable"
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ],
+        "accept-ranges": [
+          "bytes"
+        ]
+      },
+      "bodyBytes": 2133594
+    },
+    {
+      "method": "GET",
+      "path": "/assets/does-not-exist-pc130.js",
+      "status": 404,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-type": [
+          "text/html"
+        ],
+        "content-length": [
+          "153"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ]
+      },
+      "bodyBytes": 153
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/",
+      "status": 405,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-type": [
+          "text/html"
+        ],
+        "content-length": [
+          "157"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ]
+      },
+      "bodyBytes": 157
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-type": [
+          "application/octet-stream",
+          "application/json"
+        ],
+        "content-length": [
+          "15"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ]
+      },
+      "bodyBytes": 15
+    },
+    {
+      "method": "GET",
+      "path": "/manifest.webmanifest",
+      "status": 200,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-type": [
+          "application/octet-stream"
+        ],
+        "content-length": [
+          "962"
+        ],
+        "last-modified": [
+          "Wed, 15 Jul 2026 01:29:23 GMT"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "etag": [
+          "\"6a56e273-3c2\""
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ],
+        "cache-control": [
+          "no-cache, no-store, must-revalidate"
+        ],
+        "accept-ranges": [
+          "bytes"
+        ]
+      },
+      "bodyBytes": 962
+    },
+    {
+      "method": "GET",
+      "path": "/sw.js",
+      "status": 200,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-type": [
+          "application/javascript"
+        ],
+        "content-length": [
+          "1138"
+        ],
+        "last-modified": [
+          "Wed, 15 Jul 2026 01:29:23 GMT"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "etag": [
+          "\"6a56e273-472\""
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ],
+        "cache-control": [
+          "no-cache, no-store, must-revalidate"
+        ],
+        "service-worker-allowed": [
+          "/"
+        ],
+        "accept-ranges": [
+          "bytes"
+        ]
+      },
+      "bodyBytes": 1138
+    },
+    {
+      "method": "GET",
+      "path": "/go/lbank?next=https%3A%2F%2Fattacker.invalid",
+      "status": 302,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-length": [
+          "0"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "cache-control": [
+          "no-store"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "location": [
+          "https://www.lbank.com/ref/PROCHART"
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ]
+      },
+      "bodyBytes": 0
+    },
+    {
+      "method": "GET",
+      "path": "/go/oneroyal?destination=https%3A%2F%2Fattacker.invalid",
+      "status": 302,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-length": [
+          "0"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "cache-control": [
+          "no-store"
+        ],
+        "pragma": [
+          "no-cache"
+        ],
+        "location": [
+          "https://vc.cabinet.oneroyal.com/fa/links/go/12412"
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ]
+      },
+      "bodyBytes": 0
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/go/lbank",
+      "status": 405,
+      "headers": {
+        "server": [
+          "nginx/1.27.5"
+        ],
+        "date": [
+          "Wed, 15 Jul 2026 01:30:40 GMT"
+        ],
+        "content-type": [
+          "application/json"
+        ],
+        "content-length": [
+          "31"
+        ],
+        "connection": [
+          "keep-alive"
+        ],
+        "allow": [
+          "GET"
+        ],
+        "strict-transport-security": [
+          "max-age=31536000; includeSubDomains"
+        ],
+        "x-frame-options": [
+          "DENY"
+        ],
+        "x-content-type-options": [
+          "nosniff"
+        ],
+        "x-xss-protection": [
+          "0"
+        ],
+        "referrer-policy": [
+          "strict-origin-when-cross-origin"
+        ],
+        "permissions-policy": [
+          "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), fullscreen=(self), clipboard-write=(self)"
+        ],
+        "content-security-policy": [
+          "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'sha256-aF/iCowKFbkBQV8blW86a4NG08HFM7xzzyuKi3NeF9c=' https://telegram.org; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' wss://pro-chart.ir wss://pro-chart.com; frame-src https://oauth.telegram.org; manifest-src 'self'; upgrade-insecure-requests"
+        ]
+      },
+      "bodyBytes": 31
+    }
+  ],
+  "errors": []
+}

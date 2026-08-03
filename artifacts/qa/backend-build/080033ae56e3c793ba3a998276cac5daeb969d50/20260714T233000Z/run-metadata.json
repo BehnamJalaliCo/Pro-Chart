@@ -1,0 +1,33 @@
+{
+  "runId": "20260714T233000Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "contextSourceFingerprint": "7fbb0a9e745f8ff8d1fbf28a730cc9a39321f21a7e71304218ce8d342cd3c1b7",
+  "contextBytesBeforeDockerCompression": 3926082,
+  "dockerTransferredContext": "307.59kB",
+  "baseImage": "python:3.12-slim@sha256:c3d81d25b3154142b0b42eb1e61300024426268edeb5b5a26dd7ddf64d9daf28",
+  "imageTag": "prochart-api:qa-deps-20260714",
+  "imageId": "sha256:cc19127436c9f67bc5304a890ed6231feed212aa9f1eec9b7094abe2d0437833",
+  "imageSizeBytes": 3582633738,
+  "buildExitCode": 0,
+  "buildFinalStepSeconds": 357.8,
+  "offlineValidationNetwork": "none",
+  "offlineValidationExitCode": 0,
+  "pipCheckExitCode": 0,
+  "pipCheckResult": "No broken requirements found.",
+  "analyticImports": {
+    "numpy": "2.2.6",
+    "pandas": "2.2.3",
+    "talib": "0.4.32"
+  },
+  "removedPackages": {
+    "pandas_ta_present": false,
+    "numba_present": false
+  },
+  "fastApiImport": {
+    "routeObjects": 469,
+    "uniqueMethodPaths": 469
+  },
+  "liveServicesOrDataUsedForValidation": false,
+  "gitleaksVersion": "8.30.1",
+  "gitleaksFindings": 0
+}

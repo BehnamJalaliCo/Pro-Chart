@@ -1,0 +1,316 @@
+{
+  "generatedFrom": [
+    "sbom.cyclonedx.json",
+    "sbom.spdx.json"
+  ],
+  "cyclonedx": {
+    "specVersion": "1.6",
+    "componentCount": 8971,
+    "componentTypes": [
+      {
+        "type": "application",
+        "count": 15,
+        "withLicenseEvidence": 0,
+        "withHashes": 0
+      },
+      {
+        "type": "file",
+        "count": 8625,
+        "withLicenseEvidence": 0,
+        "withHashes": 8625
+      },
+      {
+        "type": "library",
+        "count": 330,
+        "withLicenseEvidence": 321,
+        "withHashes": 0
+      },
+      {
+        "type": "operating-system",
+        "count": 1,
+        "withLicenseEvidence": 0,
+        "withHashes": 0
+      }
+    ],
+    "componentsWithLicenseEvidence": 321,
+    "componentsWithoutLicenseEvidence": 8650,
+    "licenseEntryCount": 1306,
+    "licenseIdEntryCount": 832,
+    "distinctLicenseIds": 53,
+    "licenseNameEntryCount": 468,
+    "distinctLicenseNames": 138,
+    "licenseExpressionEntryCount": 6,
+    "distinctLicenseExpressions": 6,
+    "topDetectedLicenseIds": [
+      {
+        "value": "GPL-2.0-only",
+        "count": 91
+      },
+      {
+        "value": "BSD-3-Clause",
+        "count": 69
+      },
+      {
+        "value": "GPL-2.0-or-later",
+        "count": 69
+      },
+      {
+        "value": "GPL-3.0-only",
+        "count": 69
+      },
+      {
+        "value": "MIT",
+        "count": 60
+      },
+      {
+        "value": "GPL-3.0-or-later",
+        "count": 45
+      },
+      {
+        "value": "LGPL-2.1-only",
+        "count": 39
+      },
+      {
+        "value": "BSD-2-Clause",
+        "count": 31
+      },
+      {
+        "value": "LGPL-2.1-or-later",
+        "count": 28
+      },
+      {
+        "value": "LGPL-2.0-only",
+        "count": 26
+      },
+      {
+        "value": "LGPL-2.0-or-later",
+        "count": 26
+      },
+      {
+        "value": "Apache-2.0",
+        "count": 25
+      },
+      {
+        "value": "ISC",
+        "count": 25
+      },
+      {
+        "value": "GFDL-1.2-only",
+        "count": 22
+      },
+      {
+        "value": "LGPL-3.0-only",
+        "count": 22
+      },
+      {
+        "value": "LGPL-3.0-or-later",
+        "count": 21
+      },
+      {
+        "value": "GPL-1.0-only",
+        "count": 18
+      },
+      {
+        "value": "X11",
+        "count": 15
+      },
+      {
+        "value": "FSFAP",
+        "count": 13
+      },
+      {
+        "value": "FSFULLR",
+        "count": 11
+      }
+    ],
+    "topDetectedLicenseNames": [
+      {
+        "value": "LGPL",
+        "count": 43
+      },
+      {
+        "value": "GPL",
+        "count": 39
+      },
+      {
+        "value": "public-domain",
+        "count": 34
+      },
+      {
+        "value": "Artistic",
+        "count": 32
+      },
+      {
+        "value": "Expat",
+        "count": 28
+      },
+      {
+        "value": "NVIDIA Proprietary Software",
+        "count": 12
+      },
+      {
+        "value": "BSD",
+        "count": 10
+      },
+      {
+        "value": "GFDL",
+        "count": 10
+      },
+      {
+        "value": "BSLA",
+        "count": 9
+      },
+      {
+        "value": "GFDL-NIV-1.3+",
+        "count": 6
+      },
+      {
+        "value": "Unicode",
+        "count": 5
+      },
+      {
+        "value": "BSD-3-clause-Berkeley",
+        "count": 4
+      },
+      {
+        "value": "BSD-3-clause-Carnegie",
+        "count": 4
+      },
+      {
+        "value": "BSD-3-clause-GENERIC",
+        "count": 4
+      },
+      {
+        "value": "BSD-3-clause-Oracle",
+        "count": 4
+      },
+      {
+        "value": "BSD-3-clause-WIDE",
+        "count": 4
+      },
+      {
+        "value": "BSD-3-clause-with-weird-numbering",
+        "count": 4
+      },
+      {
+        "value": "BSD-4-clause-POWERDOG",
+        "count": 4
+      },
+      {
+        "value": "BSD-like-Spencer",
+        "count": 4
+      },
+      {
+        "value": "BSD-tcp_wrappers",
+        "count": 4
+      }
+    ],
+    "componentsWithHashes": 8625,
+    "rootEmbeddedSignaturePresent": false
+  },
+  "spdx": {
+    "specVersion": "SPDX-2.3",
+    "dataLicense": "CC0-1.0",
+    "licenseListVersion": "3.28",
+    "packageCount": 346,
+    "fileCount": 9075,
+    "relationshipCount": 10156,
+    "packagesWithDeclaredLicenseAssertion": 314,
+    "packagesWithDeclaredLicenseNoAssertion": 32,
+    "packagesWithConcludedLicenseAssertion": 7,
+    "packagesWithConcludedLicenseNoAssertion": 339,
+    "filesWithConcludedLicenseAssertion": 0,
+    "filesWithConcludedLicenseNoAssertion": 9075,
+    "packageDeclaredLicenseExpressionCount": 112,
+    "topPackageDeclaredLicenseExpressions": [
+      {
+        "value": "MIT",
+        "count": 52
+      },
+      {
+        "value": "NOASSERTION",
+        "count": 32
+      },
+      {
+        "value": "BSD-3-Clause",
+        "count": 22
+      },
+      {
+        "value": "LicenseRef-Artistic AND GFDL-1.2-only AND LicenseRef-GPL AND GPL-3.0-only AND LicenseRef-LGPL",
+        "count": 21
+      },
+      {
+        "value": "Apache-2.0",
+        "count": 17
+      },
+      {
+        "value": "GPL-2.0-only",
+        "count": 12
+      },
+      {
+        "value": "LicenseRef-NVIDIA-Proprietary-Software",
+        "count": 12
+      },
+      {
+        "value": "LicenseRef-BSD",
+        "count": 10
+      },
+      {
+        "value": "BSD-2-Clause AND BSD-3-Clause AND BSD-4-Clause AND LicenseRef-BSLA AND LicenseRef-Expat AND GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND GPL-3.0-or-later AND ISC AND LicenseRef-LGPL AND LGPL-2.0-only AND LGPL-2.0-or-later AND LGPL-2.1-only AND LGPL-2.1-or-later AND LGPL-3.0-only AND LGPL-3.0-or-later AND LicenseRef-public-domain",
+        "count": 9
+      },
+      {
+        "value": "LicenseRef-GFDL AND LicenseRef-GPL AND LicenseRef-LGPL",
+        "count": 8
+      },
+      {
+        "value": "Apache-2.0 AND LicenseRef-Artistic AND GPL-1.0-only AND GPL-1.0-or-later",
+        "count": 4
+      },
+      {
+        "value": "BSD-2-Clause",
+        "count": 4
+      },
+      {
+        "value": "BSD-2-Clause AND LicenseRef-BSD-3-clause-Berkeley AND LicenseRef-BSD-3-clause-Carnegie AND LicenseRef-BSD-3-clause-Oracle AND LicenseRef-BSD-3-clause-WIDE AND LicenseRef-BSD-like-Spencer AND BSL-1.0 AND LicenseRef-CORE-MATH AND LicenseRef-Carnegie AND LicenseRef-DEC AND FSFAP AND GPL-2.0-only AND GPL-2.0-or-later AND LicenseRef-GPL-2--with-link-exception AND GPL-3.0-only AND GPL-3.0-or-later AND LicenseRef-IBM AND ISC AND LicenseRef-Inner-Net AND LGPL-2.0-only AND LGPL-2.0-or-later AND LGPL-2.1-only AND LGPL-2.1-or-later AND LicenseRef-LGPL-2.1--with-link-exception AND LGPL-3.0-only AND LGPL-3.0-or-later AND LicenseRef-MIT-like-Lord AND LicenseRef-PCRE AND SunPro AND Unicode-DFS-2016 AND LicenseRef-Univ-Coimbra AND LicenseRef-public-domain",
+        "count": 4
+      },
+      {
+        "value": "BSD-3-Clause AND LicenseRef-BSD-tcp-wrappers AND Beerware AND GPL-1.0-only AND GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND GPL-3.0-or-later AND LGPL-2.0-only AND LGPL-2.0-or-later AND LicenseRef-public-domain",
+        "count": 4
+      },
+      {
+        "value": "BSD-3-Clause AND LicenseRef-MIT-X11 AND X11",
+        "count": 4
+      },
+      {
+        "value": "LicenseRef-Artistic AND Artistic-2.0 AND Artistic-dist AND BSD-3-Clause AND LicenseRef-BSD-3-clause-GENERIC AND LicenseRef-BSD-3-clause-with-weird-numbering AND LicenseRef-BSD-4-clause-POWERDOG AND LicenseRef-BZIP AND LicenseRef-DONT-CHANGE-THE-GPL AND LicenseRef-Expat AND FSFAP AND GPL-1.0-only AND GPL-1.0-or-later AND GPL-2.0-only AND GPL-2.0-or-later AND LicenseRef-GPL-3--WITH-BISON-EXCEPTION AND LGPL-2.1-only AND LicenseRef-REGCOMP AND LicenseRef-REGCOMP- AND LicenseRef-SDBM-PUBLIC-DOMAIN AND LicenseRef-TEXT-TABS AND LicenseRef-Unicode AND Zlib",
+        "count": 4
+      },
+      {
+        "value": "LicenseRef-MIT-License",
+        "count": 4
+      },
+      {
+        "value": "GPL-2.0-only AND GPL-2.0-or-later AND LicenseRef-public-domain-s-s-d",
+        "count": 3
+      },
+      {
+        "value": "GPL-3.0-only AND GPL-3.0-or-later",
+        "count": 3
+      },
+      {
+        "value": "0BSD AND FSFUL AND FSFULLR AND GPL-2.0-only AND GPL-2.0-or-later AND GPL-3.0-only AND LicenseRef-GPL-3.0-or-later-WITH-Autoconf-exception-macro AND LGPL-2.1-only AND LGPL-2.1-or-later AND LicenseRef-PD AND LicenseRef-PD-debian AND LicenseRef-noderivs AND LicenseRef-permissive-nowarranty",
+        "count": 2
+      }
+    ],
+    "packagesWithChecksums": 1,
+    "filesWithChecksums": 9075
+  },
+  "interpretation": {
+    "licenseEvidenceIsScannerDetectedMetadata": true,
+    "legalOrPolicyComplianceDeterminationPerformed": false,
+    "packageOwnerReviewPerformed": false,
+    "note": "Detected identifiers, names, and expressions are inventory metadata. NOASSERTION and missing license evidence are preserved. This report is not a legal opinion or proof of redistribution compatibility; counsel/package-owner review and policy evaluation remain required. SPDX dataLicense applies to the SPDX document, not automatically to its inventoried packages."
+  }
+}

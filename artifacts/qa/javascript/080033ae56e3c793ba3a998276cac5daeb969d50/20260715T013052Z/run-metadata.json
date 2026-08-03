@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "scope": "current-candidate focused JavaScript regressions",
+  "evidenceStatus": "CURRENT_CANDIDATE",
+  "result": "PASS",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T013052Z",
+  "prochartSourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "nodeVersion": "v20.20.2",
+  "prochart": {
+    "command": "node --test frontend/prochart/test/*.test.mjs",
+    "testFiles": 10,
+    "tests": 18,
+    "passed": 18,
+    "failed": 0,
+    "skipped": 0,
+    "retries": 0
+  },
+  "panel": {
+    "command": "npm run test:navigation",
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "retries": 0
+  },
+  "preservedHarnessAttempt": {
+    "command": "npm test",
+    "result": "FAIL_MISSING_SCRIPT",
+    "productFailure": false,
+    "log": "panel-invalid-script-attempt.log"
+  },
+  "qualification": "Focused unit/static regressions do not replace browser or full-system coverage.",
+  "sealedAtUtc": "2026-07-15T01:31:20Z"
+}

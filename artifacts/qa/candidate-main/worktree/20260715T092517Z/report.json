@@ -1,0 +1,216 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/keyboard-shortcuts.spec.mjs",
+      "tests/rtl-route-matrix.spec.mjs",
+      "--project=chromium-desktop",
+      "--grep",
+      "PC-031|persisted English"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092517Z/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092517Z/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092517Z/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092517Z/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "keyboard-shortcuts.spec.mjs",
+      "file": "keyboard-shortcuts.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PC-031: Help-visible shortcuts use one dispatcher and execute once",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4396,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:25:18.940Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "pc-031-keyboard-evidence",
+                      "contentType": "application/json",
+                      "body": "ewogICJyZXF1aXJlbWVudElkcyI6IFsKICAgICJQQy0wMzEiCiAgXSwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1kZXNrdG9wIiwKICAidmlzaWJsZUhlbHAiOiBbCiAgICAiQ3RybCtEIiwKICAgICJDdHJsK0siLAogICAgIkN0cmwrU2hpZnQrUyIKICBdLAogICJoaXN0b3J5Q291bnRzIjogWwogICAgMiwKICAgIDMsCiAgICAyLAogICAgMSwKICAgIDIsCiAgICAxCiAgXSwKICAic2NyaXB0U2F2ZXMiOiBbCiAgICB7CiAgICAgICJuYW1lIjogItmF24zYp9mG4oCM2KjYsSDZgti32LnbjCIsCiAgICAgICJzb3VyY2UiOiAicGxvdChjbG9zZSwgXCJQQy0wMzFcIikiCiAgICB9CiAgXSwKICAibmV0d29yayI6IHsKICAgICJ1bmV4cGVjdGVkRXh0ZXJuYWwiOiBbXSwKICAgICJ1bnN0dWJiZWQiOiBbXSwKICAgICJwYWdlRXJyb3JzIjogW10sCiAgICAicmVxdWVzdEZhaWx1cmVzIjogW10sCiAgICAiYmFkUmVzcG9uc2VzIjogW10KICB9Cn0="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092517Z/test-results/keyboard-shortcuts-PC-031--e6b8e-dispatcher-and-execute-once-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092517Z/test-results/keyboard-shortcuts-PC-031--e6b8e-dispatcher-and-execute-once-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0b78dca6e1060a25b585-c5eb2e094f76209f02fc",
+          "file": "keyboard-shortcuts.spec.mjs",
+          "line": 20,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "rtl-route-matrix.spec.mjs",
+      "file": "rtl-route-matrix.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PC-009: persisted English stays inside the Main app while the public document root remains Persian RTL",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1949,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:25:24.831Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092517Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/candidate-main/worktree/20260715T092517Z/test-results/rtl-route-matrix-PC-009-pe-602ae-nt-root-remains-Persian-RTL-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7ee54f7aae6be8d3832c-cf1764cf74d3d83ee248",
+          "file": "rtl-route-matrix.spec.mjs",
+          "line": 68,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T09:25:18.408Z",
+    "duration": 8759.334,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

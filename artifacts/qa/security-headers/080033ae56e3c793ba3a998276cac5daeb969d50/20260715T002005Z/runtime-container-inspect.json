@@ -1,0 +1,45 @@
+{
+  "Id": "ec2bb7cf4dffc557a1383406ce43594d27207140293c30b8274806a42f1817f0",
+  "Created": "2026-07-15T00:20:32.553535431Z",
+  "Path": "/docker-entrypoint.sh",
+  "Args": [
+    "nginx",
+    "-g",
+    "daemon off;"
+  ],
+  "State": {
+    "Status": "running",
+    "StartedAt": "2026-07-15T00:20:32.751088768Z"
+  },
+  "Image": "sha256:7be597caae5f57abb1b9a6d319e793ed69fc825642879c0c3d2e86024936d0a6",
+  "HostConfig": {
+    "ReadonlyRootfs": true,
+    "PortBindings": {
+      "443/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "18444"
+        }
+      ]
+    },
+    "NetworkMode": "prochart_default",
+    "Mounts": null
+  },
+  "NetworkSettings": {
+    "Ports": {
+      "443/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "18444"
+        }
+      ],
+      "80/tcp": null
+    },
+    "Networks": {
+      "prochart_default": {
+        "IPAddress": "172.18.0.16",
+        "Aliases": null
+      }
+    }
+  }
+}

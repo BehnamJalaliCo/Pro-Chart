@@ -1,0 +1,47 @@
+{
+  "Id": "sha256:018cf92e3b491615a9ca8abb5ff14b1326b31a19e8873144f0d27e0a10492456",
+  "RepoTags": [
+    "prochart-frontend:qa-security-080033ae56e3-20260715T012839Z"
+  ],
+  "RepoDigests": [
+    "prochart-frontend@sha256:018cf92e3b491615a9ca8abb5ff14b1326b31a19e8873144f0d27e0a10492456"
+  ],
+  "Created": "2026-07-15T01:29:26.02449074Z",
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 24468630,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:08000c18d16dadf9553d747a58cf44023423a9ab010aab96cf263d2216b8b350",
+      "sha256:d71eae0084c1aa823dd8fb2ecf8604d5c0f4911226c042bb1f8297e819f4b192",
+      "sha256:c56f134d380585340a68d0db2f2c170641a1c0ff72ccf2438cf2f693df756a85",
+      "sha256:e244aa659f612a80c40dd8645812301e3def6b15ec67b9e486ed2201172b51d1",
+      "sha256:b8d7d1d2263425d6044e059b2810017d062d659b9b755241f3747eda77726250",
+      "sha256:811a4dbbf4a5309e4390cf655c12db92e1a4304fb9d9731f83e7b02e95a617c6",
+      "sha256:947e805a4ac71f68e6703550c0b36c2aa2e554c4fa670ca2da6a25c6d7dccb66",
+      "sha256:0d853d50b128aa460b47e7121849463a14b18d4fd976caf5014744aae24d28aa",
+      "sha256:f7c7c7e638da49d067e82216d928f95577d8deb4499b107b8bfd8e6694732488",
+      "sha256:fb6ee26dab184dfdc43978731b3d072201ab7420fda680ba5b78e5f17ff92b6c",
+      "sha256:7957ed400893420297c547e98ae377bfca29f3df997140d42f27d35928611475",
+      "sha256:1003cc633b0ba7e8c49e866fbb26ef54ed0ca94ea558a42ec6b70b6f04e0f5f5"
+    ]
+  },
+  "Config": {
+    "WorkingDir": "/",
+    "Entrypoint": [
+      "/docker-entrypoint.sh"
+    ],
+    "Cmd": [
+      "nginx",
+      "-g",
+      "daemon off;"
+    ],
+    "ExposedPorts": {
+      "80/tcp": {}
+    },
+    "Labels": {
+      "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "scope": "frozen-current-source shipping-obfuscated frontend build",
+  "evidenceStatus": "CURRENT_CANDIDATE",
+  "result": "PASS_WITH_RELEASE_BLOCKERS",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T011751Z",
+  "sourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "sourceFileCount": 815,
+  "sourceSnapshotByteMatched": true,
+  "build": {
+    "command": "env -u NO_OBF npm run build",
+    "obfuscationBypassSet": false,
+    "transformedModules": 1785,
+    "outputFileCount": 534,
+    "javascriptSha256": "cee49cabb1e68fef79090795abc7c591b5933cef36cc3c771cef5df5078d0549",
+    "cssSha256": "b2b331f330e02008d07f4a01d954dba672225c75866fa2300799118833435c3e"
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "findingCount": 0,
+    "redacted": true,
+    "scope": "frozen frontend snapshot plus in-scope QA harness"
+  },
+  "releaseBlockers": [
+    "The candidate includes modified tracked and untracked source, so the baseline commit alone cannot reproduce it.",
+    "This build was not deployed, pushed, signed, or attested."
+  ],
+  "sealedAtUtc": "2026-07-15T01:28:45Z"
+}

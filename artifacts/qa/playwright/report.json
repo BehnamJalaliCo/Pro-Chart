@@ -1,0 +1,219 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bazaarnama/Pro-Chart/app/qa/node_modules/.bin/playwright",
+      "test",
+      "tests/keyboard-shortcuts.spec.mjs",
+      "tests/drawing-history-e2e.spec.mjs",
+      "--project=chromium-desktop"
+    ],
+    "configFile": "/home/bazaarnama/Pro-Chart/app/qa/playwright.config.mjs",
+    "rootDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/home/bazaarnama/Pro-Chart/app/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/playwright/report.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/playwright/html",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "drawing-history-e2e.spec.mjs",
+      "file": "drawing-history-e2e.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "MOT-006: toolbar undo/redo and drawing persistence survive reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9666,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:13:12.338Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "drawing-history-e2e-evidence",
+                      "contentType": "application/json",
+                      "body": "ewogICJzY2VuYXJpbyI6ICJNT1QtMDA2IiwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1kZXNrdG9wIiwKICAiY29tbWFuZHMiOiB7CiAgICAiY3JlYXRlSGxpbmUiOiA1MCwKICAgICJ1bmRvVG9vbGJhciI6IDUwLAogICAgInJlZG9Ub29sYmFyIjogNTAsCiAgICAicmVsb2FkIjogMSwKICAgICJwb3N0UmVsb2FkQ3JlYXRlVW5kbyI6IDEKICB9LAogICJwZXJzaXN0ZWRDb3VudCI6IDUwLAogICJwZXJzaXN0ZWRTaGEyNTYiOiAiMzAzZTIzMmQxYmY4ODU1YTRiZGY3ZTYzYTllOThlZDc0NzVjMzg3MDdkMzEwZWM2MjA1Nzg3ZjIxYzJkZmUxNyIsCiAgIndvcmtzcGFjZUtleSI6ICJibl93b3Jrc3BhY2UiLAogICJuZXR3b3JrIjogewogICAgInVuZXhwZWN0ZWRFeHRlcm5hbCI6IFtdLAogICAgInBhZ2VFcnJvcnMiOiBbXSwKICAgICJyZXF1ZXN0RmFpbHVyZXMiOiBbXSwKICAgICJiYWRSZXNwb25zZXMiOiBbXQogIH0KfQ=="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/playwright/test-results/drawing-history-e2e-MOT-00-08fbe--persistence-survive-reload-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/playwright/test-results/drawing-history-e2e-MOT-00-08fbe--persistence-survive-reload-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "50e5daa151b9e1af5226-c40e1b59016bb2bd444a",
+          "file": "drawing-history-e2e.spec.mjs",
+          "line": 21,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "keyboard-shortcuts.spec.mjs",
+      "file": "keyboard-shortcuts.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "PC-031: Help-visible shortcuts use one dispatcher and execute once",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-desktop",
+              "projectName": "chromium-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4260,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-15T09:13:23.741Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "pc-031-keyboard-evidence",
+                      "contentType": "application/json",
+                      "body": "ewogICJyZXF1aXJlbWVudElkcyI6IFsKICAgICJQQy0wMzEiCiAgXSwKICAicHJvamVjdCI6ICJjaHJvbWl1bS1kZXNrdG9wIiwKICAidmlzaWJsZUhlbHAiOiBbCiAgICAiQ3RybCtEIiwKICAgICJDdHJsK0siLAogICAgIkN0cmwrU2hpZnQrUyIKICBdLAogICJoaXN0b3J5Q291bnRzIjogWwogICAgMiwKICAgIDMsCiAgICAyLAogICAgMSwKICAgIDIsCiAgICAxCiAgXSwKICAic2NyaXB0U2F2ZXMiOiBbCiAgICB7CiAgICAgICJuYW1lIjogItmF24zYp9mG4oCM2KjYsSDZgti32LnbjCIsCiAgICAgICJzb3VyY2UiOiAicGxvdChjbG9zZSwgXCJQQy0wMzFcIikiCiAgICB9CiAgXSwKICAibmV0d29yayI6IHsKICAgICJ1bmV4cGVjdGVkRXh0ZXJuYWwiOiBbXSwKICAgICJ1bnN0dWJiZWQiOiBbXSwKICAgICJwYWdlRXJyb3JzIjogW10sCiAgICAicmVxdWVzdEZhaWx1cmVzIjogW10sCiAgICAiYmFkUmVzcG9uc2VzIjogW10KICB9Cn0="
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/playwright/test-results/keyboard-shortcuts-PC-031--e6b8e-dispatcher-and-execute-once-chromium-desktop/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bazaarnama/Pro-Chart/app/artifacts/qa/playwright/test-results/keyboard-shortcuts-PC-031--e6b8e-dispatcher-and-execute-once-chromium-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0b78dca6e1060a25b585-c5eb2e094f76209f02fc",
+          "file": "keyboard-shortcuts.spec.mjs",
+          "line": 20,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-15T09:13:11.864Z",
+    "duration": 16887.84,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

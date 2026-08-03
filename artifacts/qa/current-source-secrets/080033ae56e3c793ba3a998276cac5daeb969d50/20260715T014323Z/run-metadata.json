@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "requirementId": "PC-132",
+  "scope": "current tracked and untracked non-ignored product source, configuration, migrations, and QA harness; docs, artifacts, ignored files, dependencies, and generated build outputs excluded",
+  "exclusions": [
+    "docs/**",
+    "artifacts/**",
+    "Git-ignored files (including local secret files and legacy ignored trees)",
+    "dependency/build outputs absent from git ls-files -co --exclude-standard"
+  ],
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T014323Z",
+  "result": "PASS",
+  "fullyVerified": false,
+  "reasonNotFullyVerified": "This is a bounded current-source scan. Git history, ignored local secrets, runtime secret stores, deployed images, and all evidence bundles require separate controls; known history/rotation blockers remain.",
+  "scanner": {
+    "name": "Gitleaks",
+    "version": "8.30.1",
+    "imageId": "sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+    "network": "none",
+    "redactionPercent": 100,
+    "exitCode": 0,
+    "findingCount": 0
+  },
+  "source": {
+    "fileCount": 1282,
+    "manifest": "source-files.sha256",
+    "manifestSha256": "2b1c8936d24136a44a891cc3d9ef660057380b54c11023905bf13f6de091fe86",
+    "selection": "git ls-files -co --exclude-standard plus explicit in-scope path allowlist"
+  },
+  "releasePassGranted": false
+}

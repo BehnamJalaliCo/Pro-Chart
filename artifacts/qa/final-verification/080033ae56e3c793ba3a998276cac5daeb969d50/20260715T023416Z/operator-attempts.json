@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "classification": "PRESERVED_HARNESS_FAILURE",
+      "reason": "The no-match QA-container count used rg -c with an empty command-substitution result, causing an integer-expression error after the substantive assertions had passed.",
+      "productAssertionReached": true,
+      "sourceOrServiceMutation": false
+    },
+    {
+      "attempt": 2,
+      "classification": "FINAL_PASS",
+      "correction": "Counted zero matches with an awk numeric accumulator.",
+      "qaContainersRemaining": 0
+    }
+  ],
+  "retriesUsedToHideProductFailure": 0
+}

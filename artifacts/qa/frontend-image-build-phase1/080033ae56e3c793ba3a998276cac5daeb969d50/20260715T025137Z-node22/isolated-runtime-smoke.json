@@ -1,0 +1,9 @@
+{
+  "healthHttpStatus": 200,
+  "rootHttpStatus": 301,
+  "assetHttpStatus": 301,
+  "servedJavascriptSha256": "75c25382f7097b7ee9a01ad07b217c6e3584211cfb5003ea3e16f4cd69f50dde",
+  "containerState": "running",
+  "securityHeaderCount": 6,
+  "result": "FAIL"
+}

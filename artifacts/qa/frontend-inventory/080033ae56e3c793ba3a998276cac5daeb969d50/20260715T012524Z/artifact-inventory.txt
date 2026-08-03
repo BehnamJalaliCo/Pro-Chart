@@ -1,0 +1,12 @@
+artifact-inventory.txt
+determinism.log
+gitleaks-exit-code.txt
+gitleaks-run.log
+gitleaks-scan-manifest.sha256
+gitleaks-version.txt
+gitleaks.json
+inventory-a.json
+inventory-b.json
+inventory-digests.txt
+regression-tests.log
+run-metadata.json

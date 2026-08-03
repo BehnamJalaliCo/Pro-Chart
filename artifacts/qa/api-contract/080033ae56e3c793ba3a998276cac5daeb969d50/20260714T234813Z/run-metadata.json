@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "runId": "20260714T234813Z",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "scope": "website-live-api-route-registration",
+  "requirementIds": ["PC-002", "PC-003", "PC-005", "PC-159"],
+  "sourceSetFingerprint": "3c6bd5e69d4a3370c24d61ba77fbecb753e89bd393f454982bcf7f81b255b76f",
+  "sourceSnapshot": "current worktree mounted read-only",
+  "testImage": "prochart-qa-pytest:deps-20260714",
+  "testNetwork": "none",
+  "liveServicesOrDataUsed": false,
+  "pytest": {
+    "tests": 2,
+    "passed": 2,
+    "subtestsPassed": 15,
+    "failed": 0,
+    "errors": 0,
+    "exitCode": 0
+  },
+  "registration": {
+    "routeObjects": 487,
+    "httpMethodPaths": 486,
+    "liveHttpMethodPaths": 17,
+    "liveWebSocketPaths": 1,
+    "liveAdminRoutesWithAdminDependency": 15,
+    "remainingUnmountedDecoratorCount": 60
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "findings": 0,
+    "redaction": "100%"
+  }
+}

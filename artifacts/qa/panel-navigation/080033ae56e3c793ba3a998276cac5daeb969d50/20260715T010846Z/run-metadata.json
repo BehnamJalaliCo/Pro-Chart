@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "scope": "current-worktree Panel legacy-route and command-palette navigation candidate",
+  "evidenceStatus": "CURRENT_CANDIDATE_NOT_DEPLOYED",
+  "result": "AUTOMATED_PASS",
+  "qualification": "The exact isolated Panel candidate passed the scoped route and palette contract. This is not full Panel regression, accessibility, authorization, or deployment evidence.",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T010846Z",
+  "source": {
+    "fingerprint": "eaeb57bcf61caf0625fb0312b0faca89e96eacded76a6ee9f4400e972bd0fbde",
+    "fileCount": 76,
+    "canonicalExclusions": ["node_modules", "dist"],
+    "untrackedFunctionalFiles": [
+      "frontend/panel/src/navigation.js",
+      "frontend/panel/src/navigation.test.mjs"
+    ],
+    "reproducibilityQualification": "The candidate builds and tests, but the new route registry and test are untracked in the current Git worktree and therefore remain a release-reproducibility blocker until intentionally committed."
+  },
+  "build": {
+    "passed": true,
+    "transformedModules": 2369,
+    "imageDigest": "sha256:3d77c7fe483fd6d74b842cdaf4631128a81c20139c863abd2e0623cd38fd4a8a",
+    "deployed": false,
+    "entryJavascript": {
+      "path": "assets/index-B0R7385U.js",
+      "sha256": "20d0b70dc2a3b947f34becb8245426b0a5c0df3cffa9d3c8dec8d36380b33321"
+    },
+    "entryCss": {
+      "path": "assets/index-6l_D_gsw.css",
+      "sha256": "24531e822eec71c17a802f3c7b67ade4b5c2570880f2d58889478999873a3ab2"
+    },
+    "indexSha256": "11107c41c59ba3df61c104c20f40efb81b15066fbe58a46050d20777a335e142"
+  },
+  "harness": {
+    "browserTest": {
+      "path": "qa/tests/panel-navigation.spec.mjs",
+      "sha256": "276a5ff4861b09165fc27873b31674056e429d20609996e6231a587463e9c55b"
+    },
+    "routeRegistry": {
+      "path": "frontend/panel/src/navigation.js",
+      "sha256": "25688615f4987861383735fcd30e8ef0e8c08c6ce774273aa84b281a2734cb72"
+    },
+    "sourceContractTest": {
+      "path": "frontend/panel/src/navigation.test.mjs",
+      "sha256": "5b06e69b616295b5f3e1da22cb8cc4d4639259c7399c279f080fb54e3f660d96"
+    },
+    "playwrightConfigSha256": "b83bced28fe168529a41846686873fe285522ec6e234c5305abae871cc9fbec8"
+  },
+  "browser": {
+    "runner": "Playwright 1.61.0 Chromium pinned container",
+    "runnerImageDigest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+    "project": "chromium-desktop",
+    "workers": 1,
+    "retries": 0,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "durationMs": 2780.728,
+    "origin": "http://panel.local:4190",
+    "syntheticAuth": true,
+    "apiRequestsSynthetic": true,
+    "unexpectedExternalRequests": 0,
+    "pageErrors": 0,
+    "traceFiles": 1,
+    "videoFiles": 1
+  },
+  "assertions": {
+    "legacyRedirects": {
+      "/signals": "/ai-signals",
+      "/visitors": "/analytics"
+    },
+    "unavailableCommandsWithActionableResults": 0,
+    "enabledSignalKeyboardDestination": "/ai-signals",
+    "keyboard": ["Control+k", "Enter", "Escape"]
+  },
+  "validationAttempts": [
+    {
+      "runId": "20260715T010756Z",
+      "result": "HARNESS_ASSERTION_REFINED",
+      "reason": "The test incorrectly required every disabled-command query to yield an empty result, although fuzzy search may legitimately match a different enabled command."
+    },
+    {
+      "runId": "20260715T010818Z",
+      "result": "HARNESS_READINESS_REFINED",
+      "reason": "The keyboard event was sent before the lazy application shell registered its listener; the final test waits for the visible shell control without adding retries."
+    }
+  ],
+  "evidenceSecurity": {
+    "gitleaksVersion": "8.30.1",
+    "scope": "frontend/panel plus qa/tests/panel-navigation.spec.mjs",
+    "redacted": true,
+    "findings": 0
+  },
+  "integrityManifest": "SHA256SUMS"
+}

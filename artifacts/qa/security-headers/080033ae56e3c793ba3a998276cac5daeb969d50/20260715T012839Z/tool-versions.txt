@@ -1,0 +1,6 @@
+dockerClient=29.6.0 dockerServer=29.6.0
+v20.20.2
+10.8.2
+Version 1.61.0
+nginx version: nginx/1.27.5
+apiHelperImageId=sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf apiHelperRepoDigest=prochart-api@sha256:20bbe4292bbc7a601ef3f77cccf5cceb2ea994063c8928a9077b201e09b82faf

@@ -1,0 +1,22 @@
+[
+ {
+  "RuleID": "generic-api-key",
+  "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+  "StartLine": 12,
+  "EndLine": 12,
+  "StartColumn": 26,
+  "EndColumn": 55,
+  "Match": "prochart-api:REDACTED\"",
+  "Secret": "REDACTED",
+  "File": "/scan/run-metadata.json",
+  "SymlinkFile": "",
+  "Commit": "",
+  "Entropy": 3.625,
+  "Author": "",
+  "Email": "",
+  "Date": "",
+  "Message": "",
+  "Tags": [],
+  "Fingerprint": "/scan/run-metadata.json:generic-api-key:12"
+ }
+]

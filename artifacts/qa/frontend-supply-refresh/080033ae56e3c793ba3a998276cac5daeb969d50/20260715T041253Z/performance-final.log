@@ -1,0 +1,179 @@
+
+Running 12 tests using 1 worker
+
+[1/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+  1) [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ─
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.pc-approot')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('.pc-approot')
+
+
+      687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());
+      688 |
+    > 689 |       await expect(page.locator('.pc-approot')).toBeVisible();
+          |                                                 ^
+      690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());
+      691 |
+      692 |       await expect(page.locator('canvas').first()).toBeVisible();
+        at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49
+
+    Error Context: ../artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop/error-context.md
+
+
+[2/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[3/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+  2) [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ─
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.pc-approot')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('.pc-approot')
+
+
+      687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());
+      688 |
+    > 689 |       await expect(page.locator('.pc-approot')).toBeVisible();
+          |                                                 ^
+      690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());
+      691 |
+      692 |       await expect(page.locator('canvas').first()).toBeVisible();
+        at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49
+
+    Error Context: ../artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat1/error-context.md
+
+
+[4/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[5/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+  3) [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ─
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.pc-approot')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('.pc-approot')
+
+
+      687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());
+      688 |
+    > 689 |       await expect(page.locator('.pc-approot')).toBeVisible();
+          |                                                 ^
+      690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());
+      691 |
+      692 |       await expect(page.locator('canvas').first()).toBeVisible();
+        at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49
+
+    Error Context: ../artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-desktop-chart-chromium-desktop-repeat2/error-context.md
+
+
+[6/12] [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+[7/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[8/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+  4) [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ───
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.pc-approot')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('.pc-approot')
+
+
+      687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());
+      688 |
+    > 689 |       await expect(page.locator('.pc-approot')).toBeVisible();
+          |                                                 ^
+      690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());
+      691 |
+      692 |       await expect(page.locator('canvas').first()).toBeVisible();
+        at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49
+
+    Error Context: ../artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile/error-context.md
+
+
+[9/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[10/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+  5) [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ───
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.pc-approot')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('.pc-approot')
+
+
+      687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());
+      688 |
+    > 689 |       await expect(page.locator('.pc-approot')).toBeVisible();
+          |                                                 ^
+      690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());
+      691 |
+      692 |       await expect(page.locator('canvas').first()).toBeVisible();
+        at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49
+
+    Error Context: ../artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat1/error-context.md
+
+
+[11/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart
+[12/12] [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart
+  6) [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ───
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.pc-approot')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('.pc-approot')
+
+
+      687 |       readiness.domContentLoadedObservedMs = await page.evaluate(() => performance.now());
+      688 |
+    > 689 |       await expect(page.locator('.pc-approot')).toBeVisible();
+          |                                                 ^
+      690 |       readiness.shellReadyMs = await page.evaluate(() => performance.now());
+      691 |
+      692 |       await expect(page.locator('canvas').first()).toBeVisible();
+        at /home/bazaarnama/Pro-Chart/app/qa/tests/performance-baseline.spec.mjs:689:49
+
+    Error Context: ../artifacts/qa/frontend-supply-refresh/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T041253Z/performance-final-playwright/test-results/performance-baseline-PERF-BASELINE-mobile-chart-chromium-mobile-repeat2/error-context.md
+
+
+  6 failed
+    [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ──
+    [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ──
+    [chromium-desktop] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: desktop-chart ──
+    [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ────
+    [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ────
+    [chromium-mobile] › tests/performance-baseline.spec.mjs:652:3 › PERF-BASELINE: mobile-chart ────
+  6 skipped

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "phase": "phase1-performance-remediation",
+  "evidenceStatus": "CURRENT_CANDIDATE",
+  "result": "PASS_WITH_RELEASE_BLOCKERS",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T024316Z",
+  "sourceFingerprint": "98f5214f5783c485e7d6460ad0a26b83373a852f88ad48bfeef450a64711124b",
+  "sourceFileCount": 817,
+  "sourceSnapshotByteMatchedBeforeAndAfterBuild": true,
+  "changedScope": [
+    "frontend/prochart/vite.config.js",
+    "frontend/prochart/src/pages/BazaarNama.jsx",
+    "frontend/prochart/src/bazaarnama/livePriceEasing.js",
+    "frontend/prochart/test/livePriceEasing.test.mjs"
+  ],
+  "build": {
+    "command": "env -u NO_OBF npm run build",
+    "obfuscationBypassSet": false,
+    "startedAtUtc": "2026-07-15T02:44:28Z",
+    "endedAtUtc": "2026-07-15T02:44:41Z",
+    "exitCode": 0,
+    "transformedModules": 1786,
+    "outputFileCount": 534,
+    "javascript": {
+      "path": "dist/assets/index-DE77rbAv.js",
+      "bytes": 2399398,
+      "gzipBytes": 721057,
+      "sha256": "75cf695f0e25cc58628b6bc51eec3d814161f0e7dd8ccf97a11dbe4212042a34"
+    },
+    "css": {
+      "path": "dist/assets/index-BDC3pT6H.css",
+      "bytes": 79848,
+      "sha256": "b2b331f330e02008d07f4a01d954dba672225c75866fa2300799118833435c3e"
+    }
+  },
+  "tests": {
+    "finalNodeTest": {
+      "tests": 20,
+      "passed": 20,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "initialHarnessAttempt": {
+      "result": "HARNESS_FAILURE_PRESERVED",
+      "tests": 16,
+      "passed": 15,
+      "failed": 1,
+      "cause": "The isolated frontend snapshot changed the intended ../../../src/api relative dependency into /tmp/src/api for referral-compliance.test.mjs.",
+      "remediation": "The repository app/src dependency was mapped read-only at the path expected by the unchanged test; the final exact frontend snapshot run then passed 20/20.",
+      "productFailure": false
+    }
+  },
+  "obfuscationDiagnostics": {
+    "FunctionCallLiteralCount": 109,
+    "charCodeAtLiteralCount": 19,
+    "fromCharCodeLiteralCount": 4,
+    "RegExpLiteralCount": 7,
+    "qualification": "Literal token counts are diagnostic signatures, not a security-strength or deobfuscation proof."
+  },
+  "securityScan": {
+    "tool": "gitleaks",
+    "version": "8.30.1",
+    "sourceFindings": 0,
+    "artifactFindings": 0,
+    "redacted": true,
+    "result": "PASS"
+  },
+  "releaseBlockers": [
+    "The candidate includes modified tracked and untracked source, so the baseline commit alone cannot reproduce it.",
+    "This build was not deployed, pushed, signed, or attested."
+  ]
+}

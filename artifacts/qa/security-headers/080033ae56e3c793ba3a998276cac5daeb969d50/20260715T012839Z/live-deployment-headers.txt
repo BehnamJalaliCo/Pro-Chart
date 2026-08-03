@@ -1,0 +1,35 @@
+### LIVE ROOT HEAD
+HTTP/2 200 
+server: nginx/1.27.5
+date: Wed, 15 Jul 2026 01:32:59 GMT
+content-type: text/html
+content-length: 5627
+last-modified: Tue, 14 Jul 2026 17:33:53 GMT
+etag: "6a567301-15fb"
+cache-control: no-cache, no-store, must-revalidate
+accept-ranges: bytes
+
+
+### LIVE /go/lbank GET (redirect following disabled)
+HTTP/2 200 
+server: nginx/1.27.5
+date: Wed, 15 Jul 2026 01:32:59 GMT
+content-type: text/html
+content-length: 5627
+last-modified: Tue, 14 Jul 2026 17:33:53 GMT
+etag: "6a567301-15fb"
+cache-control: no-cache, no-store, must-revalidate
+accept-ranges: bytes
+
+
+### LIVE /go/oneroyal GET (redirect following disabled)
+HTTP/2 200 
+server: nginx/1.27.5
+date: Wed, 15 Jul 2026 01:32:59 GMT
+content-type: text/html
+content-length: 5627
+last-modified: Tue, 14 Jul 2026 17:33:53 GMT
+etag: "6a567301-15fb"
+cache-control: no-cache, no-store, must-revalidate
+accept-ranges: bytes
+

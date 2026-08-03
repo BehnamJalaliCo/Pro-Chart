@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "comparisonNormalization": "mount arrays sorted by Destination; Docker inspect mount order is nondeterministic",
+  "liveStateUnchanged": true,
+  "sharedPreviewStateUnchanged": true,
+  "liveImage": "sha256:d3e237880adcaa5cbcba2e3ef8ed9d46231cd655fbf378d948ad0e39218d9a20",
+  "liveStartedAt": "2026-07-14T17:34:08.618020915Z",
+  "candidateImage": "sha256:018cf92e3b491615a9ca8abb5ff14b1326b31a19e8873144f0d27e0a10492456",
+  "candidateDeployed": false,
+  "deploymentActionTaken": false,
+  "result": "PASS_UNCHANGED_NOT_DEPLOYED"
+}

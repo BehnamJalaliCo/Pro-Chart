@@ -1,0 +1,28 @@
+{
+  "runId": "20260715T092718Z",
+  "commit": "9edd5da7e78688aa5545d65b39357756a4eae444",
+  "sourceFingerprint": "03a2e94f4a3c24340b90ae01a910e848a244092ca2e1369ecf21e9f565d6c58e",
+  "baseImage": "prochart-api:latest",
+  "testImage": "prochart-qa-pytest:9.1.1",
+  "repositorySnapshot": "sanitized worktree copy mounted read-only",
+  "testNetwork": "none",
+  "testTargets": [
+    "tests/",
+    "qa/python/security_regressions.py",
+    "qa/python/referral_redirects_regression.py",
+    "qa/python/legacy_forex_referral_boundary_regression.py",
+    "qa/python/oneroyal_referral_boundary_regression.py",
+    "qa/python/security_headers_api_regression.py",
+    "qa/python/security_headers_runtime.py --help"
+  ],
+  "liveServicesOrDataUsed": false,
+  "pythonDontWriteBytecode": true,
+  "pytestCacheDisabled": true,
+  "pytestExitCode": 0,
+  "apiHeaderRegressionExitCode": 0,
+  "runtimeHeaderHarnessSmokeExitCode": 0,
+  "runtimeHeaderBehaviorExecuted": false,
+  "runtimeHeaderBehaviorExclusion": "requires a served HTTPS frontend image; incompatible with this network-none backend suite",
+  "pipCheckExitCode": 0,
+  "exitCode": 0
+}

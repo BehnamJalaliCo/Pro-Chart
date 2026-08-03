@@ -1,0 +1,13 @@
+./artifact-inventory.txt: OK
+./asset-digests.txt: OK
+./build-directory.txt: OK
+./build-output-files.sha256: OK
+./frontend-build-shipping-obfuscated.log: OK
+./gitleaks-exit-code.txt: OK
+./gitleaks-run.log: OK
+./gitleaks-scan-manifest.sha256: OK
+./gitleaks-version.txt: OK
+./gitleaks.json: OK
+./run-metadata.json: OK
+./source-fingerprint.txt: OK
+./source-snapshot-files.sha256: OK

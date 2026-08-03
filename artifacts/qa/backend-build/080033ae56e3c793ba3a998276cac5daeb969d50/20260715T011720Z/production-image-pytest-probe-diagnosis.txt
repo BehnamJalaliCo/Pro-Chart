@@ -1,0 +1,1 @@
+The production candidate intentionally does not bake pytest. Focused and clean tests use the pinned qa/python-derived image whose /app/src manifest is independently equal to this exact production image.

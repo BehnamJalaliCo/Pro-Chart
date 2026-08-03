@@ -1,0 +1,314 @@
+{
+  "runId": "20260715T003954Z",
+  "generatedAt": "2026-07-15T00:46:47Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "sourceBasis": "current observable worktree at build time; commit is an anchor, not a clean-tree claim",
+  "outcome": "build_and_baked_runtime_pass_clean_python_suite_fail",
+  "image": {
+    "tag": "prochart-api:qa-current-20260715",
+    "imageId": "sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+    "repoDigest": "prochart-api@sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+    "created": "2026-07-15T00:40:06.601143292Z",
+    "platform": "linux/amd64",
+    "manifestListSha256": "62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+    "imageManifestSha256": "99973bf1f87760712cc75b887daa15d9575111345c5c6b6b571a832948a42899",
+    "configSha256": "bd9d02b15a429bb8e20d73fe62b2901d0ef6b0c5c4b66977b2c9498afc3644f2",
+    "attestationManifestSha256": "ae087a32ffb710b9b9b37ec1cb8a3fee81ae314f6774a9c3b5c42dbe69514824",
+    "baseImage": "python:3.12-slim@sha256:c3d81d25b3154142b0b42eb1e61300024426268edeb5b5a26dd7ddf64d9daf28"
+  },
+  "build": {
+    "exitCode": 0,
+    "log": "image-build.log"
+  },
+  "sourceValidation": {
+    "sourceFingerprint": "6f34f72085572cadfb5f65d2e43123c5d488f6de7fb0facf9e3c827f785fdc73",
+    "bakedSourceFingerprint": "6f34f72085572cadfb5f65d2e43123c5d488f6de7fb0facf9e3c827f785fdc73",
+    "sourceMatchesBaked": true,
+    "dockerfileSha256": "b7ec04528ff0031238ddc6c96516e7a67ef1867458dca5841ced100bcc32769e",
+    "dockerignoreSha256": "2c3c026a2fc4c6ae00455cd5cabeb0a8bc57e1b1d7d6c86260a44f188e1158d4",
+    "requirementsSha256": "e9dcad0d02f72156741fe67ab3b4cc968dc1c34514a3920c5c24e76f393090ae",
+    "manifestScope": "requirements.txt; src/; alembic/; scripts/; run_*.py; excludes bytecode caches",
+    "backendSourceManifestMatchesAtSeal": true,
+    "cleanSourceFingerprint": "54155431516e3ed4a63afe5440160c524d43ada3ab3a5b028618049aec96a838",
+    "currentCleanSourceFingerprint": "54155431516e3ed4a63afe5440160c524d43ada3ab3a5b028618049aec96a838",
+    "cleanSourceFingerprintMatchesAtSeal": true
+  },
+  "bakedRuntime": {
+    "isolation": {
+      "network": "none",
+      "rootFilesystem": "read-only",
+      "capabilities": "all dropped",
+      "noNewPrivileges": true,
+      "applicationLifespanStarted": false,
+      "liveServicesOrDataUsed": false
+    },
+    "analyticsImports": {
+      "numpy": "2.2.6",
+      "pandas": "2.2.3",
+      "status": "pass",
+      "talib": "0.4.32"
+    },
+    "pipCheck": {
+      "exitCode": 0,
+      "result": "No broken requirements found."
+    },
+    "applicationContract": {
+      "applicationLifespanStarted": false,
+      "authHttpMethodPaths": [
+        {
+          "method": "GET",
+          "path": "/auth/available"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "POST",
+          "path": "/auth/check-email"
+        },
+        {
+          "method": "POST",
+          "path": "/auth/forgot"
+        },
+        {
+          "method": "POST",
+          "path": "/auth/login"
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout"
+        },
+        {
+          "method": "POST",
+          "path": "/auth/refresh"
+        },
+        {
+          "method": "POST",
+          "path": "/auth/register"
+        },
+        {
+          "method": "POST",
+          "path": "/auth/register/resend"
+        },
+        {
+          "method": "POST",
+          "path": "/auth/register/verify"
+        },
+        {
+          "method": "POST",
+          "path": "/auth/reset"
+        }
+      ],
+      "checks": {
+        "coreAuthContract": true,
+        "duplicateMethodPathsAbsent": true,
+        "httpMethodPathCount": true,
+        "liveAdminProtection": true,
+        "liveAdminRouteCount": true,
+        "liveHttpContract": true,
+        "protectedCoreAuth": true,
+        "routeObjectCount": true,
+        "securityHeadersMiddlewareConfigured": true,
+        "topLevelEaRoutesAbsent": true,
+        "websocketContract": true
+      },
+      "duplicateMethodPaths": [],
+      "httpMethodPathCount": 486,
+      "liveAdminRouteCount": 15,
+      "liveHttpMethodPaths": [
+        {
+          "method": "DELETE",
+          "path": "/live/admin/message/{msg_id}"
+        },
+        {
+          "method": "GET",
+          "path": "/live/admin/publish-info"
+        },
+        {
+          "method": "GET",
+          "path": "/live/admin/state"
+        },
+        {
+          "method": "GET",
+          "path": "/live/config"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/ban"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/chat-toggle"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/clear"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/mode"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/mute"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/pin"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/slowmode"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/start"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/stop"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/title"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/unban"
+        },
+        {
+          "method": "POST",
+          "path": "/live/admin/unmute"
+        },
+        {
+          "method": "POST",
+          "path": "/live/auth/telegram"
+        }
+      ],
+      "liveServicesOrDataUsed": false,
+      "middleware": [
+        "BaseHTTPMiddleware",
+        "CORSMiddleware",
+        "RateLimitMiddleware",
+        "SecurityHeadersMiddleware"
+      ],
+      "routeObjectCount": 487,
+      "status": "pass",
+      "uniqueHttpMethodPathCount": 486,
+      "websocketPaths": [
+        "/live/ws/chat",
+        "/ws/prices"
+      ]
+    }
+  },
+  "secretScan": {
+    "image": "zricethezav/gitleaks:v8.30.1",
+    "scope": "sanitized backend build inputs plus qa/python harness; credentials, runtime data, artifacts, backups, frontend, docs, and generated caches were never staged",
+    "redactionPercent": 100,
+    "exitCode": 0,
+    "findings": 0,
+    "status": "pass"
+  },
+  "cleanPythonSuite": {
+    "runId": "20260715T004514Z",
+    "evidence": "artifacts/qa/python/080033ae56e3c793ba3a998276cac5daeb969d50/20260715T004514Z",
+    "baseImage": "prochart-api@sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337",
+    "testImage": {
+      "id": "sha256:8afb633d3e05da51eea362794b7edfddbbd683e407490b4f787d47cac9665495",
+      "repoTags": [
+        "prochart-qa-pytest:9.1.1-current-20260715"
+      ],
+      "repoDigests": [
+        "prochart-qa-pytest@sha256:8afb633d3e05da51eea362794b7edfddbbd683e407490b4f787d47cac9665495"
+      ],
+      "created": "2026-07-15T00:45:19.104159771Z",
+      "architecture": "amd64",
+      "os": "linux",
+      "workingDir": "/workspace",
+      "entrypoint": [
+        "python",
+        "-m",
+        "pytest"
+      ],
+      "baseImage": "prochart-api@sha256:62b20c1712d506c1c3d0ee6527a8e28d32c87a4434c0f86893c0791201208337"
+    },
+    "isolation": {
+      "testNetwork": "none",
+      "repositorySnapshot": "sanitized worktree copy mounted read-only",
+      "liveServicesOrDataUsed": false
+    },
+    "exitCode": 1,
+    "pytestExitCode": 1,
+    "collectedItems": 283,
+    "junitTests": 346,
+    "passed": 208,
+    "failed": 55,
+    "errors": 32,
+    "skipped": 0,
+    "subtestsPassed": 51,
+    "addedSecurityApiRegressions": {
+      "securityRegressionsPassed": 17,
+      "securityRegressionsFailed": 0,
+      "standaloneHeaderAssertionsPassed": 11,
+      "standaloneHeaderExitCode": 0,
+      "runtimeHeaderCliSmokeExitCode": 0,
+      "runtimeHeaderBehaviorExecuted": false,
+      "runtimeHeaderBehaviorExclusion": "requires a served HTTPS frontend image; incompatible with this network-none backend suite"
+    },
+    "pipCheckExitCode": 0,
+    "maskingOrAddedSkips": false,
+    "suiteSealVerified": true
+  },
+  "invalidOrSupersededProbeAttempts": [
+    {
+      "attempt": 1,
+      "check": "baked application contract",
+      "exitCode": 1,
+      "status": "invalid-superseded",
+      "cause": "The checker was mounted at /probe.py without PYTHONPATH=/app. Python used the script directory / as sys.path[0], so the baked /app/src package was not importable.",
+      "observedError": "ModuleNotFoundError: No module named 'src'",
+      "applicationImported": false,
+      "correctiveAction": "Reran the same network-none/read-only probe with PYTHONPATH=/app.",
+      "supersededBy": "attempt 2"
+    },
+    {
+      "attempt": 1,
+      "check": "checker syntax smoke",
+      "exitCode": 2,
+      "status": "invalid-not-rerun",
+      "cause": "The Docker volume option was accidentally placed after the image name and was passed to Python's py_compile module as a program argument.",
+      "observedError": "py_compile.py: error: unrecognized arguments: -v .../backend-image-contract.py:/probe.py:ro",
+      "applicationImported": false,
+      "correctiveAction": "Discarded this malformed auxiliary invocation. Successful execution of the checker itself provides the relevant syntax/import validation."
+    },
+    {
+      "attempt": 2,
+      "check": "baked application contract",
+      "exitCode": 0,
+      "status": "valid-semantics-superseded-output-format",
+      "network": "none",
+      "rootFilesystem": "read-only",
+      "pythonPath": "/app",
+      "result": "app-contract-attempt2.stdout.log",
+      "causeForSupersession": "The app emitted its import-time CORS diagnostic to stdout before the JSON document, so the captured file was not parseable as standalone JSON.",
+      "correctiveAction": "Redirected import-time application stdout to stderr inside the checker; no route assertions changed.",
+      "supersededBy": "attempt 3"
+    },
+    {
+      "attempt": 3,
+      "check": "baked application contract",
+      "exitCode": 0,
+      "status": "valid-final",
+      "network": "none",
+      "rootFilesystem": "read-only",
+      "pythonPath": "/app",
+      "result": "app-contract.json",
+      "diagnostics": "app-contract.stderr"
+    }
+  ],
+  "deploymentPerformed": false,
+  "liveContainerRestarted": false,
+  "scaPerformed": false,
+  "scaNote": "Grype and Syft were intentionally not run; status was sent before any future SCA step."
+}

@@ -1,0 +1,49 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "check": "baked application contract",
+      "exitCode": 1,
+      "status": "invalid-superseded",
+      "cause": "The checker was mounted at /probe.py without PYTHONPATH=/app. Python used the script directory / as sys.path[0], so the baked /app/src package was not importable.",
+      "observedError": "ModuleNotFoundError: No module named 'src'",
+      "applicationImported": false,
+      "correctiveAction": "Reran the same network-none/read-only probe with PYTHONPATH=/app.",
+      "supersededBy": "attempt 2"
+    },
+    {
+      "attempt": 1,
+      "check": "checker syntax smoke",
+      "exitCode": 2,
+      "status": "invalid-not-rerun",
+      "cause": "The Docker volume option was accidentally placed after the image name and was passed to Python's py_compile module as a program argument.",
+      "observedError": "py_compile.py: error: unrecognized arguments: -v .../backend-image-contract.py:/probe.py:ro",
+      "applicationImported": false,
+      "correctiveAction": "Discarded this malformed auxiliary invocation. Successful execution of the checker itself provides the relevant syntax/import validation."
+    },
+    {
+      "attempt": 2,
+      "check": "baked application contract",
+      "exitCode": 0,
+      "status": "valid-semantics-superseded-output-format",
+      "network": "none",
+      "rootFilesystem": "read-only",
+      "pythonPath": "/app",
+      "result": "app-contract-attempt2.stdout.log",
+      "causeForSupersession": "The app emitted its import-time CORS diagnostic to stdout before the JSON document, so the captured file was not parseable as standalone JSON.",
+      "correctiveAction": "Redirected import-time application stdout to stderr inside the checker; no route assertions changed.",
+      "supersededBy": "attempt 3"
+    },
+    {
+      "attempt": 3,
+      "check": "baked application contract",
+      "exitCode": 0,
+      "status": "valid-final",
+      "network": "none",
+      "rootFilesystem": "read-only",
+      "pythonPath": "/app",
+      "result": "app-contract.json",
+      "diagnostics": "app-contract.stderr"
+    }
+  ]
+}

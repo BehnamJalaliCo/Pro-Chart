@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "tool": "ZAP baseline passive scan",
+  "toolVersion": "2.17.0",
+  "imageDigest": "sha256:8d387b1a63e3425beef4846e39719f5af2a787753af2d8b6558c6257d7a577a2",
+  "target": "isolated canonical production-image container over HTTPS",
+  "urlsObserved": 20,
+  "exitCode": 2,
+  "exitMeaning": "warnings present; no FAIL-NEW or FAIL-INPROG",
+  "failNew": 0,
+  "failInProgress": 0,
+  "highRisk": {
+    "riskCode": "3",
+    "ruleRecords": 0,
+    "instances": 0
+  },
+  "mediumRisk": {
+    "riskCode": "2",
+    "ruleRecords": 6,
+    "instances": 9,
+    "uniqueNames": [
+      "CSP: Wildcard Directive",
+      "CSP: script-src unsafe-eval",
+      "CSP: style-src unsafe-inline"
+    ]
+  },
+  "lowRisk": {
+    "riskCode": "1",
+    "ruleRecords": 8,
+    "instances": 19,
+    "uniqueNames": [
+      "Cross-Origin-Embedder-Policy Header Missing or Invalid",
+      "Cross-Origin-Opener-Policy Header Missing or Invalid",
+      "Cross-Origin-Resource-Policy Header Missing or Invalid",
+      "Server Leaks Version Information via \"Server\" HTTP Response Header Field"
+    ]
+  },
+  "informational": {
+    "riskCode": "0",
+    "ruleRecords": 6,
+    "instances": 16
+  },
+  "result": "PASS_NO_HIGH_WITH_MEDIUM_RESIDUALS",
+  "qualification": "Risk is keyed by ZAP riskcode; the parenthetical in riskdesc is confidence, not risk severity. Hostname case variants create duplicate alert records. This is a passive baseline DAST, not an active authenticated penetration test."
+}

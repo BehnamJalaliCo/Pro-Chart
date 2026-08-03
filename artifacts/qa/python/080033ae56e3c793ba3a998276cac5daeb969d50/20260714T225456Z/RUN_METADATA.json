@@ -1,0 +1,53 @@
+{
+  "runId": "20260714T225456Z",
+  "commit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "pythonSourceFingerprint": "e15ff141be18a3dd10d50602ea297d14bfdfd98294bface5ac813eb9591b61e0",
+  "baseImage": {
+    "name": "prochart-api:latest",
+    "id": "sha256:5b3b6ee9648f030b88e085c4ee956c55fb851d535ee61b1378976479ac991582",
+    "createdAt": "2026-07-14T17:33:36.828589455Z"
+  },
+  "isolation": {
+    "repositorySnapshot": "sanitized 301-file snapshot mounted read-only",
+    "secretFilesExposed": false,
+    "liveServicesOrDataUsed": false,
+    "dependencyInstall": "tmpfs with network enabled",
+    "testExecutionNetwork": "disconnected",
+    "databaseUrl": "loopback discard port; no live database",
+    "redisUrl": "loopback discard port; no live cache",
+    "pythonDontWriteBytecode": true,
+    "pytestCacheDisabled": true
+  },
+  "tools": {
+    "python": "3.12.13",
+    "pip": "25.0.1",
+    "pytest": "9.1.1",
+    "pytestAsyncio": "1.4.0",
+    "pluggy": "1.6.0"
+  },
+  "collection": {
+    "runnableItems": 267,
+    "collectionErrors": 12
+  },
+  "result": {
+    "junitTests": 279,
+    "passed": 189,
+    "failed": 58,
+    "errors": 32,
+    "skipped": 0,
+    "durationSeconds": 10.420,
+    "exitCode": 1
+  },
+  "pipCheck": {
+    "status": "FAIL",
+    "conflicts": [
+      "pandas-ta 0.4.71b0 requires numba==0.61.2 but image has numba 0.66.0",
+      "pandas-ta 0.4.71b0 requires pandas>=2.3.2 but image has pandas 2.2.3"
+    ]
+  },
+  "evidenceSecretScan": {
+    "tool": "gitleaks 8.30.1",
+    "redactionPercent": 100,
+    "findings": 0
+  }
+}

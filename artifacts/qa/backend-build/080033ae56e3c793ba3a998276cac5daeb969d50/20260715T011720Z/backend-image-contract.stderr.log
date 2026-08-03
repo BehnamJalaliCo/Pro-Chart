@@ -1,0 +1,1 @@
+2026-07-15 01:19:17 [info     ] cors_configured                debug=False origins=['https://FX.trade-future.ir', 'https://Panel.FX.trade-future.ir', 'https://api.FX.trade-future.ir', 'https://coinepro.com', 'https://www.coinepro.com', 'https://panel.coinepro.com', 'https://localhost'] source=production_defaults
