@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "comparison": "mobile accessibility matrix axe incomplete node counts",
+  "prior": {
+    "runId": "20260715T000113Z",
+    "sourceFingerprint": "0de4e70facc1e0d813235c0e2d0c64f059974fcdcdc06ff8df306552de3af5de",
+    "nodesByState": {
+      "chart": 18,
+      "watchlist": 36,
+      "ai": 36,
+      "markets": 37,
+      "profile": 36
+    },
+    "totalNodes": 163
+  },
+  "current": {
+    "runId": "20260715T004355Z",
+    "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+    "nodesByState": {
+      "chart": 18,
+      "watchlist": 36,
+      "ai": 36,
+      "markets": 37,
+      "profile": 36
+    },
+    "totalNodes": 163
+  },
+  "deltaNodesByState": {
+    "chart": 0,
+    "watchlist": 0,
+    "ai": 0,
+    "markets": 0,
+    "profile": 0
+  },
+  "totalNodeDelta": 0,
+  "rule": {
+    "id": "color-contrast",
+    "impact": "serious",
+    "priorOccurrences": 5,
+    "currentOccurrences": 5,
+    "occurrenceDelta": 0
+  },
+  "conclusion": "UNCHANGED_INCOMPLETE_REVIEW_REQUIRED"
+}

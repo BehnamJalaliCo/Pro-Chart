@@ -1,0 +1,5189 @@
+{
+  "testEngine": {
+    "name": "axe-core",
+    "version": "4.10.3"
+  },
+  "testRunner": {
+    "name": "axe"
+  },
+  "testEnvironment": {
+    "userAgent": "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Mobile Safari/537.36",
+    "windowWidth": 390,
+    "windowHeight": 844,
+    "orientationAngle": 0,
+    "orientationType": "portrait-primary"
+  },
+  "timestamp": "2026-07-14T12:34:56.000Z",
+  "url": "http://prochart.local:4184/",
+  "toolOptions": {
+    "runOnly": {
+      "type": "rule",
+      "values": [
+        "landmark-one-main",
+        "page-has-heading-one",
+        "region"
+      ]
+    },
+    "reporter": "v1"
+  },
+  "inapplicable": [],
+  "passes": [
+    {
+      "id": "landmark-one-main",
+      "impact": null,
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "description": "Ensure the document has a main landmark",
+      "help": "Document should have one main landmark",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/landmark-one-main?application=playwright",
+      "nodes": [
+        {
+          "any": [],
+          "all": [
+            {
+              "id": "page-has-main",
+              "data": null,
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Document has at least one main landmark"
+            }
+          ],
+          "none": [],
+          "impact": null,
+          "html": "<html lang=\"fa\" dir=\"rtl\" class=\"light\">",
+          "target": [
+            "html"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-has-heading-one",
+      "impact": null,
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "description": "Ensure that the page, or at least one of its frames contains a level-one heading",
+      "help": "Page should contain a level-one heading",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/page-has-heading-one?application=playwright",
+      "nodes": [
+        {
+          "any": [],
+          "all": [
+            {
+              "id": "page-has-heading-one",
+              "data": null,
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Page has at least one level-one heading"
+            }
+          ],
+          "none": [],
+          "impact": null,
+          "html": "<html lang=\"fa\" dir=\"rtl\" class=\"light\">",
+          "target": [
+            "html"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "region",
+      "impact": null,
+      "tags": [
+        "cat.keyboard",
+        "best-practice"
+      ],
+      "description": "Ensure all page content is contained by landmarks",
+      "help": "All page content should be contained by landmarks",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/region?application=playwright",
+      "nodes": [
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div id=\"root\">",
+          "target": [
+            "#root"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"pc-approot flex flex-col overflow-hidden\">",
+          "target": [
+            ".pc-approot"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<main class=\"relative flex-1 min-h-0\">",
+          "target": [
+            "main"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div dir=\"rtl\" class=\"flex flex-col h-full overflow-hidden text-gray-800\" style=\"background: rgb(255, 255, 255);\">",
+          "target": [
+            ".h-full"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div dir=\"rtl\" class=\"flex items-center gap-1.5 px-2 py-1.5 border-b\" style=\"border-color: rgb(224, 227, 235);\">",
+          "target": [
+            ".py-1\\.5"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"flex items-center gap-1.5 rounded-lg px-2 h-9 shrink-0\" aria-label=\"جستجوی نماد\" style=\"background: rgba(0, 0, 0, 0.04);\">",
+          "target": [
+            ".rounded-lg"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-bold text-sm\" dir=\"ltr\" style=\"color: rgb(19, 23, 34);\">EURUSD</span>",
+          "target": [
+            ".text-sm"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"flex-1 min-w-0 flex items-center justify-center\"><span class=\"flex items-center gap-1 text-[12px]\" style=\"color: rgb(8, 109, 92);\"><span class=\"w-2 h-2 rounded-full animate-pulse\" style=\"background: rgb(8, 109, 92);\"></span><b dir=\"ltr\" class=\"tabular-nums \">1.14212</b></span></div>",
+          "target": [
+            ".min-w-0.flex-1.justify-center"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex items-center gap-1 text-[12px]\" style=\"color: rgb(8, 109, 92);\"><span class=\"w-2 h-2 rounded-full animate-pulse\" style=\"background: rgb(8, 109, 92);\"></span><b dir=\"ltr\" class=\"tabular-nums \">1.14212</b></span>",
+          "target": [
+            ".text-\\[12px\\]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"w-2 h-2 rounded-full animate-pulse\" style=\"background: rgb(8, 109, 92);\"></span>",
+          "target": [
+            ".w-2"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<b dir=\"ltr\" class=\"tabular-nums \">1.14212</b>",
+          "target": [
+            ".text-\\[12px\\] > b"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"flex items-center gap-0.5 rounded-md px-2 h-9 text-[13px] font-semibold tabular-nums shrink-0\" dir=\"ltr\" aria-label=\"تایم‌فریم\" style=\"min-width: 36px; min-height: 36px; background: rgba(0, 0, 0, 0.04); color: rgb(19, 23, 34);\">",
+          "target": [
+            "button[aria-label=\"تایم‌فریم\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M6 9l6 6 6-6\"></path></svg>",
+          "target": [
+            "button[aria-label=\"تایم‌فریم\"] > svg[width=\"11\"][height=\"11\"][stroke-width=\"2\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M6 9l6 6 6-6\"></path>",
+          "target": [
+            "path[d=\"M6 9l6 6 6-6\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"flex items-center justify-center rounded-md h-9 shrink-0\" aria-label=\"نوعِ چارت\" title=\"کندل\" style=\"min-width: 36px; min-height: 36px; background: rgba(0, 0, 0, 0.04); color: rgb(19, 23, 34); width: 36px;\">",
+          "target": [
+            "button[aria-label=\"نوعِ چارت\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\">",
+          "target": [
+            "svg[width=\"18\"][height=\"18\"][stroke-width=\"1.8\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<rect x=\"6\" y=\"4\" width=\"3\" height=\"9\"></rect>",
+          "target": [
+            "rect[x=\"6\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<line x1=\"7.5\" y1=\"2\" x2=\"7.5\" y2=\"4\"></line>",
+          "target": [
+            "line[y1=\"2\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<line x1=\"7.5\" y1=\"13\" x2=\"7.5\" y2=\"15\"></line>",
+          "target": [
+            "line[y1=\"13\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<rect x=\"15\" y=\"8\" width=\"3\" height=\"9\"></rect>",
+          "target": [
+            "rect[y=\"8\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<line x1=\"16.5\" y1=\"6\" x2=\"16.5\" y2=\"8\"></line>",
+          "target": [
+            "line[y1=\"6\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<line x1=\"16.5\" y1=\"17\" x2=\"16.5\" y2=\"19\"></line>",
+          "target": [
+            "line[y2=\"19\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"flex items-center justify-center rounded-md h-9 shrink-0\" aria-label=\"بیشتر\" style=\"min-width: 36px; min-height: 36px; background: rgba(0, 0, 0, 0.04); color: rgb(19, 23, 34); width: 36px;\">",
+          "target": [
+            "button[aria-label=\"بیشتر\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><line x1=\"4\" y1=\"7\" x2=\"20\" y2=\"7\"></line><line x1=\"4\" y1=\"12\" x2=\"20\" y2=\"12\"></line><line x1=\"4\" y1=\"17\" x2=\"20\" y2=\"17\"></line></svg>",
+          "target": [
+            "svg[width=\"18\"][height=\"18\"][stroke-width=\"2\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<line x1=\"4\" y1=\"7\" x2=\"20\" y2=\"7\"></line>",
+          "target": [
+            "line[y1=\"7\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<line x1=\"4\" y1=\"12\" x2=\"20\" y2=\"12\"></line>",
+          "target": [
+            "line[y1=\"12\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<line x1=\"4\" y1=\"17\" x2=\"20\" y2=\"17\"></line>",
+          "target": [
+            "line[y2=\"17\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div dir=\"ltr\" class=\"flex flex-1 min-h-0 relative\">",
+          "target": [
+            ".h-full > .min-h-0.flex-1.relative"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"flex-1 flex flex-col min-w-0 relative\">",
+          "target": [
+            ".min-w-0.flex-col.flex-1"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"group absolute top-2 right-2 z-20 rounded-md px-2 py-1 flex items-center gap-1.5 max-w-[calc(100vw-1rem)] overflow-hidden border\" dir=\"rtl\" style=\"background: rgba(255, 255, 255, 0.8); border-color: rgb(224, 227, 235); backdrop-filter: blur(3px); box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;\">",
+          "target": [
+            ".group"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-[13px] font-bold whitespace-nowrap tracking-tight\" dir=\"ltr\" style=\"color: rgb(19, 23, 34); letter-spacing: -0.01em;\">EURUSD</span>",
+          "target": [
+            ".tracking-tight"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-[10px] tnum whitespace-nowrap font-medium\" dir=\"ltr\" style=\"color: rgb(93, 96, 107); opacity: 0.55;\">1H · فارکس</span>",
+          "target": [
+            ".tnum.text-\\[10px\\].font-medium"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chart-candlestick shrink-0\" style=\"color: rgb(93, 96, 107); opacity: 0.6;\">",
+          "target": [
+            ".lucide-chart-candlestick[height=\"13\"][width=\"13\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M9 5v4\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[height=\"13\"][width=\"13\"] > path[d=\"M9 5v4\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<rect width=\"4\" height=\"6\" x=\"7\" y=\"9\" rx=\"1\"></rect>",
+          "target": [
+            ".lucide-chart-candlestick[height=\"13\"][width=\"13\"] > rect[height=\"6\"][x=\"7\"][y=\"9\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M9 15v2\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[height=\"13\"][width=\"13\"] > path[d=\"M9 15v2\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M17 3v2\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[height=\"13\"][width=\"13\"] > path[d=\"M17 3v2\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<rect width=\"4\" height=\"8\" x=\"15\" y=\"5\" rx=\"1\"></rect>",
+          "target": [
+            ".lucide-chart-candlestick[height=\"13\"][width=\"13\"] > rect[height=\"8\"][x=\"15\"][y=\"5\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M17 13v3\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[height=\"13\"][width=\"13\"] > path[d=\"M17 13v3\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M3 3v16a2 2 0 0 0 2 2h16\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[height=\"13\"][width=\"13\"] > path[d=\"M3 3v16a2 2 0 0 0 2 2h16\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex items-center gap-1.5 text-[11px] tnum whitespace-nowrap\" dir=\"ltr\">",
+          "target": [
+            ".tnum.gap-1\\.5.whitespace-nowrap"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex items-center gap-0.5\"><span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">O</span><span class=\"font-semibold\" style=\"color: rgb(8, 153, 129);\">1.14201</span></span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">O</span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(1) > .font-medium"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-semibold\" style=\"color: rgb(8, 153, 129);\">1.14201</span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(1) > .font-semibold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex items-center gap-0.5\"><span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">H</span><span class=\"font-semibold\" style=\"color: rgb(8, 153, 129);\">1.14243</span></span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">H</span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(2) > .font-medium"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-semibold\" style=\"color: rgb(8, 153, 129);\">1.14243</span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(2) > .font-semibold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex items-center gap-0.5\"><span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">L</span><span class=\"font-semibold\" style=\"color: rgb(8, 153, 129);\">1.14169</span></span>",
+          "target": [
+            ".tnum.gap-1\\.5.whitespace-nowrap > .gap-0\\.5.items-center.flex:nth-child(3)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">L</span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(3) > .font-medium"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-semibold\" style=\"color: rgb(8, 153, 129);\">1.14169</span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(3) > .font-semibold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex items-center gap-0.5\"><span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">C</span><span class=\"font-semibold px-0.5 -mx-0.5  rounded-sm\" style=\"color: rgb(8, 153, 129);\">1.14212</span></span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(4)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">C</span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(4) > .font-medium"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-semibold px-0.5 -mx-0.5  rounded-sm\" style=\"color: rgb(8, 153, 129);\">1.14212</span>",
+          "target": [
+            ".gap-0\\.5.items-center.flex:nth-child(4) > .-mx-0\\.5.rounded-sm.px-0\\.5"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"tnum text-[11px] font-semibold shrink-0 whitespace-nowrap leading-none\" dir=\"ltr\" style=\"color: rgb(8, 153, 129);\">+0.00011 (+0.01%)</span>",
+          "target": [
+            ".tnum.leading-none.whitespace-nowrap"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex items-center gap-0.5 text-[11px] tnum whitespace-nowrap\" dir=\"ltr\"><span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">Vol</span><span class=\"font-semibold px-0.5 -mx-0.5  rounded-sm\" style=\"color: rgb(8, 153, 129); direction: ltr;\">2.88K</span></span>",
+          "target": [
+            ".tnum.gap-0\\.5.whitespace-nowrap"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-medium\" style=\"color: rgb(93, 96, 107); opacity: 0.5;\">Vol</span>",
+          "target": [
+            ".tnum.gap-0\\.5.whitespace-nowrap > .font-medium"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"font-semibold px-0.5 -mx-0.5  rounded-sm\" style=\"color: rgb(8, 153, 129); direction: ltr;\">2.88K</span>",
+          "target": [
+            ".tnum.gap-0\\.5.whitespace-nowrap > .-mx-0\\.5.rounded-sm.px-0\\.5"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"تنظیماتِ چارت\" aria-label=\"تنظیماتِ چارت\" class=\"opacity-0 group-hover:opacity-100 transition-opacity duration-[120ms] flex items-center justify-center rounded shrink-0\" style=\"width: 20px; height: 20px; color: rgb(93, 96, 107);\">",
+          "target": [
+            ".opacity-0"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-settings2\">",
+          "target": [
+            ".lucide-settings2"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M20 7h-9\"></path>",
+          "target": [
+            "path[d=\"M20 7h-9\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M14 17H5\"></path>",
+          "target": [
+            "path[d=\"M14 17H5\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<circle cx=\"17\" cy=\"17\" r=\"3\"></circle>",
+          "target": [
+            "circle[cx=\"17\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<circle cx=\"7\" cy=\"7\" r=\"3\"></circle>",
+          "target": [
+            "circle[cx=\"7\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"relative flex-1 min-h-0\" style=\"touch-action: none; overscroll-behavior: none;\">",
+          "target": [
+            ".min-w-0.flex-col.flex-1 > .min-h-0.flex-1.relative"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"absolute inset-0\" style=\"cursor: crosshair;\">",
+          "target": [
+            ".inset-0.absolute:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"tv-lightweight-charts\" style=\"overflow: hidden; direction: ltr; width: 390px; height: 696px; user-select: none; -webkit-tap-highlight-color: transparent;\">",
+          "target": [
+            ".tv-lightweight-charts"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<table cellspacing=\"0\" style=\"height: 696px; width: 390px;\">",
+          "target": [
+            "table"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<tr>",
+          "target": [
+            "tr:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<td style=\"padding: 0px;\"></td>",
+          "target": [
+            "tr:nth-child(1) > td:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<td style=\"padding: 0px; position: relative; width: 324px; height: 668px;\">",
+          "target": [
+            "tr:nth-child(1) > td:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div style=\"width: 100%; height: 100%; position: relative; overflow: hidden;\">",
+          "target": [
+            "tr:nth-child(1) > td:nth-child(2) > div"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<canvas width=\"324\" height=\"668\" style=\"width: 324px; height: 668px; position: absolute; z-index: 1; left: 0px; top: 0px;\"></canvas>",
+          "target": [
+            "canvas[width=\"324\"][height=\"668\"]:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<canvas width=\"324\" height=\"668\" style=\"width: 324px; height: 668px; position: absolute; z-index: 2; left: 0px; top: 0px;\"></canvas>",
+          "target": [
+            "canvas[width=\"324\"][height=\"668\"]:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<td style=\"padding: 0px;\">",
+          "target": [
+            "tr:nth-child(1) > td:nth-child(3)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div style=\"height: 668px; overflow: hidden; width: 66px; left: 0px; position: relative;\">",
+          "target": [
+            "tr:nth-child(1) > td:nth-child(3) > div"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<canvas width=\"66\" height=\"668\" style=\"width: 66px; height: 668px; position: absolute; z-index: 1; left: 0px; top: 0px;\"></canvas>",
+          "target": [
+            "canvas[width=\"66\"][height=\"668\"]:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<canvas width=\"66\" height=\"668\" style=\"width: 66px; height: 668px; position: absolute; z-index: 2; left: 0px; top: 0px;\"></canvas>",
+          "target": [
+            "canvas[width=\"66\"][height=\"668\"]:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<tr>",
+          "target": [
+            "tr:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<td style=\"padding: 0px;\"></td>",
+          "target": [
+            "tr:nth-child(2) > td:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<td style=\"height: 28px; padding: 0px; width: 324px;\">",
+          "target": [
+            "tr:nth-child(2) > td:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div style=\"width: 100%; height: 100%; position: relative; overflow: hidden;\">",
+          "target": [
+            "tr:nth-child(2) > td:nth-child(2) > div"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<canvas width=\"324\" height=\"28\" style=\"width: 324px; height: 28px; position: absolute; z-index: 1; left: 0px; top: 0px;\"></canvas>",
+          "target": [
+            "canvas[height=\"28\"][width=\"324\"]:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<canvas width=\"324\" height=\"28\" style=\"width: 324px; height: 28px; position: absolute; z-index: 2; left: 0px; top: 0px;\"></canvas>",
+          "target": [
+            "canvas[height=\"28\"][width=\"324\"]:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<td style=\"padding: 0px;\"><div style=\"width: 66px; height: 28px; overflow: hidden;\"><canvas width=\"66\" height=\"28\" style=\"width: 66px; height: 28px;\"></canvas></div></td>",
+          "target": [
+            "tr:nth-child(2) > td:nth-child(3)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div style=\"width: 66px; height: 28px; overflow: hidden;\"><canvas width=\"66\" height=\"28\" style=\"width: 66px; height: 28px;\"></canvas></div>",
+          "target": [
+            "tr:nth-child(2) > td:nth-child(3) > div"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<canvas width=\"66\" height=\"28\" style=\"width: 66px; height: 28px;\"></canvas>",
+          "target": [
+            "canvas[width=\"66\"][height=\"28\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<canvas class=\"absolute inset-0 z-10\" width=\"390\" height=\"697\" style=\"pointer-events: none; cursor: default;\"></canvas>",
+          "target": [
+            ".z-10"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"absolute top-2 left-2 z-20 flex flex-col gap-1 items-start\" dir=\"ltr\" style=\"pointer-events: none;\">",
+          "target": [
+            ".items-start"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"flex items-stretch gap-1.5\" style=\"pointer-events: auto;\">",
+          "target": [
+            ".items-stretch.gap-1\\.5"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"فروش (Sell) — بازکردنِ تیکتِ سفارش\" class=\"flex flex-col items-center justify-center px-2.5 py-0.5 rounded-md shadow-sm transition-colors duration-[120ms]\" style=\"background: rgb(240, 243, 250); border: 1.5px solid rgb(242, 54, 69); color: rgb(180, 35, 53); min-width: 74px;\">",
+          "target": [
+            ".px-2\\.5.shadow-sm.rounded-md:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-[13px] font-bold leading-tight tabular-nums\">1.14210</span>",
+          "target": [
+            ".px-2\\.5.shadow-sm.rounded-md:nth-child(1) > .leading-tight.text-\\[13px\\].font-bold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-[9px] font-bold leading-none tracking-wide -mt-0.5\">SELL</span>",
+          "target": [
+            ".px-2\\.5.shadow-sm.rounded-md:nth-child(1) > .text-\\[9px\\].tracking-wide.-mt-0\\.5"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"flex flex-col items-center justify-center px-0.5\" style=\"color: rgb(93, 96, 107);\"><span class=\"text-[11px] tabular-nums leading-tight font-medium\">4</span><span class=\"text-[8px] leading-none opacity-55\">اسپرد</span></div>",
+          "target": [
+            ".px-0\\.5.flex-col.justify-center"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-[11px] tabular-nums leading-tight font-medium\">4</span>",
+          "target": [
+            ".leading-tight.font-medium.text-\\[11px\\]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-[8px] leading-none opacity-55\">اسپرد</span>",
+          "target": [
+            ".text-\\[8px\\]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"خرید (Buy) — بازکردنِ تیکتِ سفارش\" class=\"flex flex-col items-center justify-center px-2.5 py-0.5 rounded-md shadow-sm transition-colors duration-[120ms]\" style=\"background: rgb(240, 243, 250); border: 1.5px solid rgb(41, 98, 255); color: rgb(30, 83, 229); min-width: 74px;\">",
+          "target": [
+            ".px-2\\.5.shadow-sm.rounded-md:nth-child(3)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-[13px] font-bold leading-tight tabular-nums\">1.14214</span>",
+          "target": [
+            ".px-2\\.5.shadow-sm.rounded-md:nth-child(3) > .leading-tight.text-\\[13px\\].font-bold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-[9px] font-bold leading-none tracking-wide -mt-0.5\">BUY</span>",
+          "target": [
+            ".px-2\\.5.shadow-sm.rounded-md:nth-child(3) > .text-\\[9px\\].tracking-wide.-mt-0\\.5"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-semibold tabular-nums shadow-sm\" dir=\"ltr\" style=\"background: rgba(255, 255, 255, 0.8); border: 1px solid rgb(224, 227, 235); color: rgb(8, 153, 129); backdrop-filter: blur(2px); pointer-events: auto;\">",
+          "target": [
+            ".px-1\\.5.shadow-sm.py-0\\.5"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span>+0.00011</span>",
+          "target": [
+            ".px-1\\.5.shadow-sm.py-0\\.5 > span:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span>(+0.01%)</span>",
+          "target": [
+            ".px-1\\.5.shadow-sm.py-0\\.5 > span:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"absolute z-20 pointer-events-none rounded-md px-2 py-1 text-[11px] font-mono tabular-nums flex items-center gap-1.5 border shadow-sm\" dir=\"ltr\" style=\"right: 2px; border-color: rgb(224, 227, 235); background: rgba(255, 255, 255, 0.98); top: 352px;\">",
+          "target": [
+            ".font-mono"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"w-1.5 h-1.5 rounded-full bg-green-400\"></span>",
+          "target": [
+            ".w-1\\.5"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<b>25:04</b>",
+          "target": [
+            ".font-mono > b"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"absolute z-20 flex items-center gap-0.5\" dir=\"ltr\" style=\"bottom: 3px; right: 3px;\">",
+          "target": [
+            ".z-20.gap-0\\.5.absolute"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"مقیاسِ درصدی\" aria-label=\"مقیاسِ درصدی\" class=\"px-1 h-6 min-w-6 rounded text-[10px] font-semibold leading-none tabular-nums flex items-center justify-center transition-colors duration-[120ms] opacity-55 hover:opacity-100 hover:bg-black/[0.06]\" style=\"color: rgb(93, 96, 107);\">",
+          "target": [
+            "button[title=\"مقیاسِ درصدی\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"مقیاسِ لگاریتمی\" aria-label=\"مقیاسِ لگاریتمی\" class=\"px-1 h-6 min-w-6 rounded text-[10px] font-semibold leading-none tabular-nums flex items-center justify-center transition-colors duration-[120ms] opacity-55 hover:opacity-100 hover:bg-black/[0.06]\" style=\"color: rgb(93, 96, 107);\">",
+          "target": [
+            "button[title=\"مقیاسِ لگاریتمی\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"مقیاسِ خودکار (Fit)\" aria-label=\"مقیاسِ خودکار (Fit)\" class=\"px-1 h-6 min-w-6 rounded text-[10px] font-semibold leading-none tabular-nums flex items-center justify-center transition-colors duration-[120ms] \" style=\"background: rgb(41, 98, 255); color: rgb(255, 255, 255);\">",
+          "target": [
+            "button[title=\"مقیاسِ خودکار (Fit)\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"absolute left-2 z-20 pointer-events-none text-[10px] font-semibold px-1.5 py-0.5 rounded flex items-center gap-1\" dir=\"ltr\" style=\"bottom: 18%; color: rgb(93, 96, 107); background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(2px); border: 1px solid rgb(224, 227, 235);\">",
+          "target": [
+            ".left-2.px-1\\.5.pointer-events-none"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chart-column\" style=\"opacity: 0.7;\">",
+          "target": [
+            ".lucide-chart-column"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M3 3v16a2 2 0 0 0 2 2h16\"></path>",
+          "target": [
+            ".lucide-chart-column > path[d=\"M3 3v16a2 2 0 0 0 2 2h16\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M18 17V9\"></path>",
+          "target": [
+            "path[d=\"M18 17V9\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M13 17V5\"></path>",
+          "target": [
+            "path[d=\"M13 17V5\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M8 17v-3\"></path>",
+          "target": [
+            "path[d=\"M8 17v-3\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span>حجم · Vol</span>",
+          "target": [
+            ".left-2.px-1\\.5.pointer-events-none > span"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<img src=\"/assets/bn-logo-Cylz0xjn.png\" alt=\"بازارنما\" class=\"absolute bottom-8 left-3 z-20 pointer-events-none select-none\" style=\"height: 60px; opacity: 0.07; filter: invert(1);\">",
+          "target": [
+            "img"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"flex items-center gap-1 px-2 py-1 border-t overflow-x-auto bn-thin-scroll shrink-0\" dir=\"ltr\" style=\"border-color: rgb(224, 227, 235); background: rgb(255, 255, 255);\">",
+          "target": [
+            ".border-t"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"بازهٔ نمایش: 1D\" class=\"px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]\" style=\"color: rgb(93, 96, 107);\">1D</button>",
+          "target": [
+            "button[title=\"بازهٔ نمایش: 1D\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"بازهٔ نمایش: 5D\" class=\"px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]\" style=\"color: rgb(93, 96, 107);\">5D</button>",
+          "target": [
+            "button[title=\"بازهٔ نمایش: 5D\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"بازهٔ نمایش: 1M\" class=\"px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]\" style=\"color: rgb(93, 96, 107);\">1M</button>",
+          "target": [
+            "button[title=\"بازهٔ نمایش: 1M\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"بازهٔ نمایش: 3M\" class=\"px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]\" style=\"color: rgb(93, 96, 107);\">3M</button>",
+          "target": [
+            "button[title=\"بازهٔ نمایش: 3M\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"بازهٔ نمایش: 6M\" class=\"px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]\" style=\"color: rgb(93, 96, 107);\">6M</button>",
+          "target": [
+            "button[title=\"بازهٔ نمایش: 6M\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"بازهٔ نمایش: YTD\" class=\"px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]\" style=\"color: rgb(93, 96, 107);\">YTD</button>",
+          "target": [
+            "button[title=\"بازهٔ نمایش: YTD\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"بازهٔ نمایش: 1Y\" class=\"px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]\" style=\"color: rgb(93, 96, 107);\">1Y</button>",
+          "target": [
+            "button[title=\"بازهٔ نمایش: 1Y\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"بازهٔ نمایش: 5Y\" class=\"px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]\" style=\"color: rgb(93, 96, 107);\">5Y</button>",
+          "target": [
+            "button[title=\"بازهٔ نمایش: 5Y\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"بازهٔ نمایش: All\" class=\"px-2 py-0.5 rounded text-[11px] font-semibold tabular-nums whitespace-nowrap transition-colors duration-[120ms]\" style=\"color: rgb(93, 96, 107);\">All</button>",
+          "target": [
+            "button[title=\"بازهٔ نمایش: All\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div data-menu=\"true\" class=\"relative shrink-0\">",
+          "target": [
+            ".relative.shrink-0[data-menu=\"true\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button type=\"button\" title=\"پرش به تاریخ\" class=\"p-1 rounded transition-colors duration-[120ms] flex items-center\" style=\"color: rgb(93, 96, 107);\">",
+          "target": [
+            ".p-1"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div data-menu=\"true\" class=\"ml-auto relative\">",
+          "target": [
+            ".ml-auto"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button title=\"تغییرِ منطقهٔ زمانیِ چارت\" class=\"flex items-center gap-1 pl-2 text-[11px] tabular-nums whitespace-nowrap select-none rounded transition-colors\" style=\"color: rgb(93, 96, 107);\">",
+          "target": [
+            ".pl-2"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-clock\" style=\"opacity: 0.7;\">",
+          "target": [
+            ".lucide-clock"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle>",
+          "target": [
+            "circle[r=\"10\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<polyline points=\"12 6 12 12 16 14\"></polyline>",
+          "target": [
+            "polyline[points=\"12 6 12 12 16 14\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span>16:04:56</span>",
+          "target": [
+            ".pl-2 > span:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span>(تهران)</span>",
+          "target": [
+            ".pl-2 > span:nth-child(3)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div></div>",
+          "target": [
+            ".min-w-0.flex-col.flex-1 > div:nth-child(4)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"absolute inset-0 z-50 flex flex-col overflow-hidden pc-screen-in\" style=\"background: var(--surface-default);\">",
+          "target": [
+            ".z-50"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<header class=\"flex-none flex items-center justify-between px-4\" style=\"height: 58px; border-bottom: 1px solid var(--surface-border);\">",
+          "target": [
+            "header"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<h1 class=\"font-extrabold\" style=\"font-size: 19px; color: var(--text-primary);\">واچ‌لیست</h1>",
+          "target": [
+            "h1"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button aria-label=\"جستجو\" class=\"flex items-center justify-center active:scale-90 transition-transform\" style=\"width: 38px; height: 38px; border-radius: 12px; background: var(--surface-card); border: 1px solid var(--surface-border); color: var(--text-secondary);\">",
+          "target": [
+            "button[aria-label=\"جستجو\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><path d=\"m21 21-4.3-4.3\"></path></svg>",
+          "target": [
+            ".lucide-search"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<circle cx=\"11\" cy=\"11\" r=\"8\"></circle>",
+          "target": [
+            "circle[cx=\"11\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"m21 21-4.3-4.3\"></path>",
+          "target": [
+            "path[d=\"m21 21-4.3-4.3\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"flex-1 min-h-0 overflow-y-auto pc-scroll\">",
+          "target": [
+            ".overflow-y-auto"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div class=\"flex mx-3 mt-2 mb-1\" style=\"background: var(--surface-elevated); border-radius: 12px; padding: 4px; gap: 4px;\">",
+          "target": [
+            ".mx-3"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"flex-1 flex items-center justify-center gap-1.5 font-bold transition-colors\" style=\"height: 34px; border-radius: 9px; font-size: 12.5px; color: rgb(41, 98, 255); background: var(--surface-card); box-shadow: var(--elev-1);\">",
+          "target": [
+            ".gap-1\\.5.font-bold.flex-1:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-list\">",
+          "target": [
+            ".lucide-list[width=\"14\"][height=\"14\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M3 12h.01\"></path>",
+          "target": [
+            ".lucide-list[width=\"14\"][height=\"14\"] > path[d=\"M3 12h.01\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M3 18h.01\"></path>",
+          "target": [
+            ".lucide-list[width=\"14\"][height=\"14\"] > path[d=\"M3 18h.01\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M3 6h.01\"></path>",
+          "target": [
+            ".lucide-list[width=\"14\"][height=\"14\"] > path[d=\"M3 6h.01\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M8 12h13\"></path>",
+          "target": [
+            ".lucide-list[width=\"14\"][height=\"14\"] > path[d=\"M8 12h13\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M8 18h13\"></path>",
+          "target": [
+            ".lucide-list[width=\"14\"][height=\"14\"] > path[d=\"M8 18h13\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M8 6h13\"></path>",
+          "target": [
+            ".lucide-list[width=\"14\"][height=\"14\"] > path[d=\"M8 6h13\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"flex-1 flex items-center justify-center gap-1.5 font-bold transition-colors\" style=\"height: 34px; border-radius: 9px; font-size: 12.5px; color: var(--text-secondary); background: transparent; box-shadow: none;\">",
+          "target": [
+            ".gap-1\\.5.font-bold.flex-1:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-briefcase\">",
+          "target": [
+            ".lucide-briefcase"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\"></path>",
+          "target": [
+            ".lucide-briefcase > path"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<rect width=\"20\" height=\"14\" x=\"2\" y=\"6\" rx=\"2\"></rect>",
+          "target": [
+            "rect[width=\"20\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<ul class=\"p-3 pt-2 flex flex-col gap-2\">",
+          "target": [
+            "ul"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<li>",
+          "target": [
+            "li:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"w-full flex items-center gap-3 text-start active:scale-[.99] transition-transform\" style=\"padding: 11px 12px; border-radius: 16px; background: var(--surface-card); border: 1px solid var(--surface-border); box-shadow: var(--elev-1);\">",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-none\">",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start > .flex-none"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-1 min-w-0\"><span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">EURUSD</span><span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span></span>",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start > .min-w-0.flex-1"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">EURUSD</span>",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .truncate.block.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span>",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .block:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg width=\"54\" height=\"26\" viewBox=\"0 0 54 26\" fill=\"none\" style=\"flex: 0 0 auto;\">",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<polyline points=\"0.0,10.1 2.3,16.4 4.7,23.0 7.0,18.0 9.4,13.8 11.7,9.6 14.1,6.2 16.4,3.0 18.8,6.2 21.1,9.6 23.5,13.8 25.8,18.0 28.2,23.0 30.5,16.4 32.9,10.1 35.2,9.8 37.6,10.4 39.9,11.2 42.3,12.5 44.6,14.1 47.0,16.4 49.3,19.1 51.7,15.6 54.0,12.7\" stroke=\"var(--up)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"] > polyline[stroke=\"var(--up)\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-end\" dir=\"ltr\">",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold tabular-nums\" style=\"color: var(--text-primary); font-size: 13.5px;\">1.1421</span>",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .block.font-extrabold.tabular-nums"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"inline-flex items-center gap-1 font-extrabold tabular-nums\" style=\"color: color-mix(in srgb, var(--up) 68%, var(--text-primary)); font-size: 11px; background: var(--up-weak); padding: 1px 6px; border-radius: 999px; margin-top: 2px;\">▲ 0.42%</span>",
+          "target": [
+            "li:nth-child(1) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .inline-flex.gap-1.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<li>",
+          "target": [
+            "li:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"w-full flex items-center gap-3 text-start active:scale-[.99] transition-transform\" style=\"padding: 11px 12px; border-radius: 16px; background: var(--surface-card); border: 1px solid var(--surface-border); box-shadow: var(--elev-1);\">",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-none\">",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start > .flex-none"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-1 min-w-0\"><span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">GBPUSD</span><span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span></span>",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start > .min-w-0.flex-1"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">GBPUSD</span>",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .truncate.block.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span>",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .block:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg width=\"54\" height=\"26\" viewBox=\"0 0 54 26\" fill=\"none\" style=\"flex: 0 0 auto;\">",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<polyline points=\"0.0,10.1 2.3,16.3 4.7,23.0 7.0,18.1 9.4,13.7 11.7,9.7 14.1,6.1 16.4,3.0 18.8,6.1 21.1,9.7 23.5,13.7 25.8,18.1 28.2,23.0 30.5,16.3 32.9,10.1 35.2,9.9 37.6,10.3 39.9,11.0 42.3,12.3 44.6,14.1 47.0,16.3 49.3,19.0 51.7,15.7 54.0,12.8\" stroke=\"var(--down)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"] > polyline[stroke=\"var(--down)\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-end\" dir=\"ltr\">",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold tabular-nums\" style=\"color: var(--text-primary); font-size: 13.5px;\">1.3392</span>",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .block.font-extrabold.tabular-nums"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"inline-flex items-center gap-1 font-extrabold tabular-nums\" style=\"color: color-mix(in srgb, var(--down) 68%, var(--text-primary)); font-size: 11px; background: var(--down-weak); padding: 1px 6px; border-radius: 999px; margin-top: 2px;\">▼ 0.38%</span>",
+          "target": [
+            "li:nth-child(2) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .inline-flex.gap-1.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<li>",
+          "target": [
+            "li:nth-child(3)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"w-full flex items-center gap-3 text-start active:scale-[.99] transition-transform\" style=\"padding: 11px 12px; border-radius: 16px; background: var(--surface-card); border: 1px solid var(--surface-border); box-shadow: var(--elev-1);\">",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-none\">",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start > .flex-none"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-1 min-w-0\"><span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">USDJPY</span><span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span></span>",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start > .min-w-0.flex-1"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">USDJPY</span>",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .truncate.block.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span>",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .block:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg width=\"54\" height=\"26\" viewBox=\"0 0 54 26\" fill=\"none\" style=\"flex: 0 0 auto;\">",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<polyline points=\"0.0,10.0 2.3,16.3 4.7,23.0 7.0,18.1 9.4,13.6 11.7,9.6 14.1,6.1 16.4,3.0 18.8,6.1 21.1,9.6 23.5,13.6 25.8,18.1 28.2,23.0 30.5,16.3 32.9,10.0 35.2,9.9 37.6,10.2 39.9,11.1 42.3,12.3 44.6,14.1 47.0,16.3 49.3,18.9 51.7,15.6 54.0,12.8\" stroke=\"var(--up)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"] > polyline[stroke=\"var(--up)\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-end\" dir=\"ltr\">",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold tabular-nums\" style=\"color: var(--text-primary); font-size: 13.5px;\">162.21</span>",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .block.font-extrabold.tabular-nums"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"inline-flex items-center gap-1 font-extrabold tabular-nums\" style=\"color: color-mix(in srgb, var(--up) 68%, var(--text-primary)); font-size: 11px; background: var(--up-weak); padding: 1px 6px; border-radius: 999px; margin-top: 2px;\">▲ 0.58%</span>",
+          "target": [
+            "li:nth-child(3) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .inline-flex.gap-1.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<li>",
+          "target": [
+            "li:nth-child(4)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"w-full flex items-center gap-3 text-start active:scale-[.99] transition-transform\" style=\"padding: 11px 12px; border-radius: 16px; background: var(--surface-card); border: 1px solid var(--surface-border); box-shadow: var(--elev-1);\">",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-none\">",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start > .flex-none"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-1 min-w-0\"><span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">USDCHF</span><span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span></span>",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start > .min-w-0.flex-1"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">USDCHF</span>",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .truncate.block.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span>",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .block:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg width=\"54\" height=\"26\" viewBox=\"0 0 54 26\" fill=\"none\" style=\"flex: 0 0 auto;\">",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<polyline points=\"0.0,10.1 2.3,16.5 4.7,23.0 7.0,18.2 9.4,13.6 11.7,9.8 14.1,6.2 16.4,3.0 18.8,6.2 21.1,9.8 23.5,13.6 25.8,18.2 28.2,23.0 30.5,16.5 32.9,10.1 35.2,10.1 37.6,10.4 39.9,11.1 42.3,12.4 44.6,14.3 47.0,16.5 49.3,19.1 51.7,15.9 54.0,13.0\" stroke=\"var(--down)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"] > polyline[stroke=\"var(--down)\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-end\" dir=\"ltr\">",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold tabular-nums\" style=\"color: var(--text-primary); font-size: 13.5px;\">0.80936</span>",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .block.font-extrabold.tabular-nums"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"inline-flex items-center gap-1 font-extrabold tabular-nums\" style=\"color: color-mix(in srgb, var(--down) 68%, var(--text-primary)); font-size: 11px; background: var(--down-weak); padding: 1px 6px; border-radius: 999px; margin-top: 2px;\">▼ 0.52%</span>",
+          "target": [
+            "li:nth-child(4) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .inline-flex.gap-1.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<li>",
+          "target": [
+            "li:nth-child(5)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button class=\"w-full flex items-center gap-3 text-start active:scale-[.99] transition-transform\" style=\"padding: 11px 12px; border-radius: 16px; background: var(--surface-card); border: 1px solid var(--surface-border); box-shadow: var(--elev-1);\">",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-none\">",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start > .flex-none"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex-1 min-w-0\"><span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">XAUUSD</span><span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span></span>",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start > .min-w-0.flex-1"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold truncate\" style=\"color: var(--text-primary); font-size: 13.5px;\">XAUUSD</span>",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .truncate.block.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block\" style=\"color: var(--text-secondary); font-size: 10.5px;\">قیمت</span>",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start > .min-w-0.flex-1 > .block:nth-child(2)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg width=\"54\" height=\"26\" viewBox=\"0 0 54 26\" fill=\"none\" style=\"flex: 0 0 auto;\">",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<polyline points=\"0.0,10.0 2.3,16.3 4.7,23.0 7.0,18.1 9.4,13.6 11.7,9.6 14.1,6.1 16.4,3.0 18.8,6.1 21.1,9.6 23.5,13.6 25.8,18.1 28.2,23.0 30.5,16.3 32.9,10.0 35.2,9.9 37.6,10.3 39.9,11.1 42.3,12.3 44.6,14.1 47.0,16.3 49.3,18.9 51.7,15.6 54.0,12.8\" stroke=\"var(--up)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start > svg[width=\"54\"][height=\"26\"][viewBox=\"0 0 54 26\"] > polyline[stroke=\"var(--up)\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"text-end\" dir=\"ltr\">",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"block font-extrabold tabular-nums\" style=\"color: var(--text-primary); font-size: 13.5px;\">4048.14</span>",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .block.font-extrabold.tabular-nums"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"inline-flex items-center gap-1 font-extrabold tabular-nums\" style=\"color: color-mix(in srgb, var(--up) 68%, var(--text-primary)); font-size: 11px; background: var(--up-weak); padding: 1px 6px; border-radius: 999px; margin-top: 2px;\">▲ 0.74%</span>",
+          "target": [
+            "li:nth-child(5) > .w-full.gap-3.text-start > .text-end[dir=\"ltr\"] > .inline-flex.gap-1.font-extrabold"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<nav class=\"relative flex items-stretch justify-around flex-none\" style=\"height: 68px; padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--surface-card) 88%, transparent); backdrop-filter: blur(18px); border-top: 1px solid var(--surface-border);\">",
+          "target": [
+            "nav"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button aria-label=\"چارت\" class=\"relative z-[1] flex-1 flex flex-col items-center justify-center gap-1\" style=\"color: var(--text-secondary);\">",
+          "target": [
+            "button[aria-label=\"چارت\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"21\" height=\"21\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chart-candlestick relative\" style=\"transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); transform: none;\">",
+          "target": [
+            ".lucide-chart-candlestick[width=\"21\"][height=\"21\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M9 5v4\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[width=\"21\"][height=\"21\"] > path[d=\"M9 5v4\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<rect width=\"4\" height=\"6\" x=\"7\" y=\"9\" rx=\"1\"></rect>",
+          "target": [
+            ".lucide-chart-candlestick[width=\"21\"][height=\"21\"] > rect[height=\"6\"][x=\"7\"][y=\"9\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M9 15v2\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[width=\"21\"][height=\"21\"] > path[d=\"M9 15v2\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M17 3v2\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[width=\"21\"][height=\"21\"] > path[d=\"M17 3v2\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<rect width=\"4\" height=\"8\" x=\"15\" y=\"5\" rx=\"1\"></rect>",
+          "target": [
+            ".lucide-chart-candlestick[width=\"21\"][height=\"21\"] > rect[height=\"8\"][x=\"15\"][y=\"5\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M17 13v3\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[width=\"21\"][height=\"21\"] > path[d=\"M17 13v3\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M3 3v16a2 2 0 0 0 2 2h16\"></path>",
+          "target": [
+            ".lucide-chart-candlestick[width=\"21\"][height=\"21\"] > path[d=\"M3 3v16a2 2 0 0 0 2 2h16\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"relative font-bold\" style=\"font-size: 10px;\">چارت</span>",
+          "target": [
+            "button[aria-label=\"چارت\"] > .font-bold.relative"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button aria-label=\"واچ‌لیست\" class=\"relative z-[1] flex-1 flex flex-col items-center justify-center gap-1\" style=\"color: rgb(41, 98, 255);\">",
+          "target": [
+            "button[aria-label=\"واچ‌لیست\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"21\" height=\"21\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-list relative\" style=\"transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); transform: translateY(-1px) scale(1.08);\">",
+          "target": [
+            ".lucide-list[width=\"21\"][height=\"21\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M3 12h.01\"></path>",
+          "target": [
+            ".lucide-list[width=\"21\"][height=\"21\"] > path[d=\"M3 12h.01\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M3 18h.01\"></path>",
+          "target": [
+            ".lucide-list[width=\"21\"][height=\"21\"] > path[d=\"M3 18h.01\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M3 6h.01\"></path>",
+          "target": [
+            ".lucide-list[width=\"21\"][height=\"21\"] > path[d=\"M3 6h.01\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M8 12h13\"></path>",
+          "target": [
+            ".lucide-list[width=\"21\"][height=\"21\"] > path[d=\"M8 12h13\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M8 18h13\"></path>",
+          "target": [
+            ".lucide-list[width=\"21\"][height=\"21\"] > path[d=\"M8 18h13\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M8 6h13\"></path>",
+          "target": [
+            ".lucide-list[width=\"21\"][height=\"21\"] > path[d=\"M8 6h13\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"relative font-bold\" style=\"font-size: 10px;\">واچ‌لیست</span>",
+          "target": [
+            "button[aria-label=\"واچ‌لیست\"] > .font-bold.relative"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button aria-label=\"سیگنالِ AI\" class=\"relative z-[1] flex-1 flex items-center justify-center\">",
+          "target": [
+            "button[aria-label=\"سیگنالِ AI\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"flex items-center justify-center transition-transform duration-300 active:scale-90\" style=\"width: 48px; height: 48px; margin-top: -16px; border-radius: 16px; background: linear-gradient(120deg, rgb(41, 98, 255), rgb(139, 92, 246)); box-shadow: rgba(41, 98, 255, 0.5) 0px 10px 22px -8px; transform: none; transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);\">",
+          "target": [
+            ".duration-300"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-sparkles\">",
+          "target": [
+            ".lucide-sparkles"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"></path>",
+          "target": [
+            ".lucide-sparkles > path:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M20 3v4\"></path>",
+          "target": [
+            "path[d=\"M20 3v4\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M22 5h-4\"></path>",
+          "target": [
+            "path[d=\"M22 5h-4\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M4 17v2\"></path>",
+          "target": [
+            "path[d=\"M4 17v2\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M5 18H3\"></path>",
+          "target": [
+            "path[d=\"M5 18H3\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button aria-label=\"بازارها\" class=\"relative z-[1] flex-1 flex flex-col items-center justify-center gap-1\" style=\"color: var(--text-secondary);\">",
+          "target": [
+            "button[aria-label=\"بازارها\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"21\" height=\"21\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-newspaper relative\" style=\"transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); transform: none;\">",
+          "target": [
+            ".lucide-newspaper"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2\"></path>",
+          "target": [
+            ".lucide-newspaper > path:nth-child(1)"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M18 14h-8\"></path>",
+          "target": [
+            "path[d=\"M18 14h-8\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M15 18h-5\"></path>",
+          "target": [
+            "path[d=\"M15 18h-5\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M10 6h8v4h-8V6Z\"></path>",
+          "target": [
+            "path[d=\"M10 6h8v4h-8V6Z\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"relative font-bold\" style=\"font-size: 10px;\">بازارها</span>",
+          "target": [
+            "button[aria-label=\"بازارها\"] > .font-bold.relative"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<button aria-label=\"پروفایل\" class=\"relative z-[1] flex-1 flex flex-col items-center justify-center gap-1\" style=\"color: var(--text-secondary);\">",
+          "target": [
+            "button[aria-label=\"پروفایل\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"21\" height=\"21\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-user relative\" style=\"transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); transform: none;\">",
+          "target": [
+            ".lucide-user"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"></path>",
+          "target": [
+            ".lucide-user > path"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<circle cx=\"12\" cy=\"7\" r=\"4\"></circle>",
+          "target": [
+            "circle[r=\"4\"]"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<span class=\"relative font-bold\" style=\"font-size: 10px;\">پروفایل</span>",
+          "target": [
+            "button[aria-label=\"پروفایل\"] > .font-bold.relative"
+          ]
+        },
+        {
+          "any": [
+            {
+              "id": "region",
+              "data": {
+                "isIframe": false
+              },
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "All page content is contained by landmarks"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": null,
+          "html": "<div id=\"bn-legal-root\"></div>",
+          "target": [
+            "#bn-legal-root"
+          ]
+        }
+      ]
+    }
+  ],
+  "incomplete": [],
+  "violations": []
+}

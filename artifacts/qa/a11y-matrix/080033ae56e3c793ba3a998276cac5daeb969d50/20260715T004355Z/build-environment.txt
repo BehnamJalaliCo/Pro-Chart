@@ -1,0 +1,6 @@
+runId=20260715T004355Z
+snapshotPath=/tmp/prochart-a11y-matrix.20260715T004355Z/source
+buildPath=/tmp/prochart-a11y-matrix.20260715T004355Z/build
+NO_OBF=UNSET
+node=v20.20.2
+npm=10.8.2

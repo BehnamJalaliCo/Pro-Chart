@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "scope": "mobile-shell-accessibility-state-matrix",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T000113Z",
+  "sourceFingerprint": "0de4e70facc1e0d813235c0e2d0c64f059974fcdcdc06ff8df306552de3af5de",
+  "fixture": {
+    "path": "qa/fixtures/visual-reference.json",
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "provenance": "Fully synthetic QA data; no production or customer records."
+  },
+  "harness": {
+    "helper": {
+      "path": "qa/support/synthetic-prochart-fixture.mjs",
+      "sha256": "3a721c73ffbd5ad2f767d625698c262ae2ba9ad068e1a69af6715fa09d5f7adb"
+    },
+    "test": {
+      "path": "qa/tests/a11y-matrix.spec.mjs",
+      "sha256": "ba9ba754a550bebdce4baf795e9ef1d1376850eebf841aff863b8c93c275be13"
+    }
+  },
+  "build": {
+    "mode": "isolated current-source production build with NO_OBF=1",
+    "passed": true,
+    "transformedModules": 1783
+  },
+  "axe": {
+    "version": "4.10.3",
+    "wcagTags": [
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa",
+      "wcag22a",
+      "wcag22aa"
+    ],
+    "allViolationImpactsIncluded": true,
+    "structureRules": [
+      "landmark-one-main",
+      "page-has-heading-one",
+      "region"
+    ]
+  },
+  "matrix": {
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 0,
+    "durationMs": 37465.743,
+    "states": {
+      "chart": { "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": 1 },
+      "watchlist": { "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": 1 },
+      "ai": { "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": 1 },
+      "markets": { "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": 1 },
+      "profile": { "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": 1 }
+    }
+  },
+  "incompleteReview": {
+    "rule": "color-contrast",
+    "reason": "Axe could not automatically determine contrast where chart canvas/image overlap is present; these are recorded in each raw axe report and are not reported as violations."
+  },
+  "productRemediation": [
+    {
+      "path": "frontend/prochart/src/pages/BazaarNama.jsx",
+      "sha256": "dbd6694bdea31b9486547ef37d9fd7537c078114b15c013254ba9d4844e5ca49",
+      "finding": "WCAG 2.2 target-size",
+      "change": "Price-scale corner controls increased from 17px to 24px minimum targets."
+    },
+    {
+      "path": "frontend/prochart/src/app/screens/WatchlistScreen.jsx",
+      "sha256": "46a91717cd713238a2eef79fddde5d0844f347018d105b2945259b9487b3e744",
+      "finding": "WCAG color-contrast",
+      "change": "Muted labels and directional change text now use theme-adaptive accessible colors."
+    },
+    {
+      "path": "frontend/prochart/src/app/screens/AiScreen.jsx",
+      "sha256": "7e59bf7c8089f4ed504d98355426987a9cfcd14ce3d38682651c9911deaf87fc",
+      "finding": "WCAG color-contrast",
+      "change": "Signal badges, labels, and value colors now use theme-adaptive accessible colors."
+    },
+    {
+      "path": "frontend/prochart/src/app/screens/ProfileScreen.jsx",
+      "sha256": "ccef502a8fc3874a5e3be286b7f40a6a453cdc5fbd7f6d7164a4a5961af6b0d7",
+      "finding": "WCAG color-contrast",
+      "change": "Account, tier, upgrade, connection, and version text now meet the automated contrast gate."
+    }
+  ],
+  "network": {
+    "unstubbedRequests": 0,
+    "unexpectedExternalRequests": 0,
+    "unexpectedMutations": 0,
+    "requestFailures": 0,
+    "httpErrorResponses": 0,
+    "pageErrors": 0
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "findings": 0,
+    "redactedReport": true
+  }
+}

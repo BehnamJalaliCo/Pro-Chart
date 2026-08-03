@@ -1,0 +1,5 @@
+javascriptPath=dist/assets/index-CvAkTbis.js
+javascriptSha256=b71525f892f4a5f3a5a789d3899030653558eedc2bf8482f2d6d90d8a717aa48
+cssPath=dist/assets/index-vLK2w0G_.css
+cssSha256=48846613e9d166f6f40b2324740e9fadbd8e4252d76979a647e899fdd676ce2f
+indexSha256=3349abc28418687d7c4449d4b4eb917e99199802e8205fa984266a08165adfe0

@@ -1,0 +1,3 @@
+preliminaryManifestVerification=PASS
+finalManifestVerification=PASS
+verificationCommand=sha256sum -c SHA256SUMS

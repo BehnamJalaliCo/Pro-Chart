@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "scope": "mobile-shell-accessibility-state-matrix",
+  "state": "chart",
+  "project": "chromium-mobile",
+  "commit": "working-tree",
+  "sourceFingerprint": "unrecorded",
+  "runId": "20260715T073603Z",
+  "result": "FAIL",
+  "failure": "page.evaluate: Test ended.\n    at waitForFinalFonts ([REDACTED].mjs:309:15)\n    at [REDACTED].spec.mjs:176:25",
+  "document": {
+    "status": 200,
+    "finalOrigin": "https://localhost",
+    "expectedOrigin": "https://localhost"
+  },
+  "fixture": {
+    "id": "prochart-synthetic-market-v1",
+    "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+    "fixedAt": "2026-07-14T12:34:56.000Z",
+    "provenance": "Fully synthetic QA data; no production or customer records."
+  },
+  "keyboardActivation": [
+    {
+      "index": 1,
+      "key": "Enter",
+      "accessibleName": "واچ‌لیست",
+      "focusedBeforeActivation": true
+    },
+    {
+      "index": 0,
+      "key": "Space",
+      "accessibleName": "چارت",
+      "focusedBeforeActivation": true
+    }
+  ],
+  "semantics": null,
+  "fonts": null,
+  "axe": {
+    "engine": null,
+    "wcag22AA": {
+      "tags": [
+        "wcag2a",
+        "wcag2aa",
+        "wcag21a",
+        "wcag21aa",
+        "wcag22a",
+        "wcag22aa"
+      ],
+      "violations": null,
+      "violationImpacts": {
+        "critical": 0,
+        "serious": 0,
+        "moderate": 0,
+        "minor": 0,
+        "unknown": 0
+      },
+      "incomplete": null,
+      "passes": null
+    },
+    "structure": {
+      "rules": [
+        "landmark-one-main",
+        "page-has-heading-one",
+        "region"
+      ],
+      "violations": null,
+      "violationIds": []
+    }
+  },
+  "network": {
+    "apiRequests": [
+      {
+        "method": "POST",
+        "pathname": "/api/academy/auth/bn-guest",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/me",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/EURUSD",
+        "queryKeys": [
+          "limit",
+          "tf"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/quota",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/chart/symbols",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/watchlist",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/scripts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/layouts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/alerts",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/ai-signal/active",
+        "queryKeys": [],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      },
+      {
+        "method": "GET",
+        "pathname": "/api/academy/bn/prices",
+        "queryKeys": [
+          "symbols"
+        ],
+        "resourceType": "xhr"
+      }
+    ],
+    "mocked": [
+      "GET /api/academy/bn/ai-signal/active",
+      "GET /api/academy/bn/ai-signal/quota",
+      "GET /api/academy/bn/alerts",
+      "GET /api/academy/bn/layouts",
+      "GET /api/academy/bn/prices",
+      "GET /api/academy/bn/scripts",
+      "GET /api/academy/bn/watchlist",
+      "GET /api/academy/chart/EURUSD",
+      "GET /api/academy/chart/symbols",
+      "GET /api/academy/me",
+      "POST /api/academy/auth/bn-guest"
+    ],
+    "mockedWebSockets": [],
+    "unstubbed": [],
+    "unexpectedExternal": [],
+    "unexpectedMutations": [],
+    "requestFailures": [],
+    "badResponses": []
+  },
+  "pageErrors": [],
+  "screenshot": {
+    "path": "actual.png",
+    "sha256": null
+  }
+}

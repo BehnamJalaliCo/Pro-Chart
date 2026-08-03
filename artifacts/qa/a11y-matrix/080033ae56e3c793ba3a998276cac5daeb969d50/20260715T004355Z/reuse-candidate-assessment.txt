@@ -1,0 +1,12 @@
+securityHeaderCandidateImage=sha256:7be597caae5f57abb1b9a6d319e793ed69fc825642879c0c3d2e86024936d0a6
+securityHeaderCandidateJavascript=bdf019fd5eedaaf67d4e324c558704274945e2b4fb5b16348a27b38a0fe5a68c  /usr/share/nginx/html/assets/index-DPKFDi_m.js
+securityHeaderCandidateNO_OBF=1
+securityHeaderCandidateEligible=false
+securityHeaderCandidateReason=obfuscation bypass enabled and bundle bytes differ from requested final build
+sharedPreviewName=prochart-qa-preview
+sharedPreviewJavascript=bccfa89a54bcb65423a6d92c30eb658b6c448b4e6e8ea1cc018fdca08a88165d  assets/index-DAReZjmF.js
+sharedPreviewEligible=false
+sharedPreviewReason=stale bundle bytes differ from requested final build
+selectedBuildJavascript=b71525f892f4a5f3a5a789d3899030653558eedc2bf8482f2d6d90d8a717aa48  dist/assets/index-CvAkTbis.js
+selectedBuildNO_OBF=UNSET
+selectedBuildEligible=true

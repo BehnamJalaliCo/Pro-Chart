@@ -1,0 +1,19 @@
+{
+  "result": "AUTOMATED_PASS_WITH_INCOMPLETE_REVIEW",
+  "states": [
+    { "id": "chart", "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": ["color-contrast"] },
+    { "id": "watchlist", "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": ["color-contrast"] },
+    { "id": "ai", "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": ["color-contrast"] },
+    { "id": "markets", "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": ["color-contrast"] },
+    { "id": "profile", "result": "PASS", "wcagViolations": 0, "structureViolations": 0, "axeIncomplete": ["color-contrast"] }
+  ],
+  "totals": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "wcagViolations": 0,
+    "structureViolations": 0,
+    "statesRequiringIncompleteReview": 5
+  },
+  "qualification": "This is an automated WCAG 2.2 A/AA and landmark gate result, not a claim of full accessibility compliance. Axe could not automatically determine color contrast for chart text overlapping canvas/image content; raw incomplete nodes are retained per state."
+}

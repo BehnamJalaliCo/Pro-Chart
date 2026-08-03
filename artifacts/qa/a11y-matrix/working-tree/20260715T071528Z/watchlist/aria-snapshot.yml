@@ -1,0 +1,97 @@
+- main:
+  - button "جستجوی نماد": EURUSD
+  - text: "1.14212"
+  - button "تایم‌فریم":
+    - text: 1H
+    - img
+  - button "نوعِ چارت":
+    - img
+  - button "بیشتر":
+    - img
+  - text: EURUSD 1H · فارکس
+  - img
+  - text: O 1.14201 H 1.14243 L 1.14169 C 1.14212 +0.00011 (+0.01%) Vol 2.88K
+  - button "تنظیماتِ چارت":
+    - img
+  - table:
+    - row:
+      - cell
+      - cell
+      - cell
+    - row:
+      - cell
+      - cell
+      - cell
+  - button "1.14210 SELL"
+  - text: 4 اسپرد
+  - button "1.14214 BUY"
+  - text: +0.00011 (+0.01%) 25:04
+  - button "مقیاسِ درصدی": ٪
+  - button "مقیاسِ لگاریتمی": log
+  - button "مقیاسِ خودکار (Fit)": auto
+  - img
+  - text: حجم · Vol
+  - img "بازارنما"
+  - button "1D"
+  - button "5D"
+  - button "1M"
+  - button "3M"
+  - button "6M"
+  - button "YTD"
+  - button "1Y"
+  - button "5Y"
+  - button "All"
+  - button "پرش به تاریخ"
+  - button "16:04:56 (تهران)":
+    - img
+    - text: 16:04:56 (تهران)
+  - heading "واچ‌لیست" [level=1]
+  - button "جستجو":
+    - img
+  - button "واچ‌لیست":
+    - img
+    - text: واچ‌لیست
+  - button "پوزیشن‌ها":
+    - img
+    - text: پوزیشن‌ها
+  - list:
+    - listitem:
+      - button "EURUSD قیمت 1.1421 ▲ 0.42%":
+        - text: EURUSD قیمت
+        - img
+        - text: 1.1421 ▲ 0.42%
+    - listitem:
+      - button "GBPUSD قیمت 1.3392 ▼ 0.38%":
+        - text: GBPUSD قیمت
+        - img
+        - text: 1.3392 ▼ 0.38%
+    - listitem:
+      - button "USDJPY قیمت 162.21 ▲ 0.58%":
+        - text: USDJPY قیمت
+        - img
+        - text: 162.21 ▲ 0.58%
+    - listitem:
+      - button "USDCHF قیمت 0.80936 ▼ 0.52%":
+        - text: USDCHF قیمت
+        - img
+        - text: 0.80936 ▼ 0.52%
+    - listitem:
+      - button "XAUUSD قیمت 4048.14 ▲ 0.74%":
+        - text: XAUUSD قیمت
+        - img
+        - text: 4048.14 ▲ 0.74%
+- navigation:
+  - button "چارت":
+    - img
+    - text: چارت
+  - button "واچ‌لیست":
+    - img
+    - text: واچ‌لیست
+  - button "سیگنالِ AI":
+    - img
+  - button "بازارها":
+    - img
+    - text: بازارها
+  - button "پروفایل":
+    - img
+    - text: پروفایل

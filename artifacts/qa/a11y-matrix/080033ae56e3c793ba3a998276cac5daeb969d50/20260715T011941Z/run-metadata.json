@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "scope": "frozen-current-source five-state mobile accessibility matrix",
+  "evidenceStatus": "CURRENT_CANDIDATE",
+  "result": "AUTOMATED_PASS_WITH_INCOMPLETE_REVIEW",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T011941Z",
+  "sourceFingerprint": "a58cda730224cf38cec1c27c412cd5a4e99fa753c94c6292eafa8b250d33033d",
+  "states": ["chart", "watchlist", "ai", "markets", "profile"],
+  "playwright": {
+    "version": "1.61.0",
+    "runnerDigest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "retries": 0,
+    "durationMs": 79681.837
+  },
+  "axe": {
+    "version": "4.10.3",
+    "wcag22AAViolationRules": 0,
+    "structureViolationRules": 0,
+    "incompleteColorContrastNodes": 163
+  },
+  "network": {
+    "unstubbedRequests": 0,
+    "unexpectedExternalRequests": 0,
+    "unexpectedMutations": 0,
+    "requestFailures": 0,
+    "httpErrors": 0
+  },
+  "qualification": "The retry-free automated matrix passed, but 163 serious color-contrast nodes remain incomplete and require manual review; this is not a WCAG compliance claim.",
+  "sealedAtUtc": "2026-07-15T01:28:45Z"
+}

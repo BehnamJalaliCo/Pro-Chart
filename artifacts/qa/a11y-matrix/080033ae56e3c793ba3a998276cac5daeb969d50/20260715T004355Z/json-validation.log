@@ -1,0 +1,23 @@
+PASS	ai/axe-structure.json
+PASS	ai/axe-wcag-22-aa.json
+PASS	ai/metadata.json
+PASS	axe-matrix-summary.json
+PASS	chart/axe-structure.json
+PASS	chart/axe-wcag-22-aa.json
+PASS	chart/metadata.json
+PASS	current-fingerprint-delta.json
+PASS	gitleaks.json
+PASS	markets/axe-structure.json
+PASS	markets/axe-wcag-22-aa.json
+PASS	markets/metadata.json
+PASS	playwright/report.json
+PASS	playwright/test-results/.last-run.json
+PASS	preview-container-inspect.json
+PASS	profile/axe-structure.json
+PASS	profile/axe-wcag-22-aa.json
+PASS	profile/metadata.json
+PASS	run-metadata.json
+PASS	watchlist/axe-structure.json
+PASS	watchlist/axe-wcag-22-aa.json
+PASS	watchlist/metadata.json
+validatedJsonFiles=22

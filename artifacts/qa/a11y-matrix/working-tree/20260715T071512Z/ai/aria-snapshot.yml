@@ -1,0 +1,67 @@
+- main:
+  - button "جستجوی نماد": EURUSD
+  - text: "1.14212"
+  - button "تایم‌فریم":
+    - text: 1H
+    - img
+  - button "نوعِ چارت":
+    - img
+  - button "بیشتر":
+    - img
+  - text: EURUSD 1H · فارکس
+  - img
+  - text: O 1.14201 H 1.14243 L 1.14169 C 1.14212 +0.00011 (+0.01%) Vol 2.88K
+  - button "تنظیماتِ چارت":
+    - img
+  - table:
+    - row:
+      - cell
+      - cell
+      - cell
+    - row:
+      - cell
+      - cell
+      - cell
+  - button "1.14210 SELL"
+  - text: 4 اسپرد
+  - button "1.14214 BUY"
+  - text: +0.00011 (+0.01%) 25:04
+  - button "مقیاسِ درصدی": ٪
+  - button "مقیاسِ لگاریتمی": log
+  - button "مقیاسِ خودکار (Fit)": auto
+  - img
+  - text: حجم · Vol
+  - img "بازارنما"
+  - button "1D"
+  - button "5D"
+  - button "1M"
+  - button "3M"
+  - button "6M"
+  - button "YTD"
+  - button "1Y"
+  - button "5Y"
+  - button "All"
+  - button "پرش به تاریخ"
+  - button "16:04:56 (تهران)":
+    - img
+    - text: 16:04:56 (تهران)
+  - heading "سیگنال‌های هوش مصنوعی" [level=1]
+  - img
+  - list:
+    - listitem:
+      - button "EURUSD H1 خرید ورود 1.1421 حدِ ضرر 1.1408 هدف 1.1441"
+- navigation:
+  - button "چارت":
+    - img
+    - text: چارت
+  - button "واچ‌لیست":
+    - img
+    - text: واچ‌لیست
+  - button "سیگنالِ AI":
+    - img
+  - button "بازارها":
+    - img
+    - text: بازارها
+  - button "پروفایل":
+    - img
+    - text: پروفایل

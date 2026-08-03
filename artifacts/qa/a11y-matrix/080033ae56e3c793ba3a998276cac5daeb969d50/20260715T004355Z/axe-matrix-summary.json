@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "scope": "mobile-shell-accessibility-state-matrix",
+  "states": [
+    {
+      "state": "ai",
+      "result": "PASS",
+      "heading": "سیگنال‌های هوش مصنوعی",
+      "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+      "document": {
+        "status": 200,
+        "finalOrigin": "http://prochart.local:4184",
+        "expectedOrigin": "http://prochart.local:4184"
+      },
+      "keyboardActivation": [
+        {
+          "index": 2,
+          "key": "Space",
+          "accessibleName": "سیگنالِ AI",
+          "focusedBeforeActivation": true
+        }
+      ],
+      "axe": {
+        "engine": {
+          "name": "axe-core",
+          "version": "4.10.3"
+        },
+        "wcag22AA": {
+          "tags": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22a",
+            "wcag22aa"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0,
+            "byImpact": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0,
+              "unknown": 0
+            }
+          },
+          "incomplete": {
+            "rules": 1,
+            "nodes": 36,
+            "byRule": [
+              {
+                "id": "color-contrast",
+                "impact": "serious",
+                "nodes": 36
+              }
+            ]
+          },
+          "passes": {
+            "rules": 21,
+            "nodes": 277
+          },
+          "inapplicableRules": 41
+        },
+        "structure": {
+          "configuredRules": [
+            "landmark-one-main",
+            "page-has-heading-one",
+            "region"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0
+          },
+          "incomplete": {
+            "rules": 0,
+            "nodes": 0,
+            "byRule": []
+          },
+          "passes": {
+            "rules": 3,
+            "nodes": 206
+          },
+          "inapplicableRules": 0
+        }
+      },
+      "network": {
+        "apiRequests": 25,
+        "mockedRoutes": [
+          "GET /api/academy/bn/ai-signal/active",
+          "GET /api/academy/bn/ai-signal/quota",
+          "GET /api/academy/bn/alerts",
+          "GET /api/academy/bn/layouts",
+          "GET /api/academy/bn/prices",
+          "GET /api/academy/bn/scripts",
+          "GET /api/academy/bn/watchlist",
+          "GET /api/academy/chart/EURUSD",
+          "GET /api/academy/chart/symbols",
+          "GET /api/academy/me",
+          "POST /api/academy/auth/bn-guest"
+        ],
+        "mockedWebSockets": [],
+        "unstubbedRequests": 0,
+        "unexpectedExternalRequests": 0,
+        "unexpectedMutations": 0,
+        "requestFailures": 0,
+        "httpErrorResponses": 0,
+        "pageErrors": 0
+      },
+      "screenshot": {
+        "path": "actual.png",
+        "sha256": "241c44d46ed0a6cc766260ba2c51f29c35dc77ebb9df629980c8d6f4754c17ea"
+      }
+    },
+    {
+      "state": "chart",
+      "result": "PASS",
+      "heading": "Pro-Chart — چارت حرفه‌ای بازارهای مالی",
+      "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+      "document": {
+        "status": 200,
+        "finalOrigin": "http://prochart.local:4184",
+        "expectedOrigin": "http://prochart.local:4184"
+      },
+      "keyboardActivation": [
+        {
+          "index": 1,
+          "key": "Enter",
+          "accessibleName": "واچ‌لیست",
+          "focusedBeforeActivation": true
+        },
+        {
+          "index": 0,
+          "key": "Space",
+          "accessibleName": "چارت",
+          "focusedBeforeActivation": true
+        }
+      ],
+      "axe": {
+        "engine": {
+          "name": "axe-core",
+          "version": "4.10.3"
+        },
+        "wcag22AA": {
+          "tags": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22a",
+            "wcag22aa"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0,
+            "byImpact": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0,
+              "unknown": 0
+            }
+          },
+          "incomplete": {
+            "rules": 1,
+            "nodes": 18,
+            "byRule": [
+              {
+                "id": "color-contrast",
+                "impact": "serious",
+                "nodes": 18
+              }
+            ]
+          },
+          "passes": {
+            "rules": 19,
+            "nodes": 264
+          },
+          "inapplicableRules": 43
+        },
+        "structure": {
+          "configuredRules": [
+            "landmark-one-main",
+            "page-has-heading-one",
+            "region"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0
+          },
+          "incomplete": {
+            "rules": 0,
+            "nodes": 0,
+            "byRule": []
+          },
+          "passes": {
+            "rules": 3,
+            "nodes": 180
+          },
+          "inapplicableRules": 0
+        }
+      },
+      "network": {
+        "apiRequests": 31,
+        "mockedRoutes": [
+          "GET /api/academy/bn/ai-signal/active",
+          "GET /api/academy/bn/ai-signal/quota",
+          "GET /api/academy/bn/alerts",
+          "GET /api/academy/bn/layouts",
+          "GET /api/academy/bn/prices",
+          "GET /api/academy/bn/scripts",
+          "GET /api/academy/bn/watchlist",
+          "GET /api/academy/chart/EURUSD",
+          "GET /api/academy/chart/GBPUSD",
+          "GET /api/academy/chart/USDCHF",
+          "GET /api/academy/chart/USDJPY",
+          "GET /api/academy/chart/XAUUSD",
+          "GET /api/academy/chart/symbols",
+          "GET /api/academy/me",
+          "POST /api/academy/auth/bn-guest"
+        ],
+        "mockedWebSockets": [],
+        "unstubbedRequests": 0,
+        "unexpectedExternalRequests": 0,
+        "unexpectedMutations": 0,
+        "requestFailures": 0,
+        "httpErrorResponses": 0,
+        "pageErrors": 0
+      },
+      "screenshot": {
+        "path": "actual.png",
+        "sha256": "9d0bf2eeee07e0fd5eae1801f4eab5b236bbeeea52929321156c045342eb2151"
+      }
+    },
+    {
+      "state": "markets",
+      "result": "PASS",
+      "heading": "بازارها و اخبار",
+      "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+      "document": {
+        "status": 200,
+        "finalOrigin": "http://prochart.local:4184",
+        "expectedOrigin": "http://prochart.local:4184"
+      },
+      "keyboardActivation": [
+        {
+          "index": 3,
+          "key": "Enter",
+          "accessibleName": "بازارها",
+          "focusedBeforeActivation": true
+        }
+      ],
+      "axe": {
+        "engine": {
+          "name": "axe-core",
+          "version": "4.10.3"
+        },
+        "wcag22AA": {
+          "tags": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22a",
+            "wcag22aa"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0,
+            "byImpact": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0,
+              "unknown": 0
+            }
+          },
+          "incomplete": {
+            "rules": 1,
+            "nodes": 37,
+            "byRule": [
+              {
+                "id": "color-contrast",
+                "impact": "serious",
+                "nodes": 37
+              }
+            ]
+          },
+          "passes": {
+            "rules": 19,
+            "nodes": 283
+          },
+          "inapplicableRules": 43
+        },
+        "structure": {
+          "configuredRules": [
+            "landmark-one-main",
+            "page-has-heading-one",
+            "region"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0
+          },
+          "incomplete": {
+            "rules": 0,
+            "nodes": 0,
+            "byRule": []
+          },
+          "passes": {
+            "rules": 3,
+            "nodes": 218
+          },
+          "inapplicableRules": 0
+        }
+      },
+      "network": {
+        "apiRequests": 25,
+        "mockedRoutes": [
+          "GET /api/academy/bn/ai-signal/active",
+          "GET /api/academy/bn/ai-signal/quota",
+          "GET /api/academy/bn/alerts",
+          "GET /api/academy/bn/layouts",
+          "GET /api/academy/bn/news",
+          "GET /api/academy/bn/prices",
+          "GET /api/academy/bn/scripts",
+          "GET /api/academy/bn/watchlist",
+          "GET /api/academy/chart/EURUSD",
+          "GET /api/academy/chart/symbols",
+          "GET /api/academy/me",
+          "POST /api/academy/auth/bn-guest"
+        ],
+        "mockedWebSockets": [],
+        "unstubbedRequests": 0,
+        "unexpectedExternalRequests": 0,
+        "unexpectedMutations": 0,
+        "requestFailures": 0,
+        "httpErrorResponses": 0,
+        "pageErrors": 0
+      },
+      "screenshot": {
+        "path": "actual.png",
+        "sha256": "38593f6a83eb5011a18d543012e76ff6567a67a4b16697342780c352c73fcc15"
+      }
+    },
+    {
+      "state": "profile",
+      "result": "PASS",
+      "heading": "پروفایل",
+      "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+      "document": {
+        "status": 200,
+        "finalOrigin": "http://prochart.local:4184",
+        "expectedOrigin": "http://prochart.local:4184"
+      },
+      "keyboardActivation": [
+        {
+          "index": 4,
+          "key": "Space",
+          "accessibleName": "پروفایل",
+          "focusedBeforeActivation": true
+        }
+      ],
+      "axe": {
+        "engine": {
+          "name": "axe-core",
+          "version": "4.10.3"
+        },
+        "wcag22AA": {
+          "tags": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22a",
+            "wcag22aa"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0,
+            "byImpact": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0,
+              "unknown": 0
+            }
+          },
+          "incomplete": {
+            "rules": 1,
+            "nodes": 36,
+            "byRule": [
+              {
+                "id": "color-contrast",
+                "impact": "serious",
+                "nodes": 36
+              }
+            ]
+          },
+          "passes": {
+            "rules": 19,
+            "nodes": 342
+          },
+          "inapplicableRules": 43
+        },
+        "structure": {
+          "configuredRules": [
+            "landmark-one-main",
+            "page-has-heading-one",
+            "region"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0
+          },
+          "incomplete": {
+            "rules": 0,
+            "nodes": 0,
+            "byRule": []
+          },
+          "passes": {
+            "rules": 3,
+            "nodes": 289
+          },
+          "inapplicableRules": 0
+        }
+      },
+      "network": {
+        "apiRequests": 26,
+        "mockedRoutes": [
+          "GET /api/academy/bn/ai-signal/active",
+          "GET /api/academy/bn/ai-signal/quota",
+          "GET /api/academy/bn/alerts",
+          "GET /api/academy/bn/connect/status",
+          "GET /api/academy/bn/layouts",
+          "GET /api/academy/bn/prices",
+          "GET /api/academy/bn/scripts",
+          "GET /api/academy/bn/watchlist",
+          "GET /api/academy/chart/EURUSD",
+          "GET /api/academy/chart/symbols",
+          "GET /api/academy/me",
+          "POST /api/academy/auth/bn-guest"
+        ],
+        "mockedWebSockets": [],
+        "unstubbedRequests": 0,
+        "unexpectedExternalRequests": 0,
+        "unexpectedMutations": 0,
+        "requestFailures": 0,
+        "httpErrorResponses": 0,
+        "pageErrors": 0
+      },
+      "screenshot": {
+        "path": "actual.png",
+        "sha256": "3f5a92cedcb10468d67ca823ba942b9f1b6f89359db4043ab0a049881cfa6a09"
+      }
+    },
+    {
+      "state": "watchlist",
+      "result": "PASS",
+      "heading": "واچ‌لیست",
+      "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+      "document": {
+        "status": 200,
+        "finalOrigin": "http://prochart.local:4184",
+        "expectedOrigin": "http://prochart.local:4184"
+      },
+      "keyboardActivation": [
+        {
+          "index": 1,
+          "key": "Enter",
+          "accessibleName": "واچ‌لیست",
+          "focusedBeforeActivation": true
+        }
+      ],
+      "axe": {
+        "engine": {
+          "name": "axe-core",
+          "version": "4.10.3"
+        },
+        "wcag22AA": {
+          "tags": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22a",
+            "wcag22aa"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0,
+            "byImpact": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0,
+              "unknown": 0
+            }
+          },
+          "incomplete": {
+            "rules": 1,
+            "nodes": 36,
+            "byRule": [
+              {
+                "id": "color-contrast",
+                "impact": "serious",
+                "nodes": 36
+              }
+            ]
+          },
+          "passes": {
+            "rules": 21,
+            "nodes": 346
+          },
+          "inapplicableRules": 41
+        },
+        "structure": {
+          "configuredRules": [
+            "landmark-one-main",
+            "page-has-heading-one",
+            "region"
+          ],
+          "violations": {
+            "rules": 0,
+            "nodes": 0
+          },
+          "incomplete": {
+            "rules": 0,
+            "nodes": 0,
+            "byRule": []
+          },
+          "passes": {
+            "rules": 3,
+            "nodes": 256
+          },
+          "inapplicableRules": 0
+        }
+      },
+      "network": {
+        "apiRequests": 30,
+        "mockedRoutes": [
+          "GET /api/academy/bn/ai-signal/active",
+          "GET /api/academy/bn/ai-signal/quota",
+          "GET /api/academy/bn/alerts",
+          "GET /api/academy/bn/layouts",
+          "GET /api/academy/bn/prices",
+          "GET /api/academy/bn/scripts",
+          "GET /api/academy/bn/watchlist",
+          "GET /api/academy/chart/EURUSD",
+          "GET /api/academy/chart/GBPUSD",
+          "GET /api/academy/chart/USDCHF",
+          "GET /api/academy/chart/USDJPY",
+          "GET /api/academy/chart/XAUUSD",
+          "GET /api/academy/chart/symbols",
+          "GET /api/academy/me",
+          "POST /api/academy/auth/bn-guest"
+        ],
+        "mockedWebSockets": [],
+        "unstubbedRequests": 0,
+        "unexpectedExternalRequests": 0,
+        "unexpectedMutations": 0,
+        "requestFailures": 0,
+        "httpErrorResponses": 0,
+        "pageErrors": 0
+      },
+      "screenshot": {
+        "path": "actual.png",
+        "sha256": "0c4fc029a055dcc54cb7880142a56d35eea48d00ee16ee7ef1e85a003b497cfb"
+      }
+    }
+  ],
+  "totals": {
+    "states": 5,
+    "wcagViolationRules": 0,
+    "wcagViolationNodes": 0,
+    "wcagIncompleteRules": 5,
+    "wcagIncompleteNodes": 163,
+    "structureViolationRules": 0,
+    "structureViolationNodes": 0,
+    "structureIncompleteRules": 0,
+    "structureIncompleteNodes": 0,
+    "unstubbedRequests": 0,
+    "unexpectedExternalRequests": 0,
+    "unexpectedMutations": 0,
+    "requestFailures": 0,
+    "httpErrorResponses": 0,
+    "pageErrors": 0
+  }
+}

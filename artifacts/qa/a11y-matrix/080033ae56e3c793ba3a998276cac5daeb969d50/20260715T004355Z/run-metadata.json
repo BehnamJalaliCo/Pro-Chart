@@ -1,0 +1,799 @@
+{
+  "schemaVersion": 1,
+  "scope": "exact-current-source five-state mobile accessibility matrix",
+  "evidenceStatus": "CURRENT_FINAL",
+  "result": "AUTOMATED_PASS_WITH_INCOMPLETE_REVIEW",
+  "qualification": "Five configured states passed the automated retry-free gates. This is not a claim of full WCAG compliance: 163 serious color-contrast nodes remain axe incomplete and require manual review.",
+  "baselineCommit": "080033ae56e3c793ba3a998276cac5daeb969d50",
+  "runId": "20260715T004355Z",
+  "completedAtUtc": "2026-07-15T00:49:56Z",
+  "sourceProvenance": {
+    "requestedFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+    "frozenSnapshotFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+    "liveFingerprintBeforeTest": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+    "liveFingerprintAfterTest": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+    "byteMatched": true,
+    "snapshotFileCount": 810,
+    "snapshotWasReadOnlyDuringBuildAndTest": true,
+    "manifest": "source-snapshot-files.sha256",
+    "canonicalExclusions": [
+      "node_modules",
+      "dist",
+      "www",
+      "android"
+    ]
+  },
+  "reuseDecision": {
+    "existingSecurityHeaderCandidateEligible": false,
+    "reason": "Its Docker build sets NO_OBF=1 and its JavaScript hash differs from the requested final build.",
+    "sharedPreviewEligible": false,
+    "sharedPreviewTouched": false,
+    "selected": "fresh frozen byte-matched build with NO_OBF absent",
+    "evidence": "reuse-candidate-assessment.txt"
+  },
+  "build": {
+    "mode": "fresh isolated current-source production build with deterministic JavaScript obfuscator enabled",
+    "commandEnvironment": "env -u NO_OBF npm run build",
+    "obfuscationBypassSet": false,
+    "passed": true,
+    "transformedModules": 1782,
+    "javascript": {
+      "path": "dist/assets/index-CvAkTbis.js",
+      "sha256": "b71525f892f4a5f3a5a789d3899030653558eedc2bf8482f2d6d90d8a717aa48"
+    },
+    "css": {
+      "path": "dist/assets/index-vLK2w0G_.css",
+      "sha256": "48846613e9d166f6f40b2324740e9fadbd8e4252d76979a647e899fdd676ce2f"
+    },
+    "indexSha256": "3349abc28418687d7c4449d4b4eb917e99199802e8205fa984266a08165adfe0",
+    "outputFileCount": 534,
+    "exactMatchToSealedFinalRootJavascript": true,
+    "exactMatchToSealedFinalRootCss": true,
+    "log": "frontend-build-shipping-obfuscated.log"
+  },
+  "preview": {
+    "expectedAndObservedOrigin": "http://prochart.local:4184",
+    "privateContainer": "prochart-a11y-matrix-004355",
+    "imageDigest": "sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10",
+    "readOnlyFilesystem": true,
+    "runtimeJavascriptSha256": "b71525f892f4a5f3a5a789d3899030653558eedc2bf8482f2d6d90d8a717aa48",
+    "containerRemoved": true,
+    "hostPortReleased": true,
+    "temporaryWorkspaceRemoved": true
+  },
+  "harness": {
+    "test": {
+      "path": "qa/tests/a11y-matrix.spec.mjs",
+      "sha256": "ba9ba754a550bebdce4baf795e9ef1d1376850eebf841aff863b8c93c275be13"
+    },
+    "syntheticFixtureHelper": {
+      "path": "qa/support/synthetic-prochart-fixture.mjs",
+      "sha256": "d98b5e7d437407098436e099f1f0f6dc3ff768cc5aa8c5b61c4efeff8d309a18"
+    },
+    "fixture": {
+      "path": "qa/fixtures/visual-reference.json",
+      "sha256": "e7fe86ca3a676161f59d4e8cf0fc09884184ad0549a527c56655f3ab556eb13a",
+      "provenance": "Fully synthetic QA data; no production or customer records."
+    },
+    "playwrightConfig": {
+      "path": "qa/playwright.config.mjs",
+      "sha256": "b83bced28fe168529a41846686873fe285522ec6e234c5305abae871cc9fbec8"
+    },
+    "previewConfig": {
+      "path": "qa/nginx.preview.conf",
+      "sha256": "ee6891915b4a566c4e4892668b4785d2be8c4ba9091de5adf06d9eceefead1bc"
+    },
+    "dependencyLock": {
+      "path": "qa/package-lock.json",
+      "sha256": "6e648beff2b4c75478fe42803d1fc3c05c662055ccbdd6365d59b79c203262e9"
+    }
+  },
+  "runner": {
+    "playwrightVersion": "1.61.0",
+    "imageDigest": "sha256:57b65fdc9ceabe0ef613124c7bbe2babcf9362c4d85e382fe3b03604e84b428a",
+    "project": "chromium-mobile",
+    "workers": 1,
+    "retries": 0,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "durationMs": 74417.967,
+    "resultAttempts": 5,
+    "traces": 5,
+    "recordedVideoFiles": 15,
+    "report": "playwright/report.json",
+    "log": "a11y-matrix-run.log"
+  },
+  "axe": {
+    "packageVersion": "@axe-core/playwright 4.10.2",
+    "runtimeEngineVersion": "4.10.3",
+    "wcagTags": [
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa",
+      "wcag22a",
+      "wcag22aa"
+    ],
+    "allViolationImpactsIncluded": true,
+    "structureRules": [
+      "landmark-one-main",
+      "page-has-heading-one",
+      "region"
+    ],
+    "states": [
+      {
+        "state": "ai",
+        "result": "PASS",
+        "heading": "سیگنال‌های هوش مصنوعی",
+        "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+        "document": {
+          "status": 200,
+          "finalOrigin": "http://prochart.local:4184",
+          "expectedOrigin": "http://prochart.local:4184"
+        },
+        "keyboardActivation": [
+          {
+            "index": 2,
+            "key": "Space",
+            "accessibleName": "سیگنالِ AI",
+            "focusedBeforeActivation": true
+          }
+        ],
+        "axe": {
+          "engine": {
+            "name": "axe-core",
+            "version": "4.10.3"
+          },
+          "wcag22AA": {
+            "tags": [
+              "wcag2a",
+              "wcag2aa",
+              "wcag21a",
+              "wcag21aa",
+              "wcag22a",
+              "wcag22aa"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0,
+              "byImpact": {
+                "critical": 0,
+                "serious": 0,
+                "moderate": 0,
+                "minor": 0,
+                "unknown": 0
+              }
+            },
+            "incomplete": {
+              "rules": 1,
+              "nodes": 36,
+              "byRule": [
+                {
+                  "id": "color-contrast",
+                  "impact": "serious",
+                  "nodes": 36
+                }
+              ]
+            },
+            "passes": {
+              "rules": 21,
+              "nodes": 277
+            },
+            "inapplicableRules": 41
+          },
+          "structure": {
+            "configuredRules": [
+              "landmark-one-main",
+              "page-has-heading-one",
+              "region"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0
+            },
+            "incomplete": {
+              "rules": 0,
+              "nodes": 0,
+              "byRule": []
+            },
+            "passes": {
+              "rules": 3,
+              "nodes": 206
+            },
+            "inapplicableRules": 0
+          }
+        },
+        "network": {
+          "apiRequests": 25,
+          "mockedRoutes": [
+            "GET /api/academy/bn/ai-signal/active",
+            "GET /api/academy/bn/ai-signal/quota",
+            "GET /api/academy/bn/alerts",
+            "GET /api/academy/bn/layouts",
+            "GET /api/academy/bn/prices",
+            "GET /api/academy/bn/scripts",
+            "GET /api/academy/bn/watchlist",
+            "GET /api/academy/chart/EURUSD",
+            "GET /api/academy/chart/symbols",
+            "GET /api/academy/me",
+            "POST /api/academy/auth/bn-guest"
+          ],
+          "mockedWebSockets": [],
+          "unstubbedRequests": 0,
+          "unexpectedExternalRequests": 0,
+          "unexpectedMutations": 0,
+          "requestFailures": 0,
+          "httpErrorResponses": 0,
+          "pageErrors": 0
+        },
+        "screenshot": {
+          "path": "actual.png",
+          "sha256": "241c44d46ed0a6cc766260ba2c51f29c35dc77ebb9df629980c8d6f4754c17ea"
+        }
+      },
+      {
+        "state": "chart",
+        "result": "PASS",
+        "heading": "Pro-Chart — چارت حرفه‌ای بازارهای مالی",
+        "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+        "document": {
+          "status": 200,
+          "finalOrigin": "http://prochart.local:4184",
+          "expectedOrigin": "http://prochart.local:4184"
+        },
+        "keyboardActivation": [
+          {
+            "index": 1,
+            "key": "Enter",
+            "accessibleName": "واچ‌لیست",
+            "focusedBeforeActivation": true
+          },
+          {
+            "index": 0,
+            "key": "Space",
+            "accessibleName": "چارت",
+            "focusedBeforeActivation": true
+          }
+        ],
+        "axe": {
+          "engine": {
+            "name": "axe-core",
+            "version": "4.10.3"
+          },
+          "wcag22AA": {
+            "tags": [
+              "wcag2a",
+              "wcag2aa",
+              "wcag21a",
+              "wcag21aa",
+              "wcag22a",
+              "wcag22aa"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0,
+              "byImpact": {
+                "critical": 0,
+                "serious": 0,
+                "moderate": 0,
+                "minor": 0,
+                "unknown": 0
+              }
+            },
+            "incomplete": {
+              "rules": 1,
+              "nodes": 18,
+              "byRule": [
+                {
+                  "id": "color-contrast",
+                  "impact": "serious",
+                  "nodes": 18
+                }
+              ]
+            },
+            "passes": {
+              "rules": 19,
+              "nodes": 264
+            },
+            "inapplicableRules": 43
+          },
+          "structure": {
+            "configuredRules": [
+              "landmark-one-main",
+              "page-has-heading-one",
+              "region"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0
+            },
+            "incomplete": {
+              "rules": 0,
+              "nodes": 0,
+              "byRule": []
+            },
+            "passes": {
+              "rules": 3,
+              "nodes": 180
+            },
+            "inapplicableRules": 0
+          }
+        },
+        "network": {
+          "apiRequests": 31,
+          "mockedRoutes": [
+            "GET /api/academy/bn/ai-signal/active",
+            "GET /api/academy/bn/ai-signal/quota",
+            "GET /api/academy/bn/alerts",
+            "GET /api/academy/bn/layouts",
+            "GET /api/academy/bn/prices",
+            "GET /api/academy/bn/scripts",
+            "GET /api/academy/bn/watchlist",
+            "GET /api/academy/chart/EURUSD",
+            "GET /api/academy/chart/GBPUSD",
+            "GET /api/academy/chart/USDCHF",
+            "GET /api/academy/chart/USDJPY",
+            "GET /api/academy/chart/XAUUSD",
+            "GET /api/academy/chart/symbols",
+            "GET /api/academy/me",
+            "POST /api/academy/auth/bn-guest"
+          ],
+          "mockedWebSockets": [],
+          "unstubbedRequests": 0,
+          "unexpectedExternalRequests": 0,
+          "unexpectedMutations": 0,
+          "requestFailures": 0,
+          "httpErrorResponses": 0,
+          "pageErrors": 0
+        },
+        "screenshot": {
+          "path": "actual.png",
+          "sha256": "9d0bf2eeee07e0fd5eae1801f4eab5b236bbeeea52929321156c045342eb2151"
+        }
+      },
+      {
+        "state": "markets",
+        "result": "PASS",
+        "heading": "بازارها و اخبار",
+        "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+        "document": {
+          "status": 200,
+          "finalOrigin": "http://prochart.local:4184",
+          "expectedOrigin": "http://prochart.local:4184"
+        },
+        "keyboardActivation": [
+          {
+            "index": 3,
+            "key": "Enter",
+            "accessibleName": "بازارها",
+            "focusedBeforeActivation": true
+          }
+        ],
+        "axe": {
+          "engine": {
+            "name": "axe-core",
+            "version": "4.10.3"
+          },
+          "wcag22AA": {
+            "tags": [
+              "wcag2a",
+              "wcag2aa",
+              "wcag21a",
+              "wcag21aa",
+              "wcag22a",
+              "wcag22aa"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0,
+              "byImpact": {
+                "critical": 0,
+                "serious": 0,
+                "moderate": 0,
+                "minor": 0,
+                "unknown": 0
+              }
+            },
+            "incomplete": {
+              "rules": 1,
+              "nodes": 37,
+              "byRule": [
+                {
+                  "id": "color-contrast",
+                  "impact": "serious",
+                  "nodes": 37
+                }
+              ]
+            },
+            "passes": {
+              "rules": 19,
+              "nodes": 283
+            },
+            "inapplicableRules": 43
+          },
+          "structure": {
+            "configuredRules": [
+              "landmark-one-main",
+              "page-has-heading-one",
+              "region"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0
+            },
+            "incomplete": {
+              "rules": 0,
+              "nodes": 0,
+              "byRule": []
+            },
+            "passes": {
+              "rules": 3,
+              "nodes": 218
+            },
+            "inapplicableRules": 0
+          }
+        },
+        "network": {
+          "apiRequests": 25,
+          "mockedRoutes": [
+            "GET /api/academy/bn/ai-signal/active",
+            "GET /api/academy/bn/ai-signal/quota",
+            "GET /api/academy/bn/alerts",
+            "GET /api/academy/bn/layouts",
+            "GET /api/academy/bn/news",
+            "GET /api/academy/bn/prices",
+            "GET /api/academy/bn/scripts",
+            "GET /api/academy/bn/watchlist",
+            "GET /api/academy/chart/EURUSD",
+            "GET /api/academy/chart/symbols",
+            "GET /api/academy/me",
+            "POST /api/academy/auth/bn-guest"
+          ],
+          "mockedWebSockets": [],
+          "unstubbedRequests": 0,
+          "unexpectedExternalRequests": 0,
+          "unexpectedMutations": 0,
+          "requestFailures": 0,
+          "httpErrorResponses": 0,
+          "pageErrors": 0
+        },
+        "screenshot": {
+          "path": "actual.png",
+          "sha256": "38593f6a83eb5011a18d543012e76ff6567a67a4b16697342780c352c73fcc15"
+        }
+      },
+      {
+        "state": "profile",
+        "result": "PASS",
+        "heading": "پروفایل",
+        "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+        "document": {
+          "status": 200,
+          "finalOrigin": "http://prochart.local:4184",
+          "expectedOrigin": "http://prochart.local:4184"
+        },
+        "keyboardActivation": [
+          {
+            "index": 4,
+            "key": "Space",
+            "accessibleName": "پروفایل",
+            "focusedBeforeActivation": true
+          }
+        ],
+        "axe": {
+          "engine": {
+            "name": "axe-core",
+            "version": "4.10.3"
+          },
+          "wcag22AA": {
+            "tags": [
+              "wcag2a",
+              "wcag2aa",
+              "wcag21a",
+              "wcag21aa",
+              "wcag22a",
+              "wcag22aa"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0,
+              "byImpact": {
+                "critical": 0,
+                "serious": 0,
+                "moderate": 0,
+                "minor": 0,
+                "unknown": 0
+              }
+            },
+            "incomplete": {
+              "rules": 1,
+              "nodes": 36,
+              "byRule": [
+                {
+                  "id": "color-contrast",
+                  "impact": "serious",
+                  "nodes": 36
+                }
+              ]
+            },
+            "passes": {
+              "rules": 19,
+              "nodes": 342
+            },
+            "inapplicableRules": 43
+          },
+          "structure": {
+            "configuredRules": [
+              "landmark-one-main",
+              "page-has-heading-one",
+              "region"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0
+            },
+            "incomplete": {
+              "rules": 0,
+              "nodes": 0,
+              "byRule": []
+            },
+            "passes": {
+              "rules": 3,
+              "nodes": 289
+            },
+            "inapplicableRules": 0
+          }
+        },
+        "network": {
+          "apiRequests": 26,
+          "mockedRoutes": [
+            "GET /api/academy/bn/ai-signal/active",
+            "GET /api/academy/bn/ai-signal/quota",
+            "GET /api/academy/bn/alerts",
+            "GET /api/academy/bn/connect/status",
+            "GET /api/academy/bn/layouts",
+            "GET /api/academy/bn/prices",
+            "GET /api/academy/bn/scripts",
+            "GET /api/academy/bn/watchlist",
+            "GET /api/academy/chart/EURUSD",
+            "GET /api/academy/chart/symbols",
+            "GET /api/academy/me",
+            "POST /api/academy/auth/bn-guest"
+          ],
+          "mockedWebSockets": [],
+          "unstubbedRequests": 0,
+          "unexpectedExternalRequests": 0,
+          "unexpectedMutations": 0,
+          "requestFailures": 0,
+          "httpErrorResponses": 0,
+          "pageErrors": 0
+        },
+        "screenshot": {
+          "path": "actual.png",
+          "sha256": "3f5a92cedcb10468d67ca823ba942b9f1b6f89359db4043ab0a049881cfa6a09"
+        }
+      },
+      {
+        "state": "watchlist",
+        "result": "PASS",
+        "heading": "واچ‌لیست",
+        "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+        "document": {
+          "status": 200,
+          "finalOrigin": "http://prochart.local:4184",
+          "expectedOrigin": "http://prochart.local:4184"
+        },
+        "keyboardActivation": [
+          {
+            "index": 1,
+            "key": "Enter",
+            "accessibleName": "واچ‌لیست",
+            "focusedBeforeActivation": true
+          }
+        ],
+        "axe": {
+          "engine": {
+            "name": "axe-core",
+            "version": "4.10.3"
+          },
+          "wcag22AA": {
+            "tags": [
+              "wcag2a",
+              "wcag2aa",
+              "wcag21a",
+              "wcag21aa",
+              "wcag22a",
+              "wcag22aa"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0,
+              "byImpact": {
+                "critical": 0,
+                "serious": 0,
+                "moderate": 0,
+                "minor": 0,
+                "unknown": 0
+              }
+            },
+            "incomplete": {
+              "rules": 1,
+              "nodes": 36,
+              "byRule": [
+                {
+                  "id": "color-contrast",
+                  "impact": "serious",
+                  "nodes": 36
+                }
+              ]
+            },
+            "passes": {
+              "rules": 21,
+              "nodes": 346
+            },
+            "inapplicableRules": 41
+          },
+          "structure": {
+            "configuredRules": [
+              "landmark-one-main",
+              "page-has-heading-one",
+              "region"
+            ],
+            "violations": {
+              "rules": 0,
+              "nodes": 0
+            },
+            "incomplete": {
+              "rules": 0,
+              "nodes": 0,
+              "byRule": []
+            },
+            "passes": {
+              "rules": 3,
+              "nodes": 256
+            },
+            "inapplicableRules": 0
+          }
+        },
+        "network": {
+          "apiRequests": 30,
+          "mockedRoutes": [
+            "GET /api/academy/bn/ai-signal/active",
+            "GET /api/academy/bn/ai-signal/quota",
+            "GET /api/academy/bn/alerts",
+            "GET /api/academy/bn/layouts",
+            "GET /api/academy/bn/prices",
+            "GET /api/academy/bn/scripts",
+            "GET /api/academy/bn/watchlist",
+            "GET /api/academy/chart/EURUSD",
+            "GET /api/academy/chart/GBPUSD",
+            "GET /api/academy/chart/USDCHF",
+            "GET /api/academy/chart/USDJPY",
+            "GET /api/academy/chart/XAUUSD",
+            "GET /api/academy/chart/symbols",
+            "GET /api/academy/me",
+            "POST /api/academy/auth/bn-guest"
+          ],
+          "mockedWebSockets": [],
+          "unstubbedRequests": 0,
+          "unexpectedExternalRequests": 0,
+          "unexpectedMutations": 0,
+          "requestFailures": 0,
+          "httpErrorResponses": 0,
+          "pageErrors": 0
+        },
+        "screenshot": {
+          "path": "actual.png",
+          "sha256": "0c4fc029a055dcc54cb7880142a56d35eea48d00ee16ee7ef1e85a003b497cfb"
+        }
+      }
+    ],
+    "totals": {
+      "states": 5,
+      "wcagViolationRules": 0,
+      "wcagViolationNodes": 0,
+      "wcagIncompleteRules": 5,
+      "wcagIncompleteNodes": 163,
+      "structureViolationRules": 0,
+      "structureViolationNodes": 0,
+      "structureIncompleteRules": 0,
+      "structureIncompleteNodes": 0,
+      "unstubbedRequests": 0,
+      "unexpectedExternalRequests": 0,
+      "unexpectedMutations": 0,
+      "requestFailures": 0,
+      "httpErrorResponses": 0,
+      "pageErrors": 0
+    }
+  },
+  "keyboardActivation": {
+    "allStatesActivatedUsingEnterOrSpace": true,
+    "focusAssertedBeforeEveryActivation": true,
+    "stateEvidenceInMetadata": true
+  },
+  "failClosedNetwork": {
+    "fullySyntheticApiResponses": true,
+    "onlyAllowedMutation": "POST /api/academy/auth/bn-guest (synthetically intercepted)",
+    "unstubbedRequests": 0,
+    "unexpectedExternalRequests": 0,
+    "unexpectedMutations": 0,
+    "requestFailures": 0,
+    "httpErrorResponses": 0,
+    "pageErrors": 0
+  },
+  "incompleteReview": {
+    "maskedOrExcluded": false,
+    "rule": "color-contrast",
+    "impact": "serious",
+    "nodesByState": {
+      "chart": 18,
+      "watchlist": 36,
+      "ai": 36,
+      "markets": 37,
+      "profile": 36
+    },
+    "totalNodes": 163,
+    "disposition": "MANUAL_REVIEW_REQUIRED",
+    "priorMatrixComparison": {
+      "schemaVersion": 1,
+      "comparison": "mobile accessibility matrix axe incomplete node counts",
+      "prior": {
+        "runId": "20260715T000113Z",
+        "sourceFingerprint": "0de4e70facc1e0d813235c0e2d0c64f059974fcdcdc06ff8df306552de3af5de",
+        "nodesByState": {
+          "chart": 18,
+          "watchlist": 36,
+          "ai": 36,
+          "markets": 37,
+          "profile": 36
+        },
+        "totalNodes": 163
+      },
+      "current": {
+        "runId": "20260715T004355Z",
+        "sourceFingerprint": "bc72d742962ad167b1cc750992c33189c72c6d15e5b5c5a6afb3d680638fd08e",
+        "nodesByState": {
+          "chart": 18,
+          "watchlist": 36,
+          "ai": 36,
+          "markets": 37,
+          "profile": 36
+        },
+        "totalNodes": 163
+      },
+      "deltaNodesByState": {
+        "chart": 0,
+        "watchlist": 0,
+        "ai": 0,
+        "markets": 0,
+        "profile": 0
+      },
+      "totalNodeDelta": 0,
+      "rule": {
+        "id": "color-contrast",
+        "impact": "serious",
+        "priorOccurrences": 5,
+        "currentOccurrences": 5,
+        "occurrenceDelta": 0
+      },
+      "conclusion": "UNCHANGED_INCOMPLETE_REVIEW_REQUIRED"
+    }
+  },
+  "artifactContract": {
+    "eachStateHasScreenshotAriaWcagAxeStructureAxeAndMetadata": true,
+    "playwrightTraceAndVideoPreserved": true,
+    "assertionsLog": "evidence-assertions.log",
+    "aggregateAxeSummary": "axe-matrix-summary.json",
+    "preMetadataFileCount": 109
+  },
+  "evidenceSecurity": {
+    "gitleaksVersion": "8.30.1",
+    "scanFileCount": 817,
+    "findings": 0,
+    "redactedReport": true,
+    "scanMode": "no-git frozen frontend snapshot plus exact in-scope QA harness files"
+  },
+  "integrityManifest": "SHA256SUMS"
+}

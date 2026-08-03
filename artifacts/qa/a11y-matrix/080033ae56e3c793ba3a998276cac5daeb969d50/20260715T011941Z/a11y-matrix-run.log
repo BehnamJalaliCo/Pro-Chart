@@ -1,0 +1,14 @@
+
+Running 5 tests using 1 worker
+
+[1/5] [chromium-mobile] › tests/a11y-matrix.spec.mjs:127:3 › A11Y-MATRIX: mobile chart
+[2/5] [chromium-mobile] › tests/a11y-matrix.spec.mjs:127:3 › A11Y-MATRIX: mobile watchlist
+[3/5] [chromium-mobile] › tests/a11y-matrix.spec.mjs:127:3 › A11Y-MATRIX: mobile ai
+[4/5] [chromium-mobile] › tests/a11y-matrix.spec.mjs:127:3 › A11Y-MATRIX: mobile markets
+[5/5] [chromium-mobile] › tests/a11y-matrix.spec.mjs:127:3 › A11Y-MATRIX: mobile profile
+  5 passed (1.3m)
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.0.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
+npm notice To update run: npm install -g npm@12.0.1
+npm notice
