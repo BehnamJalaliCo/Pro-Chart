@@ -6,9 +6,10 @@
 - ⛔ هیچ سرور/سرویس/DBای را بدونِ تأییدِ صریحِ مالک تغییر نده یا حذف نکن؛ پیش‌فرض: فقط-خواندنی.
 - زبانِ گفتگو با مالک: فارسی. مدلِ ترجیحیِ مالک: `claude-fable-5`.
 
-## ریپو (به‌روزرسانیِ ۲۰۲۶-۰۸-۰۲)
-- ریپوی فعال: **`https://github.com/BehnamJalali-Co/Pro-Chart`** (private).
-  اکانت و ریپوی قبلی (`behnamjalali88/pro-chart`) تعلیق شد و دیگر وجود ندارد.
+## ریپو (به‌روزرسانیِ ۲۰۲۶-۰۸-۰۳)
+- ریپوی فعال: **`https://github.com/BehnamJalaliCo/Pro-Chart`** (private).
+  دو اکانتِ قبلی (`behnamjalali88/pro-chart` و سپس `BehnamJalali-Co/Pro-Chart`)
+  تعلیق شدند و هر دو ۴۰۴ هستند؛ توکن‌هایشان باطل است.
 - ریشهٔ گیت `/home/bazaarnama/Pro-Chart/app` است (نه `Pro-Chart/`). فایل‌هایی که
   یک سطح بالاتر بودند در `server-home/` کپی شده‌اند — `server-home/README.md`.
 - ⚠️ قانونِ «هرگز secret کامیت نکن» **به دستورِ صریحِ مالک لغو شد**: ریپو private
@@ -18,8 +19,10 @@
   `blogvid_demo916.mp4`، `database.dump`) به دستورِ مالک هم از سرور و هم از
   تاریخچهٔ گیت حذف شدند و `.gitattributes` برداشته شد. هیچ فایلی در ریپو
   بالای ۱۰۰ مگابایت نیست. اگر روزی لازم شد، `git-lfs` در `~/.local/bin` هست.
-- `.gitignore` فقط بازتولیدشونده‌ها را بیرون می‌گذارد: `node_modules/`،
-  `artifacts/`، `__pycache__/`. هر چیزِ دیگری روی گیت می‌رود.
+- `.gitignore` از ۲۰۲۶-۰۸-۰۳ فقط `node_modules/` و `__pycache__/` را بیرون
+  می‌گذارد. **`artifacts/` (۴.۶ گیگابایت خروجیِ تست) هم روی ریپو رفت.** تنها
+  استثنای دیگر: `artifacts/qa/grype-db-cache/6/vulnerability.db` (۱.۶ گیگ،
+  بالاتر از سقفِ ۱۰۰ مگابایتیِ گیت‌هاب — بدونِ LFS نمی‌شود فرستاد).
 
 ## نکاتِ فنیِ حیاتی
 - برنچِ توسعه: `claude/android-apk-project-build-l9a960`
