@@ -40,6 +40,7 @@ htmlcov/
 logs/
 .claude/
 certbot/
+.local-certs/
 nginx/ssl/
 *.pem
 *.key
