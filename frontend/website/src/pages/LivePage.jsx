@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import useSeo from '../hooks/useSeo';
 import { liveAPI } from '../api/client';
 import { APP_CONFIG } from '../utils/constants';
@@ -11,6 +11,7 @@ const LS_NAME = 'live_chat_name';
 function useWhep(url, iceServers, active) {
   const videoRef = useRef(null);
   const [state, setState] = useState('idle');
+  const iceServersKey = JSON.stringify(iceServers);
 
   useEffect(() => {
     if (!active || !url) return;
@@ -40,7 +41,7 @@ function useWhep(url, iceServers, active) {
       if (retry) clearTimeout(retry);
       if (handle) handle.close();
     };
-  }, [url, active, JSON.stringify(iceServers)]);
+  }, [url, active, iceServers, iceServersKey]);
 
   return { videoRef, state };
 }
@@ -66,7 +67,7 @@ export default function LivePage() {
   const listRef = useRef(null);
   const tgRef = useRef(null);
 
-  const iceServers = cfg?.ice_servers || [];
+  const iceServers = useMemo(() => cfg?.ice_servers || [], [cfg?.ice_servers]);
   const live = !!cfg?.live;
 
   const mt5 = useWhep(cfg?.whep?.mt5, iceServers, live);

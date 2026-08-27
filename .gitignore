@@ -20,6 +20,9 @@ __pycache__/
 # ── فایلِ اعتبارنامهٔ زندهٔ گیت (توکنِ فعال؛ هرگز داخلِ ریپو نه) ──
 .git-credentials
 
+# Local self-signed TLS material used by docker-compose.prochart.yml
+.local-certs/
+
 # ── زبالهٔ سیستمی ──
 .DS_Store
 Thumbs.db

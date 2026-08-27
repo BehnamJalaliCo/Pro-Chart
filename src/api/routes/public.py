@@ -27,8 +27,10 @@ from src.core.redis_client import redis_client
 from src.core.database import Signal, VisitEvent, async_session_factory
 from src.core.security import create_access_token, verify_access_token
 from src.core.visitor_analytics import classify_source, geo_lookup, hash_ip, parse_ua
+from src.core.logger import get_logger
 
 router = APIRouter()
+logger = get_logger(__name__)
 
 
 # ════════════════════════════════════════════════════════════════

@@ -40,6 +40,7 @@ export default function useWebSocket({
   const reconnectAttemptsRef = useRef(0);
   const isMountedRef = useRef(true);
   const isManualCloseRef = useRef(false);
+  const connectWsRef = useRef(null);
 
   const [isConnected, setIsConnected] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
@@ -107,7 +108,7 @@ export default function useWebSocket({
 
     reconnectTimerRef.current = setTimeout(() => {
       if (isMountedRef.current && !isManualCloseRef.current) {
-        connectWs();
+        connectWsRef.current?.();
       }
     }, delay);
   }, [reconnectDelay, maxReconnectAttempts]);
@@ -184,6 +185,7 @@ export default function useWebSocket({
       }
     }
   }, [getWsUrl, attemptReconnect]);
+  connectWsRef.current = connectWs;
 
   /**
    * ارسال پیام

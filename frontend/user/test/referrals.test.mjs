@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+import { access, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 import {
@@ -11,8 +10,6 @@ import {
   providerForAccountType,
   referralPathFor,
 } from '../src/referrals.js';
-
-const appRoot = fileURLToPath(new URL('../../../', import.meta.url));
 
 async function source(relativePath) {
   return readFile(new URL(relativePath, new URL('../../../', import.meta.url)), 'utf8');
@@ -64,7 +61,7 @@ test('real user portal has no MT5 client or raw referral anchors', async () => {
   assert.doesNotMatch(subscription, /<a\s+href=\{data\?*\.url\}/);
   assert.match(trading, /connQ\.data\?\.accounts\?\.lbank/);
   assert.doesNotMatch(trading, /Object\.keys\(accounts\)/);
-  assert.ok(appRoot.endsWith('/app/'));
+  await access(new URL('frontend/user/package.json', new URL('../../../', import.meta.url)));
 });
 
 test('edge and standalone user nginx expose only the two exact referral routes', async () => {

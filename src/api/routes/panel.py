@@ -14,6 +14,7 @@ import glob
 import json
 import os
 import re
+import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
@@ -1010,14 +1011,14 @@ async def grant_subscription(
     return {"success": True, "expiresAt": _fmt_dt(new_expires), "daysLeft": _days_left(new_expires)}
 
 
-class MessageBody(BaseModel):
+class PanelUserMessageBody(BaseModel):
     message: str
 
 
 @router.post("/users/{user_id}/message")
 async def message_user(
     user_id: int,
-    body: MessageBody,
+    body: PanelUserMessageBody,
     admin: Admin = Depends(get_current_admin),
     db=Depends(get_db),
     redis=Depends(get_redis),

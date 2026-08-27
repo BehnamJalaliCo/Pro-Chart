@@ -236,6 +236,14 @@ export async function installSyntheticFixture(page, testInfo, scenario, state, o
       await reply({ symbols: fixture.watchlist });
       return;
     }
+    if (key === 'GET /api/public/symbol-catalog') {
+      await reply({ crypto: {} });
+      return;
+    }
+    if (key === 'GET /api/academy/bn/fundamentals') {
+      await reply({ available: false });
+      return;
+    }
 
     const chartMatch = /^\/api\/academy\/chart\/([^/]+)$/.exec(url.pathname);
     if (request.method() === 'GET' && chartMatch) {

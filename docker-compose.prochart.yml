@@ -71,6 +71,11 @@ services:
         limits:
           memory: 2G
           cpus: '1.5'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import pathlib,sys; sys.exit(0 if b'run_data_feed.py' in pathlib.Path('/proc/1/cmdline').read_bytes() else 1)\""]
+      interval: 20s
+      timeout: 5s
+      retries: 3
 
   # استریمرِ مستقلِ کریپتو: Binance public WSS → Redis (قیمتِ بلادرنگِ نمادهای LBank)
   crypto-ws:
@@ -88,6 +93,11 @@ services:
         limits:
           memory: 256M
           cpus: '0.3'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import pathlib,sys; sys.exit(0 if b'run_crypto_ws.py' in pathlib.Path('/proc/1/cmdline').read_bytes() else 1)\""]
+      interval: 20s
+      timeout: 5s
+      retries: 3
 
   finnhub-ws:
     build:
@@ -104,6 +114,11 @@ services:
         limits:
           memory: 200M
           cpus: '0.2'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import pathlib,sys; sys.exit(0 if b'run_finnhub_ws.py' in pathlib.Path('/proc/1/cmdline').read_bytes() else 1)\""]
+      interval: 20s
+      timeout: 5s
+      retries: 3
 
   stock-ws:
     build:
@@ -120,6 +135,11 @@ services:
         limits:
           memory: 256M
           cpus: '0.3'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import pathlib,sys; sys.exit(0 if b'run_stock_ws.py' in pathlib.Path('/proc/1/cmdline').read_bytes() else 1)\""]
+      interval: 20s
+      timeout: 5s
+      retries: 3
 
   api:
     build:
@@ -178,7 +198,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Production keeps the host Let's Encrypt tree; local runs can point this
+      # at the generated .local-certs tree through PROCHART_LETSENCRYPT_DIR.
+      - ${PROCHART_LETSENCRYPT_DIR:-/etc/letsencrypt}:/etc/letsencrypt:ro
       - /var/www/certbot:/var/www/certbot:ro
       # پنلِ ادمین (panel.pro-chart.com) — بلاکِ additive، جدا از pro-chart.ir
       - ./nginx/panel.conf:/etc/nginx/conf.d/panel.conf:ro
@@ -283,6 +305,11 @@ services:
         limits:
           memory: 512M
           cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import pathlib,sys; sys.exit(0 if b'run_news_worker.py' in pathlib.Path('/proc/1/cmdline').read_bytes() else 1)\""]
+      interval: 20s
+      timeout: 5s
+      retries: 3
 
   # ── ورکرِ آلارمِ بازارنما ──────────────────────────────────────────────────
   # چرا وجود دارد: تا امروز **هیچ ورکرِ Celeryای در این استک نبود**، پس
@@ -319,6 +346,11 @@ services:
         limits:
           memory: 512M
           cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import pathlib,sys; sys.exit(0 if b'celery' in pathlib.Path('/proc/1/cmdline').read_bytes() else 1)\""]
+      interval: 20s
+      timeout: 5s
+      retries: 3
 
 volumes:
   tsdb_data:

@@ -16,7 +16,7 @@ import os
 import secrets
 import time
 from decimal import Decimal, ROUND_DOWN, ROUND_UP
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 import aiohttp
 
@@ -1109,13 +1109,30 @@ def _normalize_symbol(symbol: str) -> str:
 
 
 def _normalize_position_type(value: Any) -> str:
-    """Delegate to position_manager.normalize_position_type."""
-    return _normalize_position_type_new(value)
+    """Return LBank's canonical position mode.
+
+    LBank accepts one-way and hedge mode under several spellings in the
+    surrounding configuration/API payloads.  Keep the conversion local so
+    this compatibility module remains usable without a missing side-module.
+    """
+    raw = str(value or "").strip().upper().replace("-", "_").replace(" ", "_")
+    if raw in {"1", "ONEWAY", "ONE_WAY", "SINGLE", "SINGLE_SIDE", "BOTH"}:
+        return "ONE_WAY"
+    return "HEDGE"
 
 
 def _posi_direction_candidates(direction: str, settings: Dict[str, Any]) -> List[Optional[str]]:
-    """Delegate to position_manager.posi_direction_candidates."""
-    return _posi_direction_candidates_new(direction, settings)
+    """Build ordered LBank position-direction candidates for an order.
+
+    ``1`` is the long side and ``2`` is the short side.  A hedge-mode order
+    must carry its side; one-way mode can omit it, so ``None`` is tried first
+    there and the explicit side is retained as a compatibility fallback.
+    """
+    side = str(direction or "").strip().upper()
+    posi = "1" if side in {"BUY", "LONG", "1"} else "2"
+    if _normalize_position_type((settings or {}).get("position_type")) == "ONE_WAY":
+        return [None, posi]
+    return [posi]
 
 
 def _apply_trailing_stop(
@@ -1126,13 +1143,29 @@ def _apply_trailing_stop(
     current_sl: float,
     enabled: bool,
 ) -> float:
-    """Delegate to position_manager.apply_trailing_stop."""
-    return _apply_trailing_stop_new(
-        db_position,
-        direction=direction,
-        entry_price=entry_price,
-        current_sl=current_sl,
-        enabled=enabled,
-    )
+    """Advance a trailing stop without ever weakening the current stop.
 
+    The position payload may provide ``trailing_distance`` (absolute price)
+    or ``trailing_distance_frac`` (fraction of entry).  Missing/invalid
+    values intentionally leave the existing stop unchanged.
+    """
+    if not enabled or entry_price is None or not isinstance(db_position, dict):
+        return current_sl
+    try:
+        entry = float(entry_price)
+        stop = float(current_sl)
+        distance = db_position.get("trailing_distance")
+        if distance is None:
+            frac = db_position.get("trailing_distance_frac")
+            distance = abs(entry) * float(frac) if frac is not None else None
+        if distance is None or float(distance) <= 0:
+            return current_sl
+        distance = float(distance)
+        watermark = db_position.get("high_watermark" if str(direction).lower() in {"long", "buy"} else "low_watermark")
+        if watermark is None:
+            return current_sl
+        candidate = float(watermark) - distance if str(direction).lower() in {"long", "buy"} else float(watermark) + distance
+        return max(stop, candidate) if str(direction).lower() in {"long", "buy"} else min(stop, candidate)
+    except (TypeError, ValueError):
+        return current_sl
 

@@ -199,6 +199,14 @@ async function installFixture(page, testInfo, scenario, state) {
       await reply({ symbols: fixture.watchlist });
       return;
     }
+    if (key === 'GET /api/public/symbol-catalog') {
+      await reply({ crypto: {} });
+      return;
+    }
+    if (key === 'GET /api/academy/bn/fundamentals') {
+      await reply({ available: false });
+      return;
+    }
 
     const chartMatch = /^\/api\/academy\/chart\/([^/]+)$/.exec(url.pathname);
     if (request.method() === 'GET' && chartMatch) {
@@ -330,8 +338,8 @@ for (const scenario of scenarios) {
         await expect(page.getByRole('button', { name: 'بعدی' })).toBeVisible();
       } else {
         await expect(page.locator('canvas').first()).toBeVisible();
-        await expect(page.getByText(fixture.workspace.symbol, { exact: true }).first()).toBeVisible();
-        await expect(page.getByText(fixture.symbols.EURUSD.mid.toFixed(5), { exact: true }).first()).toBeVisible();
+        await expect(page.locator('span:visible').filter({ hasText: new RegExp(`^${fixture.workspace.symbol}$`) }).first()).toBeVisible();
+        await expect(page.locator('span:visible').filter({ hasText: new RegExp(`^${fixture.symbols.EURUSD.mid.toFixed(5)}$`) }).first()).toBeVisible();
       }
 
       await expect.poll(() => state.seen.has('POST /api/academy/auth/bn-guest')).toBe(true);

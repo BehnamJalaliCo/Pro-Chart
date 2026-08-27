@@ -18,18 +18,6 @@ logger = get_logger(__name__)
 router = APIRouter()
 
 
-# ── §1 تاریخچهٔ پرداختِ کاربر ──
-@router.get("/payment/history")
-async def payment_history(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    rows = (await db.execute(text(
-        "SELECT id, product, plan, tx_hash, usdt, status, created_at FROM bn_payments "
-        "WHERE student_id=:s ORDER BY id DESC LIMIT 100"), {"s": st.id})).all()
-    return {"payments": [
-        {"id": r.id, "product": r.product, "plan": r.plan, "tx_hash": r.tx_hash,
-         "usdt": r.usdt, "status": r.status,
-         "created_at": r.created_at.isoformat() if r.created_at else None} for r in rows]}
-
-
 # ── §5 آمارِ رفرال ──
 @router.get("/referral-stats")
 async def referral_stats(st: AcademyStudent = Depends(current_student), db: AsyncSession = Depends(get_db)):
